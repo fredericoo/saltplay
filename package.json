@@ -11,8 +11,11 @@
     "generate": "prisma generate"
   },
   "dependencies": {
+    "@chakra-ui/react": "^1.7.3",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "@prisma/client": "^3.6.0",
-    "@stitches/react": "^1.2.6",
+    "framer-motion": "^4",
     "next": "12.0.7",
     "prisma": "^3.6.0",
     "react": "17.0.2",
