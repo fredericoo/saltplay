@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  name    String
+  profile Profile?
+  p1matches Match[] @relation("p1")
+  p2matches Match[] @relation("p2")
+  ladders LadderPosition[]
+
+}
+
+model Profile {
+  id       Int    @id @default(autoincrement())
+  biograpy String // Intentional typo!
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Match {
+    id    Int    @id @default(autoincrement())
+    p1id  Int
+    p1    User   @relation("p1", fields: [p1id], references: [id])
+    p2id  Int
+    p2    User   @relation("p2", fields: [p2id], references: [id])
+    p1score Int
+    p2score Int
+}
+
+model Game {
+    id Int @id @default(autoincrement())
+    name String
+    officeid Int
+    office Office @relation(fields: [officeid], references: [id])
+}
+
+model Office {
+    id Int @id @default(autoincrement())
+    games Game[]
+}
+
+model Ladder {
+    id Int @id @default(autoincrement())
+    positions LadderPosition[]
+}
+
+model LadderPosition {
+    id Int @id @default(autoincrement())
+    playerid Int
+    player User @relation(fields: [playerid], references: [id])
+    position Int 
+    ladderid Int
+    ladder Ladder @relation(fields: [ladderid], references: [id])
+}
