@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^3.6.0",
