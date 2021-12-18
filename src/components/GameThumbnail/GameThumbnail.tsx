@@ -3,7 +3,7 @@ import { Game } from '@prisma/client';
 import Link from 'next/link';
 
 type GameThumbnailProps = {
-  game: Game;
+  game: Pick<Game, 'name'>;
   href: string;
 };
 
