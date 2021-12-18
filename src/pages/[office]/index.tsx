@@ -1,7 +1,7 @@
 import { Box, Container, Heading, Link, Text } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import { createApi } from 'unsplash-js';
-import { NextPage, GetServerSideProps } from 'next';
+import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
 import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
 import Image from 'next/image';
@@ -53,7 +53,17 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, photo }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const offices = await prisma.office.findMany({
+    select: { slug: true },
+  });
+  return {
+    paths: offices.map(office => ({ params: { office: office.slug } })),
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (typeof params?.office === 'string') {
     const slug = params?.office;
     const office = await prisma.office.findUnique({ where: { slug } });
@@ -81,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   return {
     props: { office: undefined },
+    revalidate: 60 * 60 * 24,
   };
 };
 

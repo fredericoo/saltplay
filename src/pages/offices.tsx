@@ -1,5 +1,5 @@
 import { Office } from '@prisma/client';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import prisma from '@/lib/prisma';
 import { Box, Container, SimpleGrid } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -26,10 +26,11 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const offices = await prisma.office.findMany();
   return {
     props: { offices: offices },
+    revalidate: 60 * 60 * 24,
   };
 };
 
