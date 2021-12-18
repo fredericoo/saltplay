@@ -1,8 +1,9 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid } from '@chakra-ui/react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
 import OfficeHeader from '@/components/OfficeHeader';
 import { PromiseElement } from '@/lib/types/utils';
+import GameThumbnail from '@/components/GameThumbnail';
 
 const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({ where: { slug }, include: { games: true } });
@@ -17,11 +18,13 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   return (
     <>
       <OfficeHeader title={office.name} />
-      <ul>
-        {office.games.map(game => (
-          <li key={game.id}>{game.name}</li>
-        ))}
-      </ul>
+      <Container maxW="container.lg" py={8}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
+          {office.games.map(game => (
+            <GameThumbnail game={game} href={`/${office.slug}/${game.slug}`} key={game.id} />
+          ))}
+        </SimpleGrid>
+      </Container>
     </>
   );
 };
