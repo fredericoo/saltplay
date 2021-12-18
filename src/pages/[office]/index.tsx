@@ -1,14 +1,14 @@
-import { Box, Container, Heading, Link, Text } from '@chakra-ui/react';
-import { Office } from '@prisma/client';
-import { createApi } from 'unsplash-js';
+import { Box } from '@chakra-ui/react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
-import Image from 'next/image';
-import getBlurHashDataUrl from '@/lib/getBlurHashDataUrl';
 import OfficeHeader from '@/components/OfficeHeader';
+import { PromiseElement } from '@/lib/types/utils';
+
+const getOfficeBySlug = async (slug: string) =>
+  await prisma.office.findUnique({ where: { slug }, include: { games: true } });
 
 type OfficePageProps = {
-  office?: Office;
+  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
 };
 
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
@@ -17,6 +17,11 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   return (
     <>
       <OfficeHeader title={office.name} />
+      <ul>
+        {office.games.map(game => (
+          <li key={game.id}>{game.name}</li>
+        ))}
+      </ul>
     </>
   );
 };
@@ -34,7 +39,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (typeof params?.office === 'string') {
     const slug = params?.office;
-    const office = await prisma.office.findUnique({ where: { slug } });
+    const office = await getOfficeBySlug(slug);
 
     return {
       props: {
