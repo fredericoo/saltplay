@@ -36,7 +36,7 @@ model Match {
 
 model Game {
     id Int @id @default(autoincrement())
-    slug String @unique @default(uuid())
+    slug String
     name String
     officeid Int
     office Office @relation(fields: [officeid], references: [id])

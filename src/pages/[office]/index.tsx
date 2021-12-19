@@ -4,9 +4,7 @@ import prisma from '@/lib/prisma';
 import OfficeHeader from '@/components/OfficeHeader';
 import { PromiseElement } from '@/lib/types/utils';
 import GameThumbnail from '@/components/GameThumbnail';
-
-const getOfficeBySlug = async (slug: string) =>
-  await prisma.office.findUnique({ where: { slug }, include: { games: true } });
+import { getOfficeBySlug } from '@/lib/queries';
 
 type OfficePageProps = {
   office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
@@ -40,20 +38,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  if (typeof params?.office === 'string') {
-    const slug = params?.office;
-    const office = await getOfficeBySlug(slug);
-
-    return {
-      props: {
-        office,
-      },
-      revalidate: 60 * 60 * 24,
-    };
+  if (typeof params?.office !== 'string') {
+    return { props: {} };
   }
 
+  const office = await getOfficeBySlug(params?.office);
+
   return {
-    props: { office: undefined },
+    props: {
+      office,
+    },
+    revalidate: 60 * 60 * 24,
   };
 };
 
