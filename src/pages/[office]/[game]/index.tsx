@@ -1,18 +1,36 @@
 import prisma from '@/lib/prisma';
-import { getOfficeBySlug } from '@/lib/queries';
 import { PromiseElement } from '@/lib/types/utils';
 import { Game } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
+export const getOfficeWithGame = async (officeSlug: string, gameSlug: string) =>
+  await prisma.office.findUnique({
+    where: { slug: officeSlug },
+    select: {
+      name: true,
+      games: {
+        where: { slug: gameSlug },
+        select: {
+          name: true,
+          matches: true,
+        },
+      },
+    },
+  });
+
 type GamePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
-  game?: Game;
+  office?: PromiseElement<ReturnType<typeof getOfficeWithGame>>;
 };
 
-const GamePage: NextPage<GamePageProps> = ({ office, game }) => {
+const GamePage: NextPage<GamePageProps> = ({ office }) => {
+  const [game] = office?.games ?? [];
+
   return (
     <div>
-      {game?.name} at the {office?.name} office
+      <p>
+        {game.name} at the {office?.name} office
+      </p>
+      <p>{game.matches.length} matches</p>
     </div>
   );
 };
@@ -36,13 +54,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
 
-  const office = await getOfficeBySlug(params.office);
-  const game = office?.games.find(game => game.slug === params.game);
+  const office = await getOfficeWithGame(params.office, params.game);
 
   return {
     props: {
       office,
-      game,
     },
     revalidate: 60 * 60 * 24,
   };

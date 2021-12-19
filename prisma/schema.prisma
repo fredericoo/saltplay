@@ -26,12 +26,15 @@ model Profile {
 
 model Match {
     id    Int    @id @default(autoincrement())
+    createdAt DateTime
     p1id  Int
     p1    User   @relation("p1", fields: [p1id], references: [id])
     p2id  Int
     p2    User   @relation("p2", fields: [p2id], references: [id])
     p1score Int
     p2score Int
+    gameid Int
+    game   Game @relation(fields: [gameid], references: [id])
 }
 
 model Game {
@@ -40,6 +43,7 @@ model Game {
     name String
     officeid Int
     office Office @relation(fields: [officeid], references: [id])
+    matches Match[] 
 }
 
 model Office {

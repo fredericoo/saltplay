@@ -4,7 +4,9 @@ import prisma from '@/lib/prisma';
 import OfficeHeader from '@/components/OfficeHeader';
 import { PromiseElement } from '@/lib/types/utils';
 import GameThumbnail from '@/components/GameThumbnail';
-import { getOfficeBySlug } from '@/lib/queries';
+
+export const getOfficeBySlug = async (slug: string) =>
+  await prisma.office.findUnique({ where: { slug }, include: { games: true } });
 
 type OfficePageProps = {
   office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
