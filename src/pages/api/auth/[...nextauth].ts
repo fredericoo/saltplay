@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'production' && process.env.SLACK_CLIENT_ID && proc
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID,
       clientSecret: process.env.SLACK_CLIENT_SECRET,
+      idToken: true,
     })
   );
 }
