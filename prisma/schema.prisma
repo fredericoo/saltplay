@@ -7,28 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id      String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  p1matches Match[] @relation("p1")
-  p2matches Match[] @relation("p2")
-  profile Profile?
-  ladders LadderPosition[]
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -42,12 +20,31 @@ model Account {
   scope              String?
   id_token           String?
   session_state      String?
-  oauth_token_secret String?
-  oauth_token        String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  
+  profile       Profile?
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String   
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
 model VerificationToken {
@@ -59,9 +56,12 @@ model VerificationToken {
 }
 
 model Profile {
-  id       Int    @id @default(autoincrement())
+  id       String   @id @default(cuid())
   biograpy String // Intentional typo!
   userId   String
+  p1matches Match[] @relation("p1")
+  p2matches Match[] @relation("p2")
+  ladders LadderPosition[]
   user     User   @relation(fields: [userId], references: [id])
 }
 
@@ -69,9 +69,9 @@ model Match {
     id    Int    @id @default(autoincrement())
     createdAt DateTime
     p1id  String
-    p1    User   @relation("p1", fields: [p1id], references: [id])
+    p1    Profile   @relation("p1", fields: [p1id], references: [id])
     p2id  String
-    p2    User   @relation("p2", fields: [p2id], references: [id])
+    p2    Profile   @relation("p2", fields: [p2id], references: [id])
     p1score Int
     p2score Int
     gameid Int
@@ -103,7 +103,7 @@ model Ladder {
 model LadderPosition {
     id Int @id @default(autoincrement())
     playerid String
-    player User @relation(fields: [playerid], references: [id])
+    player Profile @relation(fields: [playerid], references: [id])
     position Int 
     ladderid Int
     ladder Ladder @relation(fields: [ladderid], references: [id])
