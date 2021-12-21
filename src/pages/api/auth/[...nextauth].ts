@@ -33,12 +33,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: process.env.NODE_ENV === 'development' ? PrismaAdapter(prisma) : undefined,
   providers,
   secret: 'xcAO/EYHuP0bSGyplq2EaiHjwOLG1Kmp8d0k9ntOF7g=',
-  session: {
-    strategy: 'database',
-    maxAge: 30 * 24 * 60 * 60,
-    updateAge: 24 * 60 * 60,
-  },
 });
