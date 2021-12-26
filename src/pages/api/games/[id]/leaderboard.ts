@@ -50,6 +50,7 @@ const leaderboardHandler: NextApiHandler<LeaderboardAPIResponse> = async (req, r
   const positions = await getLeaderboardPositions(gameId, take, cursor);
   const nextCursor = positions.length >= take ? positions[positions.length - 1].id : undefined;
 
+  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
   res.status(200).json({ status: 'ok', positions, nextCursor });
 };
 

@@ -47,6 +47,7 @@ const gamesHandler: NextApiHandler<GameMatchesAPIResponse> = async (req, res) =>
   const matches = await getGameMatches(gameId, take, cursor);
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
 
+  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=300');
   res.status(200).json({ status: 'ok', matches, nextCursor });
 };
 

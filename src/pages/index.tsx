@@ -1,39 +1,45 @@
-import { Office } from '@prisma/client';
-import type { GetStaticProps, NextPage } from 'next';
-import prisma from '@/lib/prisma';
-import { Box, Container, HStack, SimpleGrid } from '@chakra-ui/react';
-import Link from 'next/link';
-import { PromiseElement } from '@/lib/types/utils';
+import type { NextPage } from 'next';
+import { Box, Center, HStack, SimpleGrid } from '@chakra-ui/react';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerLink from '@/components/PlayerLink/PlayerLink';
+import fetcher from '@/lib/fetcher';
+import useSWRInfinite from 'swr/infinite';
+import { PlayerAPIResponse } from './api/players';
+import LoadingIcon from '@/components/LoadingIcon';
 
-type HomeProps = {
-  users: PromiseElement<ReturnType<typeof getUsers>>;
+const getKey = (pageIndex: number, previousPageData: PlayerAPIResponse) => {
+  if (previousPageData && !previousPageData.nextCursor) return null; // reached the end
+  const appendCursor = pageIndex > 0 ? `?cursor=${previousPageData.nextCursor}` : '';
+  return `/api/players${appendCursor}`; // SWR key
 };
 
-const getUsers = () => prisma.user.findMany({ select: { id: true, name: true, image: true } });
+const Home: NextPage = () => {
+  const { data, size, setSize, error } = useSWRInfinite<PlayerAPIResponse>(getKey, fetcher);
+  const hasNextPage = data?.[data.length - 1].nextCursor;
 
-const Home: NextPage<HomeProps> = ({ users }) => {
+  if (error) return <div>Error loading players</div>;
+
+  if (!data)
+    return (
+      <Center p={8}>
+        <LoadingIcon color="gray.300" size={8} />
+      </Center>
+    );
+
   return (
     <Box py={8}>
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
-        {users.map(user => (
-          <HStack key={user.id}>
-            <PlayerAvatar name={user.name} photo={user.image} />
-            <PlayerLink name={user.name} id={user.id} />
-          </HStack>
-        ))}
+        {data.map(page =>
+          page.players?.map(user => (
+            <HStack key={user.id}>
+              <PlayerAvatar name={user.name} photo={user.image} />
+              <PlayerLink name={user.name} id={user.id} />
+            </HStack>
+          ))
+        )}
       </SimpleGrid>
     </Box>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const users = await getUsers();
-  return {
-    props: { users },
-    revalidate: 60 * 60 * 24,
-  };
 };
 
 export default Home;
