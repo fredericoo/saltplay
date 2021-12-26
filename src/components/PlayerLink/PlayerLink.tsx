@@ -3,11 +3,11 @@ import { User } from '@prisma/client';
 import Link from 'next/link';
 
 type PlayerLinkProps = {
-  name: string;
+  name?: string | null;
   id?: User['id'];
 };
 
-const PlayerLink: ComponentWithAs<'a', FlexProps & PlayerLinkProps> = ({ name, id, ...props }) => {
+const PlayerLink: ComponentWithAs<'a', FlexProps & PlayerLinkProps> = ({ name = 'guest', id, ...props }) => {
   if (!id)
     return (
       <Flex align="baseline" {...props}>

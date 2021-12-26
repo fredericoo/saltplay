@@ -1,11 +1,18 @@
 import NextAuth from 'next-auth';
 import SlackProvider from 'next-auth/providers/slack';
 import EmailProvider from 'next-auth/providers/email';
+import GitHubProvider from 'next-auth/providers/github';
 import prisma from '@/lib/prisma';
 import PrismaAdapter from '@/lib/adapter';
 
 const providers = [];
 
+providers.push(
+  GitHubProvider({
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  })
+);
 if (process.env.NODE_ENV === 'production' && process.env.SLACK_CLIENT_ID && process.env.SLACK_CLIENT_SECRET) {
   providers.push(
     SlackProvider({
