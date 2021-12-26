@@ -9,7 +9,7 @@
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "generate": "prisma generate",
-    "deploy": "DATABASE_URL=postgres://rrykxratgvmfxa:d9f29b4d284b8e0cc15f5596c72b0e27ade7113756280ef1908e0a4c830564b7@ec2-54-74-60-70.eu-west-1.compute.amazonaws.com:5432/d2gf3mcupsjmq6 prisma migrate deploy"
+    "deploy": "DATABASE_URL=postgresql://postgres:Pi3.1415926535897@db.wxsgjotlwcsyzsmdsqvo.supabase.co:5432/postgres prisma migrate deploy"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",

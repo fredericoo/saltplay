@@ -1,8 +1,8 @@
 import NextAuth from 'next-auth';
 import SlackProvider from 'next-auth/providers/slack';
 import EmailProvider from 'next-auth/providers/email';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
+import PrismaAdapter from '@/lib/adapter';
 
 const providers = [];
 
