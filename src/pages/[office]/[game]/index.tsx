@@ -1,37 +1,62 @@
+import LatestMatches from '@/components/LatestMatches/LatestMatches';
+import Leaderboard from '@/components/Leaderboard';
+import { PageHeader } from '@/components/PageHeader/types';
+import { Sidebar } from '@/components/Sidebar/types';
 import prisma from '@/lib/prisma';
-import { PromiseElement } from '@/lib/types/utils';
+import { Box, Button, Grid, Heading, Stack } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 
-export const getOfficeWithGame = async (officeSlug: string, gameSlug: string) =>
+export const getOfficeWithGames = async (officeSlug: string) =>
   await prisma.office.findUnique({
     where: { slug: officeSlug },
     select: {
       name: true,
+      slug: true,
       games: {
-        where: { slug: gameSlug },
         select: {
           name: true,
-          matches: true,
+          slug: true,
+          icon: true,
+          id: true,
         },
       },
     },
   });
 
 type GamePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeWithGame>>;
+  game?: Pick<Game, 'name' | 'slug' | 'id' | 'icon'>;
 };
 
-const GamePage: NextPage<GamePageProps> = ({ office }) => {
-  const [game] = office?.games ?? [];
+const GamePage: NextPage<GamePageProps> = ({ game }) => {
+  const session = useSession();
+  const isLoggedIn = session.status === 'authenticated';
+
+  if (!game) {
+    return <div>404</div>;
+  }
 
   return (
-    <div>
-      <p>
-        {game.name} at the {office?.name} office
-      </p>
-      <p>{game.matches.length} matches</p>
-    </div>
+    <Grid w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
+      <Box as="section">
+        <Heading as="h2" size="sm" pb={4}>
+          Leaderboard
+        </Heading>
+        <Leaderboard gameId={game.id} />
+      </Box>
+      <Box as="section">
+        <Heading as="h2" size="sm" pb={4}>
+          Latest matches
+        </Heading>
+        {isLoggedIn && (
+          <Button p={8} w="100%" mb={8}>
+            Submit match results
+          </Button>
+        )}
+        <LatestMatches gameId={game.id} />
+      </Box>
+    </Grid>
   );
 };
 
@@ -54,11 +79,35 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
 
-  const office = await getOfficeWithGame(params.office, params.game);
+  const office = await getOfficeWithGames(params.office);
+
+  if (!office) {
+    return {
+      props: {},
+    };
+  }
+
+  const game = office.games.find(game => game.slug === params.game);
+
+  const sidebar: Sidebar = {
+    items: office.games.map(game => ({
+      title: game.name,
+      href: `/${office.slug}/${game.slug}`,
+      icon: game.icon ?? undefined,
+    })),
+  };
+
+  const header: PageHeader = {
+    title: game?.name,
+    subtitle: `at the ${office.name} office`,
+    icon: game?.icon ?? undefined,
+  };
 
   return {
     props: {
-      office,
+      game,
+      sidebar,
+      header,
     },
     revalidate: 60 * 60 * 24,
   };

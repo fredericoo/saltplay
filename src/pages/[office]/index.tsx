@@ -1,9 +1,8 @@
-import { Box, Container, SimpleGrid } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
-import OfficeHeader from '@/components/OfficeHeader';
 import { PromiseElement } from '@/lib/types/utils';
-import GameThumbnail from '@/components/GameThumbnail';
+import { Sidebar } from '@/components/Sidebar/types';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({ where: { slug }, include: { games: true } });
@@ -15,18 +14,7 @@ type OfficePageProps = {
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
-  return (
-    <>
-      <OfficeHeader title={office.name} />
-      <Container maxW="container.lg" py={8}>
-        <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
-          {office.games.map(game => (
-            <GameThumbnail game={game} href={`/${office.slug}/${game.slug}`} key={game.id} />
-          ))}
-        </SimpleGrid>
-      </Container>
-    </>
-  );
+  return null;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -46,9 +34,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const office = await getOfficeBySlug(params?.office);
 
+  if (!office) {
+    return { props: {} };
+  }
+
+  const sidebar: Sidebar = {
+    items: office.games.map(game => ({
+      title: game.name,
+      href: `/${office.slug}/${game.slug}`,
+      icon: game.icon ?? undefined,
+    })),
+  };
+
   return {
     props: {
       office,
+      sidebar,
     },
     revalidate: 60 * 60 * 24,
   };

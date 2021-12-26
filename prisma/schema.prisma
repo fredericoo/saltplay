@@ -57,11 +57,10 @@ model VerificationToken {
 
 model Profile {
   id       String   @id @default(cuid())
-  biograpy String // Intentional typo!
   userId   String
   p1matches Match[] @relation("p1")
   p2matches Match[] @relation("p2")
-  ladders LadderPosition[]
+  scores   PlayerScore[]
   user     User   @relation(fields: [userId], references: [id])
 }
 
@@ -74,17 +73,19 @@ model Match {
     p2    Profile   @relation("p2", fields: [p2id], references: [id])
     p1score Int
     p2score Int
-    gameid Int
+    gameid String
     game   Game @relation(fields: [gameid], references: [id])
 }
 
 model Game {
-    id Int @id @default(autoincrement())
+    id String   @id @default(cuid())
     slug String
     name String
+    icon String?
     officeid Int
     office Office @relation(fields: [officeid], references: [id])
     matches Match[] 
+    scores PlayerScore[]
 }
 
 model Office {
@@ -94,17 +95,11 @@ model Office {
     slug String @unique @default(uuid())
 }
 
-model Ladder {
-    id Int @id @default(autoincrement())
-    gameid Int
-    positions LadderPosition[]
-}
-
-model LadderPosition {
+model PlayerScore {
     id Int @id @default(autoincrement())
     playerid String
     player Profile @relation(fields: [playerid], references: [id])
-    position Int 
-    ladderid Int
-    ladder Ladder @relation(fields: [ladderid], references: [id])
+    points Int 
+    gameid String
+    game Game @relation(fields: [gameid], references: [id])
 }
