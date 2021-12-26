@@ -1,5 +1,5 @@
 export type PageHeader = {
-  title?: string;
-  subtitle?: string;
-  icon?: string;
+  title: string | null;
+  subtitle: string | null;
+  icon: string | null;
 };

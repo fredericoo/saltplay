@@ -1,5 +1,5 @@
 export type SidebarItem = {
-  icon?: string;
+  icon: string | null;
   title: string;
   href: string;
 };
