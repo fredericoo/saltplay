@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     items: office.games.map(game => ({
       title: game.name,
       href: `/${office.slug}/${game.slug}`,
-      icon: game.icon ?? undefined,
+      icon: game.icon || null,
     })),
   };
 
