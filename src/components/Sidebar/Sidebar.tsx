@@ -1,6 +1,7 @@
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import IconBlur from '../IconBlur/IconBlur';
 import { SidebarItem, Sidebar as SidebarProps } from './types';
 
 const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
@@ -23,6 +24,7 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
   return (
     <Link href={href} passHref>
       <HStack
+        w="100%"
         as="a"
         p={4}
         bg={isActive ? 'gray.100' : undefined}
@@ -34,19 +36,17 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         position="relative"
         overflow="hidden"
       >
-        <Box
-          userSelect={'none'}
-          transition={'.6s ease-in-out'}
-          fontSize="10em"
-          position="absolute"
-          filter="blur(.75em) saturate(200%)"
-          left={isActive ? '-50%' : '-125%'}
-        >
-          {icon}
-        </Box>
-
-        <Box w="1em">{icon}</Box>
-        <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+        <IconBlur
+          icon={icon}
+          height="300%"
+          top="-100%"
+          transition={'.6s ease-out'}
+          transform={isActive ? 'translateX(-50%)' : 'translateX(-100%)'}
+          zIndex={1}
+          opacity={0.2}
+        />
+        <Box zIndex={2}>{icon}</Box>
+        <Text zIndex={2} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
           {title}
         </Text>
       </HStack>

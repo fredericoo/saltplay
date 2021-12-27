@@ -1,30 +1,19 @@
 import { Box, Heading } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import IconBlur from '../IconBlur/IconBlur';
 import { PageHeader as PageHeaderProps } from './types';
 
 const BlurBox = motion(Box);
 
 const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
   return (
-    <Box position="relative" py={8} zIndex="-1">
+    <Box py={8} zIndex="-1" position="relative">
       <AnimatePresence>
-        <BlurBox
-          zIndex={1}
-          key={icon}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          userSelect={'none'}
-          fontSize="20em"
-          position="absolute"
-          filter="blur(1em) saturate(200%)"
-          left="-.5em"
-          top="-1em"
-          transform="scaleY(50%)"
-        >
-          {icon}
+        <BlurBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <IconBlur zIndex={1} icon={icon} height="200%" opacity={0.25} transform="translate(-50%, -75%)" />
         </BlurBox>
       </AnimatePresence>
+
       <Heading as="h1" size="md">
         {title}
       </Heading>
