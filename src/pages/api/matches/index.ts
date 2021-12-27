@@ -2,18 +2,7 @@ import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
 import { Match } from '@prisma/client';
 import { getSession } from 'next-auth/react';
-
-type Error = {
-  status: 'error';
-  message: string;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-};
-
-export type MatchesAPIResponse = Error | Data;
+import { APIResponse } from '@/lib/types/api';
 
 const calculateMatchPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' | 'p1score' | 'p2score'>) => {
   if (data.p1score === data.p2score) return;
@@ -62,8 +51,14 @@ const calculateMatchPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id'
   }
 };
 
-const pointsHandler: NextApiHandler<MatchesAPIResponse> = async (req, res) => {
-  if (req.method !== 'POST') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
+const matchesHandler: NextApiHandler = async (req, res) => {
+  if (req.method === 'POST') return await postHandler(req, res);
+  return res.status(405).json({ status: 'error', message: 'Method not allowed' });
+};
+
+export type MatchesPOSTAPIResponse = APIResponse;
+
+const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
   const session = await getSession({ req });
   if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
   if (req.body.p1id !== session.user.id) return res.status(400).json({ status: 'error', message: 'Unauthorised' });
@@ -90,4 +85,4 @@ const pointsHandler: NextApiHandler<MatchesAPIResponse> = async (req, res) => {
   res.status(200).json({ status: 'ok' });
 };
 
-export default pointsHandler;
+export default matchesHandler;

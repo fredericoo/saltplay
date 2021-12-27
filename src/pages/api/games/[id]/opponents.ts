@@ -3,20 +3,7 @@ import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
 import { User } from '@prisma/client';
 import { getSession } from 'next-auth/react';
-
-type Error = {
-  status: 'error';
-  message: string;
-  opponents?: never;
-  nextCursor?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-  opponents: PromiseElement<ReturnType<typeof getOpponents>>;
-  nextCursor?: User['id'];
-};
+import { APIResponse } from '@/lib/types/api';
 
 const getOpponents = (gameid: string, take: number, cursor?: Pick<User, 'id'>, excludeId?: User['id']) =>
   prisma.user.findMany({
@@ -41,7 +28,10 @@ const getOpponents = (gameid: string, take: number, cursor?: Pick<User, 'id'>, e
     },
   });
 
-export type OpponentsAPIResponse = Error | Data;
+export type OpponentsAPIResponse = APIResponse<{
+  opponents: PromiseElement<ReturnType<typeof getOpponents>>;
+  nextCursor?: User['id'];
+}>;
 
 const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res) => {
   const gameId = req.query.id;

@@ -3,18 +3,7 @@ import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
 import { Game, User } from '@prisma/client';
 import { getSession } from 'next-auth/react';
-
-type Error = {
-  status: 'error';
-  message: string;
-  points?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-  points: PromiseElement<ReturnType<typeof getUserPoints>>;
-};
+import { APIResponse } from '@/lib/types/api';
 
 const getUserPoints = async (playerid: User['id'], gameid: Game['id']) => {
   const user = await prisma.playerScore.findUnique({
@@ -24,7 +13,9 @@ const getUserPoints = async (playerid: User['id'], gameid: Game['id']) => {
   return user?.points || null;
 };
 
-export type PlayerPointsAPIResponse = Error | Data;
+export type PlayerPointsAPIResponse = APIResponse<{
+  points: PromiseElement<ReturnType<typeof getUserPoints>>;
+}>;
 
 const pointsHandler: NextApiHandler<PlayerPointsAPIResponse> = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });

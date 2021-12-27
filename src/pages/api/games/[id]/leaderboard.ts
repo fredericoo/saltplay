@@ -2,20 +2,12 @@ import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
 import { Match } from '@prisma/client';
+import { APIResponse } from '@/lib/types/api';
 
-type Error = {
-  status: 'error';
-  message: string;
-  positions?: never;
-  nextCursor?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
+export type LeaderboardAPIResponse = APIResponse<{
   positions: PromiseElement<ReturnType<typeof getLeaderboardPositions>>;
   nextCursor?: Match['id'];
-};
+}>;
 
 const getLeaderboardPositions = (gameid: string, take: number, cursor?: Pick<Match, 'id'>) =>
   prisma.playerScore.findMany({
@@ -38,8 +30,6 @@ const getLeaderboardPositions = (gameid: string, take: number, cursor?: Pick<Mat
       },
     },
   });
-
-export type LeaderboardAPIResponse = Error | Data;
 
 const leaderboardHandler: NextApiHandler<LeaderboardAPIResponse> = async (req, res) => {
   const gameId = req.query.id;

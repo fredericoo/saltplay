@@ -2,20 +2,7 @@ import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
 import { User } from '@prisma/client';
-
-type Error = {
-  status: 'error';
-  message: string;
-  players?: never;
-  nextCursor?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-  players: PromiseElement<ReturnType<typeof getPlayers>>;
-  nextCursor?: User['id'];
-};
+import { APIResponse } from '@/lib/types/api';
 
 const getPlayers = (take: number, cursor?: Pick<User, 'id'>) =>
   prisma.user.findMany({
@@ -31,7 +18,10 @@ const getPlayers = (take: number, cursor?: Pick<User, 'id'>) =>
     },
   });
 
-export type PlayerAPIResponse = Error | Data;
+export type PlayerAPIResponse = APIResponse<{
+  players: PromiseElement<ReturnType<typeof getPlayers>>;
+  nextCursor?: User['id'];
+}>;
 
 const gamesHandler: NextApiHandler<PlayerAPIResponse> = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });

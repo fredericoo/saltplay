@@ -2,20 +2,7 @@ import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
 import { Match } from '@prisma/client';
-
-type Error = {
-  status: 'error';
-  message: string;
-  matches?: never;
-  nextCursor?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-  matches: PromiseElement<ReturnType<typeof getGameMatches>>;
-  nextCursor?: Match['id'];
-};
+import { APIResponse } from '@/lib/types/api';
 
 const getGameMatches = (gameId: string, take: number, cursor?: Pick<Match, 'id'>) =>
   prisma.match.findMany({
@@ -34,7 +21,10 @@ const getGameMatches = (gameId: string, take: number, cursor?: Pick<Match, 'id'>
     },
   });
 
-export type GameMatchesAPIResponse = Error | Data;
+export type GameMatchesAPIResponse = APIResponse<{
+  matches: PromiseElement<ReturnType<typeof getGameMatches>>;
+  nextCursor?: Match['id'];
+}>;
 
 const gamesHandler: NextApiHandler<GameMatchesAPIResponse> = async (req, res) => {
   const gameId = req.query.id;
