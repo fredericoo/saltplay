@@ -1,12 +1,12 @@
 import LatestMatches from '@/components/LatestMatches/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
+import NewMatchButton from '@/components/NewMatchButton';
 import { PageHeader } from '@/components/PageHeader/types';
 import { Sidebar } from '@/components/Sidebar/types';
 import prisma from '@/lib/prisma';
-import { Box, Button, Grid, Heading, Stack } from '@chakra-ui/react';
+import { Box, Grid, Heading } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { useSession } from 'next-auth/react';
 
 export const getOfficeWithGames = async (officeSlug: string) =>
   await prisma.office.findUnique({
@@ -30,9 +30,6 @@ type GamePageProps = {
 };
 
 const GamePage: NextPage<GamePageProps> = ({ game }) => {
-  const session = useSession();
-  const isLoggedIn = session.status === 'authenticated';
-
   if (!game) {
     return <div>404</div>;
   }
@@ -49,11 +46,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         <Heading as="h2" size="sm" pb={4}>
           Latest matches
         </Heading>
-        {isLoggedIn && (
-          <Button p={8} w="100%" mb={8}>
-            Submit match results
-          </Button>
-        )}
+        <Box pb={6}>
+          <NewMatchButton gameId={game.id} />
+        </Box>
         <LatestMatches gameId={game.id} />
       </Box>
     </Grid>

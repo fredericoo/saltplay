@@ -1,6 +1,7 @@
-import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import PlayerAvatar from '../PlayerAvatar';
 
 const UserMenu: React.VFC = () => {
   const { data: session, status } = useSession();
@@ -17,10 +18,22 @@ const UserMenu: React.VFC = () => {
 
   return (
     <Menu isLazy>
-      <MenuButton as={Button} size="sm" isLoading={isLoading}>
-        {session?.user?.name || session?.user?.email}
+      <MenuButton
+        as={Button}
+        variant="ghost"
+        textAlign="left"
+        size="sm"
+        isLoading={isLoading}
+        leftIcon={<PlayerAvatar size={8} name={session?.user?.name} photo={session?.user?.image} />}
+      >
+        <Text isTruncated w="96px">
+          {session?.user?.name || session?.user?.email}
+        </Text>
       </MenuButton>
       <MenuList>
+        <Link href={`/player/${session?.user.id}`} passHref>
+          <MenuItem as="a">My Profile</MenuItem>
+        </Link>
         <Link href="/api/auth/signout" passHref>
           <MenuItem as="a">Log out</MenuItem>
         </Link>

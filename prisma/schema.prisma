@@ -34,8 +34,10 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  
-  profile       Profile?
+
+  p1matches Match[] @relation("p1")
+  p2matches Match[] @relation("p2")
+  scores   PlayerScore[]
 }
 
 model Session {
@@ -55,22 +57,13 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Profile {
-  id       String   @id @default(cuid())
-  userId   String
-  p1matches Match[] @relation("p1")
-  p2matches Match[] @relation("p2")
-  scores   PlayerScore[]
-  user     User   @relation(fields: [userId], references: [id])
-}
-
 model Match {
     id    Int    @id @default(autoincrement())
     createdAt DateTime
     p1id  String
-    p1    Profile   @relation("p1", fields: [p1id], references: [id])
+    p1    User   @relation("p1", fields: [p1id], references: [id])
     p2id  String
-    p2    Profile   @relation("p2", fields: [p2id], references: [id])
+    p2    User   @relation("p2", fields: [p2id], references: [id])
     p1score Int
     p2score Int
     gameid String
@@ -98,8 +91,10 @@ model Office {
 model PlayerScore {
     id Int @id @default(autoincrement())
     playerid String
-    player Profile @relation(fields: [playerid], references: [id])
+    player User @relation(fields: [playerid], references: [id])
     points Int 
     gameid String
     game Game @relation(fields: [gameid], references: [id])
+
+    @@unique([gameid, playerid])
 }

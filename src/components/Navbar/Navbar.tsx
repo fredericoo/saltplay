@@ -4,7 +4,7 @@ import UserMenu from '../UserMenu/UserMenu';
 
 const Navbar: React.VFC = () => {
   return (
-    <HStack py={4} px={4} w="100%" justify="space-between">
+    <HStack py={4} px={4} w="100%" justify="space-between" zIndex="docked">
       <HStack>
         <Logo h="2rem" w="2rem" />
         <Text fontWeight="bold" fontSize="lg" pl="2" letterSpacing="tight">

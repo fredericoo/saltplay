@@ -1,8 +1,7 @@
 import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
-import { Badge, Box, Center, Circle, HStack, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Center, HStack, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
-import Image from 'next/image';
 import useSWRInfinite from 'swr/infinite';
 import LoadingIcon from '../LoadingIcon';
 import PlayerAvatar from '../PlayerAvatar';
@@ -70,10 +69,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
           const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
           return (
             <LeaderboardPosition
-              id={position.player.user.id}
+              id={position.player.id}
               key={position.id}
-              name={position.player.user.name || position.player.user.id}
-              photo={position.player.user.image}
+              name={position.player.name || 'Anonymous'}
+              photo={position.player.image}
               wins={stats.wins}
               losses={stats.losses}
               points={position.points}

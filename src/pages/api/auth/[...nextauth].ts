@@ -43,4 +43,9 @@ export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
   secret: 'xcAO/EYHuP0bSGyplq2EaiHjwOLG1Kmp8d0k9ntOF7g=',
+  callbacks: {
+    session({ session, user }) {
+      return { ...session, user: { ...session.user, id: user.id } };
+    },
+  },
 });

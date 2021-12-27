@@ -41,9 +41,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId }) => {
             key={match.id}
             createdAt={match.createdAt}
             p1score={match.p1score}
-            p1={match.p1.user}
+            p1={match.p1}
             p2score={match.p2score}
-            p2={match.p2.user}
+            p2={match.p2}
           />
         ))
       )}

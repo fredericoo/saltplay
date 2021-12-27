@@ -31,7 +31,9 @@ const getLeaderboardPositions = (gameid: string, take: number, cursor?: Pick<Mat
         select: {
           p1matches: { where: { gameid }, select: { p1score: true, p2score: true } },
           p2matches: { where: { gameid }, select: { p1score: true, p2score: true } },
-          user: { select: { id: true, name: true, image: true } },
+          id: true,
+          name: true,
+          image: true,
         },
       },
     },
@@ -50,7 +52,7 @@ const leaderboardHandler: NextApiHandler<LeaderboardAPIResponse> = async (req, r
   const positions = await getLeaderboardPositions(gameId, take, cursor);
   const nextCursor = positions.length >= take ? positions[positions.length - 1].id : undefined;
 
-  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
+  // res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
   res.status(200).json({ status: 'ok', positions, nextCursor });
 };
 
