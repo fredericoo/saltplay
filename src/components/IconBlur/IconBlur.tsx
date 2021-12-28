@@ -3,10 +3,9 @@ import { useEffect, useRef } from 'react';
 
 type IconBlurProps = {
   icon?: string | null;
-  blurAmount?: number;
 };
 
-const drawBlur = (canvas: HTMLCanvasElement, icon: IconBlurProps['icon'], blurAmount: IconBlurProps['blurAmount']) => {
+const drawBlur = (canvas: HTMLCanvasElement, icon: IconBlurProps['icon']) => {
   const context = canvas.getContext('2d');
   if (!context || !icon) return;
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -22,15 +21,11 @@ const drawBlur = (canvas: HTMLCanvasElement, icon: IconBlurProps['icon'], blurAm
   context.putImageData(imageData, 0, 0);
 };
 
-const IconBlur: React.VFC<IconBlurProps & Omit<ChakraProps, keyof IconBlurProps>> = ({
-  icon,
-  blurAmount = 32,
-  ...boxProps
-}) => {
+const IconBlur: React.VFC<IconBlurProps & Omit<ChakraProps, keyof IconBlurProps>> = ({ icon, ...boxProps }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    canvasRef.current && drawBlur(canvasRef.current, icon || '', blurAmount);
-  }, [blurAmount, icon]);
+    canvasRef.current && drawBlur(canvasRef.current, icon || '');
+  }, [icon]);
   if (!icon) return null;
 
   return (

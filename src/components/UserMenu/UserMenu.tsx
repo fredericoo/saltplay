@@ -22,11 +22,12 @@ const UserMenu: React.VFC = () => {
         as={Button}
         variant="ghost"
         textAlign="left"
+        fontSize="xs"
         size="sm"
         isLoading={isLoading}
         leftIcon={<PlayerAvatar size={8} name={session?.user?.name} photo={session?.user?.image} />}
       >
-        <Text isTruncated w="96px">
+        <Text isTruncated maxW="128px">
           {session?.user?.name || session?.user?.email}
         </Text>
       </MenuButton>

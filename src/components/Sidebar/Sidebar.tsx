@@ -35,12 +35,13 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         transition={'.15s ease-in-out'}
         position="relative"
         overflow="hidden"
+        transform="translateZ(0)"
       >
         <IconBlur
           icon={icon}
           height="300%"
           top="-100%"
-          transition={'.6s ease-out'}
+          transition={isActive ? '1.2s 0.3s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'}
           transform={isActive ? 'translateX(-50%)' : 'translateX(-100%)'}
           zIndex={1}
           opacity={0.2}
