@@ -1,11 +1,14 @@
 import { Game } from '@prisma/client';
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import fetcher from '@/lib/fetcher';
-import { Button, Center, Stack } from '@chakra-ui/react';
+import { Box, Button, Center, Stack } from '@chakra-ui/react';
 import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
 import LoadingIcon from '../LoadingIcon';
 import NewMatchButton from '../NewMatchButton';
+import { motion } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 type LatestMatchesProps = {
   gameId: Game['id'];
@@ -34,21 +37,27 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId }) => {
     );
   }
 
+  const allMatches = data.flatMap(page => page.matches);
+
   return (
     <Stack gap={3}>
       <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />
-      {data.map(page =>
-        page.matches?.map(match => (
-          <MatchSummary
-            key={match.id}
-            createdAt={match.createdAt}
-            p1score={match.p1score}
-            p1={match.p1}
-            p2score={match.p2score}
-            p2={match.p2}
-          />
-        ))
-      )}
+
+      {allMatches?.map(match => {
+        if (!match) return null;
+        return (
+          <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={match.id}>
+            <MatchSummary
+              createdAt={match.createdAt}
+              p1score={match.p1score}
+              p1={match.p1}
+              p2score={match.p2score}
+              p2={match.p2}
+            />
+          </MotionBox>
+        );
+      })}
+
       {hasNextPage && (
         <Button variant="ghost" onClick={() => setSize(size + 1)}>
           Load more

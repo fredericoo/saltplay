@@ -2,10 +2,13 @@ import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, Center, HStack, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
+import { motion } from 'framer-motion';
 import useSWRInfinite from 'swr/infinite';
 import LoadingIcon from '../LoadingIcon';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
+
+const MotionBox = motion(Box);
 
 type LeaderboardProps = {
   gameId: Game['id'];
@@ -62,12 +65,15 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
       </Center>
     );
 
+  const allPositions = data.flatMap(page => page.positions);
+
   return (
     <Stack>
-      {data.map((page, pageIndex) =>
-        page.positions?.map((position, posIndex) => {
-          const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
-          return (
+      {allPositions?.map((position, posIndex) => {
+        if (!position) return null;
+        const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
+        return (
+          <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={position.id}>
             <LeaderboardPosition
               id={position.player.id}
               key={position.id}
@@ -76,11 +82,11 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
               wins={stats.wins}
               losses={stats.losses}
               points={position.points}
-              isFirstPlace={posIndex === 0 && pageIndex === 0}
+              isFirstPlace={posIndex === 0}
             />
-          );
-        })
-      )}
+          </MotionBox>
+        );
+      })}
     </Stack>
   );
 };
