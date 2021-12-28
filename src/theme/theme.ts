@@ -1,4 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
+import { Button } from './components/Button';
+import { Input } from './components/Input';
+import { Menu } from './components/Menu';
 
 const theme = extendTheme({
   styles: {
@@ -13,6 +16,9 @@ const theme = extendTheme({
     heading: 'Roobert',
     body: 'Roobert',
   },
+  shadows: {
+    outline: '0 0 0 3px rgba(0, 0, 0, 0.1)',
+  },
   components: {
     Badge: {
       variants: {
@@ -23,6 +29,9 @@ const theme = extendTheme({
         },
       },
     },
+    Menu,
+    Input,
+    Button,
   },
 });
 

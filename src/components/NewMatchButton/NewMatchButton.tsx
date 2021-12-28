@@ -62,7 +62,14 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId }) => {
 
   return (
     <>
-      <Button w="100%" isDisabled={!isLoggedIn} onClick={onOpen} leftIcon={<span>🆚</span>}>
+      <Button
+        w="100%"
+        variant={'subtle'}
+        colorScheme={'green'}
+        isDisabled={!isLoggedIn}
+        onClick={onOpen}
+        leftIcon={<span>+</span>}
+      >
         Submit new match
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -85,7 +92,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button type="submit" form="new-match" mr={3}>
+            <Button colorScheme="green" variant="subtle" bg="green.100" type="submit" form="new-match" mr={3}>
               Submit
             </Button>
             <Button variant="ghost" onClick={onClose}>
