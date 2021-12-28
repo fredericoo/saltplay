@@ -21,7 +21,9 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
     <Stack>
       <Text>Who have you played against?</Text>
       <PlayerPicker gameId={gameId} />
-      <Text pt={8}>What was the score?</Text>
+      <Text pt={8} pb={3}>
+        What was the score?
+      </Text>
       <HStack>
         <Box flex={1} position="relative">
           <Text
@@ -108,11 +110,11 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
             type="button"
             p={2}
           >
-            <HStack flexGrow={1}>
+            <HStack flexGrow={1} flexShrink={1}>
               <PlayerAvatar photo={user.image} name={user.name} />
-              <PlayerLink name={user.name} />
+              <PlayerLink name={user.name} noOfLines={1} />
             </HStack>
-            <Badge bg={'white'}>{score?.points || STARTING_POINTS} pts</Badge>
+            {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
           </HStack>
         );
       })}

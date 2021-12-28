@@ -1,5 +1,5 @@
 import { mode, transparentize } from '@chakra-ui/theme-tools';
-import type { SystemStyleFunction } from '@chakra-ui/theme-tools';
+import type { SystemStyleFunction, SystemStyleObject } from '@chakra-ui/theme-tools';
 
 const variantSubtle: SystemStyleFunction = props => {
   const { colorScheme: c, theme } = props;
@@ -19,12 +19,24 @@ const variantSubtle: SystemStyleFunction = props => {
   };
 };
 
+const variantPrimary: SystemStyleObject = {
+  bg: 'linear-gradient(-135deg, #FBB826, #FE33A1)',
+  fontWeight: 'bold',
+  color: 'white',
+  _hover: {
+    opacity: 0.7,
+  },
+  _active: {
+    opacity: 1,
+  },
+};
+
 export const Button = {
   baseStyle: {
     borderRadius: 8,
     fontWeight: 400,
   },
-  variants: { subtle: variantSubtle },
+  variants: { subtle: variantSubtle, primary: variantPrimary },
   sizes: {
     sm: {
       py: '.375rem',
