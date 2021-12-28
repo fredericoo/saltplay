@@ -1,4 +1,5 @@
 import fetcher from '@/lib/fetcher';
+import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { PlayerPointsAPIResponse } from '@/pages/api/user/points';
 import { Badge, Box, HStack, Input, Stack, Text } from '@chakra-ui/react';
@@ -82,7 +83,6 @@ type PlayerPickerProps = {
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
   const { p2id } = watch();
-  const { data: pointsQuery } = useSWR<PlayerPointsAPIResponse>('/api/user/points', fetcher);
   const { data: opponentsQuery, error: opponentsError } = useSWR<OpponentsAPIResponse>(
     `/api/games/${gameId}/opponents`,
     fetcher
@@ -95,31 +95,28 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
   }
 
   return (
-    <Box>
-      <Stack h="256px" overflow="auto" bg="gray.100" borderRadius="16" p={2}>
-        {opponentsQuery?.opponents?.map(user => {
-          const score = user?.scores[0];
-          const hasLowerScore = score && pointsQuery?.points && score.points < pointsQuery.points;
-          return (
-            <HStack
-              bg={p2id === user.id ? 'gray.300' : undefined}
-              borderRadius="xl"
-              onClick={() => setValue('p2id', user.id)}
-              key={user.id}
-              as="button"
-              type="button"
-              p={2}
-            >
-              <HStack flexGrow={1}>
-                <PlayerAvatar photo={user.image} name={user.name} />
-                <PlayerLink name={user.name} />
-              </HStack>
-              <Badge bg={hasLowerScore ? 'orange.100' : 'white'}>{score?.points || 0} pts</Badge>
+    <Stack h="256px" overflow="auto" bg="gray.100" borderRadius="16" p={2}>
+      {opponentsQuery?.opponents?.map(user => {
+        const score = user?.scores[0];
+        return (
+          <HStack
+            bg={p2id === user.id ? 'gray.300' : undefined}
+            borderRadius="xl"
+            onClick={() => setValue('p2id', user.id)}
+            key={user.id}
+            as="button"
+            type="button"
+            p={2}
+          >
+            <HStack flexGrow={1}>
+              <PlayerAvatar photo={user.image} name={user.name} />
+              <PlayerLink name={user.name} />
             </HStack>
-          );
-        })}
-      </Stack>
-    </Box>
+            <Badge bg={'white'}>{score?.points || STARTING_POINTS} pts</Badge>
+          </HStack>
+        );
+      })}
+    </Stack>
   );
 };
 

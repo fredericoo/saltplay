@@ -6,7 +6,7 @@ import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
 import LoadingIcon from '../LoadingIcon';
 import NewMatchButton from '../NewMatchButton';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
 const MotionStack = motion(Stack);
@@ -44,22 +44,20 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId }) => {
     <Stack gap={3}>
       <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />
 
-      <AnimatePresence initial={false}>
-        {allMatches?.map(match => {
-          if (!match) return null;
-          return (
-            <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={match.id}>
-              <MatchSummary
-                createdAt={match.createdAt}
-                p1score={match.p1score}
-                p1={match.p1}
-                p2score={match.p2score}
-                p2={match.p2}
-              />
-            </MotionBox>
-          );
-        })}
-      </AnimatePresence>
+      {allMatches?.map(match => {
+        if (!match) return null;
+        return (
+          <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={match.id}>
+            <MatchSummary
+              createdAt={match.createdAt}
+              p1score={match.p1score}
+              p1={match.p1}
+              p2score={match.p2score}
+              p2={match.p2}
+            />
+          </MotionBox>
+        );
+      })}
 
       {hasNextPage && (
         <Button variant="ghost" onClick={() => setSize(size + 1)}>

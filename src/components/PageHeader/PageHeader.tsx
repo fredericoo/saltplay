@@ -10,7 +10,13 @@ const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
     <Box py={8} zIndex="-1" position="relative">
       <AnimatePresence>
         <BlurBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <IconBlur zIndex={1} icon={icon} height="200%" opacity={0.25} transform="translate(-50%, -75%)" />
+          <IconBlur
+            zIndex={1}
+            icon={icon}
+            height="200%"
+            opacity={0.25}
+            transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -75%)' }}
+          />
         </BlurBox>
       </AnimatePresence>
 
