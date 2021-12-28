@@ -25,7 +25,7 @@ const UserMenu: React.VFC = () => {
         fontSize="xs"
         size="sm"
         isLoading={isLoading}
-        leftIcon={<PlayerAvatar size={8} name={session?.user?.name} photo={session?.user?.image} />}
+        leftIcon={<PlayerAvatar size={6} name={session?.user?.name} photo={session?.user?.image} />}
       >
         <Text isTruncated maxW="128px">
           {session?.user?.name || session?.user?.email}

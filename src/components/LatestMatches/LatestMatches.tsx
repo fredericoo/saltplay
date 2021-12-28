@@ -5,6 +5,7 @@ import { Button, Center, Stack } from '@chakra-ui/react';
 import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
 import LoadingIcon from '../LoadingIcon';
+import NewMatchButton from '../NewMatchButton';
 
 type LatestMatchesProps = {
   gameId: Game['id'];
@@ -18,7 +19,7 @@ const getKey = (gameId?: string) => (pageIndex: number, previousPageData: GameMa
 };
 
 const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId }) => {
-  const { data, size, setSize, error } = useSWRInfinite<GameMatchesAPIResponse>(getKey(gameId), fetcher);
+  const { data, size, setSize, error, mutate } = useSWRInfinite<GameMatchesAPIResponse>(getKey(gameId), fetcher);
   const hasNextPage = data?.[data.length - 1].nextCursor;
 
   if (error) {
@@ -35,6 +36,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId }) => {
 
   return (
     <Stack gap={3}>
+      <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />
       {data.map(page =>
         page.matches?.map(match => (
           <MatchSummary

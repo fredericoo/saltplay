@@ -1,3 +1,4 @@
+import hideScrollbar from '@/lib/styleUtils';
 import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,7 +9,19 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   const router = useRouter();
 
   return (
-    <Stack alignSelf="stretch" as="nav" w="400px" bg="gray.50" borderRadius={16} p={8} zIndex="docked">
+    <Stack
+      as="nav"
+      bg="gray.50"
+      direction={{ base: 'row', md: 'column' }}
+      borderRadius={16}
+      p={{ base: '3px', md: 8 }}
+      zIndex="docked"
+      overflow="scroll"
+      css={hideScrollbar}
+      position={{ base: 'sticky', md: 'static' }}
+      top={2}
+      boxShadow={{ base: 'lg', md: 'none' }}
+    >
       {items?.map(item => (
         <SidebarItem key={item.title} {...item} isActive={item.href === router.asPath} />
       ))}
@@ -24,7 +37,6 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
   return (
     <Link href={href} passHref>
       <HStack
-        w="100%"
         as="a"
         p={4}
         bg={isActive ? 'gray.100' : undefined}
@@ -34,6 +46,8 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         gap={2}
         transition={'.15s ease-in-out'}
         position="relative"
+        flexShrink={0}
+        flexGrow={{ base: 1, md: 0 }}
         overflow="hidden"
         transform="translateZ(0)"
       >

@@ -1,6 +1,5 @@
 import LatestMatches from '@/components/LatestMatches/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
-import NewMatchButton from '@/components/NewMatchButton';
 import { PageHeader } from '@/components/PageHeader/types';
 import { Sidebar } from '@/components/Sidebar/types';
 import prisma from '@/lib/prisma';
@@ -46,9 +45,6 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         <Heading as="h2" size="sm" pb={4}>
           Latest matches
         </Heading>
-        <Box pb={6}>
-          <NewMatchButton gameId={game.id} />
-        </Box>
         <LatestMatches gameId={game.id} />
       </Box>
     </Grid>
