@@ -2,7 +2,7 @@ import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, Center, HStack, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import useSWRInfinite from 'swr/infinite';
 import LoadingIcon from '../LoadingIcon';
 import PlayerAvatar from '../PlayerAvatar';
@@ -69,24 +69,26 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
 
   return (
     <Stack>
-      {allPositions?.map((position, posIndex) => {
-        if (!position) return null;
-        const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
-        return (
-          <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={position.id}>
-            <LeaderboardPosition
-              id={position.player.id}
-              key={position.id}
-              name={position.player.name || 'Anonymous'}
-              photo={position.player.image}
-              wins={stats.wins}
-              losses={stats.losses}
-              points={position.points}
-              isFirstPlace={posIndex === 0}
-            />
-          </MotionBox>
-        );
-      })}
+      <AnimatePresence initial={false}>
+        {allPositions?.map((position, posIndex) => {
+          if (!position) return null;
+          const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
+          return (
+            <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={position.id}>
+              <LeaderboardPosition
+                id={position.player.id}
+                key={position.id}
+                name={position.player.name || 'Anonymous'}
+                photo={position.player.image}
+                wins={stats.wins}
+                losses={stats.losses}
+                points={position.points}
+                isFirstPlace={posIndex === 0}
+              />
+            </MotionBox>
+          );
+        })}
+      </AnimatePresence>
     </Stack>
   );
 };
