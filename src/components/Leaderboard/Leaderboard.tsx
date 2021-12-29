@@ -73,7 +73,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
         if (!position) return null;
         const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
         return (
-          <MotionBox layout initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} key={position.id}>
+          <MotionBox layout key={position.id}>
             <LeaderboardPosition
               id={position.player.id}
               key={position.id}

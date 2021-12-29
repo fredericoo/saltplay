@@ -7,6 +7,8 @@ import PlayerLink from '../PlayerLink/PlayerLink';
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'p1score' | 'p2score'> & {
   p1: Pick<User, 'name' | 'id' | 'image'>;
   p2: Pick<User, 'name' | 'id' | 'image'>;
+  gameName?: string;
+  officeName?: string;
 };
 
 const WinnerIcon: React.VFC = () => (
@@ -15,7 +17,7 @@ const WinnerIcon: React.VFC = () => (
   </Box>
 );
 
-const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2score, p1, p2 }) => {
+const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2score, p1, p2, gameName, officeName }) => {
   return (
     <VStack bg="white" borderRadius={16} px={2}>
       {createdAt && (
@@ -33,7 +35,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2scor
           fontSize="xs"
           letterSpacing="wide"
         >
-          {formatRelative(new Date(createdAt), new Date())}
+          {formatRelative(new Date(createdAt), new Date())} {officeName && `at ${officeName}`}
         </Box>
       )}
       <HStack p={4} w="100%" justifyContent="center" gap={4}>
@@ -49,19 +51,26 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2scor
             noOfLines={2}
           />
         </VStack>
-        <HStack justify="center" fontSize="xl" flex={1}>
-          <HStack flex={1} justify="flex-end">
-            {p1score > p2score && <WinnerIcon />}
-            <Text>{p1score}</Text>
+        <Box flex={1}>
+          <HStack justify="center" fontSize="xl">
+            <HStack flex={1} justify="flex-end">
+              {p1score > p2score && <WinnerIcon />}
+              <Text>{p1score}</Text>
+            </HStack>
+            <Text fontSize="sm" color="gray.500">
+              ✕
+            </Text>
+            <HStack flex={1}>
+              <Text>{p2score}</Text>
+              {p2score > p1score && <WinnerIcon />}
+            </HStack>
           </HStack>
-          <Text fontSize="sm" color="gray.500">
-            ✕
-          </Text>
-          <HStack flex={1}>
-            <Text>{p2score}</Text>
-            {p2score > p1score && <WinnerIcon />}
-          </HStack>
-        </HStack>
+          {gameName && (
+            <Text textAlign="center" fontSize="sm" color="gray.500">
+              {gameName}
+            </Text>
+          )}
+        </Box>
         <VStack flex={1}>
           <PlayerAvatar name={p2.name || p2.id} photo={p2.image} />
           <PlayerLink

@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
       h={{ md: '100%' }}
     >
       {sidebar && <Sidebar items={sidebar?.items} />}
-      <Container maxW="container.lg" as="main" pb={8}>
+      <Container maxW="container.xl" as="main" pb={8}>
         {children}
       </Container>
     </Grid>

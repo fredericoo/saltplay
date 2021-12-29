@@ -4,6 +4,7 @@ import { Match } from '@prisma/client';
 import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
 import { calculateMatchPoints } from '@/lib/leaderboard';
+import { PromiseElement } from '@/lib/types/utils';
 
 const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' | 'p1score' | 'p2score'>) => {
   if (data.p1score === data.p2score) return;
@@ -47,11 +48,6 @@ const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' |
   }
 };
 
-const matchesHandler: NextApiHandler = async (req, res) => {
-  if (req.method === 'POST') return await postHandler(req, res);
-  return res.status(405).json({ status: 'error', message: 'Method not allowed' });
-};
-
 export type MatchesPOSTAPIResponse = APIResponse;
 
 const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
@@ -79,6 +75,53 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
   });
 
   res.status(200).json({ status: 'ok' });
+};
+
+const getMatches = (take: number, cursor?: Pick<Match, 'id'>) =>
+  prisma.match.findMany({
+    orderBy: { createdAt: 'desc' },
+    cursor,
+    skip: cursor ? 1 : 0,
+    take,
+    select: {
+      game: {
+        select: {
+          name: true,
+          office: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      id: true,
+      createdAt: true,
+      p1: { select: { name: true, id: true, image: true } },
+      p2: { select: { name: true, id: true, image: true } },
+      p1score: true,
+      p2score: true,
+    },
+  });
+
+export type MatchesGETAPIResponse = APIResponse<{
+  matches: PromiseElement<ReturnType<typeof getMatches>>;
+  nextCursor?: Match['id'];
+}>;
+
+const getHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
+  const cursor = typeof req.query.cursor === 'string' ? { id: +req.query.cursor } : undefined;
+  const take = Math.min(+req.query.count, 20) || 3;
+  const matches = await getMatches(take, cursor);
+  const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
+
+  res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=60');
+  res.status(200).json({ status: 'ok', matches, nextCursor });
+};
+
+const matchesHandler: NextApiHandler = async (req, res) => {
+  if (req.method === 'POST') return await postHandler(req, res);
+  if (req.method === 'GET') return await getHandler(req, res);
+  return res.status(405).json({ status: 'error', message: 'Method not allowed' });
 };
 
 export default matchesHandler;
