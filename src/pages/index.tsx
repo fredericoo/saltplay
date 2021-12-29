@@ -66,7 +66,7 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
           {data ? (
             data?.players?.map(user => (
               <HStack key={user.id}>
-                <PlayerAvatar size={32} name={user.name} photo={user.image} />
+                <PlayerAvatar size={16} name={user.name} photo={user.image} />
               </HStack>
             ))
           ) : (

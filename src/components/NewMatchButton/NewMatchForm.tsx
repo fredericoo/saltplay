@@ -97,36 +97,34 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
     return <Text>Error loading players</Text>;
   }
 
-  if (!opponentsQuery) {
-    return (
-      <Center p={8}>
-        <LoadingIcon size={8} color="white" />
-      </Center>
-    );
-  }
-
   return (
     <Stack h="256px" overflow="auto" bg="gray.100" borderRadius="16" p={2}>
-      {opponentsQuery?.opponents?.map(user => {
-        const score = user?.scores[0];
-        return (
-          <HStack
-            bg={p2id === user.id ? 'gray.300' : undefined}
-            borderRadius="xl"
-            onClick={() => setValue('p2id', user.id)}
-            key={user.id}
-            as="button"
-            type="button"
-            p={2}
-          >
-            <HStack flexGrow={1} flexShrink={1}>
-              <PlayerAvatar photo={user.image} name={user.name} />
-              <PlayerLink name={user.name} noOfLines={1} />
+      {opponentsQuery ? (
+        opponentsQuery?.opponents?.map(user => {
+          const score = user?.scores[0];
+          return (
+            <HStack
+              bg={p2id === user.id ? 'gray.300' : undefined}
+              borderRadius="xl"
+              onClick={() => setValue('p2id', user.id)}
+              key={user.id}
+              as="button"
+              type="button"
+              p={2}
+            >
+              <HStack flexGrow={1} flexShrink={1}>
+                <PlayerAvatar photo={user.image} name={user.name} />
+                <PlayerLink name={user.name} noOfLines={1} />
+              </HStack>
+              {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
             </HStack>
-            {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
-          </HStack>
-        );
-      })}
+          );
+        })
+      ) : (
+        <Center p={8}>
+          <LoadingIcon size={8} color="white" />
+        </Center>
+      )}
     </Stack>
   );
 };
