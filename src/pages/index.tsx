@@ -25,7 +25,14 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
     <Box>
       <SimpleGrid minH="80vh" columns={{ md: 2, lg: 3 }} gap={8} alignItems="center">
         <Box gridColumn={{ lg: 'span 2' }}>
-          <Heading as="h1" fontSize="6rem" lineHeight="1" letterSpacing="tight" color="gray.400" mb={4}>
+          <Heading
+            as="h1"
+            fontSize={{ base: '4rem', md: '6rem' }}
+            lineHeight="1"
+            letterSpacing="tight"
+            color="gray.400"
+            mb={4}
+          >
             work hard,
             <br />
             <Text as="span" bg="linear-gradient(-135deg, #FBB826, #FE33A1)" backgroundClip="text">

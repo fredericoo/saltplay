@@ -2,10 +2,11 @@ import fetcher from '@/lib/fetcher';
 import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { PlayerPointsAPIResponse } from '@/pages/api/user/points';
-import { Badge, Box, HStack, Input, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Center, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
+import LoadingIcon from '../LoadingIcon';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 import { MatchFormInputs } from './NewMatchButton';
@@ -94,6 +95,14 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
 
   if (opponentsError) {
     return <Text>Error loading players</Text>;
+  }
+
+  if (!opponentsQuery) {
+    return (
+      <Center p={8}>
+        <LoadingIcon size={8} color="white" />
+      </Center>
+    );
   }
 
   return (
