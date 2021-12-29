@@ -14,7 +14,11 @@ type HomeProps = {
   offices: PromiseElement<ReturnType<typeof getOffices>>;
 };
 
-const getOffices = () => prisma.office.findMany();
+const getOffices = () =>
+  prisma.office.findMany({
+    orderBy: { name: 'asc' },
+    select: { name: true, icon: true, slug: true, games: { select: { id: true } } },
+  });
 
 const Home: NextPage<HomeProps> = ({ offices }) => {
   const { data, error } = useSWR<PlayerAPIResponse>(`/api/players?take=6`, fetcher);
@@ -54,21 +58,17 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
         </Box>
       </SimpleGrid>
 
-      <Box as="section" py={8}>
-        <Heading as="h2">
+      <Box as="section" py={16}>
+        <Heading as="h2" mb={8}>
           Join heaps of{' '}
           <Text as="span" textDecoration="line-through">
             unproductive
           </Text>{' '}
           amazing people
         </Heading>
-        <HStack gap={8}>
+        <HStack justify="center" py={2} gap={8} w="100%" overflow="hidden">
           {data ? (
-            data?.players?.map(user => (
-              <HStack key={user.id}>
-                <PlayerAvatar size={16} name={user.name} photo={user.image} />
-              </HStack>
-            ))
+            data?.players?.map(user => <PlayerAvatar key={user.id} size={16} name={user.name} photo={user.image} />)
           ) : (
             <Center p={8}>
               <LoadingIcon color="gray.300" size={8} />
@@ -78,15 +78,24 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
       </Box>
 
       <Box py={8}>
-        <Heading as="h2">Play games at our offices in</Heading>
+        <Heading as="h2" mb={16}>
+          Play games at our offices in
+        </Heading>
 
-        <Stack>
+        <SimpleGrid columns={{ md: 2, lg: 3 }} gap={8}>
           {offices?.map(office => (
             <Link key={office.slug} href={`/${office.slug}`} passHref>
-              <Box as="a">{office.name}</Box>
+              <Box p={8} as="a" bg="white" borderRadius="xl">
+                <Text fontWeight="bold">
+                  {office.icon} {office.name}
+                </Text>
+                <Text color="gray.500">
+                  {office.games.length} game{office.games.length !== 1 ? 's' : ''}
+                </Text>
+              </Box>
             </Link>
           ))}
-        </Stack>
+        </SimpleGrid>
       </Box>
     </Box>
   );

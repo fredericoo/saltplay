@@ -84,6 +84,7 @@ model Game {
 model Office {
     id Int @id @default(autoincrement())
     name String
+    icon String?
     games Game[]
     slug String @unique @default(uuid())
 }

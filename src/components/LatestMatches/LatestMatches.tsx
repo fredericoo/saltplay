@@ -65,7 +65,14 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, perPage, canLoad
       {allMatches?.map(match => {
         if (!match) return null;
         return (
-          <MotionBox layout key={match.id}>
+          <MotionBox
+            layout
+            transition={{ duration: 0.3 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            key={match.id}
+          >
             <MatchSummary
               createdAt={match.createdAt}
               p1score={match.p1score}

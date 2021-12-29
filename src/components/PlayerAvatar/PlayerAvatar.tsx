@@ -9,7 +9,7 @@ type PlayerAvatarProps = {
 
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ name, photo, size = 8 }) => {
   return (
-    <Circle size={size} bg="gray.200" overflow="hidden">
+    <Circle boxShadow="0 0 0 3px white" size={size} bg="gray.200" overflow="hidden">
       {photo ? (
         <Image src={photo} height="300" width="300" unoptimized alt={`${name}‘s avatar`} objectFit="cover" />
       ) : (
