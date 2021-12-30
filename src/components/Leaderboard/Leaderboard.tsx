@@ -122,7 +122,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       w="100%"
       overflow="hidden"
     >
-      <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} />
+      <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
         <PlayerLink name={`${isFirstPlace ? '🥇 ' : ''}${name}`} id={id} noOfLines={1} />
         <HStack fontSize="sm" color="gray.500">

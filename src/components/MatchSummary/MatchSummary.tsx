@@ -40,7 +40,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2scor
       )}
       <HStack p={4} w="100%" justifyContent="center" gap={4}>
         <VStack flex={1} lineHeight={1.2}>
-          <PlayerAvatar user={p1} />
+          <PlayerAvatar user={p1} isLink />
           <PlayerLink
             lineHeight={1.2}
             textAlign="center"
@@ -72,7 +72,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({ createdAt, p1score, p2scor
           )}
         </Box>
         <VStack flex={1}>
-          <PlayerAvatar user={p2} />
+          <PlayerAvatar user={p2} isLink />
           <PlayerLink
             lineHeight={1.2}
             textAlign="center"

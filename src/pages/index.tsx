@@ -72,7 +72,7 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
         </Heading>
         <HStack justify="center" py={2} gap={8} w="100%" overflow="hidden">
           {data ? (
-            data?.players?.map(user => <PlayerAvatar key={user.id} size={16} user={user} />)
+            data?.players?.map(user => <PlayerAvatar key={user.id} size={16} user={user} isLink />)
           ) : (
             <Center p={8}>
               <LoadingIcon color="gray.300" size={8} />
