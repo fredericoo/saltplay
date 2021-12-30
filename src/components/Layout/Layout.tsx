@@ -14,10 +14,11 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
       zIndex={1}
       w="100%"
       gridTemplateColumns={sidebar ? { md: 'minmax(300px, 1fr) 3fr' } : undefined}
+      gap={4}
       h={{ md: '100%' }}
     >
       {sidebar && <Sidebar items={sidebar?.items} />}
-      <Container maxW="container.xl" as="main" pb={8}>
+      <Container maxW={sidebar ? 'container.lg' : 'container.xl'} as="main" pb={8}>
         {children}
       </Container>
     </Grid>
