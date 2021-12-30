@@ -87,7 +87,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, perPage, canLoad
       })}
 
       {hasNextPage && canLoadMore && (
-        <Button variant="ghost" onClick={() => setSize(size + 1)}>
+        <Button isLoading={isValidating} variant="ghost" onClick={() => setSize(size + 1)}>
           Load more
         </Button>
       )}
