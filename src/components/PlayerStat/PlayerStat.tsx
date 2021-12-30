@@ -10,17 +10,19 @@ type PlayerStatProps = {
 };
 
 const labels = {
-  played: 'Matches played',
-  won: 'Matches won',
-  lost: 'Matches lost',
+  played: '🏁 matches played',
+  won: '🏆 matches won',
+  lost: '😢 matches lost',
 };
 
 const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
   const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher);
   if (!id || error) return null;
   return (
-    <Stat>
-      <StatLabel fontSize="md">{labels[stat]}</StatLabel>
+    <Stat bg="white" borderRadius="xl" p={4}>
+      <StatLabel fontSize="md" color="gray.600" mb={2}>
+        {labels[stat]}
+      </StatLabel>
       <StatNumber fontSize="4xl" fontWeight="normal" lineHeight={1}>
         <Skeleton isLoaded={!!data}>{data ? data?.[stat] : '…'}</Skeleton>
       </StatNumber>
