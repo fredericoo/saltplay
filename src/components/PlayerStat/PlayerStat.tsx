@@ -20,9 +20,9 @@ const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
   if (!id || error) return null;
   return (
     <Stat>
-      <StatLabel>{labels[stat]}</StatLabel>
-      <StatNumber>
-        <Skeleton isLoaded={!!data}>{data?.[stat]}</Skeleton>
+      <StatLabel fontSize="md">{labels[stat]}</StatLabel>
+      <StatNumber fontSize="4xl" fontWeight="normal" lineHeight={1}>
+        <Skeleton isLoaded={!!data}>{data ? data?.[stat] : '…'}</Skeleton>
       </StatNumber>
     </Stat>
   );

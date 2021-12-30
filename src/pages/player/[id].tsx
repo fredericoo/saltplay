@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import prisma from '@/lib/prisma';
 import { User } from '@prisma/client';
 import { PromiseElement } from '@/lib/types/utils';
-import { Box, Heading, SimpleGrid, Stack } from '@chakra-ui/react';
+import { Box, Grid, Heading, HStack, Stack, Text } from '@chakra-ui/react';
 import SEO from '@/components/SEO';
 import LatestMatches from '@/components/LatestMatches';
 import PlayerStat from '@/components/PlayerStat/PlayerStat';
@@ -17,24 +17,42 @@ type PlayerPageProps = {
   player?: PromiseElement<ReturnType<typeof getPlayerById>>;
 };
 
+const colourPalettes = [
+  ['#9682D9', '#CA8CEA', '#AFADF8'],
+  ['#FDD6AD', '#B3F3D9', '#F7EFBD'],
+  ['#F5887E', '#FE8EB4', '#FEC1AF'],
+  ['#C79EFC', '#BBC8FF', '#FDBEF2'],
+  ['#60D3CD', '#7FDDEF', '#9AF2C8'],
+];
+
 const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   if (!player) return null;
+  const uniqueKey = player.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const nameColour = colourPalettes[uniqueKey % colourPalettes.length];
+
   const playerName = player.name || `Player ${player?.id}`;
   return (
-    <Box>
+    <Stack spacing={8} maxW="container.sm" mx="auto">
       <SEO title={`${playerName}’s profile`} />
-      <Heading as="h1" fontSize={{ base: '2rem', md: '4rem' }} letterSpacing="tight" mb={4}>
-        {playerName}
-      </Heading>
-      <SimpleGrid columns={{ lg: 2 }} gap={8}>
-        <LatestMatches userId={player.id} />
-        <Stack spacing={8}>
+      <Box bg="white" borderRadius="xl" p={4}>
+        <Heading as="h1" fontSize={'3rem'} letterSpacing="tight" mb={6} overflow="hidden" color="gray.300" isTruncated>
+          <Text as="span" bg={`linear-gradient(135deg, ${nameColour.join(',')})`} backgroundClip="text">
+            {playerName}
+          </Text>
+        </Heading>
+        <HStack flexWrap={'wrap'} spacing={8}>
           <PlayerStat id={player.id} stat="played" />
           <PlayerStat id={player.id} stat="won" />
           <PlayerStat id={player.id} stat="lost" />
-        </Stack>
-      </SimpleGrid>
-    </Box>
+        </HStack>
+      </Box>
+      <Stack spacing={8}>
+        <Heading as="h2" fontSize="md">
+          Recent matches played
+        </Heading>
+        <LatestMatches userId={player.id} />
+      </Stack>
+    </Stack>
   );
 };
 
