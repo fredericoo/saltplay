@@ -16,7 +16,7 @@ const TERMS = {
 const SEO: React.FC<SEOProps> = ({ title, desc, type, imageUrl }) => {
   const { asPath } = useRouter();
   const tabInfo = {
-    title: title ? `${title} — ${TERMS.title}` : TERMS.title,
+    title: title ? `${TERMS.title} ⁄ ${title}` : TERMS.title,
     desc: desc ? desc : TERMS.title,
   };
 
