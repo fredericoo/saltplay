@@ -1,6 +1,7 @@
 import LatestMatches from '@/components/LatestMatches/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
 import { PageHeader } from '@/components/PageHeader/types';
+import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
 import prisma from '@/lib/prisma';
 import { Box, Grid, Heading } from '@chakra-ui/react';
@@ -35,6 +36,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
 
   return (
     <Grid w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
+      <SEO title={game.name} />
       <Box as="section">
         <Heading as="h2" size="sm" pb={4}>
           Leaderboard

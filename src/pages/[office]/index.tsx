@@ -3,6 +3,7 @@ import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import { Sidebar } from '@/components/Sidebar/types';
+import SEO from '@/components/SEO';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({ where: { slug }, include: { games: true } });
@@ -14,7 +15,7 @@ type OfficePageProps = {
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
-  return null;
+  return <SEO title={office.name} />;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

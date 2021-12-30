@@ -9,6 +9,7 @@ import { PromiseElement } from '@/lib/types/utils';
 import Link from 'next/link';
 import LatestMatches from '@/components/LatestMatches/LatestMatches';
 import useSWR from 'swr';
+import SEO from '@/components/SEO';
 
 type HomeProps = {
   offices: PromiseElement<ReturnType<typeof getOffices>>;
@@ -21,12 +22,15 @@ const getOffices = () =>
   });
 
 const Home: NextPage<HomeProps> = ({ offices }) => {
-  const { data, error } = useSWR<PlayerAPIResponse>(`/api/players?take=6`, fetcher);
+  const { data, error } = useSWR<PlayerAPIResponse>(`/api/players?take=6`, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   if (error) return <div>Error loading players</div>;
 
   return (
     <Box>
+      <SEO />
       <SimpleGrid minH="80vh" columns={{ md: 2, lg: 3 }} gap={8} alignItems="center">
         <Box gridColumn={{ lg: 'span 2' }}>
           <Heading
