@@ -14,7 +14,7 @@ const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
             zIndex={1}
             icon={icon}
             height="200%"
-            opacity={0.25}
+            opacity={0.2}
             transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -75%)' }}
           />
         </BlurBox>

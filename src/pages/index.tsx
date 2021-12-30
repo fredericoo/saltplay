@@ -32,14 +32,14 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
     <Box>
       <SEO />
       <SimpleGrid minH="80vh" columns={{ md: 2, lg: 3 }} gap={8} alignItems="center">
-        <Box gridColumn={{ lg: 'span 2' }}>
+        <Box py={16} gridColumn={{ lg: 'span 2' }}>
           <Heading
             as="h1"
             fontSize={{ base: '4rem', md: '6rem' }}
             lineHeight="1"
             letterSpacing="tight"
             color="gray.400"
-            mb={4}
+            mb={8}
           >
             work hard,
             <br />
@@ -47,7 +47,7 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
               play hard.
             </Text>
           </Heading>
-          <Text color="gray.700" maxW="44ch">
+          <Text color="gray.600" maxW="44ch">
             Get your personal OKRs ready: SaltPlay (pun very intended) enables you to brag over your office games
             performance. <br />A way more interesting way to{' '}
             <Text as="span" whiteSpace="nowrap">
@@ -72,7 +72,7 @@ const Home: NextPage<HomeProps> = ({ offices }) => {
         </Heading>
         <HStack justify="center" py={2} gap={8} w="100%" overflow="hidden">
           {data ? (
-            data?.players?.map(user => <PlayerAvatar key={user.id} size={16} name={user.name} photo={user.image} />)
+            data?.players?.map(user => <PlayerAvatar key={user.id} size={16} user={user} />)
           ) : (
             <Center p={8}>
               <LoadingIcon color="gray.300" size={8} />

@@ -6,7 +6,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="theme-color" content="#FE33A1" />
+          <meta name="theme-color" content="#EDF2F7" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="copyright" content="Bruno Campos + Frederico Batista" />
 

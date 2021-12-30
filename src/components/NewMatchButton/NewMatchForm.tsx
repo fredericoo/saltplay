@@ -113,7 +113,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
               p={2}
             >
               <HStack flexGrow={1} flexShrink={1}>
-                <PlayerAvatar photo={user.image} name={user.name} />
+                <PlayerAvatar user={user} />
                 <PlayerLink name={user.name} noOfLines={1} />
               </HStack>
               {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
