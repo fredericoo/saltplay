@@ -7,7 +7,7 @@ import { PlayerAPIResponse } from './api/players';
 import LoadingIcon from '@/components/LoadingIcon';
 import { PromiseElement } from '@/lib/types/utils';
 import Link from 'next/link';
-import LatestMatches from '@/components/LatestMatches/LatestMatches';
+import LatestMatches from '@/components/LatestMatches';
 import useSWR from 'swr';
 import SEO from '@/components/SEO';
 

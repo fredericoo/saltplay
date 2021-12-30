@@ -87,6 +87,7 @@ const getMatches = (take: number, cursor?: Pick<Match, 'id'>) =>
       game: {
         select: {
           name: true,
+          icon: true,
           office: {
             select: {
               name: true,

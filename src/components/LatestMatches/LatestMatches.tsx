@@ -1,4 +1,4 @@
-import { Game } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import fetcher from '@/lib/fetcher';
 import { Box, Button, Center, Stack, Text } from '@chakra-ui/react';
@@ -13,15 +13,21 @@ const MotionBox = motion(Box);
 
 type LatestMatchesProps = {
   gameId?: Game['id'];
+  userId?: User['id'];
   perPage?: number;
   canLoadMore?: boolean;
 };
 
 const getKey =
-  (gameId?: Game['id'], perPage?: number) => (pageIndex: number, previousPageData: GameMatchesAPIResponse) => {
+  (gameId?: Game['id'], userId?: User['id'], perPage?: number) =>
+  (pageIndex: number, previousPageData: GameMatchesAPIResponse) => {
     if (previousPageData && !previousPageData.nextCursor) return null; // reached the end
 
-    const baseUrl = gameId ? `/api/games/${gameId}/matches` : '/api/matches';
+    const baseUrl = gameId
+      ? `/api/games/${gameId}/matches`
+      : userId
+      ? `/api/players/${userId}/matches`
+      : '/api/matches';
 
     const perPageParam = perPage ? `count=${perPage}` : undefined;
     const cursorParam = pageIndex > 0 ? `cursor=${previousPageData.nextCursor}` : '';
@@ -30,9 +36,9 @@ const getKey =
     return [baseUrl, queryParams].join('?');
   };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, perPage, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage, canLoadMore = true }) => {
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
-    getKey(gameId, perPage),
+    getKey(gameId, userId, perPage),
     fetcher
   );
   const hasNextPage = data?.[data.length - 1].nextCursor;
@@ -64,6 +70,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, perPage, canLoad
 
       {allMatches?.map(match => {
         if (!match) return null;
+        const gameName = [match?.game?.icon, match?.game?.name].join(' ');
         return (
           <MotionBox
             layout
@@ -79,7 +86,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, perPage, canLoad
               p1={match.p1}
               p2score={match.p2score}
               p2={match.p2}
-              gameName={match?.game?.name}
+              gameName={gameName}
               officeName={match?.game?.office?.name}
             />
           </MotionBox>

@@ -1,4 +1,4 @@
-import LatestMatches from '@/components/LatestMatches/LatestMatches';
+import LatestMatches from '@/components/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
 import { PageHeader } from '@/components/PageHeader/types';
 import SEO from '@/components/SEO';
