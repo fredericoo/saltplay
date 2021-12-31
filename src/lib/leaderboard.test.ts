@@ -17,14 +17,16 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
     const p1WinGame = () => {
       const matchPoints = calculateMatchPoints(p1Score, p2Score, 1);
+
       p1Score += matchPoints;
+
       p2Score -= matchPoints;
       matchesWon++;
     };
 
     while (p1Score < p2Score) p1WinGame();
 
-    expect(matchesWon).toBe(13);
+    expect(matchesWon).toBe(10);
   });
 
   test('when players have the opposite total points, match is worth base points', () => {
