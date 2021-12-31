@@ -20,6 +20,9 @@ const theme = extendTheme({
   shadows: {
     outline: '0 0 0 3px rgba(0, 0, 0, 0.1)',
   },
+  radii: {
+    xl: '16px',
+  },
   components: {
     Badge: {
       variants: {

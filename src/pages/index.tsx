@@ -1,28 +1,26 @@
 import prisma from '@/lib/prisma';
 import type { GetStaticProps, NextPage } from 'next';
-import { Badge, Box, Button, Circle, Grid, Heading, HStack, SimpleGrid, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Heading, HStack, SimpleGrid, Text } from '@chakra-ui/react';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import { PromiseElement } from '@/lib/types/utils';
 import Link from 'next/link';
 import LatestMatches from '@/components/LatestMatches';
 import SEO from '@/components/SEO';
+import { User } from '@prisma/client';
+import { memo } from 'react';
+import { motion } from 'framer-motion';
 
 type HomeProps = {
   offices: PromiseElement<ReturnType<typeof getOffices>>;
   players: PromiseElement<ReturnType<typeof getPlayerSample>>;
-  playerCount: number;
 };
 
-const Home: NextPage<HomeProps> = ({ offices, players, playerCount }) => {
-  const otherPlayersCount = playerCount - players.length;
-  const displayOtherPlayersCount =
-    otherPlayersCount > 1000 ? `${Math.floor(otherPlayersCount / 1000)}k` : otherPlayersCount;
-
+const Home: NextPage<HomeProps> = ({ offices, players }) => {
   return (
     <Box>
       <SEO />
-      <SimpleGrid minH="80vh" columns={{ md: 2, lg: 3 }} gap={8} alignItems="center">
-        <Box py={16} gridColumn={{ lg: 'span 2' }}>
+      <SimpleGrid minH="80vh" columns={{ md: 2 }} gap={8} alignItems="center">
+        <Box py={16}>
           <Heading
             as="h1"
             fontSize={{ base: '4rem', md: '6rem' }}
@@ -45,68 +43,84 @@ const Home: NextPage<HomeProps> = ({ offices, players, playerCount }) => {
             </Text>
             .
           </Text>
-          <Button as="a" href="#offices" variant="primary">
-            Find games in my office
-          </Button>
         </Box>
 
-        <Box>
-          <LatestMatches perPage={4} canLoadMore={false} />
+        <Box py={8}>
+          <SimpleGrid columns={{ lg: 2 }} gap={4}>
+            {offices
+              // ?.filter(office => office.games.length)
+              ?.map(office => (
+                <Link key={office.slug} href={`/${office.slug}`} passHref>
+                  <HStack p={4} as="a" bg="white" borderRadius="xl" _hover={{ bg: 'gray.200' }}>
+                    <Box w="1.5em" h="1.5em" bg="white" borderRadius="lg" lineHeight={'1.5em'} textAlign="center">
+                      {office.icon}
+                    </Box>
+                    <Text fontWeight="bold" flexGrow={1}>
+                      {office.name}
+                    </Text>
+                    <Badge letterSpacing="wide" color="gray.500">
+                      {office.games.length} game{office.games.length !== 1 ? 's' : ''}
+                    </Badge>
+                  </HStack>
+                </Link>
+              ))}
+          </SimpleGrid>
         </Box>
       </SimpleGrid>
 
-      <Box as="section" py={4} bg="white" px={4} borderRadius="xl">
-        <Heading as="h2" mb={8} textAlign="center" color="gray.600" fontSize="2xl">
+      <Box
+        as="section"
+        py={4}
+        bg="radial-gradient(farthest-corner at bottom, rgb(251, 184, 38, 0.3), var(--chakra-colors-gray-300) 80%)"
+        px={4}
+        borderRadius="xl"
+        position="relative"
+        overflow="hidden"
+      >
+        <MemoPlayersDeco players={players} />
+        <Heading zIndex={1} as="h2" mb={8} textAlign="center" color="gray.600" fontSize="2xl">
           join heaps of{' '}
           <Text as="span" textDecoration="line-through">
             unproductive
           </Text>{' '}
-          amazing people
+          great players
         </Heading>
-        <HStack justify="center" py={2} spacing="-2" w="100%" overflow="hidden">
-          {players?.map(user => (
-            <Box key={user.id} _hover={{ pr: 6 }} transition={'.6s cubic-bezier(0.16, 1, 0.3, 1)'}>
-              <PlayerAvatar size={16} user={user} isLink />
-            </Box>
-          ))}
-          {otherPlayersCount > 0 && (
-            <Circle boxShadow="0 0 0 3px white" h="16" w="16" bg="gray.300" color="gray.600" overflow="hidden">
-              <Text fontSize="1em" fontWeight="bold" textAlign="center" noOfLines={1}>
-                +{displayOtherPlayersCount}
-              </Text>
-            </Circle>
-          )}
-        </HStack>
+        <Box mb="-64px" maxW="container.sm" mx="auto" zIndex={1}>
+          <LatestMatches perPage={3} canLoadMore={false} />
+        </Box>
       </Box>
-
-      <SimpleGrid columns={{ md: 3 }} gap={8} py={8} pt={16} as="section" id="offices" alignItems="start">
-        <Heading as="h2" fontSize="6xl" color="gray.400">
-          play games at our offices in
-        </Heading>
-
-        <SimpleGrid columns={{ md: 2 }} gridColumn={{ md: 'span 2' }} gap={4}>
-          {offices
-            // ?.filter(office => office.games.length)
-            ?.map(office => (
-              <Link key={office.slug} href={`/${office.slug}`} passHref>
-                <HStack p={4} as="a" bg="white" borderRadius="xl" _hover={{ bg: 'gray.200' }}>
-                  <Box w="1.5em" h="1.5em" bg="white" borderRadius="lg" lineHeight={'1.5em'} textAlign="center">
-                    {office.icon}
-                  </Box>
-                  <Text fontWeight="bold" flexGrow={1}>
-                    {office.name}
-                  </Text>
-                  <Badge letterSpacing="wide" color="gray.500">
-                    {office.games.length} game{office.games.length !== 1 ? 's' : ''}
-                  </Badge>
-                </HStack>
-              </Link>
-            ))}
-        </SimpleGrid>
-      </SimpleGrid>
     </Box>
   );
 };
+
+const MotionBox = motion(Box);
+const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name'>[] }> = ({ players }) => {
+  return (
+    <>
+      {players?.map((user, i) => {
+        const random = Math.random();
+        return (
+          <MotionBox
+            initial={{ translateY: 100 }}
+            animate={{ translateY: -1000 }}
+            transition={{ repeat: Infinity, duration: random * -6 + 12 }}
+            pointerEvents={'none'}
+            zIndex={0}
+            key={user.id}
+            position="absolute"
+            left={Math.random() * 100 + '%'}
+            bottom={0}
+            filter={`blur(${random * 4}px)`}
+            transform={`scale(${random * 1 + 0.5})`}
+          >
+            <PlayerAvatar size={16} user={user} />
+          </MotionBox>
+        );
+      })}
+    </>
+  );
+};
+const MemoPlayersDeco = memo(PlayersDeco);
 
 const getOffices = () =>
   prisma.office.findMany({
@@ -121,15 +135,12 @@ const getPlayerSample = () =>
     select: { id: true, name: true, image: true },
   });
 
-const getPlayerCount = () => prisma.user.count();
-
 export const getStaticProps: GetStaticProps = async () => {
   const offices = await getOffices();
   const players = await getPlayerSample();
-  const playerCount = await getPlayerCount();
 
   return {
-    props: { offices, players, playerCount },
+    props: { offices, players },
     revalidate: 60 * 60 * 24,
   };
 };
