@@ -16,8 +16,9 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   deleteUser: id => prisma.user.delete({ where: { id } }),
   linkAccount: async account => {
     console.log('FINDME', account);
-    const createdAccount = await prisma.account.create({ data: account });
-    console.log(createdAccount);
+
+    const { state, ok, ...data } = account;
+    const createdAccount = await prisma.account.create({ data });
   },
   unlinkAccount: async provider_providerAccountId => {
     await prisma.account.delete({ where: { provider_providerAccountId } });
