@@ -1,9 +1,16 @@
-import { Box } from '@chakra-ui/react';
+import { Box, HStack, Text } from '@chakra-ui/react';
+import getUserGradient from '@/theme/palettes';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import { Sidebar } from '@/components/Sidebar/types';
 import SEO from '@/components/SEO';
+import useSWR from 'swr';
+import fetcher from '@/lib/fetcher';
+import Image from 'next/image';
+import { RandomPhotoApiResponse } from '../api/photo/random';
+import PlayerStat from '@/components/PlayerStat/PlayerStat';
+import OfficeStat from '@/components/OfficeStat';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({ where: { slug }, include: { games: true } });
@@ -13,9 +20,37 @@ type OfficePageProps = {
 };
 
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
+  const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher);
   if (!office) return <Box>404</Box>;
 
-  return <SEO title={office.name} />;
+  return (
+    <Box>
+      <SEO title={office.name} />
+      {data?.photo && (
+        <Box bg={getUserGradient(office.id.toString())} borderRadius="xl" overflow="hidden">
+          <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
+            <Image
+              src={data.photo.urls.regular}
+              alt={data.photo.alt_description || ''}
+              objectFit="cover"
+              layout="fill"
+              unoptimized
+            />
+          </Box>
+        </Box>
+      )}
+      <Box py={8}>
+        <Text as="h1" fontSize="2rem">
+          {office.name} office
+        </Text>
+      </Box>
+      <HStack flexWrap={'wrap'} spacing={{ base: 4, md: 8 }}>
+        <OfficeStat id={office.id} stat="matchesCount" />
+        <OfficeStat id={office.id} stat="mostPlayedGame" />
+        <OfficeStat id={office.id} stat="playerCount" />
+      </HStack>
+    </Box>
+  );
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {

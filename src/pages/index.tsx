@@ -20,7 +20,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
     <Box>
       <SEO />
       <SimpleGrid minH="80vh" columns={{ md: 2 }} gap={8} alignItems="center">
-        <Box py={16}>
+        <Box py={8}>
           <Heading
             as="h1"
             fontSize={{ base: '4rem', md: '6rem' }}
@@ -45,7 +45,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
           </Text>
         </Box>
 
-        <Box py={8}>
+        <Box pb={16}>
           <SimpleGrid columns={{ lg: 2 }} gap={4}>
             {offices
               // ?.filter(office => office.games.length)
@@ -71,7 +71,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
       <Box
         as="section"
         py={4}
-        bg="radial-gradient(farthest-corner at bottom, rgb(251, 184, 38, 0.3), var(--chakra-colors-gray-300) 80%)"
+        bg="linear-gradient(to top, rgb(251, 184, 38, 0.3), var(--chakra-colors-gray-300) )"
         px={4}
         borderRadius="xl"
         position="relative"

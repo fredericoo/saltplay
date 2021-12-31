@@ -6,18 +6,20 @@ import theme from '@/theme/theme';
 import Fonts from '@/theme/Fonts';
 import Layout from '@/components/Layout';
 import PageHeader from '@/components/PageHeader';
+import Footer from '@/components/Footer';
 
 const App: React.VFC<AppProps> = ({ Component, pageProps: { session, sidebar, header, ...pageProps } }) => {
   return (
     <ChakraProvider theme={theme}>
       <Fonts />
       <SessionProvider session={session}>
-        <VStack w="100vw" h="100vh">
+        <VStack w="100vw" minH="100vh">
           <Navbar />
           <Layout sidebar={sidebar}>
             {header && <PageHeader {...header} />}
             <Component {...pageProps} />
           </Layout>
+          <Footer />
         </VStack>
       </SessionProvider>
     </ChakraProvider>

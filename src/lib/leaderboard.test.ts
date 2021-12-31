@@ -10,7 +10,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     expect(matchPoints).toBe(BASE_MATCH_POINTS);
   });
 
-  test('player 1 with starting score would take 13 matches to overtake player 2 with 10 times points total', () => {
+  test('player 1 with starting score would take 10 matches to overtake player 2 with 10 times points total', () => {
     let p1Score = STARTING_POINTS;
     let p2Score = STARTING_POINTS * 10;
     let matchesWon = 0;
@@ -22,6 +22,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
       p2Score -= matchPoints;
       matchesWon++;
+      console.log(p1Score, p2Score);
     };
 
     while (p1Score < p2Score) p1WinGame();

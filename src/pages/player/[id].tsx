@@ -5,7 +5,7 @@ import { PromiseElement } from '@/lib/types/utils';
 import { Box, HStack, Stack, Text } from '@chakra-ui/react';
 import SEO from '@/components/SEO';
 import LatestMatches from '@/components/LatestMatches';
-import PlayerStat from '@/components/PlayerStat/PlayerStat';
+import PlayerStat from '@/components/PlayerStat';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import fetcher from '@/lib/fetcher';
 import useSWR from 'swr';

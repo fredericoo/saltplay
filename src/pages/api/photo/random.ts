@@ -1,20 +1,9 @@
+import { APIResponse } from '@/lib/types/api';
 import type { NextApiHandler } from 'next';
 import { createApi } from 'unsplash-js';
 import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
 
-type Error = {
-  status: 'error';
-  message: string;
-  photo?: never;
-};
-
-type Data = {
-  status: 'ok';
-  message?: never;
-  photo: UnsplashPhoto;
-};
-
-export type RandomPhotoApiResponse = Error | Data;
+export type RandomPhotoApiResponse = APIResponse<{ photo: UnsplashPhoto }>;
 
 const handler: NextApiHandler<RandomPhotoApiResponse> = async (req, res) => {
   res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
