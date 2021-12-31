@@ -15,12 +15,16 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
     const p1WinGame = () => {
       const matchPoints = calculateMatchPoints(p1Score, p2Score, 1);
+
       p1Score += matchPoints;
+
       p2Score -= matchPoints;
+      //console.log(p1Score, p2Score);
       matchesWon++;
     };
 
     while (p1Score < p2Score) p1WinGame();
+    // console.log(p1Score, p2Score);
 
     expect(matchesWon).toBe(13);
   });
