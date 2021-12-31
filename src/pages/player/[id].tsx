@@ -38,7 +38,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
         <Box bg={getUserGradient(player.id)} h="32" />
         <Box p={4} mt="-16">
           <PlayerAvatar user={player} size={32} />
-          <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden" isTruncated>
+          <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
             {playerName}
           </Text>
           <HStack spacing={2}>
