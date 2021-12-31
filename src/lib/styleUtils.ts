@@ -1,6 +1,6 @@
 const hideScrollbar = {
-  msOverflowStyle: '-ms-autohiding-scrollbar',
-  WebkitOverflowScrolling: 'touch',
+  '-ms-overflow-style': '-ms-autohiding-scrollbar',
+  '-webkit-overflow-scrolling': 'touch',
   overflow: '-moz-scrollbars-none',
   '&::-webkit-scrollbar': {
     display: 'none',
