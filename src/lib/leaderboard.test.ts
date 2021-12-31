@@ -8,7 +8,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     const matchPoints = calculateMatchPoints(p1Score, p2Score, pointsDifference);
     expect(matchPoints).toBe(BASE_MATCH_POINTS);
   });
-  test('player 1 with score 100 would take 13 matches to overtake player 2 with 1000 points total', () => {
+  test('player 1 with score 100 would take 10 matches to overtake player 2 with 1000 points total', () => {
     let p1Score = 100;
     let p2Score = 1000;
     let matchesWon = 0;
@@ -26,6 +26,6 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     while (p1Score < p2Score) p1WinGame();
     // console.log(p1Score, p2Score);
 
-    expect(matchesWon).toBe(13);
+    expect(matchesWon).toBe(10);
   });
 });
