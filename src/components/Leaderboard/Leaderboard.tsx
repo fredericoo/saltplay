@@ -1,10 +1,9 @@
 import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
-import { Badge, Box, Center, HStack, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import useSWRInfinite from 'swr/infinite';
-import LoadingIcon from '../LoadingIcon';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 
@@ -60,9 +59,11 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
   if (error) return <Box>Error</Box>;
   if (!data)
     return (
-      <Center>
-        <LoadingIcon size={12} color="gray.500" />
-      </Center>
+      <Stack>
+        {new Array(10).fill(0).map((_, i) => (
+          <Skeleton key={i} w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
+        ))}
+      </Stack>
     );
 
   const allPositions = data.flatMap(page => page.positions);

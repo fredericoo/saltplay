@@ -1,7 +1,7 @@
 import { Game, User } from '@prisma/client';
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import fetcher from '@/lib/fetcher';
-import { Box, Button, Center, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Skeleton, Stack, Text } from '@chakra-ui/react';
 import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
 import LoadingIcon from '../LoadingIcon';
@@ -36,7 +36,7 @@ const getKey =
     return [baseUrl, queryParams].join('?');
   };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage = 3, canLoadMore = true }) => {
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
     getKey(gameId, userId, perPage),
     fetcher
@@ -54,13 +54,14 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage,
     );
   }
 
-  if (!data) {
+  if (!data)
     return (
-      <Center>
-        <LoadingIcon size={12} color="gray.500" />
-      </Center>
+      <Stack>
+        {new Array(perPage).fill(0).map((_, i) => (
+          <Skeleton key={i} w="100%" h="6rem" borderRadius="xl" />
+        ))}
+      </Stack>
     );
-  }
 
   const allMatches = data.flatMap(page => page.matches);
 
