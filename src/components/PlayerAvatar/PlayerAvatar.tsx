@@ -13,7 +13,13 @@ type PlayerAvatarProps = {
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
   return (
     <LinkWrapper href={isLink ? `/player/${user.id}` : undefined}>
-      <Circle boxShadow="0 0 0 3px white" size={size} bg={getUserGradient(user.id)} overflow="hidden">
+      <Circle
+        position="relative"
+        boxShadow="0 0 0 3px white"
+        size={size}
+        bg={getUserGradient(user.id)}
+        overflow="hidden"
+      >
         {user.image ? (
           <Image
             src={user.image}
