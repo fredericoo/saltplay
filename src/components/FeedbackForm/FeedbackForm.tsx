@@ -97,7 +97,7 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
         <FormHelperText>
           {session?.user
             ? `As you're logged in, you’ll be identified as ${session.user.name?.split(' ')[0]}.`
-            : `This form is being submitted anonymously.`}
+            : `This form will be submitted anonymously.`}
         </FormHelperText>
       </FormControl>
     </form>
