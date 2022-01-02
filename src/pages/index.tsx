@@ -16,6 +16,7 @@ type HomeProps = {
 };
 
 const Home: NextPage<HomeProps> = ({ offices, players }) => {
+  const officesWithGames = offices?.filter(office => office.games.length) || [];
   return (
     <Box>
       <SEO />
@@ -46,24 +47,22 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
         </Box>
 
         <Box pb={16}>
-          <SimpleGrid columns={{ lg: 2 }} gap={4}>
-            {offices
-              // ?.filter(office => office.games.length)
-              ?.map(office => (
-                <Link key={office.slug} href={`/${office.slug}`} passHref>
-                  <HStack p={4} as="a" bg="white" borderRadius="xl" _hover={{ bg: 'gray.200' }}>
-                    <Box w="1.5em" h="1.5em" bg="white" borderRadius="lg" lineHeight={'1.5em'} textAlign="center">
-                      {office.icon}
-                    </Box>
-                    <Text fontWeight="bold" flexGrow={1}>
-                      {office.name}
-                    </Text>
-                    <Badge letterSpacing="wide" color="gray.500">
-                      {office.games.length} game{office.games.length !== 1 ? 's' : ''}
-                    </Badge>
-                  </HStack>
-                </Link>
-              ))}
+          <SimpleGrid columns={{ lg: officesWithGames.length > 4 ? 2 : 1 }} gap={4}>
+            {officesWithGames.map(office => (
+              <Link key={office.slug} href={`/${office.slug}`} passHref>
+                <HStack p={4} as="a" bg="white" borderRadius="xl" _hover={{ bg: 'gray.200' }}>
+                  <Box w="1.5em" h="1.5em" bg="white" borderRadius="lg" lineHeight={'1.5em'} textAlign="center">
+                    {office.icon}
+                  </Box>
+                  <Text fontWeight="bold" flexGrow={1}>
+                    {office.name}
+                  </Text>
+                  <Badge letterSpacing="wide" color="gray.500">
+                    {office.games.length} game{office.games.length !== 1 ? 's' : ''}
+                  </Badge>
+                </HStack>
+              </Link>
+            ))}
           </SimpleGrid>
         </Box>
       </SimpleGrid>
