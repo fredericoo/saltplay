@@ -20,11 +20,13 @@ const handler: NextApiHandler<FeedbackAPIResponse> = async (req, res) => {
         createdAt: new Date().toISOString(),
         rating,
         text,
-        player: {
-          connect: {
-            id: playerId,
-          },
-        },
+        player: playerId
+          ? {
+              connect: {
+                id: playerId,
+              },
+            }
+          : undefined,
       },
     });
   } catch (err) {
