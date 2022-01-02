@@ -35,6 +35,7 @@ const theme = extendTheme({
     },
     Menu,
     Input,
+    Textarea: { ...Input, variants: { custom: Input.variants.custom.field } },
     Button,
     Modal,
   },

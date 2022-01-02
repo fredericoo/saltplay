@@ -65,6 +65,13 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
 
   const allMatches = data.flatMap(page => page.matches);
 
+  if (allMatches.length === 0)
+    return (
+      <Text textAlign="center" color="gray.500">
+        No matches yet!
+      </Text>
+    );
+
   return (
     <Stack gap={3}>
       {gameId && <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />}

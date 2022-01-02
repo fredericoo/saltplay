@@ -68,6 +68,13 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
 
   const allPositions = data.flatMap(page => page.positions);
 
+  if (allPositions.length === 0)
+    return (
+      <Text textAlign="center" color="gray.500">
+        No leaderboard available yet.
+      </Text>
+    );
+
   return (
     <Stack>
       {allPositions?.map((position, posIndex) => {
