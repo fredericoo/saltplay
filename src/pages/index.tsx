@@ -77,16 +77,20 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
         position="relative"
         overflow="hidden"
       >
-        <MemoPlayersDeco players={players} />
-        <Heading zIndex={1} as="h2" mb={8} textAlign="center" color="gray.600" fontSize="2xl">
-          join heaps of{' '}
-          <Text as="span" textDecoration="line-through">
-            unproductive
-          </Text>{' '}
-          great players
-        </Heading>
-        <Box mb="-64px" maxW="container.sm" mx="auto" zIndex={1}>
-          <LatestMatches perPage={3} canLoadMore={false} />
+        <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
+          <MemoPlayersDeco players={players} />
+        </Box>
+        <Box zIndex={1} position="relative">
+          <Heading as="h2" mb={8} textAlign="center" color="gray.600" fontSize="2xl">
+            join heaps of{' '}
+            <Text as="span" textDecoration="line-through">
+              unproductive
+            </Text>{' '}
+            great players
+          </Heading>
+          <Box mb="-64px" maxW="container.sm" mx="auto">
+            <LatestMatches perPage={3} canLoadMore={false} />
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -101,13 +105,13 @@ const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name'>[] }>
         const random = Math.random();
         return (
           <MotionBox
-            initial={{ translateY: 100 }}
+            zIndex={0}
+            initial={{ translateY: 1000 }}
             animate={{ translateY: -1000 }}
             transition={{ repeat: Infinity, duration: random * -6 + 12 }}
             pointerEvents={'none'}
-            zIndex={0}
             key={user.id}
-            position="absolute"
+            position="relative"
             left={Math.random() * 100 + '%'}
             bottom={0}
             filter={`blur(${random * 4}px)`}

@@ -1,4 +1,4 @@
-import { Box, HStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Stack, Text } from '@chakra-ui/react';
 import getUserGradient from '@/theme/palettes';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
@@ -44,11 +44,11 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
           {office.name} office
         </Text>
       </Box>
-      <HStack flexWrap={'wrap'} spacing={{ base: 4, md: 8 }}>
-        <OfficeStat id={office.id} stat="matchesCount" />
+      <Stack spacing={{ base: 4, md: 8 }}>
         <OfficeStat id={office.id} stat="mostPlayedGame" />
         <OfficeStat id={office.id} stat="playerCount" />
-      </HStack>
+        <OfficeStat id={office.id} stat="matchesCount" />
+      </Stack>
     </Box>
   );
 };
