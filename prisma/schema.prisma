@@ -60,7 +60,7 @@ model VerificationToken {
 }
 
 model Match {
-    id    Int    @id @default(autoincrement())
+    id    String  @id @default(cuid())
     createdAt DateTime
     p1id  String
     p1    User   @relation("p1", fields: [p1id], references: [id])
@@ -77,14 +77,14 @@ model Game {
     slug String
     name String
     icon String?
-    officeid Int
+    officeid String
     office Office @relation(fields: [officeid], references: [id])
     matches Match[] 
     scores PlayerScore[]
 }
 
 model Office {
-    id Int @id @default(autoincrement())
+    id String  @id @default(cuid())
     name String
     icon String?
     games Game[]
@@ -92,7 +92,7 @@ model Office {
 }
 
 model PlayerScore {
-    id Int @id @default(autoincrement())
+    id String  @id @default(cuid())
     playerid String
     player User @relation(fields: [playerid], references: [id])
     points Int 

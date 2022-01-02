@@ -40,9 +40,9 @@ const officeStatsHandler: NextApiHandler<OfficeStatsAPIResponse> = async (req, r
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   if (typeof officeId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid user id' });
 
-  const matchesPerGame = await getMatchCountPerGame(+officeId);
+  const matchesPerGame = await getMatchCountPerGame(officeId);
 
-  const playerCount = await getOfficePlayerCount(+officeId);
+  const playerCount = await getOfficePlayerCount(officeId);
   const matchesCount = matchesPerGame.reduce((acc, cur) => acc + cur._count.matches, 0);
   const mostPlayedGame =
     matchesPerGame.reduce((acc, cur) => {

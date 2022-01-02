@@ -110,7 +110,7 @@ export type MatchesGETAPIResponse = APIResponse<{
 }>;
 
 const getHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
-  const cursor = typeof req.query.cursor === 'string' ? { id: +req.query.cursor } : undefined;
+  const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
   const take = Math.min(+req.query.count, 20) || 3;
   const matches = await getMatches(take, cursor);
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;

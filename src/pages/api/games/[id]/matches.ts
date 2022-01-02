@@ -32,7 +32,7 @@ const gamesHandler: NextApiHandler<GameMatchesAPIResponse> = async (req, res) =>
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   if (typeof gameId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
 
-  const cursor = typeof req.query.cursor === 'string' ? { id: +req.query.cursor } : undefined;
+  const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
   const take = Math.min(+req.query.count, 20) || 3;
   const matches = await getGameMatches(gameId, take, cursor);
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
