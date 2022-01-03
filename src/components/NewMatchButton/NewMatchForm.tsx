@@ -98,14 +98,14 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
   }
 
   return (
-    <Stack h="256px" overflow="auto" bg="gray.100" borderRadius="16" p={2}>
+    <Stack h="256px" overflow="auto" bg="gray.100" borderRadius="xl" p={2}>
       {opponentsQuery ? (
         opponentsQuery?.opponents?.map(user => {
           const score = user?.scores[0];
           return (
             <HStack
               bg={p2id === user.id ? 'gray.300' : undefined}
-              borderRadius="xl"
+              borderRadius="12"
               onClick={() => setValue('p2id', user.id)}
               key={user.id}
               as="button"
