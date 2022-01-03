@@ -9,7 +9,7 @@
     "migrate": "prisma migrate dev",
     "studio": "prisma studio",
     "generate": "prisma generate",
-    "deploy": "DATABASE_URL=$MIGRATE_DB_URL prisma migrate deploy",
+    "deploy": "DATABASE_URL=$PROD_DATABASE_URL prisma migrate deploy",
     "test": "jest"
   },
   "dependencies": {
