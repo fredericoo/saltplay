@@ -1,7 +1,5 @@
 import fetcher from '@/lib/fetcher';
-import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import { PlayerPointsAPIResponse } from '@/pages/api/user/points';
 import { Badge, Box, Center, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
@@ -112,7 +110,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
               type="button"
               p={2}
             >
-              <HStack flexGrow={1} flexShrink={1}>
+              <HStack flexGrow={1} spacing={4} flexShrink={1}>
                 <PlayerAvatar user={user} />
                 <PlayerLink name={user.name} noOfLines={1} />
               </HStack>
