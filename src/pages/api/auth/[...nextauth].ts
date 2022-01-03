@@ -7,7 +7,7 @@ import PrismaAdapter from '@/lib/adapter';
 
 const providers = [];
 
-if (process.env.NODE_ENV === 'production' && process.env.SLACK_CLIENT_ID && process.env.SLACK_CLIENT_SECRET) {
+if (process.env.SLACK_CLIENT_ID && process.env.SLACK_CLIENT_SECRET) {
   providers.push(
     SlackProvider({
       clientId: process.env.SLACK_CLIENT_ID,
@@ -17,13 +17,16 @@ if (process.env.NODE_ENV === 'production' && process.env.SLACK_CLIENT_ID && proc
   );
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   providers.push(
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     })
   );
+}
+
+if (process.env.NODE_ENV === 'development') {
   providers.push(
     EmailProvider({
       server: {
