@@ -71,6 +71,7 @@ model Match {
     p2score Int
     gameid String
     game   Game @relation(fields: [gameid], references: [id])
+    points Int @default(0)
 }
 
 model Game {

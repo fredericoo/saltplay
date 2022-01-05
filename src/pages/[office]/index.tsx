@@ -26,9 +26,9 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   return (
     <Box>
       <SEO title={office.name} />
-      {data?.photo && (
-        <Box bg={getUserGradient(office.id.toString())} borderRadius="xl" overflow="hidden">
-          <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
+      <Box bg={getUserGradient(office.id.toString())} borderRadius="xl" overflow="hidden">
+        <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
+          {data?.photo && (
             <Image
               src={data.photo.urls.regular}
               alt={data.photo.alt_description || ''}
@@ -36,9 +36,9 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
               layout="fill"
               unoptimized
             />
-          </Box>
+          )}
         </Box>
-      )}
+      </Box>
       <Box py={8}>
         <Text as="h1" fontSize="2rem">
           {office.name} office

@@ -8,7 +8,7 @@ export const calculateMatchPoints = (p1TotalPoints: number, p2TotalPoints: numbe
   const winnerTotalPoints = pointsDifference > 0 ? p1TotalPoints : p2TotalPoints;
   const loserTotalPoints = pointsDifference > 0 ? p2TotalPoints : p1TotalPoints;
 
-  const multiplier = Math.log10(Math.abs(loserTotalPoints / winnerTotalPoints) + 0.17) / Math.log10(1.17);
+  const multiplier = Math.abs(Math.log10(Math.abs(loserTotalPoints / winnerTotalPoints) + 0.17) / Math.log10(1.17));
   const matchPoints = Math.ceil(BASE_MATCH_POINTS * multiplier);
 
   return matchPoints;

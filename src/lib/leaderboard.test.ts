@@ -22,7 +22,6 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
       p2Score -= matchPoints;
       matchesWon++;
-      console.log(p1Score, p2Score);
     };
 
     while (p1Score < p2Score) p1WinGame();
@@ -30,11 +29,13 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     expect(matchesWon).toBe(10);
   });
 
-  test('when players have the opposite total points, match is worth base points', () => {
-    const p1Score = -100;
-    const p2Score = 100;
+  test('when players have 110 and 90 points, match is worth more than zero', () => {
+    const matchPoints = calculateMatchPoints(110, 90, 1);
+    expect(matchPoints).toBeGreaterThan(0);
+  });
 
-    const matchPoints = calculateMatchPoints(p1Score, p2Score, 1);
+  test('when players have the opposite total points, match is worth base points', () => {
+    const matchPoints = calculateMatchPoints(-100, 100, 1);
     expect(matchPoints).toBe(BASE_MATCH_POINTS);
   });
 

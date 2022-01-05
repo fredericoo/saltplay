@@ -43,7 +43,7 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         _hover={{ bg: 'gray.100' }}
         borderRadius={12}
         _active={{ bg: 'gray.200' }}
-        gap={2}
+        spacing="0"
         transition={'.15s ease-in-out'}
         position="relative"
         flexShrink={0}
@@ -60,7 +60,9 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
           zIndex={1}
           opacity={0.2}
         />
-        <Box zIndex={2}>{icon}</Box>
+        <Box zIndex={2} pr={2}>
+          {icon}
+        </Box>
         <Text zIndex={2} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
           {title}
         </Text>
