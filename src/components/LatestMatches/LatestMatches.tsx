@@ -1,10 +1,9 @@
 import { Game, User } from '@prisma/client';
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import fetcher from '@/lib/fetcher';
-import { Box, Button, Center, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
-import LoadingIcon from '../LoadingIcon';
 import NewMatchButton from '../NewMatchButton';
 import { motion } from 'framer-motion';
 import { MatchesGETAPIResponse } from '@/pages/api/matches';
@@ -92,6 +91,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
             key={match.id}
           >
             <MatchSummary
+              id={match.id}
               createdAt={match.createdAt}
               p1score={match.p1score}
               p1={match.p1}
@@ -99,6 +99,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
               p2={match.p2}
               gameName={gameName}
               officeName={match?.game?.office?.name}
+              onDelete={() => mutate()}
             />
           </MotionBox>
         );
