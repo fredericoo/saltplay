@@ -60,7 +60,7 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
           zIndex={1}
           opacity={0.2}
         />
-        <Box zIndex={2} mr={2}>
+        <Box zIndex={2} pr={2}>
           {icon}
         </Box>
         <Text zIndex={2} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
