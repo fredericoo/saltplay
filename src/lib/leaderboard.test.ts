@@ -22,7 +22,6 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
       p2Score -= matchPoints;
       matchesWon++;
-      console.log(matchPoints);
     };
 
     while (p1Score < p2Score) p1WinGame();
@@ -53,7 +52,6 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     testCases.forEach(([p1Score, p2Score]) => {
       const matchPoints = calculateMatchPoints(p1Score, p2Score, -1);
       expect(matchPoints).toBeGreaterThan(BASE_MATCH_POINTS);
-      console.log(p1Score, p2Score, matchPoints);
     });
   });
 
