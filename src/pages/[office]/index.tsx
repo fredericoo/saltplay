@@ -1,4 +1,4 @@
-import { Box, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import getUserGradient from '@/theme/palettes';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
@@ -9,7 +9,6 @@ import useSWR from 'swr';
 import fetcher from '@/lib/fetcher';
 import Image from 'next/image';
 import { RandomPhotoApiResponse } from '../api/photo/random';
-import PlayerStat from '@/components/PlayerStat/PlayerStat';
 import OfficeStat from '@/components/OfficeStat';
 
 export const getOfficeBySlug = async (slug: string) =>
@@ -44,11 +43,11 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
           {office.name} office
         </Text>
       </Box>
-      <Stack spacing={{ base: 4, md: 8 }}>
+      <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
         <OfficeStat id={office.id} stat="mostPlayedGame" />
         <OfficeStat id={office.id} stat="playerCount" />
         <OfficeStat id={office.id} stat="matchesCount" />
-      </Stack>
+      </SimpleGrid>
     </Box>
   );
 };
