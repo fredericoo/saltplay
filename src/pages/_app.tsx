@@ -8,14 +8,17 @@ import Layout from '@/components/Layout';
 import PageHeader from '@/components/PageHeader';
 import Footer from '@/components/Footer';
 
-const App: React.VFC<AppProps> = ({ Component, pageProps: { session, sidebar, header, ...pageProps } }) => {
+const App: React.VFC<AppProps> = ({
+  Component,
+  pageProps: { session, sidebar, header, hasNavbar = true, containerWidth, ...pageProps },
+}) => {
   return (
     <ChakraProvider theme={theme}>
       <Fonts />
       <SessionProvider session={session}>
-        <VStack w="100vw" h="100vh">
-          <Navbar />
-          <Layout sidebar={sidebar}>
+        <VStack w="100vw" h="100vh" spacing={0}>
+          {hasNavbar && <Navbar />}
+          <Layout sidebar={sidebar} containerWidth={containerWidth}>
             {header && <PageHeader {...header} />}
             <Component {...pageProps} />
           </Layout>

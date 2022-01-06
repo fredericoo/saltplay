@@ -1,12 +1,13 @@
-import { Box, Container, Grid } from '@chakra-ui/react';
+import { Box, Container, ContainerProps, Grid } from '@chakra-ui/react';
 import type { SidebarItem } from '@/components/Sidebar/types';
 import Sidebar from '@/components/Sidebar';
 
 type LayoutProps = {
   sidebar?: { items: SidebarItem[] };
+  containerWidth?: ContainerProps['maxW'];
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
+const Layout: React.FC<LayoutProps> = ({ children, sidebar, containerWidth }) => {
   return (
     <Grid
       py={2}
@@ -18,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar }) => {
       h={{ md: '100%' }}
     >
       {sidebar && <Sidebar items={sidebar?.items} />}
-      <Container maxW={sidebar ? 'container.lg' : 'container.xl'} as="main" pb={8}>
+      <Container maxW={sidebar ? 'container.lg' : containerWidth || 'container.xl'} as="main" pb={8}>
         {children}
       </Container>
     </Grid>

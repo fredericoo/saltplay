@@ -11,6 +11,7 @@ const MotionBox = motion(Box);
 
 type LeaderboardProps = {
   gameId: Game['id'];
+  hasIcons?: boolean;
 };
 
 const getKey = (gameId?: string) => (pageIndex: number, previousPageData: LeaderboardAPIResponse) => {
@@ -52,9 +53,10 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
-  const { data, size, setSize, error } = useSWRInfinite<LeaderboardAPIResponse>(getKey(gameId), fetcher);
-  const hasNextPage = data?.[data.length - 1].nextCursor;
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
+  const { data, error } = useSWRInfinite<LeaderboardAPIResponse>(getKey(gameId), fetcher, {
+    refreshInterval: 60,
+  });
 
   if (error) return <Box>Error</Box>;
   if (!data)
@@ -83,6 +85,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId }) => {
         return (
           <MotionBox layout key={position.id}>
             <LeaderboardPosition
+              hasIcons={hasIcons}
               id={position.player.id}
               key={position.id}
               name={position.player.name || 'Anonymous'}
@@ -107,6 +110,7 @@ type LeaderboardPositionProps = {
   wins?: number;
   losses?: number;
   isFirstPlace?: boolean;
+  hasIcons?: boolean;
 };
 
 const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
@@ -117,6 +121,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   wins,
   losses,
   isFirstPlace,
+  hasIcons,
 }) => {
   return (
     <HStack
@@ -125,14 +130,14 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       borderRadius="xl"
       gap={4}
       position="relative"
-      boxShadow={isFirstPlace ? '0 32px 64px 0 rgba(0,0,0,0.15)' : undefined}
+      boxShadow={isFirstPlace ? '0 32px 64px 0 rgba(0,0,0,0.1)' : undefined}
       zIndex={isFirstPlace ? 1 : undefined}
       w="100%"
       overflow="hidden"
     >
       <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
-        <PlayerLink name={`${isFirstPlace ? '🥇 ' : ''}${name}`} id={id} noOfLines={1} />
+        <PlayerLink name={`${isFirstPlace && hasIcons ? '🥇 ' : ''}${name}`} id={id} noOfLines={1} />
         <HStack fontSize="sm" color="gray.500">
           <Text>{wins} wins</Text>
           <Text>{losses} losses</Text>
