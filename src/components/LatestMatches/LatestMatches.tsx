@@ -67,10 +67,10 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
   if (allMatches.length === 0)
     return (
       <Stack gap={3}>
+        {gameId && <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />}
         <Text textAlign="center" color="gray.500">
           No matches yet!
         </Text>
-        {gameId && <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />}
       </Stack>
     );
 
