@@ -28,7 +28,7 @@ const UserMenu: React.VFC = () => {
         leftIcon={session?.user && <PlayerAvatar size={6} user={session?.user} />}
       >
         <Text isTruncated maxW="128px">
-          {session?.user?.name || session?.user?.email}
+          {session?.user?.name?.split(' ')[0] || session?.user?.email}
         </Text>
       </MenuButton>
       <MenuList>

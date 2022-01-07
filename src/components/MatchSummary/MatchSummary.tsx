@@ -1,10 +1,13 @@
 import { Box, HStack, VStack, Text, CloseButton } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
+import { match } from 'assert';
 import axios from 'axios';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
+import DeleteMatchButton from './DeleteButton';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'p1score' | 'p2score' | 'id'> & {
   p1: Pick<User, 'name' | 'id' | 'image'>;
@@ -32,24 +35,24 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
   onDelete,
 }) => {
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <VStack spacing="0" bg="white" borderRadius={16} px={2} position="relative">
+    <VStack
+      opacity={isLoading ? 0.2 : 1}
+      transition="opacity .2s ease-out"
+      spacing="0"
+      bg="white"
+      borderRadius={16}
+      px={2}
+      position="relative"
+    >
       {p1.id === session?.user.id && (
-        <CloseButton
-          aria-label="Erase match"
-          position="absolute"
-          size="sm"
-          right="0"
-          top="0"
-          transform="translate(25%, -25%)"
-          bg="gray.300"
-          _hover={{ bg: '#FBB826' }}
-          borderRadius="full"
-          onClick={async () => {
-            await axios.delete(`/api/matches/${id}`);
-            onDelete && onDelete();
-          }}
+        <DeleteMatchButton
+          id={id}
+          onDeleteStart={() => setIsLoading(true)}
+          onDeleteError={() => setIsLoading(false)}
+          onDeleteSuccess={() => onDelete?.()}
         />
       )}
       {createdAt && (
