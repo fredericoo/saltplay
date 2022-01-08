@@ -1,32 +1,39 @@
 import fetcher from '@/lib/fetcher';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import { Badge, Box, Center, HStack, Input, Stack, Text } from '@chakra-ui/react';
+import { Box, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
-import LoadingIcon from '../LoadingIcon';
-import PlayerAvatar from '../PlayerAvatar';
-import PlayerLink from '../PlayerLink/PlayerLink';
 import { MatchFormInputs } from './NewMatchButton';
-import { groupBy } from 'ramda';
-import { ArrayElement } from '@/lib/types/utils';
-import Fuse from 'fuse.js';
-import { useMemo, useState } from 'react';
+import PlayerPicker from '../PlayerPicker';
 
 type NewMatchFormProps = {
   gameId: Game['id'];
 };
-type Opponent = ArrayElement<OpponentsAPIResponse['opponents']>;
-const byFirstLetter = groupBy<Opponent>(user => user.name?.toLowerCase()[0] || 'other');
 
 const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
-  const { register } = useFormContext<MatchFormInputs>();
+  const { register, watch, setValue } = useFormContext<MatchFormInputs>();
+  const { data: session } = useSession();
+  const {
+    data: opponentsQuery,
+    error: opponentsError,
+    mutate,
+  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher);
+  register('p2id', { required: true });
+  const p2id = watch('p2id');
+  const players = opponentsQuery?.opponents?.filter(({ id }) => id !== session?.user.id);
 
   return (
     <Stack>
       <Text>Who have you played against?</Text>
-      <PlayerPicker gameId={gameId} />
+      <PlayerPicker
+        players={players}
+        selectedId={p2id}
+        refetch={mutate}
+        isLoading={!opponentsQuery}
+        onSelect={id => setValue('p2id', id)}
+      />
       <Text pt={8} pb={3}>
         What was the score?
       </Text>
@@ -52,6 +59,8 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             fontSize="xl"
             textAlign="center"
             type="number"
+            pattern="[0-9]*"
+            inputmode="numeric"
             {...register('p1score', { required: true, valueAsNumber: true })}
           />
         </Box>
@@ -77,85 +86,12 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             fontSize="xl"
             textAlign="center"
             type="number"
+            pattern="[0-9]*"
+            inputmode="numeric"
             {...register('p2score', { required: true, valueAsNumber: true })}
           />
         </Box>
       </HStack>
-    </Stack>
-  );
-};
-
-type PlayerPickerProps = {
-  gameId: Game['id'];
-};
-const PlayerPicker: React.VFC<PlayerPickerProps> = ({ gameId }) => {
-  const { register, watch, setValue } = useFormContext<MatchFormInputs>();
-  const { p2id } = watch();
-  const { data: opponentsQuery, error: opponentsError } = useSWR<OpponentsAPIResponse>(
-    `/api/games/${gameId}/opponents`,
-    fetcher
-  );
-  const { data: session } = useSession();
-
-  const [search, setSearch] = useState<string | null>(null);
-  const fuse = new Fuse(opponentsQuery?.opponents || [], {
-    keys: ['name'],
-    isCaseSensitive: false,
-  });
-
-  register('p2id', { required: true });
-
-  if (opponentsError) {
-    return <Text>Error loading players</Text>;
-  }
-
-  const opponents = search ? fuse.search(search).map(({ item }) => item) : opponentsQuery?.opponents;
-  const sortedOpponents =
-    opponents
-      ?.filter(({ id }) => id !== session?.user.id)
-      .sort((a, b) => ((a?.name?.[0] || 'z') > (b?.name?.[0] || 'z') ? 1 : -1)) || [];
-
-  const opponentsByFirstLetter = byFirstLetter(sortedOpponents);
-
-  return (
-    <Stack>
-      <Input type="text" onChange={e => setSearch(e.target.value)} placeholder="Type to search players" />
-      <Box h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
-        {opponentsByFirstLetter ? (
-          Object.entries(opponentsByFirstLetter).map(([firstLetter, opponents]) => {
-            return (
-              <Stack key={firstLetter} spacing={0}>
-                <Box pl={16} py={1} position="sticky" top="0" zIndex="docked" bg="gray.50" color="gray.600">
-                  {firstLetter.toUpperCase()}
-                </Box>
-                {opponents.map(user => {
-                  const [score] = user?.scores;
-                  return (
-                    <HStack
-                      p={4}
-                      bg={p2id === user.id ? 'gray.300' : undefined}
-                      onClick={() => setValue('p2id', user.id)}
-                      key={user.id}
-                      as="button"
-                      type="button"
-                    >
-                      <HStack flexGrow={1} spacing={4} flexShrink={1}>
-                        <PlayerAvatar user={user} />
-                        <PlayerLink name={user.name} noOfLines={1} />
-                      </HStack>
-                      {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
-                    </HStack>
-                  );
-                })}
-              </Stack>
-            );
-          })
-        ) : (
-          <Center p={8}>
-            <LoadingIcon size={8} color="white" />
-          </Center>
-        )}
-      </Box>
     </Stack>
   );
 };

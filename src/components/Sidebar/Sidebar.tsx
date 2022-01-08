@@ -1,5 +1,5 @@
 import hideScrollbar from '@/lib/styleUtils';
-import { Box, Button, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, HStack, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import IconBlur from '../IconBlur/IconBlur';
@@ -18,8 +18,8 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
       zIndex="docked"
       overflow="scroll"
       css={hideScrollbar}
-      position={{ base: 'sticky', md: 'static' }}
-      top={2}
+      position={{ base: 'fixed', md: 'static' }}
+      bottom={'calc(env(safe-area-inset-bottom, 0.5vh) + 16px)'}
       boxShadow={{ base: 'lg', md: 'none' }}
     >
       {items?.map(item => (
