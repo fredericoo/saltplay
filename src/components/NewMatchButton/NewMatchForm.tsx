@@ -52,6 +52,8 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             fontSize="xl"
             textAlign="center"
             type="number"
+            pattern="[0-9]*"
+            inputmode="numeric"
             {...register('p1score', { required: true, valueAsNumber: true })}
           />
         </Box>
@@ -77,6 +79,8 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             fontSize="xl"
             textAlign="center"
             type="number"
+            pattern="[0-9]*"
+            inputmode="numeric"
             {...register('p2score', { required: true, valueAsNumber: true })}
           />
         </Box>
