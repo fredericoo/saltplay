@@ -11,6 +11,10 @@ const theme = extendTheme({
         bg: 'gray.100',
         color: 'gray.900',
       },
+      '*': {
+        '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
+        '-moz-tap-highlight-color': 'rgba(0, 0, 0, 0)',
+      },
     },
   },
   fonts: {

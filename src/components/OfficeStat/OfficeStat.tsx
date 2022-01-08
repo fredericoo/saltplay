@@ -10,20 +10,20 @@ type OfficeStatProps = {
 };
 
 const labels = {
-  matchesCount: '🏆 Matches',
-  playerCount: '👽 Players',
-  mostPlayedGame: '🏓 Most played game',
+  matchesCount: 'Matches',
+  playerCount: 'Players',
+  mostPlayedGame: 'Most played game',
 };
 
 const OfficeStat: React.VFC<OfficeStatProps> = ({ id, stat }) => {
   const { data, error } = useSWR<OfficeStatsAPIResponse>(id ? `/api/offices/${id}/stats` : null, fetcher);
   if (!id || error) return null;
   return (
-    <Stat bg="white" borderRadius="xl" p={4}>
-      <StatLabel fontSize="md" color="gray.600" mb={2}>
+    <Stat bg="gray.200" borderRadius="xl" p={4}>
+      <StatLabel fontSize="md" color="gray.500" mb={2}>
         {labels[stat]}
       </StatLabel>
-      <StatNumber fontSize="4xl" fontWeight="normal" lineHeight={1}>
+      <StatNumber fontSize="2xl" fontWeight="normal" lineHeight={1}>
         <Skeleton isLoaded={!!data}>{data ? data?.[stat] : '…'}</Skeleton>
       </StatNumber>
     </Stat>

@@ -45,7 +45,6 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
       </Box>
       <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
         <OfficeStat id={office.id} stat="mostPlayedGame" />
-        <OfficeStat id={office.id} stat="playerCount" />
         <OfficeStat id={office.id} stat="matchesCount" />
       </SimpleGrid>
     </Box>
