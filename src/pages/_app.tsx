@@ -16,7 +16,7 @@ const App: React.VFC<AppProps> = ({
     <ChakraProvider theme={theme}>
       <Fonts />
       <SessionProvider session={session}>
-        <VStack w="100vw" h="100vh" spacing={0}>
+        <VStack w="100vw" minH="100vh" spacing={0}>
           {hasNavbar && <Navbar />}
           <Layout sidebar={sidebar} containerWidth={containerWidth}>
             {header && <PageHeader {...header} />}
