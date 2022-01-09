@@ -1,9 +1,9 @@
 import { WebClient } from '@slack/web-api';
 import prisma from '@/lib/prisma';
-import { Game, Office } from '@prisma/client';
+import { Game } from '@prisma/client';
 
 const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
-const channel = 'C02T1934MV4';
+const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02T1934MV4';
 
 const sendSlackMessage = async (text: string) => {
   const res = await slack.chat.postMessage({
