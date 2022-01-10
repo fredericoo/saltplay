@@ -5,23 +5,37 @@ import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
 import { PromiseElement } from '@/lib/types/utils';
+import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
 
 const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' | 'p1score' | 'p2score'>) => {
-  if (data.p1score === data.p2score) return;
-
   const p1Points = await prisma.playerScore.findUnique({
     where: { gameid_playerid: { gameid: data.gameid, playerid: data.p1id } },
-    select: { points: true },
+    select: { points: true, player: { select: { name: true, accounts: { select: { providerAccountId: true } } } } },
   });
   const p2Points = await prisma.playerScore.findUnique({
     where: { gameid_playerid: { gameid: data.gameid, playerid: data.p2id } },
-    select: { points: true },
+    select: { points: true, player: { select: { name: true, accounts: { select: { providerAccountId: true } } } } },
   });
   const p1TotalPoints = p1Points?.points || STARTING_POINTS;
   const p2TotalPoints = p2Points?.points || STARTING_POINTS;
 
   const matchPoints = calculateMatchPoints(p1TotalPoints, p2TotalPoints, data.p1score - data.p2score);
-  console.log(p1TotalPoints, p2TotalPoints, data.p1score - data.p2score, matchPoints);
+
+  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION) {
+    const p1SlackId = p1Points?.player?.accounts[0]?.providerAccountId || p1Points?.player.name || 'Anonymous';
+    const p2SlackId = p2Points?.player?.accounts[0]?.providerAccountId || p2Points?.player.name || 'Anonymous';
+    try {
+      notifyMatchOnSlack({
+        gameId: data.gameid,
+        p1: { slack: p1SlackId, score: data.p1score },
+        p2: { slack: p2SlackId, score: data.p2score },
+      });
+    } catch {
+      console.error('Failed to notify match on slack');
+    }
+  }
+
+  if (data.p1score === data.p2score) return;
 
   const p1NewScore = p1TotalPoints + matchPoints * (data.p1score > data.p2score ? 1 : -1);
   const p2NewScore = p2TotalPoints + matchPoints * (data.p2score > data.p1score ? 1 : -1);
