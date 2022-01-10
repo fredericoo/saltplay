@@ -5,7 +5,7 @@ import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
 import { PromiseElement } from '@/lib/types/utils';
-import { notifyMatchOnSlack } from '@/lib/slackbot';
+import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
 
 const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' | 'p1score' | 'p2score'>) => {
   const p1Points = await prisma.playerScore.findUnique({

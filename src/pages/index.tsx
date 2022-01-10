@@ -9,7 +9,6 @@ import SEO from '@/components/SEO';
 import { User } from '@prisma/client';
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import sendMessage from '@/lib/slackbot';
 
 type HomeProps = {
   offices: PromiseElement<ReturnType<typeof getOffices>>;
