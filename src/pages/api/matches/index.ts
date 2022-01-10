@@ -24,11 +24,15 @@ const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' |
   if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION) {
     const p1SlackId = p1Points?.player?.accounts[0]?.providerAccountId || p1Points?.player.name || 'Anonymous';
     const p2SlackId = p2Points?.player?.accounts[0]?.providerAccountId || p2Points?.player.name || 'Anonymous';
-    notifyMatchOnSlack({
-      gameId: data.gameid,
-      p1: { slack: p1SlackId, score: data.p1score },
-      p2: { slack: p2SlackId, score: data.p2score },
-    });
+    try {
+      notifyMatchOnSlack({
+        gameId: data.gameid,
+        p1: { slack: p1SlackId, score: data.p1score },
+        p2: { slack: p2SlackId, score: data.p2score },
+      });
+    } catch {
+      console.error('Failed to notify match on slack');
+    }
   }
 
   if (data.p1score === data.p2score) return;
