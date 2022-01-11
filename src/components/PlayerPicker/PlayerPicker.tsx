@@ -3,9 +3,8 @@ import { ArrayElement } from '@/lib/types/utils';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { Box, Button, Input, Stack, Text } from '@chakra-ui/react';
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
-import Fuse from 'fuse.js';
 import { groupBy } from 'ramda';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import PlayerItem from './PlayerItem';
 
 export type Player = ArrayElement<OpponentsAPIResponse['opponents']>;
@@ -24,25 +23,9 @@ const MotionBox = motion(Box);
 
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({ players, onSelect, selectedId, isLoading, isError, refetch }) => {
   const [search, setSearch] = useState<string>('');
-  const fuse = useMemo(
-    () =>
-      new Fuse(players || [], {
-        keys: ['name'],
-        isCaseSensitive: false,
-      }),
-    [players]
-  );
 
-  const playerList: [string, Player[]][] = search
-    ? [
-        [
-          'results',
-          fuse
-            .search(search)
-            .sort((a, b) => (a.score || 0) - (b.score || 0))
-            .map(({ item }) => item),
-        ],
-      ]
+  const playersList: [string, Player[]][] = search
+    ? [['results', players?.filter(player => player.name?.match(new RegExp(search, 'i'))) || []]]
     : Object.entries(groupByFirstLetter(sortAlphabetically(players || [], player => player.name || '')));
 
   if (isError)
@@ -67,7 +50,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ players, onSelect, selecte
       />
       <Stack spacing={0} h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
         <AnimateSharedLayout>
-          {playerList.map(([divider, opponents]) => {
+          {playersList.map(([divider, opponents]) => {
             return (
               <Stack spacing={0} key={divider}>
                 <AnimatePresence>
