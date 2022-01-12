@@ -10,11 +10,11 @@ import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
 const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' | 'p1score' | 'p2score'>) => {
   const p1Points = await prisma.playerScore.findUnique({
     where: { gameid_playerid: { gameid: data.gameid, playerid: data.p1id } },
-    select: { points: true, player: { select: { name: true, accounts: { select: { providerAccountId: true } } } } },
+    select: { points: true },
   });
   const p2Points = await prisma.playerScore.findUnique({
     where: { gameid_playerid: { gameid: data.gameid, playerid: data.p2id } },
-    select: { points: true, player: { select: { name: true, accounts: { select: { providerAccountId: true } } } } },
+    select: { points: true },
   });
   const p1TotalPoints = p1Points?.points || STARTING_POINTS;
   const p2TotalPoints = p2Points?.points || STARTING_POINTS;
@@ -22,13 +22,11 @@ const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' |
   const matchPoints = calculateMatchPoints(p1TotalPoints, p2TotalPoints, data.p1score - data.p2score);
 
   if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION) {
-    const p1SlackId = p1Points?.player?.accounts[0]?.providerAccountId || p1Points?.player.name || 'Anonymous';
-    const p2SlackId = p2Points?.player?.accounts[0]?.providerAccountId || p2Points?.player.name || 'Anonymous';
     try {
       notifyMatchOnSlack({
         gameId: data.gameid,
-        p1: { slack: p1SlackId, score: data.p1score },
-        p2: { slack: p2SlackId, score: data.p2score },
+        p1: { id: data.p1id, score: data.p1score },
+        p2: { id: data.p1id, score: data.p2score },
       });
     } catch {
       console.error('Failed to notify match on slack');

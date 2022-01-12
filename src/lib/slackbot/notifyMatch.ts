@@ -1,15 +1,27 @@
-import { Game } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import slack from './client';
 
 type PlayerStat = {
-  slack: string;
+  id: User['id'];
   score: number;
 };
 type NotifyOptions = {
   gameId: Game['id'];
   p1: PlayerStat;
   p2: PlayerStat;
+};
+
+const getPlayerMentionName = async (id: User['id']) => {
+  const player = await prisma.user.findUnique({
+    where: { id },
+    select: { name: true, accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
+  });
+  if (!player) return 'Anonymous';
+
+  const slackId = player?.accounts?.[0].providerAccountId;
+  if (slackId) return `<@${slackId}>`;
+  return player?.name;
 };
 
 export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
@@ -28,9 +40,12 @@ export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
     },
   });
 
-  const text = `<@${p1.slack}> ${p1.score > p2.score ? '🏆 ' : ''}*${p1.score}* ✕ *${p2.score}* ${
+  const p1Name = await getPlayerMentionName(p1.id);
+  const p2Name = await getPlayerMentionName(p2.id);
+
+  const text = `${p1Name} ${p1.score > p2.score ? '🏆 ' : ''}*${p1.score}* ✕ *${p2.score}* ${
     p2.score > p1.score ? '🏆 ' : ''
-  }<@${p2.slack}>\n_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
+  }${p2Name}\n_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
   return await slack.chat.postMessage({
     channel,
