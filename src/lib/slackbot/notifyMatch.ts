@@ -26,7 +26,6 @@ const getPlayerMentionName = async (id: User['id']) => {
 
 export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
   const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
-  console.log('notifying');
 
   const game = await prisma.game.findUnique({
     where: { id: gameId },
@@ -41,18 +40,12 @@ export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
     },
   });
 
-  console.log('got game and office');
-
   const p1Name = await getPlayerMentionName(p1.id);
   const p2Name = await getPlayerMentionName(p2.id);
-
-  console.log('got player names', p1Name, p2Name);
 
   const text = `${p1Name} ${p1.score > p2.score ? '🏆 ' : ''}*${p1.score}* ✕ *${p2.score}* ${
     p2.score > p1.score ? '🏆 ' : ''
   }${p2Name}\n_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
-
-  console.log('got text', text);
 
   return await slack.chat.postMessage({
     channel,
