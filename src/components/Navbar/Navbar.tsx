@@ -1,8 +1,9 @@
-import { HStack, Text, Box } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
+import DevUserMenu from '../UserMenu/DevUserMenu';
 import UserMenu from '../UserMenu/UserMenu';
 
 const Navbar: React.VFC = () => {
