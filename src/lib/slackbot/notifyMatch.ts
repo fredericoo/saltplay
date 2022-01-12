@@ -25,7 +25,7 @@ const getPlayerMentionName = async (id: User['id']) => {
 };
 
 export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
-  const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02T1934MV4';
+  const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
 
   const game = await prisma.game.findUnique({
     where: { id: gameId },
