@@ -55,7 +55,7 @@ const calculateWinsAndLosses = (
 
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
   const { data, error } = useSWRInfinite<LeaderboardAPIResponse>(getKey(gameId), fetcher, {
-    refreshInterval: 60,
+    refreshInterval: 1000 * 60,
   });
 
   if (error) return <Box>Error</Box>;
