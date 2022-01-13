@@ -30,12 +30,11 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
 
   res.setHeader(
     'Set-Cookie',
-    serialize('next-auth.session-token', sessionToken, {
-      path: '/',
-      expires,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    })
+    serialize(
+      process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      sessionToken,
+      { path: '/', expires, httpOnly: true, secure: process.env.NODE_ENV === 'production' }
+    )
   );
 
   res.status(200).json({
