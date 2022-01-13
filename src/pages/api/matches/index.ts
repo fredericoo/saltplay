@@ -26,7 +26,7 @@ const updatePlayerPoints = async (data: Pick<Match, 'gameid' | 'p1id' | 'p2id' |
       await notifyMatchOnSlack({
         gameId: data.gameid,
         p1: { id: data.p1id, score: data.p1score },
-        p2: { id: data.p1id, score: data.p2score },
+        p2: { id: data.p2id, score: data.p2score },
       });
     } catch {
       console.error('Failed to notify match on slack');
