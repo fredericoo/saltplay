@@ -3,7 +3,7 @@ import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
 import { motion } from 'framer-motion';
-import useSWRInfinite from 'swr/infinite';
+import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 
@@ -12,13 +12,6 @@ const MotionBox = motion(Box);
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
-};
-
-const getKey = (gameId?: string) => (pageIndex: number, previousPageData: LeaderboardAPIResponse) => {
-  if (previousPageData && !previousPageData.nextCursor) return null; // reached the end
-  if (!gameId) return null;
-  const appendCursor = pageIndex > 0 ? `?cursor=${previousPageData.nextCursor}` : '';
-  return `/api/games/${gameId}/leaderboard${appendCursor}`; // SWR key
 };
 
 const calculateWinsAndLosses = (
@@ -54,7 +47,7 @@ const calculateWinsAndLosses = (
 };
 
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
-  const { data, error } = useSWRInfinite<LeaderboardAPIResponse>(getKey(gameId), fetcher, {
+  const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
     refreshInterval: 1000 * 60,
   });
 
@@ -68,9 +61,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       </Stack>
     );
 
-  const allPositions = data.flatMap(page => page.positions);
-
-  if (allPositions.length === 0)
+  if (data.positions && data.positions.length === 0)
     return (
       <Text textAlign="center" color="gray.500">
         No leaderboard available yet.
@@ -79,7 +70,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   return (
     <Stack>
-      {allPositions?.map((position, posIndex) => {
+      {data.positions?.map((position, posIndex) => {
         if (!position) return null;
         const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
         return (
