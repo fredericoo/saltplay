@@ -30,7 +30,7 @@ const handler: NextApiHandler<FeedbackAPIResponse> = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    console.warn(err);
     return res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 
