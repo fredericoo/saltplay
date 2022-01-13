@@ -81,7 +81,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
         return (
           <PositionWrapper layout key={position.id}>
-            <Box textAlign="right" w="2.5rem" pr={2} fontSize={posIndex === 0 ? '4xl' : '3xl'} color="gray.400">
+            <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400">
               {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
             </Box>
             <LeaderboardPosition
