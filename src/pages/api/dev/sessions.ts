@@ -15,9 +15,10 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
 
   const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
+  const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
   await prisma.session.create({
     data: {
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      expires,
       sessionToken,
       user: {
         connect: {
@@ -27,7 +28,14 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
     },
   });
 
-  res.setHeader('Set-Cookie', serialize('next-auth.session-token', sessionToken, { path: '/' }));
+  res.setHeader(
+    'Set-Cookie',
+    serialize(
+      process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      sessionToken,
+      { path: '/', expires, httpOnly: true, secure: process.env.NODE_ENV === 'production' }
+    )
+  );
 
   res.status(200).json({
     status: 'ok',

@@ -3,22 +3,15 @@ import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Match, User } from '@prisma/client';
 import { motion } from 'framer-motion';
-import useSWRInfinite from 'swr/infinite';
+import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 
-const MotionBox = motion(Box);
+const PositionWrapper = motion(HStack);
 
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
-};
-
-const getKey = (gameId?: string) => (pageIndex: number, previousPageData: LeaderboardAPIResponse) => {
-  if (previousPageData && !previousPageData.nextCursor) return null; // reached the end
-  if (!gameId) return null;
-  const appendCursor = pageIndex > 0 ? `?cursor=${previousPageData.nextCursor}` : '';
-  return `/api/games/${gameId}/leaderboard${appendCursor}`; // SWR key
 };
 
 const calculateWinsAndLosses = (
@@ -53,8 +46,14 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
+const medals: Record<number, string> = {
+  1: '🥇',
+  2: '🥈',
+  3: '🥉',
+};
+
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
-  const { data, error } = useSWRInfinite<LeaderboardAPIResponse>(getKey(gameId), fetcher, {
+  const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
     refreshInterval: 1000 * 60,
   });
 
@@ -68,9 +67,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       </Stack>
     );
 
-  const allPositions = data.flatMap(page => page.positions);
-
-  if (allPositions.length === 0)
+  if (data.positions && data.positions.length === 0)
     return (
       <Text textAlign="center" color="gray.500">
         No leaderboard available yet.
@@ -79,11 +76,14 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   return (
     <Stack>
-      {allPositions?.map((position, posIndex) => {
+      {data.positions?.map((position, posIndex) => {
         if (!position) return null;
         const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
         return (
-          <MotionBox layout key={position.id}>
+          <PositionWrapper layout key={position.id}>
+            <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400">
+              {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
+            </Box>
             <LeaderboardPosition
               hasIcons={hasIcons}
               id={position.player.id}
@@ -95,7 +95,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
               points={position.points}
               isFirstPlace={posIndex === 0}
             />
-          </MotionBox>
+          </PositionWrapper>
         );
       })}
     </Stack>
@@ -138,7 +138,6 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
         <HStack spacing={1}>
-          {isFirstPlace && hasIcons && <Box>🥇</Box>}
           <PlayerLink name={name} id={id} noOfLines={1} />
         </HStack>
         <HStack fontSize="sm" color="gray.500">
