@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 
-const MotionBox = motion(Box);
+const PositionWrapper = motion(HStack);
 
 type LeaderboardProps = {
   gameId: Game['id'];
@@ -46,6 +46,12 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
+const medals: Record<number, string> = {
+  1: '🥇',
+  2: '🥈',
+  3: '🥉',
+};
+
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
   const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
     refreshInterval: 1000 * 60,
@@ -74,7 +80,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         if (!position) return null;
         const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
         return (
-          <MotionBox layout key={position.id}>
+          <PositionWrapper layout key={position.id}>
+            <Box textAlign="right" w="2.5rem" pr={2} fontSize={posIndex === 0 ? '4xl' : '3xl'} color="gray.400">
+              {medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
+            </Box>
             <LeaderboardPosition
               hasIcons={hasIcons}
               id={position.player.id}
@@ -86,7 +95,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
               points={position.points}
               isFirstPlace={posIndex === 0}
             />
-          </MotionBox>
+          </PositionWrapper>
         );
       })}
     </Stack>
@@ -129,7 +138,6 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
         <HStack spacing={1}>
-          {isFirstPlace && hasIcons && <Box>🥇</Box>}
           <PlayerLink name={name} id={id} noOfLines={1} />
         </HStack>
         <HStack fontSize="sm" color="gray.500">
