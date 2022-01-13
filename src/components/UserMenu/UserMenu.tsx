@@ -2,12 +2,15 @@ import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/r
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import PlayerAvatar from '../PlayerAvatar';
+import DevUserMenu from './DevUserMenu';
 
 const UserMenu: React.VFC = () => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
+  const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
 
-  if (!isLoading && !session)
+  if (!isLoading && !session) {
+    if (isDev) return <DevUserMenu />;
     return (
       <Link href="/api/auth/signin" passHref>
         <Button as="a" size="sm">
@@ -15,6 +18,7 @@ const UserMenu: React.VFC = () => {
         </Button>
       </Link>
     );
+  }
 
   return (
     <Menu isLazy>
