@@ -11,6 +11,18 @@ const Logo: ChakraComponent<'div', {}> = props => {
           fill="url(#paint0_linear_3049_7542)"
         />
         <defs>
+          <style type="text/css" jsx>
+            {`
+              .stop1 {
+                stop-color: #fbb826;
+                stop-color: color(display-p3 1 0.638 0);
+              }
+              .stop2 {
+                stop-color: #fe33a1;
+                stop-color: color(display-p3 1 0 0.574);
+              }
+            `}
+          </style>
           <linearGradient
             id="paint0_linear_3049_7542"
             x1="100"
@@ -19,8 +31,8 @@ const Logo: ChakraComponent<'div', {}> = props => {
             y2="67.0213"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#FBB826" />
-            <stop offset="1" stopColor="#FE33A1" />
+            <stop className="stop1" />
+            <stop offset="1" className="stop2" />
           </linearGradient>
         </defs>
       </svg>

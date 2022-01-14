@@ -20,7 +20,12 @@ const variantSubtle: SystemStyleFunction = props => {
 };
 
 const variantPrimary: SystemStyleObject = {
-  bg: 'linear-gradient(-135deg, #FBB826, #FE33A1)',
+  bg: [
+    [
+      'linear-gradient(-135deg, #FBB826, #FE33A1)',
+      'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+    ],
+  ],
   fontWeight: 'bold',
   color: 'white',
   _hover: {
