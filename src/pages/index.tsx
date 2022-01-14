@@ -32,7 +32,17 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
           >
             work hard,
             <br />
-            <Text as="span" bg="linear-gradient(-135deg, #FBB826, #FE33A1)" backgroundClip="text">
+            <Text
+              as="span"
+              bg={[
+                // @ts-ignore chakra doesn't offer array as props as Emotion does, but it works!
+                [
+                  'linear-gradient(-135deg, #FBB826, #FE33A1)',
+                  'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+                ],
+              ]}
+              backgroundClip="text"
+            >
               play hard.
             </Text>
           </Heading>
