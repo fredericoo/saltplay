@@ -1,5 +1,6 @@
 import { sortAlphabetically } from '@/lib/arrays';
 import { ArrayElement } from '@/lib/types/utils';
+import useDebouncedMemo from '@/lib/useDebouncedEffect';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { Box, Button, Input, Stack, Text } from '@chakra-ui/react';
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
@@ -23,10 +24,16 @@ const MotionBox = motion(Box);
 
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({ players, onSelect, selectedId, isLoading, isError, refetch }) => {
   const [search, setSearch] = useState<string>('');
-
-  const playersList: [string, Player[]][] = search
-    ? [['results', players?.filter(player => player.name?.match(new RegExp(search, 'i'))) || []]]
-    : Object.entries(groupByFirstLetter(sortAlphabetically(players || [], player => player.name || '')));
+  const playersList = useDebouncedMemo(
+    () => {
+      const newPlayersList: [string, Player[]][] = search
+        ? [['results', players?.filter(player => player.name?.match(new RegExp(search, 'i'))) || []]]
+        : Object.entries(groupByFirstLetter(players || []));
+      return newPlayersList;
+    },
+    1000,
+    [search]
+  );
 
   if (isError)
     return (
@@ -50,7 +57,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({ players, onSelect, selecte
       />
       <Stack spacing={0} h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
         <AnimateSharedLayout>
-          {playersList.map(([divider, opponents]) => {
+          {playersList?.map(([divider, opponents]) => {
             return (
               <Stack spacing={0} key={divider}>
                 <AnimatePresence>

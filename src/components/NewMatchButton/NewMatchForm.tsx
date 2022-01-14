@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
 import { MatchFormInputs } from './NewMatchButton';
 import PlayerPicker from '../PlayerPicker';
+import InvitePlayer from './InvitePlayer';
 
 type NewMatchFormProps = {
   gameId: Game['id'];
@@ -34,6 +35,7 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
         isLoading={!opponentsQuery}
         onSelect={id => setValue('p2id', id)}
       />
+      {/* <InvitePlayer /> */}
       <Text pt={8} pb={3}>
         What was the score?
       </Text>
