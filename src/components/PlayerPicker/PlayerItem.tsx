@@ -1,6 +1,7 @@
 import { Badge, HStack } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import { motion } from 'framer-motion';
+import React from 'react';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 import { Player } from './PlayerPicker';
@@ -23,10 +24,11 @@ const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect }
       layoutId={player.id}
       p={4}
       overflow="hidden"
-      bg={isSelected ? 'gray.300' : undefined}
+      bg={isSelected ? '#fbb826' : undefined}
       onClick={() => onSelect?.(player.id)}
       as="button"
       type="button"
+      borderRadius="12"
     >
       <HStack flexGrow={1} spacing={4} flexShrink={1}>
         <PlayerAvatar user={player} />
@@ -37,4 +39,4 @@ const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect }
   );
 };
 
-export default PlayerItem;
+export default React.memo(PlayerItem);

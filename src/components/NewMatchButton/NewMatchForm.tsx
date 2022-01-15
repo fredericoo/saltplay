@@ -1,7 +1,7 @@
 import fetcher from '@/lib/fetcher';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { Box, HStack, Input, Stack, Text } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
@@ -10,9 +10,10 @@ import PlayerPicker from '../PlayerPicker';
 
 type NewMatchFormProps = {
   gameId: Game['id'];
+  maxPlayersPerTeam?: Game['maxPlayersPerTeam'];
 };
 
-const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
+const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId, maxPlayersPerTeam = 1 }) => {
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
   const { data: session } = useSession();
   const {
@@ -20,19 +21,35 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
     error: opponentsError,
     mutate,
   } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher);
-  register('p2id', { required: true });
-  const p2id = watch('p2id');
+  register('rightids', { required: true, value: [] });
+  const rightids = watch('rightids');
   const players = opponentsQuery?.opponents?.filter(({ id }) => id !== session?.user.id);
+
+  const handleSelect = (id: User['id']) => {
+    if (rightids.includes(id)) {
+      setValue(
+        'rightids',
+        rightids.filter(rightid => rightid !== id)
+      );
+      return;
+    }
+    if (rightids.length >= (maxPlayersPerTeam || 0)) {
+      setValue('rightids', [...rightids.slice(0, -1), id]);
+      return;
+    }
+    setValue('rightids', [...rightids, id]);
+  };
 
   return (
     <Stack>
       <Text>Who have you played against?</Text>
       <PlayerPicker
         players={players}
-        selectedId={p2id}
+        selectedIds={rightids}
         refetch={mutate}
         isLoading={!opponentsQuery}
-        onSelect={id => setValue('p2id', id)}
+        isError={opponentsError}
+        onSelect={handleSelect}
       />
       <Text pt={8} pb={3}>
         What was the score?
@@ -61,7 +78,7 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             type="number"
             pattern="[0-9]*"
             inputmode="numeric"
-            {...register('p1score', { required: true, valueAsNumber: true })}
+            {...register('leftscore', { required: true, valueAsNumber: true })}
           />
         </Box>
         <Text>✕</Text>
@@ -88,7 +105,7 @@ const NewMatchForm: React.VFC<NewMatchFormProps> = ({ gameId }) => {
             type="number"
             pattern="[0-9]*"
             inputmode="numeric"
-            {...register('p2score', { required: true, valueAsNumber: true })}
+            {...register('rightscore', { required: true, valueAsNumber: true })}
           />
         </Box>
       </HStack>

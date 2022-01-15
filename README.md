@@ -47,7 +47,7 @@ We use [Prisma](https://www.prisma.io/) to manage our database schema and migrat
 Should you make any changes to the schema, you can run the following command to update the database tables and columns accordingly:
 
 ```bash
-yarn migrate --name <name>
+yarn db:migrate --name <name>
 ```
 
 where `<name>` is a descriptive name of what was done in the migration in snake_case.

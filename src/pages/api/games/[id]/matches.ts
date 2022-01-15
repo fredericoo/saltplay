@@ -14,10 +14,10 @@ const getGameMatches = (gameId: string, take: number, cursor?: Pick<Match, 'id'>
     select: {
       id: true,
       createdAt: true,
-      p1: { select: { name: true, id: true, image: true } },
-      p2: { select: { name: true, id: true, image: true } },
-      p1score: true,
-      p2score: true,
+      left: { select: { name: true, id: true, image: true } },
+      right: { select: { name: true, id: true, image: true } },
+      leftscore: true,
+      rightscore: true,
     },
   });
 

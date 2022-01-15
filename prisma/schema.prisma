@@ -36,9 +36,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-
-  p1matches Match[] @relation("p1")
-  p2matches Match[] @relation("p2")
+  leftmatches Match[] @relation("left")
+  rightmatches Match[] @relation("right")
   scores   PlayerScore[]
   feedback Feedback[]
 }
@@ -63,12 +62,10 @@ model VerificationToken {
 model Match {
     id    String  @id @default(cuid())
     createdAt DateTime
-    p1id  String
-    p1    User   @relation("p1", fields: [p1id], references: [id])
-    p2id  String
-    p2    User   @relation("p2", fields: [p2id], references: [id])
-    p1score Int
-    p2score Int
+    left    User[]   @relation("left", references: [id])
+    right    User[]   @relation("right", references: [id])
+    leftscore Int
+    rightscore Int
     gameid String
     game   Game @relation(fields: [gameid], references: [id])
     points Int @default(0)
@@ -83,6 +80,7 @@ model Game {
     office Office @relation(fields: [officeid], references: [id])
     matches Match[] 
     scores PlayerScore[]
+    maxPlayersPerTeam Int? @default(1)
 }
 
 model Office {

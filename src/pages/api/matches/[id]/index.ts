@@ -15,51 +15,67 @@ const deleteHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (req, res)
 
   const match = await prisma.match.findUnique({
     where: { id: matchId },
-    select: { id: true, p1id: true, p2id: true, gameid: true, p1score: true, p2score: true, points: true },
+    select: {
+      id: true,
+      left: { select: { id: true } },
+      right: { select: { id: true } },
+      gameid: true,
+      leftscore: true,
+      rightscore: true,
+      points: true,
+    },
   });
 
-  if (!match || match.p1id !== session.user.id)
+  if (!match || !match.left.find(player => player.id === session.user.id))
     return res.status(404).json({ status: 'error', message: 'Match not found' });
 
-  const multiplier = match.p1score > match.p2score ? 1 : -1;
+  const multiplier = match.leftscore > match.rightscore ? 1 : -1;
 
-  await prisma.playerScore.upsert({
-    where: {
-      gameid_playerid: {
-        gameid: match.gameid,
-        playerid: match.p1id,
-      },
-    },
-    update: {
-      points: {
-        decrement: match.points * multiplier,
-      },
-    },
-    create: {
-      points: STARTING_POINTS,
-      gameid: match.gameid,
-      playerid: match.p1id,
-    },
-  });
+  await Promise.all(
+    match.left.map(async player => {
+      await prisma.playerScore.upsert({
+        where: {
+          gameid_playerid: {
+            gameid: match.gameid,
+            playerid: player.id,
+          },
+        },
+        update: {
+          points: {
+            decrement: match.points * multiplier,
+          },
+        },
+        create: {
+          points: STARTING_POINTS,
+          gameid: match.gameid,
+          playerid: player.id,
+        },
+      });
+    })
+  );
 
-  await prisma.playerScore.upsert({
-    where: {
-      gameid_playerid: {
-        gameid: match.gameid,
-        playerid: match.p2id,
-      },
-    },
-    update: {
-      points: {
-        increment: match.points * multiplier,
-      },
-    },
-    create: {
-      points: STARTING_POINTS,
-      gameid: match.gameid,
-      playerid: match.p2id,
-    },
-  });
+  await Promise.all(
+    match.right.map(async player => {
+      await prisma.playerScore.upsert({
+        where: {
+          gameid_playerid: {
+            gameid: match.gameid,
+            playerid: player.id,
+          },
+        },
+        update: {
+          points: {
+            increment: match.points * multiplier,
+          },
+        },
+        create: {
+          points: STARTING_POINTS,
+          gameid: match.gameid,
+          playerid: player.id,
+        },
+      });
+    })
+  );
 
   await prisma.match.delete({
     where: { id: matchId },

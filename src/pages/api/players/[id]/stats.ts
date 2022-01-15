@@ -6,12 +6,12 @@ import { APIResponse } from '@/lib/types/api';
 const getPlayerMatches = (userId: User['id']) =>
   prisma.match.findMany({
     orderBy: { createdAt: 'desc' },
-    where: { OR: [{ p1id: userId }, { p2id: userId }] },
+    where: { OR: [{ left: { some: { id: userId } } }, { right: { some: { id: userId } } }] },
     select: {
-      p1id: true,
-      p2id: true,
-      p1score: true,
-      p2score: true,
+      left: { select: { id: true } },
+      right: { select: { id: true } },
+      leftscore: true,
+      rightscore: true,
     },
   });
 
@@ -47,11 +47,15 @@ const gamesHandler: NextApiHandler<PlayerStatsAPIResponse> = async (req, res) =>
 
   const played = matches.length;
   const won =
-    matches.filter(match => match.p1id === userId && match.p1score > match.p2score).length +
-    matches.filter(match => match.p2id === userId && match.p2score > match.p1score).length;
+    matches.filter(match => match.left.find(player => player.id === userId) && match.leftscore > match.rightscore)
+      .length +
+    matches.filter(match => match.right.find(player => player.id === userId) && match.rightscore > match.leftscore)
+      .length;
   const lost =
-    matches.filter(match => match.p1id === userId && match.p2score > match.p1score).length +
-    matches.filter(match => match.p2id === userId && match.p1score > match.p2score).length;
+    matches.filter(match => match.left.find(player => player.id === userId) && match.rightscore > match.leftscore)
+      .length +
+    matches.filter(match => match.right.find(player => player.id === userId) && match.leftscore > match.rightscore)
+      .length;
   const tied = played - won - lost;
 
   const games = Array.from(new Set(playerScores.map(score => [score.game.icon, score.game.name].join(' '))).values());
