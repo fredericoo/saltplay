@@ -1,17 +1,15 @@
-import { Box, HStack, VStack, Text, CloseButton } from '@chakra-ui/react';
+import { Box, HStack, VStack, Text } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
-import { match } from 'assert';
-import axios from 'axios';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
 import DeleteMatchButton from './DeleteButton';
 
-type MatchSummaryProps = Pick<Match, 'createdAt' | 'p1score' | 'p2score' | 'id'> & {
-  p1: Pick<User, 'name' | 'id' | 'image'>;
-  p2: Pick<User, 'name' | 'id' | 'image'>;
+type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {
+  left: Pick<User, 'name' | 'id' | 'image'>[];
+  right: Pick<User, 'name' | 'id' | 'image'>[];
   gameName?: string;
   officeName?: string;
   onDelete?: () => void;
@@ -26,10 +24,10 @@ const WinnerIcon: React.VFC = () => (
 const MatchSummary: React.VFC<MatchSummaryProps> = ({
   id,
   createdAt,
-  p1score,
-  p2score,
-  p1,
-  p2,
+  leftscore,
+  rightscore,
+  left,
+  right,
   gameName,
   officeName,
   onDelete,
@@ -47,7 +45,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       px={2}
       position="relative"
     >
-      {p1.id === session?.user.id && (
+      {left.find(player => player.id === session?.user.id) && (
         <DeleteMatchButton
           id={id}
           onDeleteStart={() => setIsLoading(true)}
@@ -76,29 +74,33 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       )}
       <HStack p={4} w="100%" justifyContent="center" gap={4}>
         <VStack flex={1} lineHeight={1.2}>
-          <PlayerAvatar user={p1} isLink />
-          <PlayerLink
-            lineHeight={1.2}
-            textAlign="center"
-            fontSize="sm"
-            name={p1.name}
-            id={p1.id}
-            maxW="30ch"
-            noOfLines={2}
-          />
+          {left.map(player => (
+            <Fragment key={player.id}>
+              <PlayerAvatar user={player} isLink />
+              <PlayerLink
+                lineHeight={1.2}
+                textAlign="center"
+                fontSize="sm"
+                name={player.name}
+                id={player.id}
+                maxW="30ch"
+                noOfLines={2}
+              />
+            </Fragment>
+          ))}
         </VStack>
         <Box flex={1}>
           <HStack justify="center" fontSize="xl">
             <HStack flex={1} justify="flex-end">
-              {p1score > p2score && <WinnerIcon />}
-              <Text>{p1score}</Text>
+              {leftscore > rightscore && <WinnerIcon />}
+              <Text>{leftscore}</Text>
             </HStack>
             <Text fontSize="sm" color="gray.500">
               ✕
             </Text>
             <HStack flex={1}>
-              <Text>{p2score}</Text>
-              {p2score > p1score && <WinnerIcon />}
+              <Text>{rightscore}</Text>
+              {rightscore > leftscore && <WinnerIcon />}
             </HStack>
           </HStack>
           {gameName && (
@@ -108,16 +110,20 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           )}
         </Box>
         <VStack flex={1}>
-          <PlayerAvatar user={p2} isLink />
-          <PlayerLink
-            lineHeight={1.2}
-            textAlign="center"
-            fontSize="sm"
-            name={p2.name}
-            id={p2.id}
-            maxW="20ch"
-            noOfLines={2}
-          />
+          {right.map(player => (
+            <Fragment key={player.id}>
+              <PlayerAvatar user={player} isLink />
+              <PlayerLink
+                lineHeight={1.2}
+                textAlign="center"
+                fontSize="sm"
+                name={player.name}
+                id={player.id}
+                maxW="30ch"
+                noOfLines={2}
+              />
+            </Fragment>
+          ))}
         </VStack>
       </HStack>
     </VStack>

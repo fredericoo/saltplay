@@ -93,10 +93,10 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
             <MatchSummary
               id={match.id}
               createdAt={match.createdAt}
-              p1score={match.p1score}
-              p1={match.p1}
-              p2score={match.p2score}
-              p2={match.p2}
+              leftscore={match.leftscore}
+              left={match.left}
+              rightscore={match.rightscore}
+              right={match.right}
               gameName={gameName}
               officeName={match?.game?.office?.name}
               onDelete={() => mutate()}

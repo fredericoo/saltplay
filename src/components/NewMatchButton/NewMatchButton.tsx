@@ -10,7 +10,7 @@ import {
   useDisclosure,
   Center,
 } from '@chakra-ui/react';
-import { Game, Match } from '@prisma/client';
+import { Game, Match, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -24,7 +24,7 @@ type NewMatchButtonProps = {
   onSubmitSuccess?: () => void;
 };
 
-export type MatchFormInputs = Pick<Match, 'p2id' | 'p1score' | 'p2score'>;
+export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & { rightids: User['id'][] };
 
 const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSuccess }) => {
   const { data: session, status } = useSession();
@@ -39,7 +39,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
     setIsLoading(true);
     const matchToAdd = {
       ...data,
-      p1id: session?.user.id,
+      leftids: [session?.user.id],
       gameid: gameId,
     };
     try {
@@ -88,7 +88,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
                     <LoadingIcon color="gray.400" size={16} />
                   </Center>
                 ) : (
-                  <NewMatchForm gameId={gameId} />
+                  <NewMatchForm gameId={gameId} maxPlayersPerTeam={1} />
                 )}
               </form>
             </FormProvider>

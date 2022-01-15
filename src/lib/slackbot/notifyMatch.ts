@@ -2,14 +2,12 @@ import { Game, User } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import slack from './client';
 
-type PlayerStat = {
-  id: User['id'];
-  score: number;
-};
 type NotifyOptions = {
   gameId: Game['id'];
-  p1: PlayerStat;
-  p2: PlayerStat;
+  leftScore: number;
+  rightScore: number;
+  left: Pick<User, 'id'>[];
+  right: Pick<User, 'id'>[];
 };
 
 const getPlayerMentionName = async (id: User['id']) => {
@@ -24,7 +22,7 @@ const getPlayerMentionName = async (id: User['id']) => {
   return player.name;
 };
 
-export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
+export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, right }: NotifyOptions) => {
   const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
 
   const game = await prisma.game.findUnique({
@@ -40,12 +38,12 @@ export const notifyMatchOnSlack = async ({ gameId, p1, p2 }: NotifyOptions) => {
     },
   });
 
-  const p1Name = await getPlayerMentionName(p1.id);
-  const p2Name = await getPlayerMentionName(p2.id);
+  const leftNames = await Promise.all(left.map(async player => await getPlayerMentionName(player.id)));
+  const rightNames = await Promise.all(right.map(async player => await getPlayerMentionName(player.id)));
 
-  const text = `${p1Name} ${p1.score > p2.score ? '🏆 ' : ''}*${p1.score}* ✕ *${p2.score}* ${
-    p2.score > p1.score ? '🏆 ' : ''
-  }${p2Name}\n_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
+  const text = `${leftNames.join(', ')} ${leftScore > rightScore ? '🏆 ' : ''}*${leftScore}* ✕ *${rightScore}* ${
+    rightScore > leftScore ? '🏆 ' : ''
+  }${rightNames.join(', ')}\n_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
   return await slack.chat.postMessage({
     channel,

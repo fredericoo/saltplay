@@ -15,27 +15,27 @@ type LeaderboardProps = {
 };
 
 const calculateWinsAndLosses = (
-  p1Matches: Pick<Match, 'p1score' | 'p2score'>[],
-  p2Matches: Pick<Match, 'p1score' | 'p2score'>[]
+  leftMatches: Pick<Match, 'leftscore' | 'rightscore'>[],
+  rightMatches: Pick<Match, 'leftscore' | 'rightscore'>[]
 ) => {
-  const p1Stats = p1Matches.reduce(
+  const p1Stats = leftMatches.reduce(
     (acc, match) => {
-      if (match.p1score > match.p2score) {
+      if (match.leftscore > match.rightscore) {
         acc.wins++;
       }
-      if (match.p1score < match.p2score) {
+      if (match.leftscore < match.rightscore) {
         acc.losses++;
       }
       return acc;
     },
     { wins: 0, losses: 0 }
   );
-  const p2Stats = p2Matches.reduce(
+  const p2Stats = rightMatches.reduce(
     (acc, match) => {
-      if (match.p1score < match.p2score) {
+      if (match.leftscore < match.rightscore) {
         acc.wins++;
       }
-      if (match.p1score > match.p2score) {
+      if (match.leftscore > match.rightscore) {
         acc.losses++;
       }
       return acc;
@@ -78,7 +78,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
     <Stack>
       {data.positions?.map((position, posIndex) => {
         if (!position) return null;
-        const stats = calculateWinsAndLosses(position.player.p1matches, position.player.p2matches);
+        const stats = calculateWinsAndLosses(position.player.leftmatches, position.player.rightmatches);
         return (
           <PositionWrapper layout key={position.id}>
             <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400">

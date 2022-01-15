@@ -11,14 +11,14 @@ export type LeaderboardAPIResponse = APIResponse<{
 const getLeaderboardPositions = (gameid: string) =>
   prisma.playerScore.findMany({
     where: { game: { id: gameid } },
-    orderBy: { points: 'desc' },
+    orderBy: [{ points: 'desc' }, { player: { name: 'asc' } }],
     select: {
       id: true,
       points: true,
       player: {
         select: {
-          p1matches: { where: { gameid }, select: { p1score: true, p2score: true } },
-          p2matches: { where: { gameid }, select: { p1score: true, p2score: true } },
+          leftmatches: { where: { gameid }, select: { leftscore: true, rightscore: true } },
+          rightmatches: { where: { gameid }, select: { leftscore: true, rightscore: true } },
           id: true,
           name: true,
           image: true,
