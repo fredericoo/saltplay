@@ -17,6 +17,8 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebar, containerWidth }) =>
       gridTemplateColumns={sidebar ? { md: 'minmax(300px, 1fr) 3fr' } : undefined}
       gap={4}
       h={{ md: '100%' }}
+      flexGrow={1}
+      flexShrink={1}
     >
       {sidebar && <Sidebar items={sidebar?.items} />}
       <Container maxW={sidebar ? 'container.lg' : containerWidth || 'container.xl'} as="main" pb={8}>

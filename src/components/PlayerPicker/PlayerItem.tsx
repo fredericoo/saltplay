@@ -1,19 +1,19 @@
 import { Badge, HStack } from '@chakra-ui/react';
-import { User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import React from 'react';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerLink from '../PlayerLink/PlayerLink';
-import { Player } from './PlayerPicker';
+import type { Player } from './types';
 
 type PlayerItemProps = {
   player: Player;
   isSelected?: boolean;
-  onSelect?: (id: User['id']) => void;
+  selectedColour?: string;
+  onSelect?: (player: Player) => void;
 };
 const MotionHStack = motion(HStack);
 
-const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect }) => {
+const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect, selectedColour }) => {
   const [score] = player?.scores;
   return (
     <MotionHStack
@@ -24,8 +24,9 @@ const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect }
       layoutId={player.id}
       p={4}
       overflow="hidden"
-      bg={isSelected ? '#fbb826' : undefined}
-      onClick={() => onSelect?.(player.id)}
+      bg={isSelected ? selectedColour || '#fbb826' : undefined}
+      _hover={{ bg: isSelected ? undefined : 'gray.200' }}
+      onClick={() => onSelect?.(player)}
       as="button"
       type="button"
       borderRadius="12"

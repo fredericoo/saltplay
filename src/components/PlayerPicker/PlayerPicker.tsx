@@ -1,21 +1,19 @@
 import { sortAlphabetically } from '@/lib/arrays';
-import { ArrayElement } from '@/lib/types/utils';
-import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import { Box, Button, HStack, Input, InputGroup, InputLeftAddon, Stack, Text } from '@chakra-ui/react';
 import { IoSearchCircle } from 'react-icons/io5';
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
 import { groupBy } from 'ramda';
 import { useMemo, useState } from 'react';
 import PlayerItem from './PlayerItem';
-
-export type Player = ArrayElement<OpponentsAPIResponse['opponents']>;
+import { Player } from './types';
 
 type PlayerPickerProps = {
   players?: Player[];
-  onSelect: (id: Player['id']) => void;
-  selectedIds?: Player['id'][];
+  onSelect: (player: Player) => void;
+  selectedPlayers?: Player[];
   isLoading?: boolean;
   isError?: boolean;
+  selectedColour?: string;
   refetch?: () => void;
 };
 
@@ -25,9 +23,10 @@ const MotionBox = motion(Box);
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   players,
   onSelect,
-  selectedIds,
+  selectedPlayers,
   isLoading,
   isError,
+  selectedColour,
   refetch,
 }) => {
   const [search, setSearch] = useState<string>('');
@@ -53,58 +52,68 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
     );
 
   return (
-    <Stack>
-      <HStack spacing={2} bg="gray.100" _hover={{ bg: 'gray.200' }} borderRadius="full" transition=".3s ease-out">
-        <Box as="label" htmlFor="search" color="gray.400">
+    <Stack spacing={4} py={1} h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
+      <HStack
+        mx={1}
+        spacing={2}
+        bg="white"
+        position="sticky"
+        top="0"
+        zIndex={3}
+        _hover={{ bg: 'gray.200' }}
+        borderRadius="12"
+        transition=".3s ease-out"
+        boxShadow="lg"
+      >
+        <Box as="label" htmlFor="search" color="gray.500">
           <IoSearchCircle size="32" />
         </Box>
         <Input
           id="search"
           type="text"
           onChange={e => setSearch(e.target.value)}
-          placeholder="Type to search players"
+          placeholder="Type to search…"
           isDisabled={isLoading}
           size="sm"
           variant="unstyled"
         />
       </HStack>
-      <Stack spacing={4} py={1} h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
-        <AnimateSharedLayout>
-          {playersList.map(([divider, opponents]) => {
-            return (
-              <Stack spacing={1} key={divider} px={1}>
-                <AnimatePresence initial={false}>
-                  <MotionBox
-                    layout
-                    key={divider}
-                    layoutId={divider}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    pl={16}
-                    py={1}
-                    bg="gray.50"
-                    color="gray.400"
-                    letterSpacing="wider"
-                    fontSize="sm"
-                    borderRadius="12"
-                  >
-                    {divider.toUpperCase()}
-                  </MotionBox>
-                  {opponents.map(user => (
-                    <PlayerItem
-                      isSelected={selectedIds?.includes(user.id)}
-                      player={user}
-                      key={user.id}
-                      onSelect={onSelect}
-                    />
-                  ))}
-                </AnimatePresence>
-              </Stack>
-            );
-          })}
-        </AnimateSharedLayout>
-      </Stack>
+      <AnimateSharedLayout>
+        {playersList.map(([divider, opponents]) => {
+          return (
+            <Stack spacing={1} key={divider} px={1}>
+              <AnimatePresence initial={false}>
+                <MotionBox
+                  layout
+                  key={divider}
+                  layoutId={divider}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  pl={16}
+                  py={1}
+                  bg="gray.50"
+                  color="gray.400"
+                  letterSpacing="wider"
+                  fontSize="sm"
+                  borderRadius="12"
+                >
+                  {divider.toUpperCase()}
+                </MotionBox>
+                {opponents.map(user => (
+                  <PlayerItem
+                    isSelected={!!selectedPlayers?.find(player => player.id === user.id)}
+                    selectedColour={selectedColour}
+                    player={user}
+                    key={user.id}
+                    onSelect={onSelect}
+                  />
+                ))}
+              </AnimatePresence>
+            </Stack>
+          );
+        })}
+      </AnimateSharedLayout>
     </Stack>
   );
 };
