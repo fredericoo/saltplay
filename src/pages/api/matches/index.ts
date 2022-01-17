@@ -48,13 +48,17 @@ const updatePlayersPoints = async (
   if (data.leftscore === data.rightscore) return;
 
   const newScores = [
-    ...leftPoints.map(player => ({
-      id: player.playerid,
-      newScore: player.points + matchPoints * (data.leftscore > data.rightscore ? 1 : -1),
+    ...data.left.map(player => ({
+      id: player.id,
+      newScore:
+        (leftPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
+        matchPoints * (data.leftscore > data.rightscore ? 1 : -1),
     })),
-    ...rightPoints.map(player => ({
-      id: player.playerid,
-      newScore: player.points + matchPoints * (data.leftscore < data.rightscore ? 1 : -1),
+    ...data.right.map(player => ({
+      id: player.id,
+      newScore:
+        (rightPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
+        matchPoints * (data.leftscore < data.rightscore ? 1 : -1),
     })),
   ];
 
