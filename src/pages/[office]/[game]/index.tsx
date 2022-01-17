@@ -48,7 +48,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         <Heading as="h2" size="sm" pb={4}>
           Latest matches
         </Heading>
-        <LatestMatches gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+        <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
       </Box>
     </Grid>
   );
