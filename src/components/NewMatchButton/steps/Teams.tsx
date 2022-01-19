@@ -9,7 +9,7 @@ import { Badge, Box, Circle, HStack, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
 import { MatchFormInputs } from '../NewMatchButton';
@@ -29,7 +29,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     mutate,
   } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher);
 
-  const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>('left');
+  const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 
   const { data: session } = useSession();
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
@@ -42,15 +42,11 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   const thisPlayer = opponentsQuery?.opponents?.find(({ id }) => id === session?.user.id);
 
   register('right', { required: true, value: [] });
-  {
-    opponentsQuery &&
-      thisPlayer &&
-      session &&
-      register('left', {
-        required: true,
-        value: [thisPlayer],
-      });
-  }
+  register('left', { required: true, value: [] });
+
+  useEffect(() => {
+    thisPlayer && !left?.find(player => player.id === thisPlayer.id) && setValue('left', [thisPlayer]);
+  }, [left, session, setValue, thisPlayer]);
 
   const handleSelect = (user: Player) => {
     if (!selectedSide) return;
@@ -75,6 +71,8 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   };
 
   const handleSelectedSide = (side: 'left' | 'right') => {
+    if (side === 'left' && maxPlayersPerTeam === 1) return;
+
     if (selectedSide === side) {
       setSelectedSide(undefined);
       return;
@@ -129,7 +127,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 };
 
 type SideProps = {
-  players: Player[];
+  players?: Player[];
   isReverse?: boolean;
   isSelected?: boolean;
   onClick: () => void;
@@ -139,6 +137,11 @@ type SideProps = {
 
 const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, selectedColour, emptySlots = 0 }) => {
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
+  const teamAveragePoints = players
+    ? Math.ceil(
+        players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0) / players?.length
+      ) || 0
+    : 0;
 
   return (
     <Box
@@ -201,12 +204,7 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
         </AnimatePresence>
       </HStack>
       <HStack mt={2} flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Badge bg="gray.100">
-          {Math.ceil(
-            players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0) / players.length
-          ) || 0}{' '}
-          PTS
-        </Badge>
+        <Badge bg="gray.100">{teamAveragePoints} PTS</Badge>
       </HStack>
     </Box>
   );
