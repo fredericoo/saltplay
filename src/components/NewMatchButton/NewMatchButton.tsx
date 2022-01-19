@@ -9,16 +9,18 @@ import {
   Button,
   useDisclosure,
   Center,
+  Stack,
 } from '@chakra-ui/react';
 import { Game, Match } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import NewMatchForm from './NewMatchForm';
 import { useToast } from '@chakra-ui/react';
 import LoadingIcon from '../LoadingIcon';
 import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
 import { Player } from '../PlayerPicker/types';
+import Teams from './steps/Teams';
+import Scores from './steps/Scores';
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
@@ -32,13 +34,19 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
 };
 
 const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSuccess, maxPlayersPerTeam }) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const isLoggedIn = status === 'authenticated';
+
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const form = useForm<MatchFormInputs>();
   const toast = useToast();
-  if (!isLoggedIn) return null;
+  if (!isLoggedIn)
+    return (
+      <Button w="100%" variant="solid" bg="gray.300" _hover={{ bg: 'gray.300' }} isDisabled onClick={onOpen}>
+        Sign in to submit a match!
+      </Button>
+    );
 
   const onSubmit = async (data: MatchFormInputs) => {
     setIsLoading(true);
@@ -95,7 +103,10 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
                     <LoadingIcon color="gray.400" size={16} />
                   </Center>
                 ) : (
-                  <NewMatchForm gameId={gameId} maxPlayersPerTeam={maxPlayersPerTeam} />
+                  <Stack spacing={8}>
+                    <Teams gameId={gameId} maxPlayersPerTeam={maxPlayersPerTeam || 1} />
+                    <Scores />
+                  </Stack>
                 )}
               </form>
             </FormProvider>

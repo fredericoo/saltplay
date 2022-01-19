@@ -1,5 +1,5 @@
 import { sortAlphabetically } from '@/lib/arrays';
-import { Box, Button, HStack, Input, InputGroup, InputLeftAddon, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Input, Stack, Text } from '@chakra-ui/react';
 import { IoSearchCircle } from 'react-icons/io5';
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
 import { groupBy } from 'ramda';
@@ -60,7 +60,6 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
         position="sticky"
         top="0"
         zIndex={3}
-        _hover={{ bg: 'gray.200' }}
         borderRadius="12"
         transition=".3s ease-out"
         boxShadow="lg"
@@ -74,7 +73,6 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
           onChange={e => setSearch(e.target.value)}
           placeholder="Type to search…"
           isDisabled={isLoading}
-          size="sm"
           variant="unstyled"
         />
       </HStack>
