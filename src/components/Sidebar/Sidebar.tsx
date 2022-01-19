@@ -58,7 +58,7 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         transform="translateZ(0)"
         minW={'76px'}
       >
-        <Box zIndex={2} fontSize="md" pr={2} h="1.8em" w="1em" textAlign="center">
+        <Box zIndex={2} fontSize="md" pr={2} h="1.8em" w="1em" whiteSpace="nowrap" textAlign="center">
           {icon}
         </Box>
         <Text zIndex={2} textOverflow={{ md: 'ellipsis' }} overflow={{ md: 'hidden' }} whiteSpace="nowrap">
@@ -72,8 +72,8 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
           transition={isActive ? '1.5s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'}
           transform={
             isActive
-              ? { base: 'translate(-50%, 66.6%)', md: 'translateX(-50%)' }
-              : { base: 'translate(-50%, -100%)', md: 'translateX(-100%)' }
+              ? { base: 'translate(-33.33%, 66.6%)', md: 'translateX(-50%)' }
+              : { base: 'translate(-33.33%, -100%)', md: 'translateX(-100%)' }
           }
           zIndex={1}
           opacity={0.2}
