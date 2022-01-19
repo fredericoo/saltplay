@@ -10,7 +10,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     expect(matchPoints).toBe(BASE_MATCH_POINTS);
   });
 
-  test('player 1 with starting score would take 22 matches to overtake player 2 with 10 times points total', () => {
+  test('player 1 with starting score would take 8 matches to overtake player 2 with 10 times points total', () => {
     let p1Score = STARTING_POINTS;
     let p2Score = STARTING_POINTS * 10;
     let matchesWon = 0;
@@ -26,7 +26,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
 
     while (p1Score < p2Score) p1WinGame();
 
-    expect(matchesWon).toBe(22);
+    expect(matchesWon).toBe(8);
   });
 
   test('when a a player with more points wins, match is worth less or equal the base amount', () => {
@@ -42,7 +42,7 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     });
   });
 
-  test('when a a player with less points wins, match is worth more than the base amount', () => {
+  test('when a a player with less points wins, match is worth more than or equal to the base amount', () => {
     const testCases = [
       [110, 100],
       [1000, 100],
@@ -51,13 +51,8 @@ describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE b
     ];
     testCases.forEach(([p1Score, p2Score]) => {
       const matchPoints = calculateMatchPoints(p1Score, p2Score, -1);
-      expect(matchPoints).toBeGreaterThan(BASE_MATCH_POINTS);
+      expect(matchPoints).toBeGreaterThanOrEqual(BASE_MATCH_POINTS);
     });
-  });
-
-  test('when players have the opposite total points, match is worth base points', () => {
-    const matchPoints = calculateMatchPoints(-100, 100, 1);
-    expect(matchPoints).toBe(BASE_MATCH_POINTS);
   });
 
   test('when either p1 or p2 have 0 points, should not throw an error', () => {
