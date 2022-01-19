@@ -12,7 +12,15 @@ import { RandomPhotoApiResponse } from '../api/photo/random';
 import OfficeStat from '@/components/OfficeStat';
 
 export const getOfficeBySlug = async (slug: string) =>
-  await prisma.office.findUnique({ where: { slug }, include: { games: true } });
+  await prisma.office.findUnique({
+    where: { slug },
+    select: {
+      name: true,
+      id: true,
+      slug: true,
+      games: { orderBy: { id: 'asc' }, select: { name: true, id: true, slug: true, icon: true } },
+    },
+  });
 
 type OfficePageProps = {
   office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;

@@ -22,6 +22,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
       position={{ base: 'fixed', md: 'static' }}
       bottom={'calc(env(safe-area-inset-bottom, 0.5vh) + 32px)'}
       boxShadow={{ base: 'lg', md: 'none' }}
+      spacing={'3px'}
     >
       {items?.map(item => (
         <SidebarItem key={item.title} {...item} isActive={item.href === router.asPath} />
@@ -46,7 +47,7 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         _hover={{ bg: 'gray.100' }}
         borderRadius={12}
         _active={{ bg: 'gray.200' }}
-        spacing="0"
+        spacing={{ base: 0, md: 3 }}
         transition={'.15s ease-in-out'}
         position="relative"
         flexShrink={0}
@@ -55,26 +56,28 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         fontSize={{ base: 'xs', md: 'md' }}
         overflow="hidden"
         transform="translateZ(0)"
+        minW={'76px'}
       >
-        <IconBlur
-          icon={icon}
-          height="300%"
-          top="-100%"
-          transition={isActive ? '1.5s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'}
-          transform={
-            isActive
-              ? { base: 'translateY(-15%)', md: 'translateX(-50%)' }
-              : { base: 'translateY(-100%)', md: 'translateX(-100%)' }
-          }
-          zIndex={1}
-          opacity={0.2}
-        />
-        <Box zIndex={2} pr={2} h="1.8em">
+        <Box zIndex={2} fontSize="md" pr={2} h="1.8em" w="1em" whiteSpace="nowrap" textAlign="center">
           {icon}
         </Box>
         <Text zIndex={2} textOverflow={{ md: 'ellipsis' }} overflow={{ md: 'hidden' }} whiteSpace="nowrap">
           {title}
         </Text>
+        <IconBlur
+          icon={icon}
+          width={{ base: '300%', md: '100%' }}
+          height={{ base: '100%', md: '300%' }}
+          top="-100%"
+          transition={isActive ? '1.5s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'}
+          transform={
+            isActive
+              ? { base: 'translate(-33.33%, 66.6%)', md: 'translateX(-50%)' }
+              : { base: 'translate(-33.33%, -100%)', md: 'translateX(-100%)' }
+          }
+          zIndex={1}
+          opacity={0.2}
+        />
       </Stack>
     </Link>
   );

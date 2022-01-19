@@ -14,7 +14,7 @@ const UserMenu: React.VFC = () => {
     return (
       <Link href="/api/auth/signin" passHref>
         <Button as="a" size="sm">
-          Login
+          Sign in
         </Button>
       </Link>
     );

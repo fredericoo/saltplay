@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import type { GetStaticProps, NextPage } from 'next';
-import { Badge, Box, Heading, HStack, SimpleGrid, Text } from '@chakra-ui/react';
+import { Badge, Box, Button, Heading, HStack, VStack, SimpleGrid, Text } from '@chakra-ui/react';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import { PromiseElement } from '@/lib/types/utils';
 import Link from 'next/link';
@@ -77,22 +77,55 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
         </Box>
       </SimpleGrid>
 
-      <Box
-        as="section"
-        py={4}
-        bg="linear-gradient(to top, rgb(251, 184, 38, 0.3), var(--chakra-colors-gray-300) )"
-        px={4}
-        borderRadius="xl"
-        position="relative"
-        overflow="hidden"
-      >
+      <Box as="section" py={4} bg="gray.200" px={4} borderRadius="xl" position="relative" overflow="hidden">
+        <Box
+          h="100%"
+          w="100%"
+          top="0"
+          left="0"
+          position="absolute"
+          bg="linear-gradient(to bottom, rgb(226, 232, 240, 0) 75%, rgb(226, 232, 240, 1))"
+          zIndex="2"
+        />
         <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
           <MemoPlayersDeco players={players} />
         </Box>
         <Box zIndex={1} position="relative">
-          <Heading as="h2" mb={8} textAlign="center" color="gray.600" fontSize="2xl">
-            join heaps of{' '}
-            <Text as="span" textDecoration="line-through">
+          <Heading as="h2" mb={12} mt={4} textAlign="center" color="gray.600" fontSize="4xl">
+            join{' '}
+            <Text
+              as="span"
+              bg={[
+                // @ts-ignore chakra doesn't offer array as props as Emotion does, but it works!
+                [
+                  'linear-gradient(-135deg, #FBB826 25%, #FE33A1)',
+                  'linear-gradient(-135deg, color(display-p3 1 0.638 0) 25%, color(display-p3 1 0 0.574))',
+                ],
+              ]}
+              backgroundClip="text"
+            >
+              heaps
+            </Text>{' '}
+            of{' '}
+            <Text
+              as="span"
+              display="inline-block"
+              position="relative"
+              _before={{
+                content: `""`,
+                position: 'absolute',
+                w: '100%',
+                h: '.08em',
+                bg: [
+                  [
+                    'linear-gradient(-135deg, #FBB826, #FE33A1)',
+                    'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+                  ],
+                ],
+                top: '58%',
+                left: 0,
+              }}
+            >
               unproductive
             </Text>{' '}
             great players
@@ -102,6 +135,13 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
           </Box>
         </Box>
       </Box>
+      <VStack transform="translateY(-50%)" position="relative" zIndex="2">
+        <Link href="/api/auth/signin" passHref>
+          <Button as="a" variant="primary" size="lg" m={3}>
+            Sign in with Slack
+          </Button>
+        </Link>
+      </VStack>
     </Box>
   );
 };

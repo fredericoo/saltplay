@@ -20,13 +20,14 @@ export const getOfficeWithGames = async (officeSlug: string) =>
           slug: true,
           icon: true,
           id: true,
+          maxPlayersPerTeam: true,
         },
       },
     },
   });
 
 type GamePageProps = {
-  game?: Pick<Game, 'name' | 'slug' | 'id' | 'icon'>;
+  game?: Pick<Game, 'name' | 'slug' | 'id' | 'icon' | 'maxPlayersPerTeam'>;
 };
 
 const GamePage: NextPage<GamePageProps> = ({ game }) => {
@@ -47,7 +48,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         <Heading as="h2" size="sm" pb={4}>
           Latest matches
         </Heading>
-        <LatestMatches gameId={game.id} />
+        <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
       </Box>
     </Grid>
   );

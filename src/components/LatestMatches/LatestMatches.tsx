@@ -15,7 +15,7 @@ type LatestMatchesProps = {
   userId?: User['id'];
   perPage?: number;
   canLoadMore?: boolean;
-};
+} & ({ canAddNewMatch: true; maxPlayersPerTeam: number } | { canAddNewMatch?: false; maxPlayersPerTeam?: never });
 
 const getKey =
   (gameId?: Game['id'], userId?: User['id'], perPage?: number) =>
@@ -35,7 +35,14 @@ const getKey =
     return [baseUrl, queryParams].join('?');
   };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage = 3, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({
+  gameId,
+  userId,
+  perPage = 3,
+  canLoadMore = true,
+  canAddNewMatch = false,
+  maxPlayersPerTeam,
+}) => {
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
     getKey(gameId, userId, perPage),
     fetcher
@@ -67,7 +74,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
   if (allMatches.length === 0)
     return (
       <Stack gap={3}>
-        {gameId && <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />}
+        {canAddNewMatch && gameId && (
+          <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} maxPlayersPerTeam={maxPlayersPerTeam} />
+        )}
         <Text textAlign="center" color="gray.500">
           No matches yet!
         </Text>
@@ -76,7 +85,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, perPage 
 
   return (
     <Stack gap={3}>
-      {gameId && <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} />}
+      {canAddNewMatch && gameId && (
+        <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} maxPlayersPerTeam={maxPlayersPerTeam} />
+      )}
 
       {allMatches?.map(match => {
         if (!match) return null;

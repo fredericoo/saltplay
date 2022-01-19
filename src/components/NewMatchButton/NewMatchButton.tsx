@@ -9,37 +9,53 @@ import {
   Button,
   useDisclosure,
   Center,
+  Stack,
 } from '@chakra-ui/react';
-import { Game, Match, User } from '@prisma/client';
+import { Game, Match } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import NewMatchForm from './NewMatchForm';
 import { useToast } from '@chakra-ui/react';
 import LoadingIcon from '../LoadingIcon';
 import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
+import { Player } from '../PlayerPicker/types';
+import Teams from './steps/Teams';
+import Scores from './steps/Scores';
+import Toast from '../Toast';
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
+  maxPlayersPerTeam?: Game['maxPlayersPerTeam'];
   onSubmitSuccess?: () => void;
 };
 
-export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & { rightids: User['id'][] };
+export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
+  right: Player[];
+  left: Player[];
+};
 
-const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSuccess }) => {
-  const { data: session, status } = useSession();
+const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSuccess, maxPlayersPerTeam }) => {
+  const { status } = useSession();
   const isLoggedIn = status === 'authenticated';
+
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const form = useForm<MatchFormInputs>();
   const toast = useToast();
-  if (!isLoggedIn) return null;
+  if (!isLoggedIn)
+    return (
+      <Button w="100%" variant="solid" bg="gray.300" _hover={{ bg: 'gray.300' }} isDisabled onClick={onOpen}>
+        Sign in to submit a match!
+      </Button>
+    );
 
   const onSubmit = async (data: MatchFormInputs) => {
     setIsLoading(true);
     const matchToAdd = {
-      ...data,
-      leftids: [session?.user.id],
+      leftids: data.left.map(({ id }) => id),
+      leftscore: data.leftscore,
+      rightids: data.right.map(({ id }) => id),
+      rightscore: data.rightscore,
       gameid: gameId,
     };
     try {
@@ -51,17 +67,15 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
 
       if (res.status !== 'ok') throw new Error('Error creating match');
       toast({
-        status: 'success',
+        render: () => <Toast status="success" heading="Match added" />,
         position: 'bottom',
-        title: 'Match added',
       });
       form.reset();
       onSubmitSuccess && onSubmitSuccess();
     } catch {
       toast({
-        status: 'error',
+        render: () => <Toast status="error" heading="Error adding match" />,
         position: 'bottom',
-        title: 'Error adding match',
       });
       return;
     } finally {
@@ -88,18 +102,18 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
                     <LoadingIcon color="gray.400" size={16} />
                   </Center>
                 ) : (
-                  <NewMatchForm gameId={gameId} maxPlayersPerTeam={1} />
+                  <Stack spacing={8}>
+                    <Teams gameId={gameId} maxPlayersPerTeam={maxPlayersPerTeam || 1} />
+                    <Scores />
+                  </Stack>
                 )}
               </form>
             </FormProvider>
           </ModalBody>
 
-          <ModalFooter>
-            <Button variant="primary" type="submit" form="new-match" mr={3}>
+          <ModalFooter flexDir="column">
+            <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%">
               Submit
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
             </Button>
           </ModalFooter>
         </ModalContent>
