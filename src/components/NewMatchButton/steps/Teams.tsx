@@ -139,6 +139,7 @@ type SideProps = {
 
 const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, selectedColour, emptySlots = 0 }) => {
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
+
   return (
     <Box
       as="button"
@@ -201,7 +202,10 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
       </HStack>
       <HStack mt={2} flexFlow={isReverse ? 'row-reverse' : undefined}>
         <Badge bg="gray.100">
-          {players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0)} PTS
+          {Math.ceil(
+            players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0) / players.length
+          ) || 0}{' '}
+          PTS
         </Badge>
       </HStack>
     </Box>
