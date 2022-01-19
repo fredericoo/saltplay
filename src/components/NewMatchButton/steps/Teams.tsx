@@ -10,7 +10,7 @@ import { Game, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldError, useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
 import { MatchFormInputs } from '../NewMatchButton';
 
@@ -165,8 +165,8 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
               maxW="25%"
               ml={isReverse ? -2 : 0}
               mr={isReverse ? 0 : -2}
-              key={player.id}
-              zIndex={players.length - index}
+              key={index}
+              zIndex={paddingAvatars.length + players.length - index}
               layout
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -175,15 +175,18 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
               <PlayerAvatar user={player} size={'100%'} />
             </MotionBox>
           ))}
-          {paddingAvatars.map((player, index) => (
+          {paddingAvatars.map((_, index) => (
             <MotionBox
               flex={1}
               maxW="25%"
               ml={isReverse ? -2 : 0}
               mr={isReverse ? 0 : -2}
-              key={index}
+              key={(players?.length || 0) + index}
               zIndex={paddingAvatars.length - index}
               layout
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
             >
               <Circle bg="gray.100" pb="100%" w="100%" h="0" position="relative" boxShadow="0 0 0 3px white">
                 <Box
