@@ -21,6 +21,7 @@ import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
 import { Player } from '../PlayerPicker/types';
 import Teams from './steps/Teams';
 import Scores from './steps/Scores';
+import Toast from '../Toast';
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
@@ -66,17 +67,15 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
 
       if (res.status !== 'ok') throw new Error('Error creating match');
       toast({
-        status: 'success',
+        render: () => <Toast status="success" heading="Match added" />,
         position: 'bottom',
-        title: 'Match added',
       });
       form.reset();
       onSubmitSuccess && onSubmitSuccess();
     } catch {
       toast({
-        status: 'error',
+        render: () => <Toast status="error" heading="Error adding match" />,
         position: 'bottom',
-        title: 'Error adding match',
       });
       return;
     } finally {
