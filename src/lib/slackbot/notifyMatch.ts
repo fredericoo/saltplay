@@ -10,7 +10,7 @@ type NotifyOptions = {
   right: User['id'][];
 };
 
-const getPlayerMentionName = async (id: User['id']) => {
+export const getPlayerMentionName = async (id: User['id']) => {
   const player = await prisma.user.findUnique({
     where: { id },
     select: { name: true, accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
