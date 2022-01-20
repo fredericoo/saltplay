@@ -6,8 +6,8 @@ type NotifyOptions = {
   gameId: Game['id'];
   leftScore: number;
   rightScore: number;
-  left: Pick<User, 'id'>[];
-  right: Pick<User, 'id'>[];
+  left: User['id'][];
+  right: User['id'][];
 };
 
 const getPlayerMentionName = async (id: User['id']) => {
@@ -38,8 +38,8 @@ export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, 
     },
   });
 
-  const leftNames = await Promise.all(left.map(async player => await getPlayerMentionName(player.id)));
-  const rightNames = await Promise.all(right.map(async player => await getPlayerMentionName(player.id)));
+  const leftNames = await Promise.all(left.map(async id => await getPlayerMentionName(id)));
+  const rightNames = await Promise.all(right.map(async id => await getPlayerMentionName(id)));
 
   const text = `${leftNames.join(', ')} ${leftScore > rightScore ? '🏆 ' : ''}*${leftScore}* ✕ *${rightScore}* ${
     rightScore > leftScore ? '🏆 ' : ''

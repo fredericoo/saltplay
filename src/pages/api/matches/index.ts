@@ -1,84 +1,10 @@
 import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
-import { Match, User } from '@prisma/client';
+import { Match } from '@prisma/client';
 import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
-import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
 import { PromiseElement } from '@/lib/types/utils';
-import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
-
-const updatePlayersPoints = async (
-  data: Pick<Match, 'gameid' | 'leftscore' | 'rightscore'> & { left: Pick<User, 'id'>[]; right: Pick<User, 'id'>[] }
-) => {
-  const leftPoints = await prisma.playerScore.findMany({
-    where: {
-      gameid: data.gameid,
-      playerid: { in: data.left.map(p => p.id) },
-    },
-    select: { playerid: true, points: true },
-  });
-
-  const rightPoints = await prisma.playerScore.findMany({
-    where: {
-      gameid: data.gameid,
-      playerid: { in: data.right.map(p => p.id) },
-    },
-    select: { playerid: true, points: true },
-  });
-
-  const leftAveragePoints = Math.ceil(
-    leftPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.left.length
-  );
-  const rightAveragePoints = Math.ceil(
-    rightPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.right.length
-  );
-
-  const matchPoints = calculateMatchPoints(leftAveragePoints, rightAveragePoints, data.leftscore - data.rightscore);
-
-  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION) {
-    try {
-      await notifyMatchOnSlack({
-        gameId: data.gameid,
-        leftScore: data.leftscore,
-        rightScore: data.rightscore,
-        left: data.left,
-        right: data.right,
-      });
-    } catch {
-      console.error('Failed to notify match on slack');
-    }
-  }
-
-  if (data.leftscore === data.rightscore) return;
-
-  const newScores = [
-    ...data.left.map(player => ({
-      id: player.id,
-      newScore:
-        (leftPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
-        matchPoints * (data.leftscore > data.rightscore ? 1 : -1),
-    })),
-    ...data.right.map(player => ({
-      id: player.id,
-      newScore:
-        (rightPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
-        matchPoints * (data.leftscore < data.rightscore ? 1 : -1),
-    })),
-  ];
-
-  await Promise.all(
-    newScores.map(
-      async player =>
-        await prisma.playerScore.upsert({
-          where: { gameid_playerid: { gameid: data.gameid, playerid: player.id } },
-          update: { points: player.newScore },
-          create: { points: player.newScore, gameid: data.gameid, playerid: player.id },
-        })
-    )
-  );
-
-  return matchPoints;
-};
+import distributeMatchPoints from '@/lib/distributeMatchPoints';
 
 export type MatchesPOSTAPIResponse = APIResponse;
 
@@ -88,26 +14,26 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
   if (!req.body.leftids.includes(session.user.id))
     return res.status(400).json({ status: 'error', message: 'Unauthorised' });
 
-  const leftids = req.body.leftids;
-  const rightids = req.body.rightids;
+  const left = req.body.leftids;
+  const right = req.body.rightids;
 
-  if (!Array.isArray(leftids) || !Array.isArray(rightids))
+  if (!Array.isArray(left) || !Array.isArray(right))
     return res
       .status(400)
       .json({ status: 'error', message: 'Invalid request. leftids and rightids must be an array of user ids.' });
 
   const maxPlayersPerTeam =
     (await prisma.game.findUnique({ where: { id: req.body.gameid } }).then(game => game?.maxPlayersPerTeam)) || 1;
-  if (leftids.length > maxPlayersPerTeam || rightids.length > maxPlayersPerTeam)
+  if (left.length > maxPlayersPerTeam || right.length > maxPlayersPerTeam)
     return res
       .status(400)
       .json({ status: 'error', message: `Invalid team length. Allowed per team: ${maxPlayersPerTeam}` });
 
-  const matchPoints = await updatePlayersPoints({
+  const matchPoints = await distributeMatchPoints({
     leftscore: req.body.leftscore,
     rightscore: req.body.rightscore,
-    left: leftids.map(id => ({ id })),
-    right: rightids.map(id => ({ id })),
+    left,
+    right,
     gameid: req.body.gameid,
   });
 
@@ -116,8 +42,8 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
       createdAt: new Date().toISOString(),
       leftscore: req.body.leftscore,
       rightscore: req.body.rightscore,
-      left: { connect: leftids.map(id => ({ id })) },
-      right: { connect: rightids.map(id => ({ id })) },
+      left: { connect: left.map(id => ({ id })) },
+      right: { connect: right.map(id => ({ id })) },
       game: { connect: { id: req.body.gameid } },
       points: matchPoints,
     },
