@@ -1,6 +1,6 @@
 import { sortAlphabetically } from '@/lib/arrays';
 import { Box, Button, HStack, Input, Stack, Text } from '@chakra-ui/react';
-import { IoSearchCircle } from 'react-icons/io5';
+import { IoSearchCircle, IoCloseCircleOutline } from 'react-icons/io5';
 import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
 import { groupBy } from 'ramda';
 import { useMemo, useState } from 'react';
@@ -71,10 +71,29 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
           id="search"
           type="text"
           onChange={e => setSearch(e.target.value)}
+          value={search}
           placeholder="Type to search…"
           isDisabled={isLoading}
           variant="unstyled"
+          flexGrow={1}
+          autoComplete="off"
         />
+        {search && (
+          <AnimatePresence>
+            <MotionBox
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              as="button"
+              onClick={() => setSearch('')}
+              color="gray.400"
+              _hover={{ color: 'gray.600' }}
+              px={1}
+            >
+              <IoCloseCircleOutline size="24" />
+            </MotionBox>
+          </AnimatePresence>
+        )}
       </HStack>
       <AnimateSharedLayout>
         {playersList.map(([divider, opponents]) => {
@@ -104,7 +123,10 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
                     selectedColour={selectedColour}
                     player={user}
                     key={user.id}
-                    onSelect={onSelect}
+                    onSelect={player => {
+                      onSelect(player);
+                      setSearch('');
+                    }}
                   />
                 ))}
               </AnimatePresence>
