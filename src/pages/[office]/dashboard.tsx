@@ -7,7 +7,7 @@ import Leaderboard from '@/components/Leaderboard';
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
     where: { slug },
-    select: { games: { select: { id: true, name: true } } },
+    select: { games: { orderBy: { id: 'asc' }, select: { id: true, name: true } } },
   });
 
 type OfficePageProps = {
