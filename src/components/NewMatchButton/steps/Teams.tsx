@@ -5,7 +5,7 @@ import fetcher from '@/lib/fetcher';
 import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getUserGradient from '@/theme/palettes';
-import { Badge, Box, Circle, HStack, Text } from '@chakra-ui/react';
+import { Badge, Box, Circle, HStack, Skeleton, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
@@ -79,6 +79,15 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     }
     setSelectedSide(side);
   };
+
+  if (!opponentsQuery)
+    return (
+      <HStack as="aside" spacing={1} mb={4}>
+        <Skeleton flex={1} h="146px" borderRadius="lg" />
+        <Badge>Vs</Badge>
+        <Skeleton flex={1} h="146px" borderRadius="lg" />
+      </HStack>
+    );
 
   return (
     <Box>
