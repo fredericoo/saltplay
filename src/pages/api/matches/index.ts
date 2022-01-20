@@ -26,10 +26,14 @@ const updatePlayersPoints = async (
     select: { playerid: true, points: true },
   });
 
-  const leftTotalPoints = leftPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0);
-  const rightTotalPoints = rightPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0);
+  const leftAveragePoints = Math.ceil(
+    leftPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.left.length
+  );
+  const rightAveragePoints = Math.ceil(
+    rightPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.right.length
+  );
 
-  const matchPoints = calculateMatchPoints(leftTotalPoints, rightTotalPoints, data.leftscore - data.rightscore);
+  const matchPoints = calculateMatchPoints(leftAveragePoints, rightAveragePoints, data.leftscore - data.rightscore);
 
   if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION) {
     try {
