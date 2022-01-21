@@ -62,7 +62,12 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
     return (
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
-          <Skeleton key={i} w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
+          <HStack key={i}>
+            <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap">
+              {hasIcons && medals[i + 1] ? medals[i + 1] : i + 1}
+            </Box>
+            <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
+          </HStack>
         ))}
       </Stack>
     );
