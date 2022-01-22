@@ -1,3 +1,4 @@
+import ErrorBox from '@/components/ErrorBox';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
@@ -10,7 +11,7 @@ import { Game } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 import useSWR from 'swr';
 import { MatchFormInputs } from '../NewMatchButton';
 
@@ -33,6 +34,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 
   const { data: session } = useSession();
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
+  const { errors } = useFormState<MatchFormInputs>();
 
   const [left, right] = watch(['left', 'right']);
   const sides = { left, right };
@@ -80,6 +82,9 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     setSelectedSide(side);
   };
 
+  if (opponentsError || opponentsQuery?.status === 'error')
+    return <ErrorBox heading={["Couldn't load opponents", opponentsQuery?.message].join(': ')} />;
+
   if (!opponentsQuery)
     return (
       <HStack as="aside" spacing={1} mb={4}>
@@ -93,6 +98,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     <Box>
       <HStack as="aside" spacing={1} mb={4}>
         <Side
+          label={maxPlayersPerTeam === 1 ? 'You' : 'Your team'}
           isReverse
           players={left}
           isSelected={selectedSide === 'left'}
@@ -102,6 +108,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
         />
         <Badge>Vs</Badge>
         <Side
+          label={maxPlayersPerTeam === 1 ? 'Opponent' : 'Opposing team'}
           players={right}
           isSelected={selectedSide === 'right'}
           onClick={() => handleSelectedSide('right')}
@@ -111,7 +118,13 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
       </HStack>
       <AnimatePresence initial={false}>
         {selectedSide && (
-          <MotionBox initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} overflow="hidden">
+          <MotionBox
+            key={selectedSide}
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            overflow="hidden"
+          >
             {maxPlayersPerTeam > 1 && (
               <Text mb={2} textAlign="center" fontSize="small" color="gray.500">
                 Select up to {maxPlayersPerTeam} players
@@ -136,6 +149,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 };
 
 type SideProps = {
+  label: string;
   players?: Player[];
   isReverse?: boolean;
   isSelected?: boolean;
@@ -144,7 +158,15 @@ type SideProps = {
   emptySlots: number;
 };
 
-const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, selectedColour, emptySlots = 0 }) => {
+const Side: React.VFC<SideProps> = ({
+  label,
+  players,
+  isReverse,
+  isSelected,
+  onClick,
+  selectedColour,
+  emptySlots = 0,
+}) => {
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
   const teamAveragePoints = players
     ? Math.ceil(
@@ -164,7 +186,7 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
       onClick={onClick}
     >
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Text fontWeight="bold">{!isReverse ? 'Opponent team' : 'Your team'}</Text>
+        <Text fontWeight="bold">{label}</Text>
       </HStack>
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined} spacing={0} minH="76px">
         <AnimatePresence initial={false}>

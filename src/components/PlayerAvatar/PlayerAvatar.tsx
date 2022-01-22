@@ -30,7 +30,17 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             objectFit="cover"
           />
         ) : (
-          <Text color="gray.800" lineHeight="1" mt="-0.15em" userSelect={'none'} fontSize={`${+size / 8}em`}>
+          <Text
+            w="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ aspectRatio: '1' }}
+            color="gray.500"
+            fontWeight="bold"
+            userSelect={'none'}
+            fontSize={`1rem`}
+          >
             {user.name ? user.name[0].toUpperCase() : user.id[0].toUpperCase()}
           </Text>
         )}

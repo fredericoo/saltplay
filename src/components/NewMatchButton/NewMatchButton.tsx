@@ -111,7 +111,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
             </FormProvider>
           </ModalBody>
 
-          <ModalFooter flexDir="column">
+          <ModalFooter pb={6} flexDir="column">
             <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%">
               Submit
             </Button>

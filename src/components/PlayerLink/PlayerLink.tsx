@@ -5,14 +5,19 @@ import Link from 'next/link';
 type PlayerLinkProps = {
   name?: string | null;
   id?: User['id'];
+  surnameType?: 'full' | 'initial';
 };
 
-const PlayerLink: ComponentWithAs<'a', FlexProps & PlayerLinkProps> = ({ name, id, ...props }) => {
-  // first name plus first letter of last name
+const getPlayerName = (name?: PlayerLinkProps['name'], surnameType?: PlayerLinkProps['surnameType']) => {
+  if (!name) return 'Anonymous';
   const names = name?.split(' ');
-  const displayName = names
-    ? [names[0], names.length > 1 ? names[names.length - 1][0].toUpperCase() : ''].join(' ')
-    : 'Anonymous';
+  if (names.length === 1) return name;
+  const surname = surnameType === 'initial' ? names[names.length - 1][0].toUpperCase() : names[names.length - 1];
+  return [names[0], surname].join(' ');
+};
+
+const PlayerLink: ComponentWithAs<'a', FlexProps & PlayerLinkProps> = ({ name, id, surnameType, ...props }) => {
+  const displayName = getPlayerName(name, surnameType);
 
   if (!id)
     return (

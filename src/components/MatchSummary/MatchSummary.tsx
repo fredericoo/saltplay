@@ -85,6 +85,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 id={player.id}
                 maxW="30ch"
                 noOfLines={2}
+                surnameType="initial"
               />
             </Fragment>
           ))}
@@ -121,6 +122,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 id={player.id}
                 maxW="30ch"
                 noOfLines={2}
+                surnameType="initial"
               />
             </Fragment>
           ))}

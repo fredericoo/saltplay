@@ -1,11 +1,11 @@
 import { sortAlphabetically } from '@/lib/arrays';
-import { Box, Button, HStack, Input, Stack, Text } from '@chakra-ui/react';
-import { IoSearchCircle, IoCloseCircleOutline } from 'react-icons/io5';
-import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion';
+import { Box, Button, Text } from '@chakra-ui/react';
 import { groupBy } from 'ramda';
 import { useMemo, useState } from 'react';
 import PlayerItem from './PlayerItem';
 import { Player } from './types';
+import { AutoSizer, List } from 'react-virtualized';
+import SearchField from './SearchField';
 
 type PlayerPickerProps = {
   players?: Player[];
@@ -18,7 +18,7 @@ type PlayerPickerProps = {
 };
 
 const groupByFirstLetter = groupBy<Player>(user => user.name?.toLowerCase()[0] || 'other');
-const MotionBox = motion(Box);
+type ListRow = string | Player;
 
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   players,
@@ -31,13 +31,18 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
 }) => {
   const [search, setSearch] = useState<string>('');
 
-  const playersList: [string, Player[]][] = useMemo(
-    () =>
-      search
-        ? [['results', players?.filter(player => player.name?.match(new RegExp(search, 'i'))) || []]]
-        : Object.entries(groupByFirstLetter(sortAlphabetically(players || [], player => player.name || ''))),
-    [players, search]
-  );
+  const list = useMemo(() => {
+    if (search) {
+      const searchString = search.replace(/[^a-zA-Z0-9]/g, '');
+      const results = players?.filter(player => player.name?.normalize('NFD').toLowerCase().match(searchString)) || [];
+      return ['results', ...results];
+    }
+    const sortedPlayers = sortAlphabetically(players || [], player => player.name || '');
+    return Object.entries(groupByFirstLetter(sortedPlayers)).reduce<ListRow[]>(
+      (acc, [letter, players]) => [...acc, letter, ...players],
+      []
+    );
+  }, [players, search]);
 
   if (isError)
     return (
@@ -52,89 +57,54 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
     );
 
   return (
-    <Stack spacing={4} py={1} h="256px" overflow="auto" bg="gray.100" borderRadius="xl">
-      <HStack
-        mx={1}
-        spacing={2}
-        bg="white"
-        position="sticky"
-        top="0"
-        zIndex={3}
-        borderRadius="12"
-        transition=".3s ease-out"
-        boxShadow="lg"
-      >
-        <Box as="label" htmlFor="search" color="gray.500">
-          <IoSearchCircle size="32" />
-        </Box>
-        <Input
-          id="search"
-          type="text"
-          onChange={e => setSearch(e.target.value)}
-          value={search}
-          placeholder="Type to search…"
-          isDisabled={isLoading}
-          variant="unstyled"
-          flexGrow={1}
-          autoComplete="off"
-        />
-        {search && (
-          <AnimatePresence>
-            <MotionBox
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              as="button"
-              onClick={() => setSearch('')}
-              color="gray.400"
-              _hover={{ color: 'gray.600' }}
-              px={1}
-            >
-              <IoCloseCircleOutline size="24" />
-            </MotionBox>
-          </AnimatePresence>
-        )}
-      </HStack>
-      <AnimateSharedLayout>
-        {playersList.map(([divider, opponents]) => {
-          return (
-            <Stack spacing={1} key={divider} px={1}>
-              <AnimatePresence initial={false}>
-                <MotionBox
-                  layout
-                  key={divider}
-                  layoutId={divider}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  pl={16}
-                  py={1}
-                  bg="gray.50"
-                  color="gray.400"
-                  letterSpacing="wider"
-                  fontSize="sm"
-                  borderRadius="12"
-                >
-                  {divider.toUpperCase()}
-                </MotionBox>
-                {opponents.map(user => (
+    <Box bg="gray.100" h="256px" borderRadius="xl" position="relative">
+      <SearchField search={search} setSearch={setSearch} />
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            style={{ borderRadius: '16px', padding: '3px' }}
+            width={width}
+            height={height}
+            rowHeight={({ index }) => (typeof (list[index] as ListRow) === 'string' ? 35 : 66)}
+            rowCount={list.length}
+            rowRenderer={({ index, key, style }) => {
+              const row = list[index];
+              if (typeof row === 'string') {
+                return (
+                  <Box
+                    key={key}
+                    style={style}
+                    pl={16}
+                    py={1}
+                    bg="gray.50"
+                    color="gray.400"
+                    letterSpacing="wider"
+                    fontSize="sm"
+                    borderRadius="12"
+                  >
+                    {row.toUpperCase()}
+                  </Box>
+                );
+              }
+              return (
+                <div style={style}>
                   <PlayerItem
-                    isSelected={!!selectedPlayers?.find(player => player.id === user.id)}
+                    key={key}
+                    isSelected={!!selectedPlayers?.find(player => player.id === row.id)}
                     selectedColour={selectedColour}
-                    player={user}
-                    key={user.id}
+                    player={row}
                     onSelect={player => {
                       onSelect(player);
                       setSearch('');
                     }}
                   />
-                ))}
-              </AnimatePresence>
-            </Stack>
-          );
-        })}
-      </AnimateSharedLayout>
-    </Stack>
+                </div>
+              );
+            }}
+          />
+        )}
+      </AutoSizer>
+    </Box>
   );
 };
 
