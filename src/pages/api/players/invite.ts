@@ -23,7 +23,7 @@ const getSlackUsers = async () => {
       name: [user.profile?.first_name, user.profile?.last_name].join(' ') || user.profile?.display_name || null,
       id: user.id || 'undefined',
       image: user.profile?.image_192 || null,
-      isInvite: true,
+      source: 'slack',
     }));
 };
 
