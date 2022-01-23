@@ -18,7 +18,10 @@ export const getOfficeBySlug = async (slug: string) =>
       name: true,
       id: true,
       slug: true,
-      games: { orderBy: { id: 'asc' }, select: { name: true, id: true, slug: true, icon: true } },
+      games: {
+        orderBy: { name: 'asc' },
+        select: { name: true, id: true, slug: true, icon: true },
+      },
     },
   });
 
