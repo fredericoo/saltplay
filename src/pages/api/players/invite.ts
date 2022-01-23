@@ -3,10 +3,11 @@ import { PromiseElement } from '@/lib/types/utils';
 import { APIResponse } from '@/lib/types/api';
 import slack from '@/lib/slackbot/client';
 import { getSession } from 'next-auth/react';
+import prisma from '@/lib/prisma';
 
 const getSlackUsers = async () => {
   const slackUsers = await slack.users.list();
-  const existingUsers = await prisma?.user.findMany({
+  const existingUsers = await prisma.user.findMany({
     select: { accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
   });
   return slackUsers?.members
@@ -38,7 +39,7 @@ const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req
 
   const users = await getSlackUsers();
 
-  // res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=86400');
+  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
   res.status(200).json({ status: 'ok', users });
 };
 
