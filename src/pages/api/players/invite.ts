@@ -39,7 +39,8 @@ const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req
 
   const users = await getSlackUsers();
 
-  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
+  process.env.NODE_ENV === 'production' &&
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
   res.status(200).json({ status: 'ok', users });
 };
 
