@@ -63,7 +63,15 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
-            <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap">
+            <Box
+              textAlign="right"
+              w="2.5rem"
+              pr={2}
+              fontSize="3xl"
+              color="gray.400"
+              whiteSpace="nowrap"
+              overflow="hidden"
+            >
               {hasIcons && medals[i + 1] ? medals[i + 1] : i + 1}
             </Box>
             <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
@@ -86,7 +94,15 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         const stats = calculateWinsAndLosses(position.player.leftmatches, position.player.rightmatches);
         return (
           <PositionWrapper layout key={position.id}>
-            <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400">
+            <Box
+              textAlign="right"
+              w="2.5rem"
+              pr={2}
+              fontSize="3xl"
+              color="gray.400"
+              whiteSpace="nowrap"
+              overflow="hidden"
+            >
               {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
             </Box>
             <LeaderboardPosition
