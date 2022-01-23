@@ -7,7 +7,7 @@ import { Player } from './types';
 import { AutoSizer, List } from 'react-virtualized';
 import SearchField from './SearchField';
 
-type PlayerPickerProps = {
+export type PlayerPickerProps = {
   players?: Player[];
   onSelect: (player: Player) => void;
   selectedPlayers?: Player[];

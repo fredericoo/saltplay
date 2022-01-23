@@ -1,3 +1,4 @@
+import createPlayerFromSlackId from '@/lib/createPlayerFromSlackId';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
@@ -11,27 +12,20 @@ import { nextAuthOptions } from '../auth/[...nextauth]';
 const updatePlayersPoints = async (
   data: Pick<Match, 'gameid' | 'leftscore' | 'rightscore'> & { left: Pick<User, 'id'>[]; right: Pick<User, 'id'>[] }
 ) => {
-  const leftPoints = await prisma.playerScore.findMany({
-    where: {
-      gameid: data.gameid,
-      playerid: { in: data.left.map(p => p.id) },
-    },
-    select: { playerid: true, points: true },
+  const leftPlayers = await prisma.user.findMany({
+    where: { id: { in: data.left.map(user => user.id) } },
+    select: { id: true, scores: { where: { gameid: data.gameid }, select: { playerid: true, points: true } } },
   });
-
-  const rightPoints = await prisma.playerScore.findMany({
-    where: {
-      gameid: data.gameid,
-      playerid: { in: data.right.map(p => p.id) },
-    },
-    select: { playerid: true, points: true },
+  const rightPlayers = await prisma.user.findMany({
+    where: { id: { in: data.left.map(user => user.id) } },
+    select: { id: true, scores: { where: { gameid: data.gameid }, select: { playerid: true, points: true } } },
   });
 
   const leftAveragePoints = Math.ceil(
-    leftPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.left.length
+    leftPlayers.reduce((acc, cur) => acc + (cur.scores[0]?.points || STARTING_POINTS), 0) / data.left.length
   );
   const rightAveragePoints = Math.ceil(
-    rightPoints.reduce((acc, cur) => acc + (cur.points || STARTING_POINTS), 0) / data.right.length
+    rightPlayers.reduce((acc, cur) => acc + (cur.scores[0]?.points || STARTING_POINTS), 0) / data.right.length
   );
 
   const matchPoints = calculateMatchPoints(leftAveragePoints, rightAveragePoints, data.leftscore - data.rightscore);
@@ -52,33 +46,47 @@ const updatePlayersPoints = async (
 
   if (data.leftscore === data.rightscore) return;
 
+  type NewScore = { id: User['id']; hasAccount: boolean; newScore: number; side: 'left' | 'right' };
   const newScores = [
-    ...data.left.map(player => ({
+    ...data.left.map<NewScore>(player => ({
       id: player.id,
+      side: 'left',
+      hasAccount: !!leftPlayers.find(p => p.id === player.id),
       newScore:
-        (leftPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
+        (leftPlayers.find(p => p.id === player.id)?.scores?.[0].points || STARTING_POINTS) +
         matchPoints * (data.leftscore > data.rightscore ? 1 : -1),
     })),
-    ...data.right.map(player => ({
+    ...data.right.map<NewScore>(player => ({
       id: player.id,
+      side: 'right',
+      hasAccount: !!rightPlayers.find(p => p.id === player.id),
       newScore:
-        (rightPoints.find(p => p.playerid === player.id)?.points || STARTING_POINTS) +
+        (rightPlayers.find(p => p.id === player.id)?.scores?.[0].points || STARTING_POINTS) +
         matchPoints * (data.leftscore < data.rightscore ? 1 : -1),
     })),
   ];
 
+  const ids: Record<NewScore['side'], User['id'][]> = { left: [], right: [] };
+
   await Promise.all(
-    newScores.map(
-      async player =>
-        await prisma.playerScore.upsert({
-          where: { gameid_playerid: { gameid: data.gameid, playerid: player.id } },
-          update: { points: player.newScore },
-          create: { points: player.newScore, gameid: data.gameid, playerid: player.id },
-        })
-    )
+    newScores.map(async player => {
+      const playerid = player.hasAccount ? player.id : await createPlayerFromSlackId(player.id);
+      if (!playerid) throw new Error(`Invalid player ${player.id}`);
+      ids[player.side].push(playerid);
+
+      await prisma.playerScore.upsert({
+        where: { gameid_playerid: { gameid: data.gameid, playerid } },
+        update: { points: player.newScore },
+        create: {
+          points: player.newScore,
+          gameid: data.gameid,
+          playerid,
+        },
+      });
+    })
   );
 
-  return matchPoints;
+  return { matchPoints, ids };
 };
 
 export type MatchesPOSTAPIResponse = APIResponse;
@@ -104,7 +112,7 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
       .status(400)
       .json({ status: 'error', message: `Invalid team length. Allowed per team: ${maxPlayersPerTeam}` });
 
-  const matchPoints = await updatePlayersPoints({
+  const updatedPlayers = await updatePlayersPoints({
     leftscore: req.body.leftscore,
     rightscore: req.body.rightscore,
     left: leftids.map(id => ({ id })),
@@ -117,10 +125,10 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
       createdAt: new Date().toISOString(),
       leftscore: req.body.leftscore,
       rightscore: req.body.rightscore,
-      left: { connect: leftids.map(id => ({ id })) },
-      right: { connect: rightids.map(id => ({ id })) },
+      left: { connect: updatedPlayers?.ids.left.map(id => ({ id })) },
+      right: { connect: updatedPlayers?.ids.right.map(id => ({ id })) },
       game: { connect: { id: req.body.gameid } },
-      points: matchPoints,
+      points: updatedPlayers?.matchPoints,
     },
   });
 

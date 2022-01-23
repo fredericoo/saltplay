@@ -6,13 +6,14 @@ import fetcher from '@/lib/fetcher';
 import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getUserGradient from '@/theme/palettes';
-import { Badge, Box, Circle, HStack, Skeleton, Text } from '@chakra-ui/react';
+import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { useFormContext, useFormState } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
+import InvitePicker from '../InvitePicker';
 import { MatchFormInputs } from '../NewMatchButton';
 
 type TeamsProps = {
@@ -34,15 +35,12 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 
   const { data: session } = useSession();
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
-  const { errors } = useFormState<MatchFormInputs>();
-
   const [left, right] = watch(['left', 'right']);
   const sides = { left, right };
-  const teamSize = Math.max(left?.length, right?.length, 1);
 
+  const teamSize = Math.max(left?.length, right?.length, 1);
   const players = opponentsQuery?.opponents?.filter(({ id }) => id !== session?.user.id);
   const thisPlayer = opponentsQuery?.opponents?.find(({ id }) => id === session?.user.id);
-
   register('right', { required: true, value: [] });
   register('left', { required: true, value: [] });
 
@@ -125,22 +123,59 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
             exit={{ height: 0 }}
             overflow="hidden"
           >
+            <Tabs isLazy>
+              <TabList mb="2">
+                <Tab>Players</Tab>
+                <Tab>
+                  Slack{' '}
+                  <Badge
+                    ml={2}
+                    mr={-2}
+                    bg={[
+                      //@ts-ignore
+                      [
+                        'linear-gradient(-135deg, #FBB826, #FE33A1)',
+                        'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+                      ],
+                    ]}
+                    color="white"
+                    size="sm"
+                    pb="0.5em"
+                    fontSize=".6rem"
+                    letterSpacing="wide"
+                  >
+                    New!
+                  </Badge>
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel px={0}>
+                  <PlayerPicker
+                    players={players?.filter(
+                      ({ id }) => !sides[selectedSide === 'left' ? 'right' : 'left'].find(player => player.id === id)
+                    )}
+                    selectedPlayers={sides[selectedSide]}
+                    refetch={mutate}
+                    isLoading={!opponentsQuery}
+                    isError={opponentsError}
+                    onSelect={handleSelect}
+                    selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
+                  />
+                </TabPanel>
+                <TabPanel px={0}>
+                  <InvitePicker
+                    selectedPlayers={sides[selectedSide]}
+                    onSelect={handleSelect}
+                    selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
             {maxPlayersPerTeam > 1 && (
-              <Text mb={2} textAlign="center" fontSize="small" color="gray.500">
+              <Text mt={2} textAlign="center" fontSize="small" color="gray.500">
                 Select up to {maxPlayersPerTeam} players
               </Text>
             )}
-            <PlayerPicker
-              players={players?.filter(
-                ({ id }) => !sides[selectedSide === 'left' ? 'right' : 'left'].find(player => player.id === id)
-              )}
-              selectedPlayers={sides[selectedSide]}
-              refetch={mutate}
-              isLoading={!opponentsQuery}
-              isError={opponentsError}
-              onSelect={handleSelect}
-              selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
-            />
           </MotionBox>
         )}
       </AnimatePresence>
@@ -170,7 +205,8 @@ const Side: React.VFC<SideProps> = ({
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
   const teamAveragePoints = players
     ? Math.ceil(
-        players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0) / players?.length
+        players?.reduce((acc, cur) => acc + (('scores' in cur && cur.scores?.[0]?.points) || STARTING_POINTS), 0) /
+          players?.length
       ) || 0
     : 0;
 

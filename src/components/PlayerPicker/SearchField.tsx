@@ -16,7 +16,7 @@ const SearchField: React.VFC<SearchFieldProps> = ({ search, setSearch }) => {
       spacing={2}
       bg="white"
       position="absolute"
-      inset="3px 3px auto"
+      inset="3px 0px auto"
       zIndex={3}
       borderRadius="12"
       transition=".3s ease-out"

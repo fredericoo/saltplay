@@ -1,0 +1,45 @@
+import { NextApiHandler } from 'next';
+import { PromiseElement } from '@/lib/types/utils';
+import { APIResponse } from '@/lib/types/api';
+import slack from '@/lib/slackbot/client';
+import { getSession } from 'next-auth/react';
+
+const getSlackUsers = async () => {
+  const slackUsers = await slack.users.list();
+  const existingUsers = await prisma?.user.findMany({
+    select: { accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
+  });
+  return slackUsers?.members
+    ?.filter(user => !user.is_bot && !user.is_restricted && !user.is_ultra_restricted)
+    .filter(
+      user =>
+        user.profile?.first_name &&
+        !existingUsers?.find(
+          existingUser => !!existingUser?.accounts?.find(account => account?.providerAccountId === user.id)
+        )
+    )
+    .map(user => ({
+      name: [user.profile?.first_name, user.profile?.last_name].join(' ') || user.profile?.display_name || null,
+      id: user.id || 'undefined',
+      image: user.profile?.image_192 || null,
+      isInvite: true,
+    }));
+};
+
+export type InvitePlayersAPIResponse = APIResponse<{
+  users: PromiseElement<ReturnType<typeof getSlackUsers>>;
+}>;
+
+const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req, res) => {
+  if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
+
+  const session = await getSession({ req });
+  if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
+
+  const users = await getSlackUsers();
+
+  // res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=86400');
+  res.status(200).json({ status: 'ok', users });
+};
+
+export default invitedUsersHandler;
