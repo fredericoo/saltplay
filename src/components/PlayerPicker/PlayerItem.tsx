@@ -12,7 +12,7 @@ type PlayerItemProps = {
 };
 
 const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect, selectedColour }) => {
-  const score = 'scores' in player ? player?.scores[0] : undefined;
+  const score = player?.scores?.[0];
   return (
     <HStack
       my={0.5}

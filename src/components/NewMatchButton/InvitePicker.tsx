@@ -14,7 +14,7 @@ const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPl
 
   return (
     <PlayerPicker
-      players={data?.users?.map(user => ({ ...user, scores: [] }))}
+      players={data?.users}
       selectedPlayers={selectedPlayers}
       refetch={mutate}
       isLoading={!data}
