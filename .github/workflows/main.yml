@@ -1,8 +1,10 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
-    branches: [main]
 
   workflow_dispatch:
 
@@ -19,4 +21,4 @@ jobs:
       - name: Deploy staging database
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: prisma migrate deploy
+        run: yarn prisma migrate deploy
