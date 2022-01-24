@@ -43,7 +43,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
       const maxPlayersPerTeam =
         (await prisma.game.findUnique({ where: { id: body.gameId } }).then(game => game?.maxPlayersPerTeam)) || 1;
 
-      if (body.left.players.length > maxPlayersPerTeam || body.left.players.length > maxPlayersPerTeam)
+      if (body.left.players.length > maxPlayersPerTeam || body.right.players.length > maxPlayersPerTeam)
         return res
           .status(400)
           .json({ status: 'error', message: `Invalid team length. Allowed per team: ${maxPlayersPerTeam}` });

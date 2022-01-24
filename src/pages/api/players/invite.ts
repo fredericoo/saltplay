@@ -11,7 +11,7 @@ const getSlackUsers = async () => {
     select: { accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
   });
   return slackUsers?.members
-    ?.filter(user => !user.is_bot && !user.is_restricted && !user.is_ultra_restricted)
+    ?.filter(user => !user.is_bot && !user.is_restricted && !user.is_ultra_restricted && !user.deleted)
     .filter(
       user =>
         user.profile?.first_name &&
