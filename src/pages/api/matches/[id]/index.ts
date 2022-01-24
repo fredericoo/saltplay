@@ -2,7 +2,7 @@ import { NextApiHandler } from 'next';
 import { getSession } from 'next-auth/react';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { STARTING_POINTS } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
 
 export type MatchesDELETEAPIResponse = APIResponse;
 

@@ -2,7 +2,7 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
 import fetcher from '@/lib/fetcher';
-import { STARTING_POINTS } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getUserGradient from '@/theme/palettes';
 import { Badge, Box, Circle, HStack, Skeleton, Text } from '@chakra-ui/react';

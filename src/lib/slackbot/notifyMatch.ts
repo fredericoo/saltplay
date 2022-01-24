@@ -30,6 +30,7 @@ export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, 
     select: {
       name: true,
       icon: true,
+      flags: true,
       office: {
         select: {
           name: true,

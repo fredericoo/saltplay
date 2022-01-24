@@ -3,7 +3,8 @@ import { NextApiHandler } from 'next';
 import { Match, User } from '@prisma/client';
 import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
-import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
+import { calculateMatchPoints } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
 import { PromiseElement } from '@/lib/types/utils';
 import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
 
