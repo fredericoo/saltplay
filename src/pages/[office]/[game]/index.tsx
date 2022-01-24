@@ -15,6 +15,7 @@ export const getOfficeWithGames = async (officeSlug: string) =>
       name: true,
       slug: true,
       games: {
+        orderBy: { name: 'asc' },
         select: {
           name: true,
           slug: true,
