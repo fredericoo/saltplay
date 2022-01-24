@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   workflow_dispatch:
 
@@ -12,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
 
       - name: Deploy staging database
         env:
