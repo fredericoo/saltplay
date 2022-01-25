@@ -9,16 +9,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  migrate:
+  migrate-dev:
     runs-on: ubuntu-latest
-
+    if: github.ref != 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-
       - name: Install Prisma
         run: yarn add prisma
 
       - name: Deploy staging database
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        run: yarn prisma migrate deploy
+  migrate-prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Prisma
+        run: yarn add prisma
+
+      - name: Deploy staging database
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
         run: yarn prisma migrate deploy
