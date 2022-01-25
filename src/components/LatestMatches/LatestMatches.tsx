@@ -1,12 +1,12 @@
-import { Game, User } from '@prisma/client';
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import fetcher from '@/lib/fetcher';
-import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
-import useSWRInfinite from 'swr/infinite';
 import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
-import NewMatchButton from '../NewMatchButton';
-import { motion } from 'framer-motion';
 import { MatchesGETAPIResponse } from '@/pages/api/matches';
+import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Game, User } from '@prisma/client';
+import { motion } from 'framer-motion';
+import useSWRInfinite from 'swr/infinite';
+import NewMatchButton from '../NewMatchButton';
 
 const MotionBox = motion(Box);
 

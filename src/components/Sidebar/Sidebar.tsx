@@ -3,7 +3,7 @@ import { Box, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import IconBlur from '../IconBlur/IconBlur';
-import { SidebarItem, Sidebar as SidebarProps } from './types';
+import { Sidebar as SidebarProps, SidebarItem } from './types';
 
 const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   const router = useRouter();

@@ -1,10 +1,10 @@
-import { Box, HStack, VStack, Text } from '@chakra-ui/react';
+import PlayerAvatar from '@/components/PlayerAvatar';
+import PlayerLink from '@/components/PlayerLink';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
-import PlayerAvatar from '../PlayerAvatar';
-import PlayerLink from '../PlayerLink/PlayerLink';
 import DeleteMatchButton from './DeleteButton';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {

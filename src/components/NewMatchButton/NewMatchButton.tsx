@@ -1,27 +1,27 @@
+import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
 import {
+  Button,
+  Center,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  useDisclosure,
-  Center,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { Game, Match } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useToast } from '@chakra-ui/react';
 import LoadingIcon from '../LoadingIcon';
-import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
 import { Player } from '../PlayerPicker/types';
-import Teams from './steps/Teams';
-import Scores from './steps/Scores';
 import Toast from '../Toast';
+import Scores from './steps/Scores';
+import Teams from './steps/Teams';
 
 type NewMatchButtonProps = {
   gameId: Game['id'];

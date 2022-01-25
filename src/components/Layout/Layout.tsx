@@ -1,6 +1,6 @@
-import { Container, ContainerProps, Grid } from '@chakra-ui/react';
-import type { SidebarItem } from '@/components/Sidebar/types';
 import Sidebar from '@/components/Sidebar';
+import type { SidebarItem } from '@/components/Sidebar/types';
+import { Container, ContainerProps, Grid } from '@chakra-ui/react';
 
 type LayoutProps = {
   sidebar?: { items: SidebarItem[] };
