@@ -1,7 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
 import { PromiseElement } from '@/lib/types/utils';
-import { Match } from '@prisma/client';
 import { APIResponse } from '@/lib/types/api';
 
 export type LeaderboardAPIResponse = APIResponse<{

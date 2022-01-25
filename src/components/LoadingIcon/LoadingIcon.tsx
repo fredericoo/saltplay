@@ -1,4 +1,4 @@
-import { Box, ComponentWithAs } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 const Wrapper = motion(Box);

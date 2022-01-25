@@ -23,10 +23,7 @@ type PlayerPageProps = {
 };
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
-  const { data, error } = useSWR<PlayerStatsAPIResponse>(
-    player?.id ? `/api/players/${player.id}/stats` : null,
-    fetcher
-  );
+  const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher);
 
   if (!player) return null;
 

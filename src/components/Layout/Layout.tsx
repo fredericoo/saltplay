@@ -1,4 +1,4 @@
-import { Box, Container, ContainerProps, Grid } from '@chakra-ui/react';
+import { Container, ContainerProps, Grid } from '@chakra-ui/react';
 import type { SidebarItem } from '@/components/Sidebar/types';
 import Sidebar from '@/components/Sidebar';
 

@@ -1,4 +1,4 @@
-import { ComponentWithAs, Flex, FlexProps, Text } from '@chakra-ui/react';
+import { ComponentWithAs, FlexProps, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Link from 'next/link';
 
