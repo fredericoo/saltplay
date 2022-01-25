@@ -1,7 +1,6 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
+import { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/getMatchesHandler';
 import fetcher from '@/lib/fetcher';
-import { GameMatchesAPIResponse } from '@/pages/api/games/[id]/matches';
-import { MatchesGETAPIResponse } from '@/pages/api/matches';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { motion } from 'framer-motion';
@@ -18,21 +17,14 @@ type LatestMatchesProps = {
 } & ({ canAddNewMatch: true; maxPlayersPerTeam: number } | { canAddNewMatch?: false; maxPlayersPerTeam?: never });
 
 const getKey =
-  (gameId?: Game['id'], userId?: User['id'], perPage?: number) =>
-  (pageIndex: number, previousPageData: GameMatchesAPIResponse) => {
+  (options: Partial<GetMatchesOptions>) => (pageIndex: number, previousPageData: MatchesGETAPIResponse) => {
     if (previousPageData && !previousPageData.nextCursor) return null; // reached the end
-
-    const baseUrl = gameId
-      ? `/api/games/${gameId}/matches`
-      : userId
-      ? `/api/players/${userId}/matches`
-      : '/api/matches';
-
-    const perPageParam = perPage ? `count=${perPage}` : undefined;
-    const cursorParam = pageIndex > 0 ? `cursor=${previousPageData.nextCursor}` : '';
-    const queryParams = [cursorParam, perPageParam].filter(Boolean).join('&');
-
-    return [baseUrl, queryParams].join('?');
+    const queryParams = Object.entries({ after: pageIndex > 0 ? previousPageData.nextCursor : undefined, ...options })
+      .filter(([, value]) => value)
+      .map(entry => entry.join('='))
+      .join('&');
+    console.log(['/api/matches', queryParams].join('?'));
+    return ['/api/matches', queryParams].join('?');
   };
 
 const LatestMatches: React.VFC<LatestMatchesProps> = ({
@@ -44,7 +36,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   maxPlayersPerTeam,
 }) => {
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
-    getKey(gameId, userId, perPage),
+    getKey({ first: perPage, gameId, left: userId }),
     fetcher
   );
   const hasNextPage = data?.[data.length - 1].nextCursor;

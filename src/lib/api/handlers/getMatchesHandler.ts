@@ -1,15 +1,35 @@
-import { Match } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { PromiseElement } from '@/lib/types/utils';
+import { Match } from '@prisma/client';
 import { NextApiHandler } from 'next';
+import { InferType, number, object, string } from 'yup';
 
-const getMatches = (take: number, cursor?: Pick<Match, 'id'>) =>
+const isProd = process.env.NODE_ENV === 'production';
+
+const querySchema = object({
+  gameId: string(),
+  officeId: string(),
+  left: string(),
+  right: string(),
+  first: number().max(20),
+  after: string(),
+});
+
+export type GetMatchesOptions = InferType<typeof querySchema>;
+
+const getMatches = ({ first = 5, after, left, right, gameId, officeId }: GetMatchesOptions) =>
   prisma.match.findMany({
     orderBy: { createdAt: 'desc' },
-    cursor,
-    skip: cursor ? 1 : 0,
-    take,
+    cursor: after ? { id: after } : undefined,
+    skip: after ? 1 : 0,
+    take: first,
+    where: {
+      left: { some: { id: left } },
+      right: { some: { id: right } },
+      gameid: gameId,
+      game: { officeid: officeId },
+    },
     select: {
       game: {
         select: {
@@ -37,13 +57,18 @@ export type MatchesGETAPIResponse = APIResponse<{
 }>;
 
 const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
-  const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
-  const take = Math.min(+req.query.count, 20) || 3;
-  const matches = await getMatches(take, cursor);
-  const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
+  querySchema
+    .validate(req.query, { abortEarly: false })
+    .then(async options => {
+      const matches = await getMatches({ ...options });
+      const nextCursor = matches.length >= (options.first || 5) ? matches[matches.length - 1].id : undefined;
 
-  res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=60');
-  res.status(200).json({ status: 'ok', matches, nextCursor });
+      isProd && res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=60');
+      res.status(200).json({ status: 'ok', matches, nextCursor });
+    })
+    .catch(err => {
+      res.status(400).json({ status: 'error', message: !isProd ? err.message : 'Bad request' });
+    });
 };
 
 export default getMatchesHandler;
