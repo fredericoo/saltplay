@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import prisma from '@/lib/prisma';
 import { User } from '@prisma/client';
 import { PromiseElement } from '@/lib/types/utils';
-import { Box, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import SEO from '@/components/SEO';
 import LatestMatches from '@/components/LatestMatches';
 import PlayerStat from '@/components/PlayerStat';
@@ -32,9 +32,9 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
 
   const playerName = player.name || `Player ${player?.id}`;
   return (
-    <Stack spacing={{ base: 4, md: 8 }} maxW="container.sm" mx="auto">
+    <Stack spacing={{ base: 1, md: 0.5 }} maxW="container.sm" mx="auto">
       <SEO title={`${playerName}’s profile`} />
-      <Box bg="white" borderRadius="xl" overflow="hidden">
+      <Box bg="gray.50" borderRadius="xl" overflow="hidden">
         <Box bg={getUserGradient(player.id)} h="32" />
         <Box p={4} mt="-16">
           <PlayerAvatar user={player} size={32} />
@@ -46,30 +46,35 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
               <Box
                 fontSize="sm"
                 letterSpacing="wide"
-                bg="gray.300"
-                color="gray.800"
-                p="1px"
-                borderRadius="10"
+                bg="gray.100"
+                color="gray.600"
+                borderRadius="8"
+                px={2}
+                py={1}
                 key={game}
               >
-                <Box px={2} py={1} borderRadius="9" bg="white">
-                  {game}
-                </Box>
+                {game}
               </Box>
             ))}
           </HStack>
         </Box>
       </Box>
-      <HStack flexWrap={'wrap'} spacing={{ base: 4, md: 8 }}>
+      <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
         <PlayerStat id={player.id} stat="played" />
         <PlayerStat id={player.id} stat="won" />
         <PlayerStat id={player.id} stat="lost" />
       </HStack>
       <Stack spacing={6} pt={4}>
-        <Text as="h2" fontSize="md" color="gray.400" textAlign="center">
-          Recent matches played
-        </Text>
-        <LatestMatches userId={player.id} />
+        <Tabs>
+          <TabList mb={8}>
+            <Tab>Latest Matches</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <LatestMatches userId={player.id} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Stack>
     </Stack>
   );

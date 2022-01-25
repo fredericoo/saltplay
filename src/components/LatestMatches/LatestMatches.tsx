@@ -38,7 +38,7 @@ const getKey =
 const LatestMatches: React.VFC<LatestMatchesProps> = ({
   gameId,
   userId,
-  perPage = 3,
+  perPage = 5,
   canLoadMore = true,
   canAddNewMatch = false,
   maxPlayersPerTeam,
@@ -117,7 +117,13 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
       })}
 
       {hasNextPage && canLoadMore && (
-        <Button isLoading={isValidating} variant="ghost" onClick={() => setSize(size + 1)}>
+        <Button
+          isLoading={isValidating}
+          variant="ghost"
+          bg="gray.200"
+          _hover={{ bg: 'gray.50' }}
+          onClick={() => setSize(size + 1)}
+        >
           Load more
         </Button>
       )}

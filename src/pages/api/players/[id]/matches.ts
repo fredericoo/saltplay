@@ -34,7 +34,7 @@ const gamesHandler: NextApiHandler<PlayerMatchesAPIResponse> = async (req, res) 
   if (typeof userId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid user id' });
 
   const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
-  const take = Math.min(+req.query.count, 20) || 3;
+  const take = Math.min(+req.query.count, 20) || 5;
   const matches = await getPlayerMatches(userId, take, cursor);
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
 

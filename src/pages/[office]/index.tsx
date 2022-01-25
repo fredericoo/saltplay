@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import getUserGradient from '@/theme/palettes';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
@@ -10,6 +10,7 @@ import fetcher from '@/lib/fetcher';
 import Image from 'next/image';
 import { RandomPhotoApiResponse } from '../api/photo/random';
 import OfficeStat from '@/components/OfficeStat';
+import LatestMatches from '@/components/LatestMatches';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
@@ -34,10 +35,10 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
   return (
-    <Box>
+    <Stack spacing={{ base: 1, md: 0.5 }} maxW="container.sm" mx="auto">
       <SEO title={office.name} />
-      <Box bg={getUserGradient(office.id.toString())} borderRadius="xl" overflow="hidden">
-        <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
+      <Box bg="gray.50" borderRadius="xl" overflow="hidden">
+        <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
           {data?.photo && (
             <Image
               src={data.photo.urls.regular}
@@ -48,17 +49,29 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
             />
           )}
         </Box>
+        <Box p={4}>
+          <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
+            {office.name} office
+          </Text>
+        </Box>
       </Box>
-      <Box py={8}>
-        <Text as="h1" fontSize="2rem">
-          {office.name} office
-        </Text>
-      </Box>
-      <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
+      <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
         <OfficeStat id={office.id} stat="mostPlayedGame" />
         <OfficeStat id={office.id} stat="matchesCount" />
-      </SimpleGrid>
-    </Box>
+      </HStack>
+      <Stack spacing={6} pt={4}>
+        <Tabs>
+          <TabList mb={8}>
+            <Tab>Latest Matches</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <LatestMatches />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Stack>
+    </Stack>
   );
 };
 

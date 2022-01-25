@@ -1,6 +1,6 @@
 import fetcher from '@/lib/fetcher';
 import { PlayerStatsAPIResponse } from '@/pages/api/players/[id]/stats';
-import { Skeleton, Stat, StatLabel, StatNumber } from '@chakra-ui/react';
+import { Skeleton, Stack, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import useSWR from 'swr';
 
@@ -19,14 +19,14 @@ const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
   const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher);
   if (!id || error) return null;
   return (
-    <Stat bg="white" borderRadius="xl" p={4}>
-      <StatLabel fontSize="md" color="gray.600" mb={2}>
+    <Stack bg="gray.200" borderRadius="xl" p={4} spacing={0} flex={1}>
+      <Text fontSize="md" mt="auto" color="gray.600" mb={2} flexGrow={1}>
         {labels[stat]}
-      </StatLabel>
-      <StatNumber fontSize="4xl" fontWeight="normal" lineHeight={1}>
+      </Text>
+      <Text fontSize="4xl" fontWeight="normal" lineHeight={1}>
         <Skeleton isLoaded={!!data}>{data ? data?.[stat] : '…'}</Skeleton>
-      </StatNumber>
-    </Stat>
+      </Text>
+    </Stack>
   );
 };
 

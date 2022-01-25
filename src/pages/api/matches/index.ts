@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextApiHandler } from 'next';
-import { Match, User } from '@prisma/client';
+import { Match, Office, User } from '@prisma/client';
 import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
@@ -126,12 +126,25 @@ const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => 
   res.status(200).json({ status: 'ok' });
 };
 
-const getMatches = (take: number, cursor?: Pick<Match, 'id'>) =>
+type GetMatchesOptions = {
+  officeId?: Office['id'];
+  gameId?: Match['gameid'];
+  left?: User['id'][];
+  right?: User['id'][];
+};
+
+const getMatches = (options: GetMatchesOptions = {}, take: number, cursor?: Pick<Match, 'id'>) =>
   prisma.match.findMany({
     orderBy: { createdAt: 'desc' },
     cursor,
     skip: cursor ? 1 : 0,
     take,
+    where: {
+      left: { some: { id: { in: options.left } } },
+      right: { some: { id: { in: options.right } } },
+      gameid: options.gameId,
+      game: { officeid: options.officeId },
+    },
     select: {
       game: {
         select: {
@@ -160,9 +173,11 @@ export type MatchesGETAPIResponse = APIResponse<{
 
 const getHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
   const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
-  const take = Math.min(+req.query.count, 20) || 3;
-  const matches = await getMatches(take, cursor);
-  const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
+  const perPage = Math.min(+req.query.first, 20) || 3;
+
+  const matches = await getMatches({}, perPage, cursor);
+
+  const nextCursor = matches.length >= perPage ? matches[matches.length - 1].id : undefined;
 
   res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=60');
   res.status(200).json({ status: 'ok', matches, nextCursor });
