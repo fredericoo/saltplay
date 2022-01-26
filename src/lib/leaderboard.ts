@@ -22,3 +22,5 @@ export const calculateMatchPoints = (p1TotalPoints: number, p2TotalPoints: numbe
     ? Math.max(dimishingEquation, MIN_MATCH_POINTS)
     : Math.min(escalatingEqution, MAX_MATCH_POINTS);
 };
+
+//test
