@@ -1,8 +1,9 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { PromiseElement } from '@/lib/types/utils';
-import { getSession } from 'next-auth/react';
 import { APIResponse } from '@/lib/types/api';
+import { PromiseElement } from '@/lib/types/utils';
+import { NextApiHandler } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { nextAuthOptions } from '../../auth/[...nextauth]';
 
 const getOpponents = (gameid: string) =>
   prisma.user.findMany({
@@ -28,7 +29,7 @@ const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   if (typeof gameId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
 
-  const session = await getSession({ req });
+  const session = await getServerSession({ req, res }, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
   const opponents = await getOpponents(gameId);
 
