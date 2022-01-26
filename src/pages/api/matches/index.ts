@@ -1,11 +1,12 @@
-import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { Match, User } from '@prisma/client';
-import { getSession } from 'next-auth/react';
-import { APIResponse } from '@/lib/types/api';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
-import { PromiseElement } from '@/lib/types/utils';
+import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
+import { APIResponse } from '@/lib/types/api';
+import { PromiseElement } from '@/lib/types/utils';
+import { Match, User } from '@prisma/client';
+import { NextApiHandler } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { nextAuthOptions } from '../auth/[...nextauth]';
 
 const updatePlayersPoints = async (
   data: Pick<Match, 'gameid' | 'leftscore' | 'rightscore'> & { left: Pick<User, 'id'>[]; right: Pick<User, 'id'>[] }
@@ -83,7 +84,7 @@ const updatePlayersPoints = async (
 export type MatchesPOSTAPIResponse = APIResponse;
 
 const postHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
-  const session = await getSession({ req });
+  const session = await getServerSession({ req, res }, nextAuthOptions);
   if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
   if (!req.body.leftids.includes(session.user.id))
     return res.status(400).json({ status: 'error', message: 'Unauthorised' });

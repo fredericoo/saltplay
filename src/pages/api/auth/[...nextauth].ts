@@ -1,9 +1,9 @@
-import NextAuth from 'next-auth';
-import SlackProvider from 'next-auth/providers/slack';
+import PrismaAdapter from '@/lib/adapter';
+import prisma from '@/lib/prisma';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import GitHubProvider from 'next-auth/providers/github';
-import prisma from '@/lib/prisma';
-import PrismaAdapter from '@/lib/adapter';
+import SlackProvider from 'next-auth/providers/slack';
 
 const providers = [];
 
@@ -42,13 +42,15 @@ if (process.env.NODE_ENV === 'development') {
   );
 }
 
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers,
-  secret: 'xcAO/EYHuP0bSGyplq2EaiHjwOLG1Kmp8d0k9ntOF7g=',
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     session({ session, user }) {
       return { ...session, user: { ...session.user, id: user.id } };
     },
   },
-});
+};
+
+export default NextAuth(nextAuthOptions);

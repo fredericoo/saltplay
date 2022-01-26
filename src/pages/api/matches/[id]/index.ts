@@ -1,13 +1,14 @@
-import { NextApiHandler } from 'next';
-import { getSession } from 'next-auth/react';
+import { STARTING_POINTS } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { STARTING_POINTS } from '@/lib/leaderboard';
+import { NextApiHandler } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { nextAuthOptions } from '../../auth/[...nextauth]';
 
 export type MatchesDELETEAPIResponse = APIResponse;
 
 const deleteHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (req, res) => {
-  const session = await getSession({ req });
+  const session = await getServerSession({ req, res }, nextAuthOptions);
   if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
   const matchId = req.query.id;
