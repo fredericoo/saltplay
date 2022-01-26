@@ -6,11 +6,11 @@ import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getUserGradient from '@/theme/palettes';
 import { Badge, Box, Circle, HStack, Skeleton, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import { Game } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { FieldError, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
 import { MatchFormInputs } from '../NewMatchButton';
 

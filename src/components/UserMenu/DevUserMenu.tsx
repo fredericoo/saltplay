@@ -1,9 +1,9 @@
 import fetcher from '@/lib/fetcher';
-import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import useSWR from 'swr';
-import { User } from '@prisma/client';
 import { DevUsersAPIResponse } from '@/pages/api/dev/users';
+import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import { User } from '@prisma/client';
 import axios from 'axios';
+import useSWR from 'swr';
 
 const setSession = async (userid: User['id']) => {
   await axios.post('/api/dev/sessions', { userid });

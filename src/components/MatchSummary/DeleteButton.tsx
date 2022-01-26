@@ -2,7 +2,6 @@ import {
   Button,
   CloseButton,
   HStack,
-  Text,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -10,6 +9,7 @@ import {
   PopoverFooter,
   PopoverTrigger,
   Portal,
+  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Match } from '@prisma/client';
