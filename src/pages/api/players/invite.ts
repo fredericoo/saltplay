@@ -3,7 +3,8 @@ import slack from '@/lib/slackbot/client';
 import { APIResponse } from '@/lib/types/api';
 import { PromiseElement } from '@/lib/types/utils';
 import { NextApiHandler } from 'next';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import { nextAuthOptions } from '../auth/[...nextauth]';
 
 const getSlackUsers = async () => {
   const slackUsers = await slack.users.list();
@@ -35,7 +36,7 @@ export type InvitePlayersAPIResponse = APIResponse<{
 const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
 
-  const session = await getSession({ req });
+  const session = await getServerSession({ req, res }, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
 
   const users = await getSlackUsers();

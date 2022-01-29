@@ -1,11 +1,12 @@
-import { APIResponse } from '@/lib/types/api';
-import { NextApiHandler } from 'next';
-import { getSession } from 'next-auth/react';
-import prisma from '@/lib/prisma';
-import { object, number, string, array, InferType } from 'yup';
-import getPlayerUserIds from '../getPlayerUserIds';
 import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
+import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
+import { APIResponse } from '@/lib/types/api';
+import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { NextApiHandler } from 'next';
+import { getServerSession } from 'next-auth';
+import { array, InferType, number, object, string } from 'yup';
+import getPlayerUserIds from '../getPlayerUserIds';
 import moveMatchPoints from '../moveMatchPoints';
 
 const sideSchema = object().shape({
@@ -33,7 +34,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
   await requestSchema
     .validate(req.body, { abortEarly: false })
     .then(async body => {
-      const session = await getSession({ req });
+      const session = await getServerSession({ req, res }, nextAuthOptions);
 
       if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
