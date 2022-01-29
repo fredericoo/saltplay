@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
 import { USER_ROLE_ID } from './constants';
+import notifyNewcomer from './slackbot/notifyNewcomer';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: USER_ROLE_ID } } } }),
@@ -18,6 +19,8 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   linkAccount: async account => {
     const { state, ok, ...data } = account;
     await prisma.account.create({ data });
+    const user = await prisma.user.findUnique({ where: { id: account.userId }, select: { name: true, image: true } });
+    notifyNewcomer({ providerAccountId: account.providerAccountId, name: user?.name, image: user?.image });
   },
   unlinkAccount: async provider_providerAccountId => {
     await prisma.account.delete({ where: { provider_providerAccountId } });
