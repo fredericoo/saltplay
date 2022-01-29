@@ -51,9 +51,14 @@ export const nextAuthOptions: NextAuthOptions = {
     session({ session, user }) {
       return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
     },
-    async signIn({ user, profile, account }) {
-      console.log(account, profile);
+    async signIn({ user, account }) {
       if (user.roleId === 2) {
+        const provider_providerAccountId = { provider: account.provider, providerAccountId: account.providerAccountId };
+        const { type, token_type, id_token, access_token } = account;
+        await prisma.account.update({
+          where: { provider_providerAccountId: provider_providerAccountId },
+          data: { type, token_type, id_token, access_token },
+        });
         await prisma.user.update({
           where: { id: user.id },
           data: { roleId: 1 },
