@@ -1,17 +1,17 @@
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import prisma from '@/lib/prisma';
-import { User } from '@prisma/client';
-import { PromiseElement } from '@/lib/types/utils';
-import { Box, HStack, Stack, Text } from '@chakra-ui/react';
-import SEO from '@/components/SEO';
 import LatestMatches from '@/components/LatestMatches';
-import PlayerStat from '@/components/PlayerStat';
 import PlayerAvatar from '@/components/PlayerAvatar';
+import PlayerStat from '@/components/PlayerStat';
+import SEO from '@/components/SEO';
 import fetcher from '@/lib/fetcher';
+import prisma from '@/lib/prisma';
+import { getRoleStyles } from '@/lib/roles';
+import { PromiseElement } from '@/lib/types/utils';
+import getGradientFromId from '@/theme/palettes';
+import { Box, HStack, Stack, Text } from '@chakra-ui/react';
+import { User } from '@prisma/client';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import useSWR from 'swr';
 import { PlayerStatsAPIResponse } from '../api/players/[id]/stats';
-import getGradientFromId from '@/theme/palettes';
-import { getRoleStyles } from '@/lib/roles';
 
 export const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
@@ -104,7 +104,7 @@ export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }
     props: {
       player,
     },
-    revalidate: 60 * 60 * 24,
+    revalidate: 60 * 60,
   };
 };
 

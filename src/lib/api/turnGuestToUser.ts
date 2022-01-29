@@ -18,7 +18,7 @@ const turnGuestToUser = async (user: User, account: Account) => {
 
     const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL;
     if (channel) {
-      await slack.channels.invite({ channel, user: account.providerAccountId });
+      await slack.conversations.invite({ channel, users: account.providerAccountId });
       const mention = account.providerAccountId ? `<@${account.providerAccountId}>` : user.name;
 
       await slack.chat.postMessage({
