@@ -7,11 +7,13 @@ const roleIcons: Record<Role['id'], string> = {
   2: '👻',
 };
 
-export const RoleIcon: React.VFC<ChakraProps & { roleId: Role['id'] }> = ({ roleId, ...props }) => {
+export const RoleBadge: React.VFC<ChakraProps & { roleId: Role['id'] }> = ({ roleId, ...props }) => {
   if (!(roleId in roleIcons)) return null;
 
   return (
     <Center
+      pointerEvents="none"
+      userSelect="none"
       h="1.5em"
       w="1.5em"
       whiteSpace="nowrap"
@@ -27,4 +29,4 @@ export const RoleIcon: React.VFC<ChakraProps & { roleId: Role['id'] }> = ({ role
   );
 };
 
-export default RoleIcon;
+export default RoleBadge;

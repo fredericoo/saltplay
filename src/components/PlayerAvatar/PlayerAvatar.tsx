@@ -3,7 +3,7 @@ import { Box, Circle, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import RoleIcon from '../RoleIcon';
+import RoleBadge from '@/components/RoleBadge';
 
 type PlayerAvatarProps = {
   user: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };
@@ -15,7 +15,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
   const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
   return (
     <LinkWrapper href={isLink ? `/player/${user.id}` : undefined}>
-      <RoleIcon
+      <RoleBadge
         fontSize={fontSize(1 / 16)}
         position="absolute"
         zIndex="2"
