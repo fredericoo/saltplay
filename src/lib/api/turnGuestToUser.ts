@@ -5,11 +5,11 @@ import slack from '../slackbot/client';
 
 const turnGuestToUser = async (user: User, account: Account) => {
   const provider_providerAccountId = { provider: account.provider, providerAccountId: account.providerAccountId };
-  const { type, token_type, id_token, access_token } = account;
+  const { type, token_type, id_token, access_token, state } = account;
   try {
     await prisma.account.update({
       where: { provider_providerAccountId: provider_providerAccountId },
-      data: { type, token_type, id_token, access_token },
+      data: { type, token_type, id_token, access_token, session_state: state as string },
     });
     await prisma.user.update({
       where: { id: user.id },
@@ -18,7 +18,7 @@ const turnGuestToUser = async (user: User, account: Account) => {
 
     const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL;
     if (channel) {
-      await slack.conversations.invite({ channel, users: account.providerAccountId });
+      await slack.conversations.invite({ channel, users: account.providerAccountId }).catch();
       const mention = account.providerAccountId ? `<@${account.providerAccountId}>` : user.name;
 
       await slack.chat.postMessage({
