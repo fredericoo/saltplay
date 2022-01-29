@@ -1,11 +1,12 @@
 import { sortAlphabetically } from '@/lib/arrays';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Text } from '@chakra-ui/react';
 import { groupBy } from 'ramda';
 import { useMemo, useState } from 'react';
-import PlayerItem from './PlayerItem';
-import { Player } from './types';
 import { AutoSizer, List } from 'react-virtualized';
+import LoadingIcon from '../LoadingIcon';
+import PlayerItem from './PlayerItem';
 import SearchField from './SearchField';
+import { Player } from './types';
 
 export type PlayerPickerProps = {
   players?: Player[];
@@ -34,7 +35,14 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   const list = useMemo(() => {
     if (search) {
       const searchString = search.replace(/[^a-zA-Z0-9]/g, '');
-      const results = players?.filter(player => player.name?.normalize('NFD').toLowerCase().match(searchString)) || [];
+      const results =
+        players?.filter(player =>
+          player.name
+            ?.toLowerCase()
+            .normalize('NFD')
+            .replace(/[^a-zA-Z0-9]/, '')
+            .match(searchString)
+        ) || [];
       return ['results', ...results];
     }
     const sortedPlayers = sortAlphabetically(players || [], player => player.name || '');
@@ -55,6 +63,14 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
         )}
       </Box>
     );
+
+  if (isLoading) {
+    return (
+      <Center bg="gray.100" h="256px" borderRadius="xl" position="relative">
+        <LoadingIcon color="gray.400" size={12} />
+      </Center>
+    );
+  }
 
   return (
     <Box bg="gray.100" h="256px" borderRadius="xl" position="relative">
