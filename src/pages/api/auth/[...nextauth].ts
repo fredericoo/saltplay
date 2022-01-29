@@ -51,8 +51,8 @@ export const nextAuthOptions: NextAuthOptions = {
     session({ session, user }) {
       return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
     },
-    async signIn({ user }) {
-      console.log(user);
+    async signIn({ user, profile, account }) {
+      console.log(account, profile);
       if (user.roleId === 2) {
         await prisma.user.update({
           where: { id: user.id },
