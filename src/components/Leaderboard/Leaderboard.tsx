@@ -1,3 +1,4 @@
+import PlayerName from '@/components/PlayerName';
 import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
@@ -5,7 +6,6 @@ import { Game, Match, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
-import PlayerName from '@/components/PlayerName';
 
 const PositionWrapper = motion(HStack);
 
@@ -159,7 +159,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
         <HStack spacing={1}>
-          <PlayerName user={{ name, id, roleId }} noOfLines={1} />
+          <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
         </HStack>
         <HStack fontSize="sm" color="gray.500">
           <Text>{wins} wins</Text>

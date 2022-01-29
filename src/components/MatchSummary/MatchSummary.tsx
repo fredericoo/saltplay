@@ -85,6 +85,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 maxW="30ch"
                 noOfLines={2}
                 surnameType="initial"
+                isLink
               />
             </Fragment>
           ))}
@@ -121,6 +122,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 maxW="30ch"
                 noOfLines={2}
                 surnameType="initial"
+                isLink
               />
             </Fragment>
           ))}
