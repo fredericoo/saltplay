@@ -1,9 +1,9 @@
+import RoleBadge from '@/components/RoleBadge';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Circle, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import RoleBadge from '@/components/RoleBadge';
 
 type PlayerAvatarProps = {
   user: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };

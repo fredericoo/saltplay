@@ -1,4 +1,3 @@
-import getGradientFromId from '@/theme/palettes';
 import { TextProps } from '@chakra-ui/react';
 import { Role } from '@prisma/client';
 

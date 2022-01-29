@@ -1,4 +1,4 @@
-import { Badge, Box, FormControl, FormErrorMessage, HStack, Input, Tooltip } from '@chakra-ui/react';
+import { Badge, FormControl, HStack, Input } from '@chakra-ui/react';
 import { useFormContext, useFormState } from 'react-hook-form';
 import ErrorNotification from '../ErrorNotification';
 import { MatchFormInputs } from '../NewMatchButton';

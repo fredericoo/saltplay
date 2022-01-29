@@ -1,9 +1,9 @@
-import { NextApiHandler } from 'next';
-import { PromiseElement } from '@/lib/types/utils';
-import { APIResponse } from '@/lib/types/api';
-import slack from '@/lib/slackbot/client';
-import { getSession } from 'next-auth/react';
 import prisma from '@/lib/prisma';
+import slack from '@/lib/slackbot/client';
+import { APIResponse } from '@/lib/types/api';
+import { PromiseElement } from '@/lib/types/utils';
+import { NextApiHandler } from 'next';
+import { getSession } from 'next-auth/react';
 
 const getSlackUsers = async () => {
   const slackUsers = await slack.users.list();

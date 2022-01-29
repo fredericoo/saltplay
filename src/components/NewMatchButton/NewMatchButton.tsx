@@ -1,4 +1,4 @@
-import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
+import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/postMatchesHandler';
 import {
   Button,
   Center,
