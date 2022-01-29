@@ -22,6 +22,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
         email: slackPlayerInfo.profile?.email,
         image: slackPlayerInfo.profile?.image_192,
         roleId: 2,
+        accounts: { create: [{ type: 'guest', provider: 'slack', providerAccountId: slackId }] },
       },
       select: { id: true },
     })
