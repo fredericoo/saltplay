@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { GUEST_ROLE_ID } from '../constants';
 import slack from '../slackbot/client';
 
 /**
@@ -21,7 +22,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
         name: slackPlayerInfo.profile?.real_name,
         email: slackPlayerInfo.profile?.email,
         image: slackPlayerInfo.profile?.image_192,
-        roleId: 2,
+        roleId: GUEST_ROLE_ID,
         accounts: { create: [{ type: 'guest', provider: 'slack', providerAccountId: slackId }] },
       },
       select: { id: true },

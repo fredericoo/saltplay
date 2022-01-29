@@ -1,4 +1,6 @@
 import PrismaAdapter from '@/lib/adapter';
+import turnGuestToUser from '@/lib/api/turnGuestToUser';
+import { GUEST_ROLE_ID } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 import { User } from '@prisma/client';
 import NextAuth, { NextAuthOptions } from 'next-auth';
@@ -52,18 +54,7 @@ export const nextAuthOptions: NextAuthOptions = {
       return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
     },
     async signIn({ user, account }) {
-      if (user.roleId === 2) {
-        const provider_providerAccountId = { provider: account.provider, providerAccountId: account.providerAccountId };
-        const { type, token_type, id_token, access_token } = account;
-        await prisma.account.update({
-          where: { provider_providerAccountId: provider_providerAccountId },
-          data: { type, token_type, id_token, access_token },
-        });
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { roleId: 1 },
-        });
-      }
+      if (user.roleId === GUEST_ROLE_ID) await turnGuestToUser(user, account);
       return true;
     },
   },

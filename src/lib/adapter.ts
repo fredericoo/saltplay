@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
+import { USER_ROLE_ID } from './constants';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
-  createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: 1 } } } }),
+  createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: USER_ROLE_ID } } } }),
   getUser: id => prisma.user.findUnique({ where: { id } }),
   getUserByEmail: email => prisma.user.findUnique({ where: { email } }),
   async getUserByAccount(provider_providerAccountId) {
