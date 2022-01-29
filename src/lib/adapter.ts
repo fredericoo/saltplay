@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
-  createUser: user => prisma.user.create({ data: user }),
+  createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: 1 } } } }),
   getUser: id => prisma.user.findUnique({ where: { id } }),
   getUserByEmail: email => prisma.user.findUnique({ where: { email } }),
   async getUserByAccount(provider_providerAccountId) {
@@ -16,6 +16,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   deleteUser: id => prisma.user.delete({ where: { id } }),
   linkAccount: async account => {
     const { state, ok, ...data } = account;
+    await prisma.user.update({ where: { id: data.userId }, data: { role: { connect: { id: 1 } } } });
     await prisma.account.create({ data });
   },
   unlinkAccount: async provider_providerAccountId => {

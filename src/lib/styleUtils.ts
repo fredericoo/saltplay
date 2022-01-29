@@ -7,4 +7,14 @@ const hideScrollbar = {
   },
 };
 
+export const centraliseEmoji = {
+  '@media only screen and (-webkit-min-device-pixel-ratio: 2), not all, not all, not all, only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx)':
+    {
+      span: {
+        display: 'inline-block',
+        marginRight: '-0.3em',
+      },
+    },
+};
+
 export default hideScrollbar;

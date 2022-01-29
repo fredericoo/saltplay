@@ -5,7 +5,7 @@ import { Player } from '@/components/PlayerPicker/types';
 import fetcher from '@/lib/fetcher';
 import { STARTING_POINTS } from '@/lib/leaderboard';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import getUserGradient from '@/theme/palettes';
+import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -101,7 +101,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           players={left}
           isSelected={selectedSide === 'left'}
           onClick={() => handleSelectedSide('left')}
-          selectedColour={getUserGradient('1')}
+          selectedColour={getGradientFromId('1')}
           emptySlots={teamSize - left?.length}
         />
         <Badge>Vs</Badge>
@@ -110,7 +110,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           players={right}
           isSelected={selectedSide === 'right'}
           onClick={() => handleSelectedSide('right')}
-          selectedColour={getUserGradient('4')}
+          selectedColour={getGradientFromId('4')}
           emptySlots={teamSize - right?.length}
         />
       </HStack>
@@ -139,7 +139,6 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
                       ],
                     ]}
                     color="white"
-                    size="sm"
                     pb="0.5em"
                     fontSize=".6rem"
                     letterSpacing="wide"
@@ -159,14 +158,14 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
                     isLoading={!opponentsQuery}
                     isError={opponentsError}
                     onSelect={handleSelect}
-                    selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
+                    selectedColour={selectedSide === 'left' ? getGradientFromId('1') : getGradientFromId('4')}
                   />
                 </TabPanel>
                 <TabPanel px={0}>
                   <InvitePicker
                     selectedPlayers={sides[selectedSide]}
                     onSelect={handleSelect}
-                    selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
+                    selectedColour={selectedSide === 'left' ? getGradientFromId('1') : getGradientFromId('4')}
                   />
                 </TabPanel>
               </TabPanels>

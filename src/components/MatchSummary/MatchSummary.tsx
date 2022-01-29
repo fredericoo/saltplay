@@ -1,5 +1,5 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
-import PlayerLink from '@/components/PlayerLink';
+import PlayerName from '@/components/PlayerName';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import formatRelative from 'date-fns/formatRelative';
@@ -8,8 +8,8 @@ import { Fragment, useState } from 'react';
 import DeleteMatchButton from './DeleteButton';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {
-  left: Pick<User, 'name' | 'id' | 'image'>[];
-  right: Pick<User, 'name' | 'id' | 'image'>[];
+  left: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
+  right: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
   gameName?: string;
   officeName?: string;
   onDelete?: () => void;
@@ -77,12 +77,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           {left.map(player => (
             <Fragment key={player.id}>
               <PlayerAvatar user={player} isLink />
-              <PlayerLink
+              <PlayerName
                 lineHeight={1.2}
                 textAlign="center"
                 fontSize="sm"
-                name={player.name}
-                id={player.id}
+                user={player}
                 maxW="30ch"
                 noOfLines={2}
                 surnameType="initial"
@@ -114,12 +113,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           {right.map(player => (
             <Fragment key={player.id}>
               <PlayerAvatar user={player} isLink />
-              <PlayerLink
+              <PlayerName
                 lineHeight={1.2}
                 textAlign="center"
                 fontSize="sm"
-                name={player.name}
-                id={player.id}
+                user={player}
                 maxW="30ch"
                 noOfLines={2}
                 surnameType="initial"

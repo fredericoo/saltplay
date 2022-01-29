@@ -10,12 +10,13 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import fetcher from '@/lib/fetcher';
 import useSWR from 'swr';
 import { PlayerStatsAPIResponse } from '../api/players/[id]/stats';
-import getUserGradient from '@/theme/palettes';
+import getGradientFromId from '@/theme/palettes';
+import { getRoleStyles } from '@/lib/roles';
 
 export const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
     where: { id },
-    select: { id: true, name: true, image: true },
+    select: { id: true, name: true, image: true, roleId: true },
   });
 
 type PlayerPageProps = {
@@ -32,10 +33,18 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
     <Stack spacing={{ base: 4, md: 8 }} maxW="container.sm" mx="auto">
       <SEO title={`${playerName}’s profile`} />
       <Box bg="white" borderRadius="xl" overflow="hidden">
-        <Box bg={getUserGradient(player.id)} h="32" />
-        <Box p={4} mt="-16">
+        <Box bg={getGradientFromId(player.id)} h="32" />
+        <Stack alignItems="flex-start" p={4} mt="-16">
           <PlayerAvatar user={player} size={32} />
-          <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
+
+          <Text
+            {...getRoleStyles(player.roleId)}
+            as="h1"
+            fontSize={'2rem'}
+            letterSpacing="tight"
+            mt={2}
+            overflow="hidden"
+          >
             {playerName}
           </Text>
           <HStack spacing={2}>
@@ -55,7 +64,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
               </Box>
             ))}
           </HStack>
-        </Box>
+        </Stack>
       </Box>
       <HStack flexWrap={'wrap'} spacing={{ base: 4, md: 8 }}>
         <PlayerStat id={player.id} stat="played" />

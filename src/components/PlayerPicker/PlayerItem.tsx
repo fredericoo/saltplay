@@ -1,7 +1,7 @@
 import { Badge, HStack } from '@chakra-ui/react';
 import React from 'react';
 import PlayerAvatar from '../PlayerAvatar';
-import PlayerLink from '../PlayerLink/PlayerLink';
+import PlayerName from '@/components/PlayerName';
 import type { Player } from './types';
 
 type PlayerItemProps = {
@@ -28,7 +28,7 @@ const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect, 
     >
       <HStack flexGrow={1} spacing={4} flexShrink={1}>
         <PlayerAvatar user={player} />
-        <PlayerLink name={player.name} noOfLines={1} />
+        <PlayerName user={player} noOfLines={1} />
       </HStack>
       {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
     </HStack>

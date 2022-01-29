@@ -1,4 +1,4 @@
-import hideScrollbar from '@/lib/styleUtils';
+import hideScrollbar, { centraliseEmoji } from '@/lib/styleUtils';
 import { Box, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -58,8 +58,17 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         transform="translateZ(0)"
         minW={'76px'}
       >
-        <Box zIndex={2} fontSize="md" pr={2} h="1.8em" w="1em" whiteSpace="nowrap" textAlign="center">
-          {icon}
+        <Box
+          zIndex={2}
+          sx={centraliseEmoji}
+          fontSize="md"
+          pr={2}
+          h="1.8em"
+          w="1em"
+          whiteSpace="nowrap"
+          textAlign="center"
+        >
+          <span>{icon}</span>
         </Box>
         <Text zIndex={2} textOverflow={{ md: 'ellipsis' }} overflow={{ md: 'hidden' }} whiteSpace="nowrap">
           {title}

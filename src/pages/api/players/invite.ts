@@ -24,6 +24,7 @@ const getSlackUsers = async () => {
       id: user.id || 'undefined',
       image: user.profile?.image_192 || null,
       source: 'slack',
+      roleId: 2,
     }));
 };
 

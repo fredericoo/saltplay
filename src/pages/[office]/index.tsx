@@ -1,5 +1,5 @@
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
-import getUserGradient from '@/theme/palettes';
+import getGradientFromId from '@/theme/palettes';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
@@ -36,7 +36,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   return (
     <Box>
       <SEO title={office.name} />
-      <Box bg={getUserGradient(office.id.toString())} borderRadius="xl" overflow="hidden">
+      <Box bg={getGradientFromId(office.id.toString())} borderRadius="xl" overflow="hidden">
         <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
           {data?.photo && (
             <Image

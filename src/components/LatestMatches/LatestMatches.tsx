@@ -23,7 +23,6 @@ const getKey =
       .filter(([, value]) => value)
       .map(entry => entry.join('='))
       .join('&');
-    console.log(['/api/matches', queryParams].join('?'));
     return ['/api/matches', queryParams].join('?');
   };
 
