@@ -8,7 +8,9 @@ import PlayerPicker, { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
 type InvitePickerProps = Pick<PlayerPickerProps, 'selectedPlayers' | 'selectedColour' | 'onSelect'>;
 
 const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPlayers, onSelect }) => {
-  const { data, error, mutate } = useSWR<InvitePlayersAPIResponse>(`/api/players/invite`, fetcher);
+  const { data, error, mutate } = useSWR<InvitePlayersAPIResponse>(`/api/players/invite`, fetcher, {
+    revalidateOnFocus: false,
+  });
   if (error || data?.status === 'error')
     return <ErrorBox heading={["Couldn't load opponents", data?.message].join(': ')} />;
 

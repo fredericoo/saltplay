@@ -1,15 +1,15 @@
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
-import getGradientFromId from '@/theme/palettes';
-import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import OfficeStat from '@/components/OfficeStat';
+import SEO from '@/components/SEO';
+import { Sidebar } from '@/components/Sidebar/types';
+import fetcher from '@/lib/fetcher';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
-import { Sidebar } from '@/components/Sidebar/types';
-import SEO from '@/components/SEO';
-import useSWR from 'swr';
-import fetcher from '@/lib/fetcher';
+import getGradientFromId from '@/theme/palettes';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
+import useSWR from 'swr';
 import { RandomPhotoApiResponse } from '../api/photo/random';
-import OfficeStat from '@/components/OfficeStat';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
@@ -30,7 +30,9 @@ type OfficePageProps = {
 };
 
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
-  const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher);
+  const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
+    revalidateOnFocus: false,
+  });
   if (!office) return <Box>404</Box>;
 
   return (

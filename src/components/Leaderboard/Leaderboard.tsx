@@ -55,6 +55,7 @@ const medals: Record<number, string> = {
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
   const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
     refreshInterval: 1000 * 60,
+    revalidateOnFocus: false,
   });
 
   if (error) return <Box>Error</Box>;

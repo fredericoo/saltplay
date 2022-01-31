@@ -29,7 +29,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     data: opponentsQuery,
     error: opponentsError,
     mutate,
-  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher);
+  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher, { revalidateOnFocus: false });
 
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 

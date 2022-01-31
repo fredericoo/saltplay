@@ -24,7 +24,9 @@ type PlayerPageProps = {
 };
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
-  const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher);
+  const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   if (!player) return null;
 
