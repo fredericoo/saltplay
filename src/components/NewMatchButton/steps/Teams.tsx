@@ -153,6 +153,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
                     players={players?.filter(
                       ({ id }) => !sides[selectedSide === 'left' ? 'right' : 'left'].find(player => player.id === id)
                     )}
+                    isAlphabetical
                     selectedPlayers={sides[selectedSide]}
                     refetch={mutate}
                     isLoading={!opponentsQuery}

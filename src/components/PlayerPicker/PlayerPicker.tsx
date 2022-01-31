@@ -10,6 +10,7 @@ import { Player } from './types';
 
 export type PlayerPickerProps = {
   players?: Player[];
+  isAlphabetical?: boolean;
   onSelect: (player: Player) => void;
   selectedPlayers?: Player[];
   isLoading?: boolean;
@@ -23,6 +24,7 @@ type ListRow = string | Player;
 
 const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   players,
+  isAlphabetical,
   onSelect,
   selectedPlayers,
   isLoading,
@@ -45,12 +47,15 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
         ) || [];
       return ['results', ...results];
     }
-    const sortedPlayers = sortAlphabetically(players || [], player => player.name || '');
-    return Object.entries(groupByFirstLetter(sortedPlayers)).reduce<ListRow[]>(
-      (acc, [letter, players]) => [...acc, letter, ...players],
-      []
-    );
-  }, [players, search]);
+    if (isAlphabetical) {
+      const sortedPlayers = sortAlphabetically(players || [], player => player.name || '');
+      return Object.entries(groupByFirstLetter(sortedPlayers)).reduce<ListRow[]>(
+        (acc, [letter, players]) => [...acc, letter, ...players],
+        []
+      );
+    }
+    return players || [];
+  }, [isAlphabetical, players, search]);
 
   if (isError)
     return (
@@ -74,11 +79,11 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
 
   return (
     <Box bg="gray.100" h="256px" borderRadius="xl" position="relative">
-      <SearchField search={search} setSearch={setSearch} />
+      <SearchField search={search} setSearch={setSearch} position="absolute" inset="3px 0px auto" />
       <AutoSizer>
         {({ height, width }) => (
           <List
-            style={{ borderRadius: '16px', padding: '3px' }}
+            style={{ borderRadius: '16px', padding: 'calc(2rem + 6px) 3px 3px' }}
             width={width}
             height={height}
             rowHeight={({ index }) => (typeof (list[index] as ListRow) === 'string' ? 35 : 66)}

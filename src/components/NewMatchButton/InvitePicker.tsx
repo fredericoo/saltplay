@@ -3,8 +3,7 @@ import { InvitePlayersAPIResponse } from '@/pages/api/players/invite';
 import { Box, Text } from '@chakra-ui/react';
 import useSWR from 'swr';
 import ErrorBox from '../ErrorBox';
-import PlayerPicker from '../PlayerPicker';
-import { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
+import PlayerPicker, { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
 
 type InvitePickerProps = Pick<PlayerPickerProps, 'selectedPlayers' | 'selectedColour' | 'onSelect'>;
 
@@ -20,6 +19,7 @@ const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPl
       </Text>
       <PlayerPicker
         players={data?.users}
+        isAlphabetical
         selectedPlayers={selectedPlayers}
         refetch={mutate}
         isLoading={!data}

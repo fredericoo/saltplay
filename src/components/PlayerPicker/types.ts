@@ -1,7 +1,4 @@
-import { ArrayElement } from '@/lib/types/utils';
+import { ArrayElement, PartialBy } from '@/lib/types/utils';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import { InvitePlayersAPIResponse } from '@/pages/api/players/invite';
 
-export type Player =
-  | (ArrayElement<OpponentsAPIResponse['opponents']> & { source?: 'user' })
-  | (ArrayElement<InvitePlayersAPIResponse['users']> & { scores?: never });
+export type Player = PartialBy<ArrayElement<OpponentsAPIResponse['opponents']>, 'scores'> & { source?: string };

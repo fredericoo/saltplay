@@ -1,37 +1,32 @@
 import prisma from '@/lib/prisma';
-import slack from '@/lib/slackbot/client';
 import { APIResponse } from '@/lib/types/api';
 import { PromiseElement } from '@/lib/types/utils';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../auth/[...nextauth]';
+import { AllSlackMembersAPIResponse } from '../dev/all-slack-members';
 
-const getSlackUsers = async () => {
-  const slackUsers = await slack.users.list();
+export type InvitePlayersAPIResponse = APIResponse<{
+  users: PromiseElement<ReturnType<typeof getAllNonExistingSlackMembers>>;
+}>;
+
+const getAllNonExistingSlackMembers = async (basePath?: string) => {
+  if (!basePath) return [];
+  const allUsers: AllSlackMembersAPIResponse = await fetch(basePath + '/api/dev/all-slack-members').then(res =>
+    res.json()
+  );
+
   const existingUsers = await prisma.user.findMany({
     select: { accounts: { where: { provider: 'slack' }, select: { providerAccountId: true } } },
   });
-  return slackUsers?.members
-    ?.filter(user => !user.is_bot && !user.is_restricted && !user.is_ultra_restricted && !user.deleted)
-    .filter(
-      user =>
-        user.profile?.first_name &&
-        !existingUsers?.find(
-          existingUser => !!existingUser?.accounts?.find(account => account?.providerAccountId === user.id)
-        )
-    )
-    .map(user => ({
-      name: [user.profile?.first_name, user.profile?.last_name].join(' ') || user.profile?.display_name || null,
-      id: user.id || 'undefined',
-      image: user.profile?.image_192 || null,
-      source: 'slack',
-      roleId: 2,
-    }));
-};
 
-export type InvitePlayersAPIResponse = APIResponse<{
-  users: PromiseElement<ReturnType<typeof getSlackUsers>>;
-}>;
+  return allUsers.members?.filter(
+    user =>
+      !existingUsers?.find(
+        existingUser => !!existingUser?.accounts?.find(account => account?.providerAccountId === user.id)
+      )
+  );
+};
 
 const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
@@ -39,10 +34,9 @@ const invitedUsersHandler: NextApiHandler<InvitePlayersAPIResponse> = async (req
   const session = await getServerSession({ req, res }, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
 
-  const users = await getSlackUsers();
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const users = await getAllNonExistingSlackMembers(`${protocol}://${req.headers.host}`);
 
-  process.env.NODE_ENV === 'production' &&
-    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
   res.status(200).json({ status: 'ok', users });
 };
 

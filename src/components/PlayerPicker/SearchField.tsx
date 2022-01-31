@@ -1,4 +1,4 @@
-import { Box, HStack, Input } from '@chakra-ui/react';
+import { Box, ChakraProps, HStack, Input } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoCloseCircleOutline, IoSearchCircle } from 'react-icons/io5';
 
@@ -9,18 +9,17 @@ type SearchFieldProps = {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SearchField: React.VFC<SearchFieldProps> = ({ search, setSearch }) => {
+const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSearch, ...props }) => {
   return (
     <HStack
       mx={1}
       spacing={2}
       bg="white"
-      position="absolute"
-      inset="3px 0px auto"
       zIndex={3}
       borderRadius="12"
       transition=".3s ease-out"
       boxShadow="lg"
+      {...props}
     >
       <Box as="label" htmlFor="search" color="gray.500">
         <IoSearchCircle size="32" />
