@@ -1,7 +1,9 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
+import { MATCH_DELETE_DAYS } from '@/lib/constants';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
+import { differenceInDays } from 'date-fns';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
@@ -45,14 +47,15 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       px={2}
       position="relative"
     >
-      {left.find(player => player.id === session?.user.id) && (
-        <DeleteMatchButton
-          id={id}
-          onDeleteStart={() => setIsLoading(true)}
-          onDeleteError={() => setIsLoading(false)}
-          onDeleteSuccess={() => onDelete?.()}
-        />
-      )}
+      {left.find(player => player.id === session?.user.id) &&
+        !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
+          <DeleteMatchButton
+            id={id}
+            onDeleteStart={() => setIsLoading(true)}
+            onDeleteError={() => setIsLoading(false)}
+            onDeleteSuccess={() => onDelete?.()}
+          />
+        )}
       {createdAt && (
         <Box
           color="gray.700"
