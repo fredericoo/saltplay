@@ -4,6 +4,7 @@ import fetcher from '@/lib/fetcher';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { motion } from 'framer-motion';
+import { useSWRConfig } from 'swr';
 import useSWRInfinite from 'swr/infinite';
 import NewMatchButton from '../NewMatchButton';
 
@@ -34,11 +35,17 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   canAddNewMatch = false,
   maxPlayersPerTeam,
 }) => {
+  const { mutate: mutateByKey } = useSWRConfig();
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
     getKey({ first: perPage, gameId, left: userId }),
     fetcher
   );
   const hasNextPage = data?.[data.length - 1].nextCursor;
+
+  const refetch = () => {
+    mutate();
+    mutateByKey(`/api/games/${gameId}/leaderboard`);
+  };
 
   if (error || data?.[0].status === 'error') {
     return (
@@ -66,7 +73,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
     return (
       <Stack gap={3}>
         {canAddNewMatch && gameId && (
-          <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} maxPlayersPerTeam={maxPlayersPerTeam} />
+          <NewMatchButton gameId={gameId} onSubmitSuccess={refetch} maxPlayersPerTeam={maxPlayersPerTeam} />
         )}
         <Text textAlign="center" color="gray.500">
           No matches yet!
@@ -77,7 +84,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   return (
     <Stack gap={3}>
       {canAddNewMatch && gameId && (
-        <NewMatchButton gameId={gameId} onSubmitSuccess={mutate} maxPlayersPerTeam={maxPlayersPerTeam} />
+        <NewMatchButton gameId={gameId} onSubmitSuccess={refetch} maxPlayersPerTeam={maxPlayersPerTeam} />
       )}
 
       {allMatches?.map(match => {
@@ -101,7 +108,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
               right={match.right}
               gameName={gameName}
               officeName={match?.game?.office?.name}
-              onDelete={() => mutate()}
+              onDelete={refetch}
             />
           </MotionBox>
         );
