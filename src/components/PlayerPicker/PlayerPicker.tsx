@@ -3,6 +3,7 @@ import hideScrollbar from '@/lib/styleUtils';
 import { Box, Button, Center, HStack, Text } from '@chakra-ui/react';
 import { groupBy } from 'ramda';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { IoSearchCircle } from 'react-icons/io5';
 import { useVirtual } from 'react-virtual';
 import LoadingIcon from '../LoadingIcon';
 import PlayerItem from './PlayerItem';
@@ -48,6 +49,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   selectedColour,
   refetch,
 }) => {
+  const [isSearching, setIsSearching] = useState(false);
   const [search, setSearch] = useState<string>('');
   const list = useMemo(() => {
     const results = getResults({ list: players || [], search, getterFn: player => player.name || '' });
@@ -61,7 +63,8 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   const groupIndexes = useMemo(
     () =>
       list.reduce<{ text: string; index: number }[]>(
-        (acc, cur, index) => (typeof cur === 'string' ? [...acc, { text: cur, index }] : acc),
+        (acc, cur, index) =>
+          typeof cur === 'string' && cur.replace(/[^a-zA-Z0-9]/g, '').length > 0 ? [...acc, { text: cur, index }] : acc,
         []
       ),
     [list]
@@ -97,9 +100,22 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
 
   return (
     <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" p="3px">
-      <SearchField search={search} setSearch={setSearch} position="sticky" top="3px" mb="6px" />
-      {groupIndexes.length > 10 && (
-        <HStack py={2} overflow="auto" css={hideScrollbar}>
+      {(isSearching || groupIndexes.length <= 10) && list.length > 10 && (
+        <SearchField search={search} setSearch={setSearch} position="sticky" top="3px" mb="12px" />
+      )}
+      {!isSearching && groupIndexes.length > 10 && (
+        <HStack mb={2} overflow="auto" css={hideScrollbar} mx="-3px" pl={1} pr={4}>
+          <Box
+            as="button"
+            type="button"
+            color="gray.500"
+            _hover={{ color: 'gray.500' }}
+            onClick={() => {
+              setIsSearching(true);
+            }}
+          >
+            <IoSearchCircle size="32" />
+          </Box>
           {groupIndexes.map(({ text, index }) => (
             <Box
               as="button"
