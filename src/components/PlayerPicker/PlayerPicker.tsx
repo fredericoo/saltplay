@@ -24,14 +24,17 @@ export type PlayerPickerProps = {
 type GetResults = <T>(options: { list: T[]; search?: string; getterFn: (element: T) => string }) => T[];
 
 const getResults: GetResults = ({ search, list, getterFn }) => {
-  const searchString = search?.replace(/[^a-zA-Z0-9]/g, '');
+  const searchString = search
+    ?.toLowerCase()
+    .normalize('NFD')
+    .replace(/[^a-zA-Z0-9]/g, '');
   if (!searchString) return list;
   return (
     list?.filter(item =>
       getterFn(item)
         ?.toLowerCase()
         .normalize('NFD')
-        .replace(/[^a-zA-Z0-9]/, '')
+        .replace(/[^a-zA-Z0-9]/g, '')
         .match(searchString)
     ) || []
   );
