@@ -63,7 +63,6 @@ const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res
       const matches = await getMatches({ ...options });
       const nextCursor = matches.length >= (options.first || 5) ? matches[matches.length - 1].id : undefined;
 
-      isProd && res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=60');
       res.status(200).json({ status: 'ok', matches, nextCursor });
     })
     .catch(err => {
