@@ -136,7 +136,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
               />
               {points && (
                 <Badge fontSize="xs" colorScheme={leftscore < rightscore ? 'green' : 'red'}>
-                  {Math.ceil(points / left.length)} pts
+                  {Math.ceil(points / right.length)} pts
                 </Badge>
               )}
             </Fragment>
