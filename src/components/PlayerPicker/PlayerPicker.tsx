@@ -3,7 +3,7 @@ import hideScrollbar from '@/lib/styleUtils';
 import { Box, Button, Center, HStack, Text } from '@chakra-ui/react';
 import { groupBy } from 'ramda';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { IoSearchCircle } from 'react-icons/io5';
+import { IoCloseCircleOutline, IoSearchCircle } from 'react-icons/io5';
 import { useVirtual } from 'react-virtual';
 import LoadingIcon from '../LoadingIcon';
 import PlayerItem from './PlayerItem';
@@ -100,55 +100,61 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
 
   return (
     <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" px="3px">
-      {(isSearching || groupIndexes.length <= 10) && list.length > 10 && (
-        <SearchField search={search} setSearch={setSearch} position="sticky" top="3px" mb="12px" />
-      )}
-      {!isSearching && groupIndexes.length > 10 && (
-        <HStack
-          mb={2}
-          overflow="auto"
-          css={hideScrollbar}
-          mx="-3px"
-          pl={1}
-          pr={4}
-          py="3px"
-          position="sticky"
-          top="0"
-          zIndex="sticky"
-          bg="rgb(226, 232, 240,0.9)"
-          backdropFilter={'blur(5px) saturate(500%)'}
-        >
+      <Box
+        borderTopRadius="xl"
+        as="nav"
+        position="sticky"
+        top="0"
+        zIndex="sticky"
+        bg="rgb(226, 232, 240,0.9)"
+        backdropFilter={'blur(5px) saturate(500%)'}
+        mx="-3px"
+        overflow="hidden"
+      >
+        {isSearching && (
+          <SearchField mb="2" top="3px" position="sticky" focusOnMount search={search} setSearch={setSearch} />
+        )}
+        <HStack display="flex" overflow="auto" css={hideScrollbar} pl={1} pr={4} py="1">
           <Box
+            position="sticky"
+            left="0"
             as="button"
             type="button"
             color="gray.500"
-            _hover={{ color: 'gray.500' }}
+            borderRadius="full"
+            bg="gray.200"
+            boxShadow="0px 0px 8px 8px rgb(226, 232, 240, 1)"
+            _hover={{ color: 'gray.600' }}
             onClick={() => {
-              setIsSearching(true);
+              setIsSearching(!isSearching);
+              setSearch('');
             }}
           >
-            <IoSearchCircle size="32" />
+            {isSearching ? <IoCloseCircleOutline size="28" /> : <IoSearchCircle size="32" />}
           </Box>
           {groupIndexes.map(({ text, index }) => (
             <Box
+              flexShrink={0}
               as="button"
               type="button"
               onClick={() => {
                 rowVirtualiser.scrollToIndex(index, { align: 'start' });
               }}
               key={index}
-              px={2}
+              width={'2rem'}
               py={1}
               bg="gray.100"
               borderRadius="md"
-              fontSize="xs"
+              fontSize="sm"
+              color="gray.600"
               fontWeight="bold"
             >
               {text}
             </Box>
           ))}
         </HStack>
-      )}
+      </Box>
+
       <Box w="100%" h={`${rowVirtualiser.totalSize}px`} position="relative">
         {rowVirtualiser.virtualItems.map(virtualRow => {
           const row = list[virtualRow.index];

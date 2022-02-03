@@ -7,9 +7,10 @@ const MotionBox = motion(Box);
 type SearchFieldProps = {
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  focusOnMount: boolean;
 };
 
-const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSearch, ...props }) => {
+const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSearch, focusOnMount, ...props }) => {
   return (
     <HStack
       mx={1}
@@ -25,6 +26,7 @@ const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSea
         <IoSearchCircle size="32" />
       </Box>
       <Input
+        autoFocus={focusOnMount}
         id="search"
         type="text"
         onChange={e => setSearch(e.target.value)}
