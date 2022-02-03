@@ -7,6 +7,7 @@ import { Badge, Box, Button, Heading, HStack, SimpleGrid, Text, VStack } from '@
 import { User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import type { GetStaticProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { memo } from 'react';
 
@@ -16,6 +17,8 @@ type HomeProps = {
 };
 
 const Home: NextPage<HomeProps> = ({ offices, players }) => {
+  const { status } = useSession();
+  const isLoggedIn = status === 'authenticated';
   const officesWithGames = offices?.filter(office => office.games.length) || [];
   return (
     <Box>
@@ -137,8 +140,8 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
       </Box>
       <VStack transform="translateY(-50%)" position="relative" zIndex="2">
         <Link href="/api/auth/signin" passHref>
-          <Button as="a" variant="primary" size="lg" m={3}>
-            Sign in with Slack
+          <Button isDisabled={isLoggedIn} as="a" variant="primary" size="lg" m={3}>
+            {isLoggedIn ? "You're logged in!" : 'Sign in with Slack'}
           </Button>
         </Link>
       </VStack>
