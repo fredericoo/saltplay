@@ -92,7 +92,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {points && (
+              {points && points !== 0 && (
                 <Badge fontSize="xs" colorScheme={leftscore > rightscore ? 'green' : 'red'}>
                   {Math.ceil(points / left.length)} pts
                 </Badge>
@@ -134,7 +134,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {points && (
+              {points && points !== 0 && (
                 <Badge fontSize="xs" colorScheme={leftscore < rightscore ? 'green' : 'red'}>
                   {Math.ceil(points / right.length)} pts
                 </Badge>
