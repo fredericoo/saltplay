@@ -1,7 +1,7 @@
-import { Badge, HStack } from '@chakra-ui/react';
+import PlayerName from '@/components/PlayerName';
+import { Badge, ChakraProps, HStack } from '@chakra-ui/react';
 import React from 'react';
 import PlayerAvatar from '../PlayerAvatar';
-import PlayerName from '@/components/PlayerName';
 import type { Player } from './types';
 
 type PlayerItemProps = {
@@ -11,7 +11,13 @@ type PlayerItemProps = {
   onSelect?: (player: Player) => void;
 };
 
-const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect, selectedColour }) => {
+const PlayerItem: React.VFC<PlayerItemProps & ChakraProps> = ({
+  player,
+  isSelected,
+  onSelect,
+  selectedColour,
+  ...delegated
+}) => {
   const score = player?.scores?.[0];
   return (
     <HStack
@@ -25,6 +31,7 @@ const PlayerItem: React.VFC<PlayerItemProps> = ({ player, isSelected, onSelect, 
       as="button"
       type="button"
       borderRadius="12"
+      {...delegated}
     >
       <HStack flexGrow={1} spacing={4} flexShrink={1}>
         <PlayerAvatar user={player} />
