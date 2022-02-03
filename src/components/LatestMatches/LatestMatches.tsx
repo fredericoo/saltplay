@@ -109,6 +109,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
               gameName={gameName}
               officeName={match?.game?.office?.name}
               onDelete={refetch}
+              points={match.points}
             />
           </MotionBox>
         );

@@ -48,6 +48,7 @@ const getMatches = ({ first = 5, after, left, right, gameId, officeId }: GetMatc
       right: { select: { name: true, id: true, image: true, roleId: true } },
       leftscore: true,
       rightscore: true,
+      points: true,
     },
   });
 

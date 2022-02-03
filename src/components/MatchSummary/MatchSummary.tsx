@@ -34,7 +34,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
   gameName,
   officeName,
   onDelete,
-  points = 10,
+  points,
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
