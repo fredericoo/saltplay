@@ -104,7 +104,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });
       }
 
-      notifyMatchOnSlack({
+      await notifyMatchOnSlack({
         gameId: body.gameId,
         leftScore: body.left.score,
         rightScore: body.right.score,

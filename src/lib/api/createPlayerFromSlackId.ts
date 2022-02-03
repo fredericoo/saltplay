@@ -29,7 +29,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
     })
     .then(({ id }) => id);
 
-  slack.chat.postMessage({
+  await slack.chat.postMessage({
     channel: slackId,
     blocks: [
       {
