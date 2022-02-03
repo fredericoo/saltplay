@@ -30,7 +30,7 @@ const getKey =
 const LatestMatches: React.VFC<LatestMatchesProps> = ({
   gameId,
   userId,
-  perPage = 3,
+  perPage = 5,
   canLoadMore = true,
   canAddNewMatch = false,
   maxPlayersPerTeam,

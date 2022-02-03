@@ -1,4 +1,5 @@
 import { sortAlphabetically } from '@/lib/arrays';
+import hideScrollbar from '@/lib/styleUtils';
 import { Box, Button, Center, HStack, Text } from '@chakra-ui/react';
 import { groupBy } from 'ramda';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -98,7 +99,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
     <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" p="3px">
       <SearchField search={search} setSearch={setSearch} position="sticky" top="3px" mb="6px" />
       {groupIndexes.length > 10 && (
-        <HStack py={2} overflow="auto">
+        <HStack py={2} overflow="auto" css={hideScrollbar}>
           {groupIndexes.map(({ text, index }) => (
             <Box
               as="button"
