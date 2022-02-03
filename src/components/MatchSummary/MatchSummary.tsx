@@ -1,7 +1,7 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import { MATCH_DELETE_DAYS } from '@/lib/constants';
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { Badge, Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import { differenceInDays } from 'date-fns';
 import formatRelative from 'date-fns/formatRelative';
@@ -14,6 +14,7 @@ type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 
   right: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
   gameName?: string;
   officeName?: string;
+  points?: number;
   onDelete?: () => void;
 };
 
@@ -33,6 +34,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
   gameName,
   officeName,
   onDelete,
+  points = 10,
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +92,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
+              {points && (
+                <Badge fontSize="xs" colorScheme={leftscore > rightscore ? 'green' : 'red'}>
+                  {Math.ceil(points / left.length)} pts
+                </Badge>
+              )}
             </Fragment>
           ))}
         </VStack>
@@ -127,6 +134,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
+              {points && (
+                <Badge fontSize="xs" colorScheme={leftscore < rightscore ? 'green' : 'red'}>
+                  {Math.ceil(points / left.length)} pts
+                </Badge>
+              )}
             </Fragment>
           ))}
         </VStack>
