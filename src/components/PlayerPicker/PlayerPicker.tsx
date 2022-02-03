@@ -74,7 +74,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   const rowVirtualiser = useVirtual({
     size: list?.length || 0,
     parentRef: virtualiserRef,
-    estimateSize: useCallback(index => (typeof list[index] === 'string' ? 30 : 66), [list]),
+    estimateSize: useCallback(index => (typeof list[index] === 'string' ? 33 : 66), [list]),
     overscan: 5,
   });
 
@@ -99,12 +99,25 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   }
 
   return (
-    <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" p="3px">
+    <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" px="3px">
       {(isSearching || groupIndexes.length <= 10) && list.length > 10 && (
         <SearchField search={search} setSearch={setSearch} position="sticky" top="3px" mb="12px" />
       )}
       {!isSearching && groupIndexes.length > 10 && (
-        <HStack mb={2} overflow="auto" css={hideScrollbar} mx="-3px" pl={1} pr={4}>
+        <HStack
+          mb={2}
+          overflow="auto"
+          css={hideScrollbar}
+          mx="-3px"
+          pl={1}
+          pr={4}
+          py="3px"
+          position="sticky"
+          top="0"
+          zIndex="sticky"
+          bg="rgb(226, 232, 240,0.9)"
+          backdropFilter={'blur(5px) saturate(500%)'}
+        >
           <Box
             as="button"
             type="button"
@@ -126,7 +139,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
               key={index}
               px={2}
               py={1}
-              bg="gray.200"
+              bg="gray.100"
               borderRadius="md"
               fontSize="xs"
               fontWeight="bold"
@@ -142,6 +155,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
           if (typeof row === 'string')
             return (
               <Box
+                mt="3px"
                 key={virtualRow.index}
                 pl={16}
                 py={1}
