@@ -11,7 +11,8 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   return (
     <Stack
       as="nav"
-      bg="gray.50"
+      bg={{ base: 'rgb(247, 250, 252, 0.9)', md: 'gray.50' }}
+      backdropFilter={{ base: 'blur(5px) saturate(500%)', md: undefined }}
       direction={{ base: 'row', md: 'column' }}
       borderRadius={16}
       p={{ base: '3px', md: 8 }}
@@ -21,7 +22,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
       w={{ base: 'calc(100% - 16px)', md: undefined }}
       position={{ base: 'fixed', md: 'static' }}
       bottom={'calc(env(safe-area-inset-bottom, 0.5vh) + 32px)'}
-      boxShadow={{ base: 'lg', md: 'none' }}
+      boxShadow={{ base: 'sm', md: 'none' }}
       spacing={'3px'}
     >
       {items?.map(item => (
