@@ -2,7 +2,7 @@ import PlayerName from '@/components/PlayerName';
 import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Match, Role, User } from '@prisma/client';
+import { Game, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
@@ -12,38 +12,6 @@ const PositionWrapper = motion(HStack);
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
-};
-
-const calculateWinsAndLosses = (
-  leftMatches: Pick<Match, 'leftscore' | 'rightscore'>[],
-  rightMatches: Pick<Match, 'leftscore' | 'rightscore'>[]
-) => {
-  const p1Stats = leftMatches.reduce(
-    (acc, match) => {
-      if (match.leftscore > match.rightscore) {
-        acc.wins++;
-      }
-      if (match.leftscore < match.rightscore) {
-        acc.losses++;
-      }
-      return acc;
-    },
-    { wins: 0, losses: 0 }
-  );
-  const p2Stats = rightMatches.reduce(
-    (acc, match) => {
-      if (match.leftscore < match.rightscore) {
-        acc.wins++;
-      }
-      if (match.leftscore > match.rightscore) {
-        acc.losses++;
-      }
-      return acc;
-    },
-    { wins: 0, losses: 0 }
-  );
-
-  return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
 const medals: Record<number, string> = {
@@ -92,7 +60,6 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
     <Stack>
       {data.positions?.map((position, posIndex) => {
         if (!position) return null;
-        const stats = calculateWinsAndLosses(position.player.leftmatches, position.player.rightmatches);
         return (
           <PositionWrapper layout key={position.id}>
             <Box
@@ -107,14 +74,14 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
               {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
             </Box>
             <LeaderboardPosition
-              id={position.player.id}
+              id={position.id}
               key={position.id}
-              name={position.player.name || 'Anonymous'}
-              photo={position.player.image}
-              wins={stats.wins}
-              losses={stats.losses}
+              name={position.name || 'Anonymous'}
+              photo={position.image}
+              wins={position.wins}
+              losses={position.losses}
               points={position.points}
-              roleId={position.player.roleId}
+              roleId={position.roleId}
               isFirstPlace={posIndex === 0}
             />
           </PositionWrapper>
