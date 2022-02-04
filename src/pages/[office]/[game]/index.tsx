@@ -4,7 +4,8 @@ import { PageHeader } from '@/components/PageHeader/types';
 import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
 import prisma from '@/lib/prisma';
-import { Box, Grid, Heading } from '@chakra-ui/react';
+import useMediaQuery from '@/lib/useMediaQuery';
+import { Box, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
@@ -32,26 +33,47 @@ type GamePageProps = {
 };
 
 const GamePage: NextPage<GamePageProps> = ({ game }) => {
+  const isDesktop = useMediaQuery('xl');
+
   if (!game) {
     return <div>404</div>;
   }
 
+  if (isDesktop)
+    return (
+      <Grid w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
+        <SEO title={game.name} />
+        <Box as="section">
+          <Heading as="h2" size="sm" pb={4}>
+            Leaderboard
+          </Heading>
+          <Leaderboard gameId={game.id} />
+        </Box>
+        <Box as="section">
+          <Heading as="h2" size="sm" pb={4}>
+            Latest matches
+          </Heading>
+          <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+        </Box>
+      </Grid>
+    );
+
   return (
-    <Grid w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
+    <Tabs>
       <SEO title={game.name} />
-      <Box as="section">
-        <Heading as="h2" size="sm" pb={4}>
-          Leaderboard
-        </Heading>
-        <Leaderboard gameId={game.id} />
-      </Box>
-      <Box as="section">
-        <Heading as="h2" size="sm" pb={4}>
-          Latest matches
-        </Heading>
-        <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-      </Box>
-    </Grid>
+      <TabList mb={4}>
+        <Tab>Leaderboard</Tab>
+        <Tab>Latest Matches</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel>
+          <Leaderboard gameId={game.id} />
+        </TabPanel>
+        <TabPanel>
+          <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 
