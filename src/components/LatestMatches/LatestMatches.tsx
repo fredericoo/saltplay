@@ -37,7 +37,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
 }) => {
   const { mutate: mutateByKey } = useSWRConfig();
   const { data, size, setSize, error, mutate, isValidating } = useSWRInfinite<MatchesGETAPIResponse>(
-    getKey({ first: perPage, gameId, left: userId }),
+    getKey({ first: perPage, gameId, userId }),
     fetcher
   );
   const hasNextPage = data?.[data.length - 1].nextCursor;

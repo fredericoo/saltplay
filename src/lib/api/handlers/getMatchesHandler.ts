@@ -10,25 +10,27 @@ const isProd = process.env.NODE_ENV === 'production';
 const querySchema = object({
   gameId: string(),
   officeId: string(),
-  left: string(),
-  right: string(),
+  userId: string(),
   first: number().max(20),
   after: string(),
 });
 
 export type GetMatchesOptions = InferType<typeof querySchema>;
 
-const getMatches = ({ first = 5, after, left, right, gameId, officeId }: GetMatchesOptions) =>
+const getMatches = ({ first = 5, after, userId, gameId, officeId }: GetMatchesOptions) =>
   prisma.match.findMany({
     orderBy: { createdAt: 'desc' },
     cursor: after ? { id: after } : undefined,
     skip: after ? 1 : 0,
     take: first,
     where: {
-      left: { some: { id: left } },
-      right: { some: { id: right } },
-      gameid: gameId,
-      game: { officeid: officeId },
+      AND: [
+        {
+          gameid: gameId,
+          game: { officeid: officeId },
+        },
+        { OR: [{ left: { some: { id: userId } } }, { right: { some: { id: userId } } }] },
+      ],
     },
     select: {
       game: {
