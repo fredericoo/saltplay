@@ -11,6 +11,7 @@ const getOpponents = (gameid: string) =>
       id: true,
       name: true,
       image: true,
+      roleId: true,
       scores: {
         where: {
           gameid,

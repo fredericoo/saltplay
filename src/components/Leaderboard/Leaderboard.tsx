@@ -1,11 +1,11 @@
+import PlayerName from '@/components/PlayerName';
 import fetcher from '@/lib/fetcher';
 import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
 import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Match, User } from '@prisma/client';
+import { Game, Match, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
-import PlayerLink from '../PlayerLink/PlayerLink';
 
 const PositionWrapper = motion(HStack);
 
@@ -55,6 +55,7 @@ const medals: Record<number, string> = {
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
   const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
     refreshInterval: 1000 * 60,
+    revalidateOnFocus: false,
   });
 
   if (error) return <Box>Error</Box>;
@@ -106,7 +107,6 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
               {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
             </Box>
             <LeaderboardPosition
-              hasIcons={hasIcons}
               id={position.player.id}
               key={position.id}
               name={position.player.name || 'Anonymous'}
@@ -114,6 +114,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
               wins={stats.wins}
               losses={stats.losses}
               points={position.points}
+              roleId={position.player.roleId}
               isFirstPlace={posIndex === 0}
             />
           </PositionWrapper>
@@ -125,24 +126,24 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
 type LeaderboardPositionProps = {
   id: User['id'];
+  roleId: Role['id'];
   name: string;
   photo?: string | null;
   points: number;
   wins?: number;
   losses?: number;
   isFirstPlace?: boolean;
-  hasIcons?: boolean;
 };
 
 const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   id,
+  roleId,
   name,
   photo,
   points,
   wins,
   losses,
   isFirstPlace,
-  hasIcons,
 }) => {
   return (
     <HStack
@@ -156,10 +157,10 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
       w="100%"
       overflow="hidden"
     >
-      <PlayerAvatar user={{ id, name, image: photo }} size={isFirstPlace ? 20 : 12} isLink />
+      <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
       <Box flexGrow={1}>
         <HStack spacing={1}>
-          <PlayerLink name={name} id={id} noOfLines={1} />
+          <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
         </HStack>
         <HStack fontSize="sm" color="gray.500">
           <Text>{wins} wins</Text>

@@ -21,6 +21,7 @@ const getLeaderboardPositions = (gameid: string) =>
           id: true,
           name: true,
           image: true,
+          roleId: true,
         },
       },
     },

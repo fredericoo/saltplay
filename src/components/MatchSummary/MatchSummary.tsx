@@ -1,17 +1,20 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
-import PlayerLink from '@/components/PlayerLink';
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import PlayerName from '@/components/PlayerName';
+import { MATCH_DELETE_DAYS } from '@/lib/constants';
+import { Badge, Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
+import { differenceInDays } from 'date-fns';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
 import DeleteMatchButton from './DeleteButton';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {
-  left: Pick<User, 'name' | 'id' | 'image'>[];
-  right: Pick<User, 'name' | 'id' | 'image'>[];
+  left: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
+  right: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
   gameName?: string;
   officeName?: string;
+  points?: number;
   onDelete?: () => void;
 };
 
@@ -31,6 +34,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
   gameName,
   officeName,
   onDelete,
+  points,
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,14 +49,15 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       px={2}
       position="relative"
     >
-      {left.find(player => player.id === session?.user.id) && (
-        <DeleteMatchButton
-          id={id}
-          onDeleteStart={() => setIsLoading(true)}
-          onDeleteError={() => setIsLoading(false)}
-          onDeleteSuccess={() => onDelete?.()}
-        />
-      )}
+      {left.find(player => player.id === session?.user.id) &&
+        !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
+          <DeleteMatchButton
+            id={id}
+            onDeleteStart={() => setIsLoading(true)}
+            onDeleteError={() => setIsLoading(false)}
+            onDeleteSuccess={() => onDelete?.()}
+          />
+        )}
       {createdAt && (
         <Box
           color="gray.700"
@@ -77,15 +82,21 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           {left.map(player => (
             <Fragment key={player.id}>
               <PlayerAvatar user={player} isLink />
-              <PlayerLink
+              <PlayerName
                 lineHeight={1.2}
                 textAlign="center"
                 fontSize="sm"
-                name={player.name}
-                id={player.id}
+                user={player}
                 maxW="30ch"
                 noOfLines={2}
+                surnameType="initial"
+                isLink
               />
+              {!!points && (
+                <Badge fontSize="xs" colorScheme={leftscore > rightscore ? 'green' : 'red'}>
+                  {Math.ceil(points / left.length)} pts
+                </Badge>
+              )}
             </Fragment>
           ))}
         </VStack>
@@ -113,15 +124,21 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           {right.map(player => (
             <Fragment key={player.id}>
               <PlayerAvatar user={player} isLink />
-              <PlayerLink
+              <PlayerName
                 lineHeight={1.2}
                 textAlign="center"
                 fontSize="sm"
-                name={player.name}
-                id={player.id}
+                user={player}
                 maxW="30ch"
                 noOfLines={2}
+                surnameType="initial"
+                isLink
               />
+              {!!points && (
+                <Badge fontSize="xs" colorScheme={leftscore < rightscore ? 'green' : 'red'}>
+                  {Math.ceil(points / right.length)} pts
+                </Badge>
+              )}
             </Fragment>
           ))}
         </VStack>

@@ -1,6 +1,8 @@
+import { MATCH_DELETE_DAYS } from '@/lib/constants';
 import { STARTING_POINTS } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
+import { differenceInDays } from 'date-fns';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
@@ -24,11 +26,16 @@ const deleteHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (req, res)
       leftscore: true,
       rightscore: true,
       points: true,
+      createdAt: true,
     },
   });
 
   if (!match || !match.left.find(player => player.id === session.user.id))
     return res.status(404).json({ status: 'error', message: 'Match not found' });
+
+  if (differenceInDays(new Date(), new Date(match.createdAt)) > MATCH_DELETE_DAYS) {
+    return res.status(400).json({ status: 'error', message: 'Match is too old to delete' });
+  }
 
   const multiplier = match.leftscore > match.rightscore ? 1 : -1;
 

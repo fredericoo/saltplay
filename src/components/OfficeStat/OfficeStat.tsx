@@ -16,7 +16,9 @@ const labels = {
 };
 
 const OfficeStat: React.VFC<OfficeStatProps> = ({ id, stat }) => {
-  const { data, error } = useSWR<OfficeStatsAPIResponse>(id ? `/api/offices/${id}/stats` : null, fetcher);
+  const { data, error } = useSWR<OfficeStatsAPIResponse>(id ? `/api/offices/${id}/stats` : null, fetcher, {
+    revalidateOnFocus: false,
+  });
   if (!id || error) return null;
   return (
     <Stat bg="gray.200" borderRadius="xl" p={4}>

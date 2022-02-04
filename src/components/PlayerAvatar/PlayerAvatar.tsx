@@ -1,23 +1,35 @@
-import getUserGradient from '@/theme/palettes';
+import RoleBadge from '@/components/RoleBadge';
+import getGradientFromId from '@/theme/palettes';
 import { Box, Circle, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
 type PlayerAvatarProps = {
-  user: { name: User['name']; image?: User['image']; id: User['id'] };
+  user: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };
   size?: number | string;
   isLink?: boolean;
 };
 
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
+  const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
   return (
     <LinkWrapper href={isLink ? `/player/${user.id}` : undefined}>
+      <RoleBadge
+        fontSize={fontSize(1 / 16)}
+        position="absolute"
+        zIndex="2"
+        bottom=".5em"
+        right=".5em"
+        transform="translate(50%,50%)"
+        roleId={user.roleId}
+      />
+
       <Circle
         position="relative"
         boxShadow="0 0 0 3px white"
         size={size}
-        bg={getUserGradient(user.id)}
+        bg={getGradientFromId(user.id)}
         overflow="hidden"
       >
         {user.image ? (
@@ -30,7 +42,18 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             objectFit="cover"
           />
         ) : (
-          <Text color="gray.800" lineHeight="1" mt="-0.15em" userSelect={'none'} fontSize={`${+size / 8}em`}>
+          <Text
+            w="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ aspectRatio: '1' }}
+            color="gray.500"
+            fontWeight="bold"
+            userSelect={'none'}
+            mixBlendMode={'multiply'}
+            fontSize={fontSize(1 / 8)}
+          >
             {user.name ? user.name[0].toUpperCase() : user.id[0].toUpperCase()}
           </Text>
         )}
@@ -43,10 +66,12 @@ const LinkWrapper: React.FC<{ href?: string }> = ({ href, children }) => {
   if (href)
     return (
       <Link href={href} passHref>
-        <Box as="a">{children}</Box>
+        <Box as="a" position="relative">
+          {children}
+        </Box>
       </Link>
     );
-  return <>{children}</>;
+  return <Box position="relative">{children}</Box>;
 };
 
 export default PlayerAvatar;

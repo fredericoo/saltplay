@@ -1,5 +1,8 @@
 import PrismaAdapter from '@/lib/adapter';
+import turnGuestToUser from '@/lib/api/turnGuestToUser';
+import { GUEST_ROLE_ID } from '@/lib/constants';
 import prisma from '@/lib/prisma';
+import { User } from '@prisma/client';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import GitHubProvider from 'next-auth/providers/github';
@@ -48,7 +51,11 @@ export const nextAuthOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     session({ session, user }) {
-      return { ...session, user: { ...session.user, id: user.id } };
+      return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
+    },
+    async signIn({ user, account }) {
+      if (user.roleId === GUEST_ROLE_ID) await turnGuestToUser(user, account);
+      return true;
     },
   },
 };

@@ -1,4 +1,4 @@
-import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
+import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/postMatchesHandler';
 import {
   Button,
   Center,
@@ -14,6 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Game, Match } from '@prisma/client';
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -51,19 +52,20 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
 
   const onSubmit = async (data: MatchFormInputs) => {
     setIsLoading(true);
-    const matchToAdd = {
-      leftids: data.left.map(({ id }) => id),
-      leftscore: data.leftscore,
-      rightids: data.right.map(({ id }) => id),
-      rightscore: data.rightscore,
-      gameid: gameId,
+
+    const req = {
+      left: {
+        players: data.left.map(({ id, source }) => ({ id, source: source || 'user' })),
+        score: data.leftscore,
+      },
+      right: {
+        players: data.right.map(({ id, source }) => ({ id, source: source || 'user' })),
+        score: data.rightscore,
+      },
+      gameId,
     };
     try {
-      const res: MatchesPOSTAPIResponse = await fetch('/api/matches', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(matchToAdd),
-      }).then(res => res.json());
+      const res = await axios.post<MatchesPOSTAPIResponse>('/api/matches', req).then(res => res.data);
 
       if (res.status !== 'ok') throw new Error('Error creating match');
       toast({
@@ -111,7 +113,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
             </FormProvider>
           </ModalBody>
 
-          <ModalFooter flexDir="column">
+          <ModalFooter pb={6} flexDir="column">
             <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%">
               Submit
             </Button>

@@ -3,6 +3,7 @@ import { Button } from './components/Button';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
+import { Tabs } from './components/Tabs';
 
 const theme = extendTheme({
   styles: {
@@ -42,6 +43,7 @@ const theme = extendTheme({
     Textarea: { ...Input, variants: { custom: Input.variants.custom.field } },
     Button,
     Modal,
+    Tabs,
   },
 });
 

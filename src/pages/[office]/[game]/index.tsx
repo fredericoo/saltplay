@@ -63,7 +63,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: offices
       .map(office => office.games.map(game => ({ params: { office: office.slug, game: game.slug } })))
       .flat(),
-    fallback: false,
+    fallback: 'blocking',
   };
 };
 

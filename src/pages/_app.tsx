@@ -1,12 +1,12 @@
-import type { AppProps } from 'next/app';
+import Footer from '@/components/Footer';
+import Layout from '@/components/Layout';
+import Navbar from '@/components/Navbar';
+import PageHeader from '@/components/PageHeader';
+import Fonts from '@/theme/Fonts';
+import theme from '@/theme/theme';
 import { ChakraProvider, VStack } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
-import Navbar from '@/components/Navbar';
-import theme from '@/theme/theme';
-import Fonts from '@/theme/Fonts';
-import Layout from '@/components/Layout';
-import PageHeader from '@/components/PageHeader';
-import Footer from '@/components/Footer';
+import type { AppProps } from 'next/app';
 
 const App: React.VFC<AppProps> = ({
   Component,
