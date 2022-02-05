@@ -1,5 +1,6 @@
 import LatestMatches from '@/components/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
+import NewMatchButton from '@/components/NewMatchButton';
 import { PageHeader } from '@/components/PageHeader/types';
 import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
@@ -53,27 +54,31 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
           <Heading as="h2" size="sm" pb={4}>
             Latest matches
           </Heading>
-          <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+          <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} mb={8} />
+          <LatestMatches gameId={game.id} />
         </Box>
       </Grid>
     );
 
   return (
-    <Tabs>
-      <SEO title={game.name} />
-      <TabList mb={4}>
-        <Tab>Leaderboard</Tab>
-        <Tab>Latest Matches</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <Leaderboard gameId={game.id} />
-        </TabPanel>
-        <TabPanel>
-          <LatestMatches gameId={game.id} canAddNewMatch={true} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <Box>
+      <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+      <Tabs>
+        <SEO title={game.name} />
+        <TabList mb={4}>
+          <Tab>Leaderboard</Tab>
+          <Tab>Latest Matches</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Leaderboard gameId={game.id} />
+          </TabPanel>
+          <TabPanel>
+            <LatestMatches gameId={game.id} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Box>
   );
 };
 

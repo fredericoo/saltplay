@@ -133,14 +133,14 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
             </Text>{' '}
             great players
           </Heading>
-          <Box mb="-64px" maxW="container.sm" mx="auto">
-            <LatestMatches perPage={3} canLoadMore={false} />
+          <Box h="400px" overflow="hidden" maxW="container.sm" mx="auto" pt={8}>
+            <LatestMatches canLoadMore={false} />
           </Box>
         </Box>
       </Box>
       <VStack transform="translateY(-50%)" position="relative" zIndex="2">
         <Link href="/api/auth/signin" passHref>
-          <Button isDisabled={isLoggedIn} as="a" variant="primary" size="lg" m={3}>
+          <Button isDisabled={isLoggedIn} as="a" variant={isLoggedIn ? 'subtle' : 'primary'} size="lg" m={3}>
             {isLoggedIn ? "You're logged in!" : 'Sign in with Slack'}
           </Button>
         </Link>

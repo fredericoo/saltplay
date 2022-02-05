@@ -17,7 +17,6 @@ const useMediaQuery = (size: 'xs' | 'sm' | 'md' | 'lg' | 'xl') => {
 
   useIsomorphicLayoutEffect(() => {
     const media = window.matchMedia(`(min-width: ${theme.breakpoints[size]})`);
-    console.log(media);
     media.addEventListener('change', updateTarget);
 
     if (media.matches) {

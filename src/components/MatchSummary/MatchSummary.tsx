@@ -1,13 +1,14 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import { MATCH_DELETE_DAYS } from '@/lib/constants';
-import { Badge, Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import { differenceInDays } from 'date-fns';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
 import DeleteMatchButton from './DeleteButton';
+import ScoreTrend from './ScoreTrend';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {
   left: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
@@ -92,11 +93,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && (
-                <Badge fontSize="xs" colorScheme={leftscore > rightscore ? 'green' : 'red'}>
-                  {Math.ceil(points / left.length)} pts
-                </Badge>
-              )}
+              {!!points && <ScoreTrend isPositive={leftscore > rightscore} score={Math.ceil(points / left.length)} />}
             </Fragment>
           ))}
         </VStack>
@@ -134,11 +131,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && (
-                <Badge fontSize="xs" colorScheme={leftscore < rightscore ? 'green' : 'red'}>
-                  {Math.ceil(points / right.length)} pts
-                </Badge>
-              )}
+              {!!points && <ScoreTrend isPositive={leftscore < rightscore} score={Math.ceil(points / right.length)} />}
             </Fragment>
           ))}
         </VStack>
