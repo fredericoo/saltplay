@@ -23,8 +23,6 @@ const getUnsplashRandomImage = async (query: string) => {
   return results[Math.floor(Math.random() * results.length)];
 };
 
-const isProd = process.env.NODE_ENV === 'production';
-
 const getRandomPhotoHandler: NextApiHandler<RandomPhotoApiResponse> = async (req, res) => {
   if (!accessKey) {
     res.status(403).json({ status: 'error', message: 'Missing UNSPLASH_API_KEY' });
@@ -45,7 +43,7 @@ const getRandomPhotoHandler: NextApiHandler<RandomPhotoApiResponse> = async (req
       });
     })
     .catch(err => {
-      res.status(400).json({ status: 'error', message: !isProd ? err.message : 'Bad request' });
+      res.status(400).json({ status: 'error', message: err.message });
     });
 };
 
