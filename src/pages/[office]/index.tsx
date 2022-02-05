@@ -1,6 +1,7 @@
 import OfficeStat from '@/components/OfficeStat';
 import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
+import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
@@ -9,7 +10,6 @@ import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
 import useSWR from 'swr';
-import { RandomPhotoApiResponse } from '../api/photo/random';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
