@@ -61,7 +61,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   return (
     <Stack>
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {allPositions?.map(player => {
           if (!player) return null;
           return (
@@ -78,14 +78,14 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
             />
           );
         })}
-        {hasNextPage && (
-          <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
-            Load more
-          </Button>
-        )}
-
-        {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
       </AnimatePresence>
+      {hasNextPage && (
+        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+          Load more
+        </Button>
+      )}
+
+      {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
     </Stack>
   );
 };
@@ -138,13 +138,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
 }) => {
   const isFirstPlace = position === 1;
   return (
-    <PositionWrapper
-      transition={{ duration: 0.3 }}
-      layout
-      initial={{ scale: 0.5, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.5, opacity: 0 }}
-    >
+    <PositionWrapper layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
         {hasIcons && medals[position] ? medals[position] : position}
       </Box>
