@@ -1,7 +1,7 @@
 import { APIResponse } from '@/lib/types/api';
+import axios from 'axios';
 import type { NextApiHandler } from 'next';
-import { createApi } from 'unsplash-js';
-import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
+import type { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
 import { object, string } from 'yup';
 
 export type RandomPhotoApiResponse = APIResponse<{ photo: UnsplashPhoto }>;
@@ -14,11 +14,11 @@ const accessKey = process.env.UNSPLASH_API_KEY;
 
 const getUnsplashRandomImage = async (query: string) => {
   if (!accessKey) return null;
-  const unsplash = createApi({
-    accessKey,
-  });
-  const unsplashQuery = await unsplash?.search.getPhotos({ query, perPage: 20 });
-  const results = unsplashQuery?.response?.results;
+  const results = await axios
+    .get(`https://api.unsplash.com/search/photos?page=1&query=${query}`, {
+      headers: { Authorization: `Client-ID ${accessKey}` },
+    })
+    .then(res => res?.data?.results || {});
   if (!results) return null;
   return results[Math.floor(Math.random() * results.length)];
 };
