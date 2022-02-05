@@ -3,7 +3,7 @@
   "short_name": "SaltPlay",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/pwa.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
