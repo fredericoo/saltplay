@@ -58,7 +58,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
 
   return (
     <Stack gap={3}>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {allMatches?.map(match => {
           if (!match) return null;
           const gameName = [match?.game?.icon, match?.game?.name].join(' ');
@@ -66,9 +66,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
             <MotionBox
               layout
               transition={{ duration: 0.3 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
               key={match.id}
             >
               <MatchSummary
