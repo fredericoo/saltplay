@@ -66,9 +66,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
             <MotionBox
               layout
               transition={{ duration: 0.3 }}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
               key={match.id}
             >
               <MatchSummary
@@ -88,7 +88,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
         })}
 
         {hasNextPage && canLoadMore && (
-          <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+          <Button key="loadMore" isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
             Load more
           </Button>
         )}
