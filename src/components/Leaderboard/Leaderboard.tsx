@@ -2,7 +2,7 @@ import PlayerName from '@/components/PlayerName';
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
 import { Badge, Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Role, User } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
@@ -61,29 +61,31 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   return (
     <Stack>
-      {allPositions?.map(player => {
-        if (!player) return null;
-        return (
-          <LeaderboardPosition
-            id={player.id}
-            key={player.id}
-            name={player.name || 'Anonymous'}
-            photo={player.image}
-            wins={player.wins}
-            losses={player.losses}
-            points={player.points}
-            roleId={player.roleId}
-            position={player.position}
-          />
-        );
-      })}
-      {hasNextPage && (
-        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
-          Load more
-        </Button>
-      )}
+      <AnimatePresence initial={false}>
+        {allPositions?.map(player => {
+          if (!player) return null;
+          return (
+            <LeaderboardPosition
+              id={player.id}
+              key={player.id}
+              name={player.name || 'Anonymous'}
+              photo={player.image}
+              wins={player.wins}
+              losses={player.losses}
+              points={player.points}
+              roleId={player.roleId}
+              position={player.position}
+            />
+          );
+        })}
+        {hasNextPage && (
+          <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+            Load more
+          </Button>
+        )}
 
-      {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
+        {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
+      </AnimatePresence>
     </Stack>
   );
 };
@@ -136,7 +138,13 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
 }) => {
   const isFirstPlace = position === 1;
   return (
-    <PositionWrapper layout>
+    <PositionWrapper
+      transition={{ duration: 0.3 }}
+      layout
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      exit={{ scale: 0 }}
+    >
       <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
         {hasIcons && medals[position] ? medals[position] : position}
       </Box>

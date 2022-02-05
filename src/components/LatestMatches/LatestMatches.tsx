@@ -2,7 +2,7 @@ import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/lib/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
 import useLatestMatches from './useLatestMatches';
 
@@ -58,39 +58,41 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
 
   return (
     <Stack gap={3}>
-      {allMatches?.map(match => {
-        if (!match) return null;
-        const gameName = [match?.game?.icon, match?.game?.name].join(' ');
-        return (
-          <MotionBox
-            layout
-            transition={{ duration: 0.3 }}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            key={match.id}
-          >
-            <MatchSummary
-              id={match.id}
-              createdAt={match.createdAt}
-              leftscore={match.leftscore}
-              left={match.left}
-              rightscore={match.rightscore}
-              right={match.right}
-              gameName={gameName}
-              officeName={match?.game?.office?.name}
-              onDelete={refetch}
-              points={match.points}
-            />
-          </MotionBox>
-        );
-      })}
+      <AnimatePresence initial={false}>
+        {allMatches?.map(match => {
+          if (!match) return null;
+          const gameName = [match?.game?.icon, match?.game?.name].join(' ');
+          return (
+            <MotionBox
+              layout
+              transition={{ duration: 0.3 }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              key={match.id}
+            >
+              <MatchSummary
+                id={match.id}
+                createdAt={match.createdAt}
+                leftscore={match.leftscore}
+                left={match.left}
+                rightscore={match.rightscore}
+                right={match.right}
+                gameName={gameName}
+                officeName={match?.game?.office?.name}
+                onDelete={refetch}
+                points={match.points}
+              />
+            </MotionBox>
+          );
+        })}
 
-      {hasNextPage && canLoadMore && (
-        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
-          Load more
-        </Button>
-      )}
+        {hasNextPage && canLoadMore && (
+          <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+            Load more
+          </Button>
+        )}
+      </AnimatePresence>
     </Stack>
   );
 };

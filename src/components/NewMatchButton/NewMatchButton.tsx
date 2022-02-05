@@ -59,6 +59,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         variant="solid"
         bg="gray.300"
         _hover={{ bg: 'gray.300' }}
+        size="lg"
         isDisabled
         onClick={onOpen}
         {...chakraProps}
