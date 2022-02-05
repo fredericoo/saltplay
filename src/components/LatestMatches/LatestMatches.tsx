@@ -57,7 +57,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
     );
 
   return (
-    <Stack gap={3}>
+    <Stack gap={3} key={gameId}>
       <AnimatePresence initial={false}>
         {allMatches?.map(match => {
           if (!match) return null;
