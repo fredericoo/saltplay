@@ -25,6 +25,7 @@ const Navbar: React.VFC = () => {
       transition="background .6s ease-out"
       bg={hasScrolled ? 'rgba(237, 242, 247, 0.85)' : undefined}
       backdropFilter={hasScrolled ? 'saturate(180%) blur(20px)' : undefined}
+      boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.1)' : undefined}
     >
       <Link href="/" passHref>
         <HStack as="a">
