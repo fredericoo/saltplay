@@ -93,7 +93,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && <ScoreTrend isPositive={leftscore > rightscore} score={Math.ceil(points / left.length)} />}
+              {!!points && <ScoreTrend isPositive={leftscore > rightscore} score={points} />}
             </Fragment>
           ))}
         </VStack>
@@ -112,7 +112,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
             </HStack>
           </HStack>
           {gameName && (
-            <Text textAlign="center" fontSize="sm" color="gray.500">
+            <Text textAlign="center" textTransform="uppercase" fontSize="xs" color="gray.400" letterSpacing="wider">
               {gameName}
             </Text>
           )}
@@ -131,7 +131,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && <ScoreTrend isPositive={leftscore < rightscore} score={Math.ceil(points / right.length)} />}
+              {!!points && <ScoreTrend isPositive={leftscore < rightscore} score={points} />}
             </Fragment>
           ))}
         </VStack>

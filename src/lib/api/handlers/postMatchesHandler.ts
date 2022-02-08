@@ -92,14 +92,14 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         },
       });
 
-      await moveMatchPoints({
-        gameid: body.gameId,
-        pointsToMove: matchPoints,
-        leftToRight: body.left.score < body.right.score,
-        left: sides.left,
-        right: sides.right,
-      });
       try {
+        await moveMatchPoints({
+          gameid: body.gameId,
+          pointsToMove: matchPoints,
+          leftToRight: body.left.score < body.right.score,
+          left: sides.left,
+          right: sides.right,
+        });
       } catch {
         await prisma.match.delete({ where: { id: createdMatch.id } });
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });

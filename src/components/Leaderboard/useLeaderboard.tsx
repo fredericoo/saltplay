@@ -15,7 +15,10 @@ const getKey =
 type UseLeaderboard = (options: { gameId?: Game['id'] }) => SWRInfiniteResponse<LeaderboardGETAPIResponse>;
 
 const useLeaderboard: UseLeaderboard = ({ gameId }) => {
-  return useSWRInfinite<LeaderboardGETAPIResponse>(getKey({ gameId, perPage: 20 }), { refreshInterval: 1000 * 60 });
+  return useSWRInfinite<LeaderboardGETAPIResponse>(getKey({ gameId, perPage: 20 }), {
+    refreshInterval: 1000 * 60,
+    revalidateAll: true,
+  });
 };
 
 export default useLeaderboard;

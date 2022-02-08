@@ -61,7 +61,6 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
       <AnimatePresence initial={false}>
         {allMatches?.map(match => {
           if (!match) return null;
-          const gameName = [match?.game?.icon, match?.game?.name].join(' ');
           return (
             <MotionBox
               layout
@@ -78,7 +77,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
                 left={match.left}
                 rightscore={match.rightscore}
                 right={match.right}
-                gameName={gameName}
+                gameName={match?.game?.name}
                 officeName={match?.game?.office?.name}
                 onDelete={refetch}
                 points={match.points}

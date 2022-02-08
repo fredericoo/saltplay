@@ -1,5 +1,5 @@
-import prisma from '@/lib/prisma';
 import { STARTING_POINTS } from '@/lib/leaderboard';
+import prisma from '@/lib/prisma';
 import { Match, User } from '@prisma/client';
 
 /**
@@ -37,7 +37,7 @@ const moveMatchPoints = async (
 
   return await Promise.all(
     newScores.map(async player => {
-      const playerPointsToMove = data.pointsToMove / data[player.side].length;
+      const playerPointsToMove = data.pointsToMove;
       await prisma.playerScore.upsert({
         where: { gameid_playerid: { gameid: data.gameid, playerid: player.id } },
         update: { points: { [player.operation]: playerPointsToMove } },
