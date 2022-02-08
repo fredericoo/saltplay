@@ -1,12 +1,15 @@
+import useMediaQuery from '@/lib/useMediaQuery';
 import { HStack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { IoBulbOutline } from 'react-icons/io5';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
 import UserMenu from '../UserMenu/UserMenu';
 
 const Navbar: React.VFC = () => {
+  const isDesktop = useMediaQuery('md');
   const [hasScrolled, setHasScrolled] = useState(false);
   useEffect(() => {
     const handleScroll = () => setHasScrolled(window.scrollY > 0);
@@ -48,7 +51,8 @@ const Navbar: React.VFC = () => {
           modalTitle="Send us your feedback"
           Form={FeedbackForm}
         >
-          Feedback
+          <IoBulbOutline />
+          {isDesktop ? 'Feedback' : ''}
         </ModalButton>
         <UserMenu />
       </HStack>
