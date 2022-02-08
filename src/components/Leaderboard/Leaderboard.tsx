@@ -135,6 +135,8 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   hasIcons = true,
 }) => {
   const isFirstPlace = position === 1;
+  const { data: session } = useSession();
+  const isMe = session?.user.id === id;
   return (
     <PositionWrapper layout>
       <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
@@ -146,10 +148,17 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
         borderRadius="xl"
         gap={4}
         position="relative"
-        boxShadow={isFirstPlace ? '0 32px 64px 0 rgba(0,0,0,0.1)' : undefined}
+        boxShadow={
+          isMe
+            ? '0px 0px 32px rgba(154, 242, 200, 0.3), 0px 8px 16px rgba(154, 242, 200, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)'
+            : isFirstPlace
+            ? '0 32px 64px 0 rgba(0,0,0,0.1)'
+            : undefined
+        }
         zIndex={isFirstPlace ? 1 : undefined}
         w="100%"
         overflow="hidden"
+        border="2px solid transparent"
       >
         <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
         <Box flexGrow={1}>
