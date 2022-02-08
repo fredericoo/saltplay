@@ -31,7 +31,7 @@ const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
       <Text fontWeight="bold" bg={toastStyles[status].color} backgroundClip="text">
         {heading}
       </Text>
-      {content && <Text color="gray.600">{content}</Text>}
+      {content && <Text color="gray.500">{content}</Text>}
     </Stack>
   );
 };

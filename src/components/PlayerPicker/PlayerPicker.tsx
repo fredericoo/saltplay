@@ -109,8 +109,8 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
         position="sticky"
         top="0"
         zIndex="sticky"
-        bg="rgb(226, 232, 240,0.9)"
-        backdropFilter={'blur(5px) saturate(500%)'}
+        bg="rgb(226, 232, 240,0.75)"
+        backdropFilter="saturate(180%) blur(20px)"
         mx="-3px"
         overflow="hidden"
       >

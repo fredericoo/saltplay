@@ -36,7 +36,7 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
   const handleClick = async () => {
     onDeleteStart?.();
     try {
-      await axios.delete(`/api/matches/${id}`);
+      await axios.delete(`/api/matches?matchId=${id}`);
       toast({
         render: () => <Toast status="success" heading={'It’s gone'} content="Match deleted successfully." />,
         position: 'bottom',

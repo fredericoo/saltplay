@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { PromiseElement } from '@/lib/types/utils';
@@ -11,13 +12,13 @@ const querySchema = object({
   gameId: string(),
   officeId: string(),
   userId: string(),
-  first: number().max(20),
+  first: number().max(20).default(PAGE_SIZE),
   after: string(),
 });
 
 export type GetMatchesOptions = InferType<typeof querySchema>;
 
-const getMatches = ({ first = 5, after, userId, gameId, officeId }: GetMatchesOptions) =>
+const getMatches = ({ first, after, userId, gameId, officeId }: GetMatchesOptions) =>
   prisma.match.findMany({
     orderBy: { createdAt: 'desc' },
     cursor: after ? { id: after } : undefined,
@@ -64,7 +65,7 @@ const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res
     .validate(req.query, { abortEarly: false })
     .then(async options => {
       const matches = await getMatches({ ...options });
-      const nextCursor = matches.length >= (options.first || 5) ? matches[matches.length - 1].id : undefined;
+      const nextCursor = matches.length >= (options.first || PAGE_SIZE) ? matches[matches.length - 1].id : undefined;
 
       res.status(200).json({ status: 'ok', matches, nextCursor });
     })

@@ -1,3 +1,4 @@
+import deleteMatchesHandler from '@/lib/api/handlers/deleteMatchesHandler';
 import getMatchesHandler from '@/lib/api/handlers/getMatchesHandler';
 import postMatchesHandler from '@/lib/api/handlers/postMatchesHandler';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -10,6 +11,7 @@ const handler = nc<NextApiRequest, NextApiResponse>({
   },
 })
   .get(getMatchesHandler)
-  .post(postMatchesHandler);
+  .post(postMatchesHandler)
+  .delete(deleteMatchesHandler);
 
 export default handler;

@@ -80,7 +80,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       const matchPoints = calculateMatchPoints(pointsAvg.left, pointsAvg.right, body.left.score - body.right.score);
 
-      await prisma.match.create({
+      const createdMatch = await prisma.match.create({
         data: {
           createdAt: new Date().toISOString(),
           leftscore: body.left.score,
@@ -92,26 +92,30 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         },
       });
 
-      const matchPointsMoved = await moveMatchPoints({
-        gameid: body.gameId,
-        pointsToMove: matchPoints,
-        leftToRight: body.left.score < body.right.score,
-        left: sides.left,
-        right: sides.right,
-      });
-
-      if (!matchPointsMoved) {
+      try {
+        await moveMatchPoints({
+          gameid: body.gameId,
+          pointsToMove: matchPoints,
+          leftToRight: body.left.score < body.right.score,
+          left: sides.left,
+          right: sides.right,
+        });
+      } catch {
+        await prisma.match.delete({ where: { id: createdMatch.id } });
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });
       }
 
-      await notifyMatchOnSlack({
-        gameId: body.gameId,
-        leftScore: body.left.score,
-        rightScore: body.right.score,
-        left: sides.left,
-        right: sides.right,
-      });
-
+      try {
+        await notifyMatchOnSlack({
+          gameId: body.gameId,
+          leftScore: body.left.score,
+          rightScore: body.right.score,
+          left: sides.left,
+          right: sides.right,
+        });
+      } catch {
+        console.error('Error sending match to slack');
+      }
       return res.status(200).json({ status: 'ok' });
     })
     .catch(err => {

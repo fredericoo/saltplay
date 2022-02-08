@@ -3,14 +3,13 @@
   "short_name": "SaltPlay",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/pwa.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
   "start_url": "https://games.saltpay.co",
-  "background_color": "#f0f0f0",
   "theme_color": "#FE33A1",
   "display": "fullscreen"
 }

@@ -1,4 +1,4 @@
-import getRandomPhotoHandler from '@/lib/api/handlers/getRandomPhotoHandler';
+import getLeaderboardHandler from '@/lib/api/handlers/getLeaderboardHandler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
@@ -7,6 +7,6 @@ const handler = nc<NextApiRequest, NextApiResponse>({
     console.error(err.stack);
     res.status(500).end('Internal server error');
   },
-}).get(getRandomPhotoHandler);
+}).get(getLeaderboardHandler);
 
 export default handler;

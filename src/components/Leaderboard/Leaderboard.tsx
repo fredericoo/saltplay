@@ -1,11 +1,12 @@
 import PlayerName from '@/components/PlayerName';
-import fetcher from '@/lib/fetcher';
-import { LeaderboardAPIResponse } from '@/pages/api/games/[id]/leaderboard';
-import { Badge, Box, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Match, Role, User } from '@prisma/client';
+import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
+import { Badge, Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Game, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
+import useLeaderboard from './useLeaderboard';
 
 const PositionWrapper = motion(HStack);
 
@@ -14,49 +15,17 @@ type LeaderboardProps = {
   hasIcons?: boolean;
 };
 
-const calculateWinsAndLosses = (
-  leftMatches: Pick<Match, 'leftscore' | 'rightscore'>[],
-  rightMatches: Pick<Match, 'leftscore' | 'rightscore'>[]
-) => {
-  const p1Stats = leftMatches.reduce(
-    (acc, match) => {
-      if (match.leftscore > match.rightscore) {
-        acc.wins++;
-      }
-      if (match.leftscore < match.rightscore) {
-        acc.losses++;
-      }
-      return acc;
-    },
-    { wins: 0, losses: 0 }
-  );
-  const p2Stats = rightMatches.reduce(
-    (acc, match) => {
-      if (match.leftscore < match.rightscore) {
-        acc.wins++;
-      }
-      if (match.leftscore > match.rightscore) {
-        acc.losses++;
-      }
-      return acc;
-    },
-    { wins: 0, losses: 0 }
-  );
-
-  return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
-};
-
 const medals: Record<number, string> = {
+  0: '🙋',
   1: '🥇',
   2: '🥈',
   3: '🥉',
 };
 
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
-  const { data, error } = useSWR<LeaderboardAPIResponse>(`/api/games/${gameId}/leaderboard`, fetcher, {
-    refreshInterval: 1000 * 60,
-    revalidateOnFocus: false,
-  });
+  const { data: session } = useSession();
+  const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const hasNextPage = data?.[data.length - 1].nextPage;
 
   if (error) return <Box>Error</Box>;
   if (!data)
@@ -81,7 +50,9 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       </Stack>
     );
 
-  if (data.positions && data.positions.length === 0)
+  const allPositions = data.flatMap(page => page.positions);
+
+  if (allPositions && allPositions.length === 0)
     return (
       <Text textAlign="center" color="gray.500">
         No leaderboard available yet.
@@ -90,87 +61,120 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   return (
     <Stack>
-      {data.positions?.map((position, posIndex) => {
-        if (!position) return null;
-        const stats = calculateWinsAndLosses(position.player.leftmatches, position.player.rightmatches);
+      {allPositions?.map(player => {
+        if (!player) return null;
         return (
-          <PositionWrapper layout key={position.id}>
-            <Box
-              textAlign="right"
-              w="2.5rem"
-              pr={2}
-              fontSize="3xl"
-              color="gray.400"
-              whiteSpace="nowrap"
-              overflow="hidden"
-            >
-              {hasIcons && medals[posIndex + 1] ? medals[posIndex + 1] : posIndex + 1}
-            </Box>
-            <LeaderboardPosition
-              id={position.player.id}
-              key={position.id}
-              name={position.player.name || 'Anonymous'}
-              photo={position.player.image}
-              wins={stats.wins}
-              losses={stats.losses}
-              points={position.points}
-              roleId={position.player.roleId}
-              isFirstPlace={posIndex === 0}
-            />
-          </PositionWrapper>
+          <LeaderboardPosition
+            id={player.id}
+            key={player.id}
+            name={player.name || 'Anonymous'}
+            photo={player.image}
+            wins={player.wins}
+            losses={player.losses}
+            points={player.points}
+            roleId={player.roleId}
+            position={player.position}
+          />
         );
       })}
+      {hasNextPage && (
+        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+          Load more
+        </Button>
+      )}
+
+      {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
     </Stack>
   );
 };
 
 type LeaderboardPositionProps = {
   id: User['id'];
+  position: number;
   roleId: Role['id'];
   name: string;
   photo?: string | null;
   points: number;
   wins?: number;
   losses?: number;
-  isFirstPlace?: boolean;
+  hasIcons?: boolean;
+};
+
+const PlayerPosition: React.VFC<{ gameId: Game['id'] }> = ({ gameId }) => {
+  const { data: session } = useSession();
+  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
+    `/api/leaderboard?gameId=${gameId}&userId=${session?.user?.id}`
+  );
+  const playerPosition = playerPositions?.positions?.[0];
+  if (!playerPosition) return null;
+
+  return (
+    <LeaderboardPosition
+      id={playerPosition?.id}
+      key={playerPosition?.id}
+      name={playerPosition?.name || 'Anonymous'}
+      photo={playerPosition?.image}
+      wins={playerPosition?.wins}
+      losses={playerPosition?.losses}
+      points={playerPosition?.points}
+      roleId={playerPosition?.roleId}
+      position={playerPosition?.position}
+    />
+  );
 };
 
 const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   id,
   roleId,
+  position,
   name,
   photo,
   points,
   wins,
   losses,
-  isFirstPlace,
+  hasIcons = true,
 }) => {
+  const isFirstPlace = position === 1;
+  const { data: session } = useSession();
+  const isMe = session?.user.id === id;
   return (
-    <HStack
-      bg="white"
-      p={4}
-      borderRadius="xl"
-      gap={4}
-      position="relative"
-      boxShadow={isFirstPlace ? '0 32px 64px 0 rgba(0,0,0,0.1)' : undefined}
-      zIndex={isFirstPlace ? 1 : undefined}
-      w="100%"
-      overflow="hidden"
-    >
-      <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
-      <Box flexGrow={1}>
-        <HStack spacing={1}>
-          <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
-        </HStack>
-        <HStack fontSize="sm" color="gray.500">
-          <Text>{wins} wins</Text>
-          <Text>{losses} losses</Text>
-        </HStack>
+    <PositionWrapper layout>
+      <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
+        {hasIcons && medals[position] ? medals[position] : position}
       </Box>
-      <Box>
-        <Badge>{points} pts</Badge>
-      </Box>
-    </HStack>
+      <HStack
+        bg="white"
+        p={4}
+        borderRadius="xl"
+        gap={4}
+        position="relative"
+        boxShadow={
+          isMe
+            ? '0px 0px 32px rgba(154, 242, 200, 0.3), 0px 8px 16px rgba(154, 242, 200, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)'
+            : isFirstPlace
+            ? '0 32px 64px 0 rgba(0,0,0,0.1)'
+            : undefined
+        }
+        zIndex={isFirstPlace ? 1 : undefined}
+        w="100%"
+        overflow="hidden"
+        border="2px solid transparent"
+      >
+        <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
+        <Box flexGrow={1}>
+          <HStack spacing={1}>
+            <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
+          </HStack>
+          <HStack fontSize="sm" color="gray.500">
+            <Text>{wins} wins</Text>
+            <Text>{losses} losses</Text>
+          </HStack>
+        </Box>
+        <Box>
+          <Badge>{points} pts</Badge>
+        </Box>
+      </HStack>
+    </PositionWrapper>
   );
 };
 
