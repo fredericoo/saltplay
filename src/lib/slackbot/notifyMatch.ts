@@ -49,8 +49,8 @@ export const notifyMatchOnSlack = async ({
   });
 
   const flags = getGameFlags(game?.flags);
-  const getWinnerIcon = (loserScore: number) => {
-    if (loserScore === 0 && flags.babyBottleIfHumiliated) return '🍼';
+  const getWinnerIcon = (loserScore: number, winnerScore: number) => {
+    if (loserScore === 0 && winnerScore > 4 && flags.babyBottleIfHumiliated) return '🍼';
     return '🏆';
   };
 
@@ -58,10 +58,10 @@ export const notifyMatchOnSlack = async ({
   const rightNames = await Promise.all(right.map(async player => await getPlayerMentionName(player.id)));
 
   const text = `>${leftNames.join(', ')} ${
-    leftScore > rightScore ? getWinnerIcon(rightScore) : ''
-  }*${leftScore}* ✕ *${rightScore}* ${rightScore > leftScore ? getWinnerIcon(leftScore) : ''}${rightNames.join(
-    ', '
-  )}\n>_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
+    leftScore > rightScore ? getWinnerIcon(rightScore, leftScore) : ''
+  }*${leftScore}* ✕ *${rightScore}* ${
+    rightScore > leftScore ? getWinnerIcon(leftScore, rightScore) : ''
+  }${rightNames.join(', ')}\n>_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
   try {
     await slack.chat.postMessage({
