@@ -1,9 +1,9 @@
-import hideScrollbar from '@/lib/styleUtils';
+import hideScrollbar, { centraliseEmoji } from '@/lib/styleUtils';
 import { Box, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import IconBlur from '../IconBlur/IconBlur';
-import { SidebarItem, Sidebar as SidebarProps } from './types';
+import { Sidebar as SidebarProps, SidebarItem } from './types';
 
 const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   const router = useRouter();
@@ -11,7 +11,8 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   return (
     <Stack
       as="nav"
-      bg="gray.50"
+      bg={{ base: 'rgb(255, 255, 255, 0.75)', md: 'gray.50' }}
+      backdropFilter={{ base: 'saturate(180%) blur(20px)', md: undefined }}
       direction={{ base: 'row', md: 'column' }}
       borderRadius={16}
       p={{ base: '3px', md: 8 }}
@@ -58,8 +59,17 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         transform="translateZ(0)"
         minW={'76px'}
       >
-        <Box zIndex={2} fontSize="md" pr={2} h="1.8em" w="1em" whiteSpace="nowrap" textAlign="center">
-          {icon}
+        <Box
+          zIndex={2}
+          sx={centraliseEmoji}
+          fontSize="md"
+          pr={2}
+          h="1.8em"
+          w="1em"
+          whiteSpace="nowrap"
+          textAlign="center"
+        >
+          <span>{icon}</span>
         </Box>
         <Text zIndex={2} textOverflow={{ md: 'ellipsis' }} overflow={{ md: 'hidden' }} whiteSpace="nowrap">
           {title}

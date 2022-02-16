@@ -1,13 +1,15 @@
-import { Badge, Box, HStack, Input } from '@chakra-ui/react';
-import { useFormContext } from 'react-hook-form';
+import { Badge, FormControl, HStack, Input } from '@chakra-ui/react';
+import { useFormContext, useFormState } from 'react-hook-form';
+import ErrorNotification from '../ErrorNotification';
 import { MatchFormInputs } from '../NewMatchButton';
 
 const Scores: React.VFC = () => {
   const { register } = useFormContext<MatchFormInputs>();
+  const { errors } = useFormState<MatchFormInputs>();
 
   return (
     <HStack spacing={8}>
-      <Box flex={1} position="relative">
+      <FormControl isInvalid={!!errors['leftscore']} flex={1} position="relative">
         <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
           Score
         </Badge>
@@ -21,8 +23,9 @@ const Scores: React.VFC = () => {
           inputmode="numeric"
           {...register('leftscore', { required: true, valueAsNumber: true })}
         />
-      </Box>
-      <Box flex={1} position="relative">
+        {<ErrorNotification message={errors['leftscore']?.type} />}
+      </FormControl>
+      <FormControl isInvalid={!!errors['rightscore']} flex={1} position="relative">
         <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
           Score
         </Badge>
@@ -36,7 +39,8 @@ const Scores: React.VFC = () => {
           inputmode="numeric"
           {...register('rightscore', { required: true, valueAsNumber: true })}
         />
-      </Box>
+        <ErrorNotification message={errors['rightscore']?.type} />
+      </FormControl>
     </HStack>
   );
 };

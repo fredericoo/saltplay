@@ -16,7 +16,9 @@ const labels = {
 };
 
 const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
-  const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher);
+  const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher, {
+    revalidateOnFocus: false,
+  });
   if (!id || error) return null;
   return (
     <Stat bg="white" borderRadius="xl" p={4}>

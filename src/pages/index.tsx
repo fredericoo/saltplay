@@ -1,14 +1,15 @@
-import prisma from '@/lib/prisma';
-import type { GetStaticProps, NextPage } from 'next';
-import { Badge, Box, Button, Heading, HStack, VStack, SimpleGrid, Text } from '@chakra-ui/react';
-import PlayerAvatar from '@/components/PlayerAvatar';
-import { PromiseElement } from '@/lib/types/utils';
-import Link from 'next/link';
 import LatestMatches from '@/components/LatestMatches';
+import PlayerAvatar from '@/components/PlayerAvatar';
 import SEO from '@/components/SEO';
+import prisma from '@/lib/prisma';
+import { PromiseElement } from '@/lib/types/utils';
+import { Badge, Box, Button, Heading, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { User } from '@prisma/client';
-import { memo } from 'react';
 import { motion } from 'framer-motion';
+import type { GetStaticProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { memo } from 'react';
 
 type HomeProps = {
   offices: PromiseElement<ReturnType<typeof getOffices>>;
@@ -16,6 +17,8 @@ type HomeProps = {
 };
 
 const Home: NextPage<HomeProps> = ({ offices, players }) => {
+  const { status } = useSession();
+  const isLoggedIn = status === 'authenticated';
   const officesWithGames = offices?.filter(office => office.games.length) || [];
   return (
     <Box>
@@ -130,15 +133,15 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
             </Text>{' '}
             great players
           </Heading>
-          <Box mb="-64px" maxW="container.sm" mx="auto">
-            <LatestMatches perPage={3} canLoadMore={false} />
+          <Box h="400px" overflow="hidden" maxW="container.sm" mx="auto" pt={8}>
+            <LatestMatches canLoadMore={false} />
           </Box>
         </Box>
       </Box>
       <VStack transform="translateY(-50%)" position="relative" zIndex="2">
         <Link href="/api/auth/signin" passHref>
-          <Button as="a" variant="primary" size="lg" m={3}>
-            Sign in with Slack
+          <Button isDisabled={isLoggedIn} as="a" variant={isLoggedIn ? 'subtle' : 'primary'} size="lg" m={3}>
+            {isLoggedIn ? "You're logged in!" : 'Sign in with Slack'}
           </Button>
         </Link>
       </VStack>
@@ -147,7 +150,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
 };
 
 const MotionBox = motion(Box);
-const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name'>[] }> = ({ players }) => {
+const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name' | 'roleId'>[] }> = ({ players }) => {
   return (
     <>
       {players?.map((user, i) => {
@@ -185,7 +188,7 @@ const getPlayerSample = () =>
   prisma.user.findMany({
     orderBy: { scores: { _count: 'desc' } },
     take: 10,
-    select: { id: true, name: true, image: true },
+    select: { id: true, name: true, image: true, roleId: true },
   });
 
 export const getStaticProps: GetStaticProps = async () => {

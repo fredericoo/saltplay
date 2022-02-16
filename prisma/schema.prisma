@@ -40,6 +40,8 @@ model User {
   rightmatches Match[] @relation("right")
   scores   PlayerScore[]
   feedback Feedback[]
+  roleId   Int
+  role Role @relation(fields: [roleId], references: [id])
 }
 
 model Session {
@@ -101,6 +103,12 @@ model PlayerScore {
     game Game @relation(fields: [gameid], references: [id])
 
     @@unique([gameid, playerid])
+}
+
+model Role {
+    id Int  @id @default(autoincrement())
+    name String
+    users User[]
 }
 
 model Feedback {

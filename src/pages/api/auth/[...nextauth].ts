@@ -1,9 +1,12 @@
-import NextAuth from 'next-auth';
-import SlackProvider from 'next-auth/providers/slack';
+import PrismaAdapter from '@/lib/adapter';
+import turnGuestToUser from '@/lib/api/turnGuestToUser';
+import { GUEST_ROLE_ID } from '@/lib/constants';
+import prisma from '@/lib/prisma';
+import { User } from '@prisma/client';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import GitHubProvider from 'next-auth/providers/github';
-import prisma from '@/lib/prisma';
-import PrismaAdapter from '@/lib/adapter';
+import SlackProvider from 'next-auth/providers/slack';
 
 const providers = [];
 
@@ -42,13 +45,19 @@ if (process.env.NODE_ENV === 'development') {
   );
 }
 
-export default NextAuth({
+export const nextAuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers,
-  secret: 'xcAO/EYHuP0bSGyplq2EaiHjwOLG1Kmp8d0k9ntOF7g=',
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     session({ session, user }) {
-      return { ...session, user: { ...session.user, id: user.id } };
+      return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
+    },
+    async signIn({ user, account }) {
+      if (user.roleId === GUEST_ROLE_ID) await turnGuestToUser(user, account);
+      return true;
     },
   },
-});
+};
+
+export default NextAuth(nextAuthOptions);

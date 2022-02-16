@@ -1,6 +1,6 @@
+import IconBlur from '@/components/IconBlur';
 import { Box, Heading } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import IconBlur from '../IconBlur/IconBlur';
 import { PageHeader as PageHeaderProps } from './types';
 
 const BlurBox = motion(Box);
