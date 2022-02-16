@@ -1,4 +1,5 @@
-import { calculateMatchPoints, STARTING_POINTS } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
+import { calculateMatchPoints } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
 import { APIResponse } from '@/lib/types/api';

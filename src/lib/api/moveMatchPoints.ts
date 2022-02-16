@@ -1,4 +1,4 @@
-import { STARTING_POINTS } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
 import prisma from '@/lib/prisma';
 import { Match, User } from '@prisma/client';
 

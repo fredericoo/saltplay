@@ -83,6 +83,7 @@ model Game {
     matches Match[] 
     scores PlayerScore[]
     maxPlayersPerTeam Int? @default(1)
+    flags Int?
 }
 
 model Office {

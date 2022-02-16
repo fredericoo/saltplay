@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { Game, User } from '@prisma/client';
+import { getGameFlags } from '../flagAttributes';
 import slack from './client';
 
 type NotifyOptions = {
@@ -38,6 +39,7 @@ export const notifyMatchOnSlack = async ({
     select: {
       name: true,
       icon: true,
+      flags: true,
       office: {
         select: {
           name: true,
@@ -46,13 +48,19 @@ export const notifyMatchOnSlack = async ({
     },
   });
 
+  const flags = getGameFlags(game?.flags);
+  const getWinnerIcon = (loserScore: number, winnerScore: number) => {
+    if (loserScore === 0 && winnerScore > 4 && flags.babyBottleIfHumiliated) return '🍼';
+    return '🏆';
+  };
+
   const leftNames = await Promise.all(left.map(async player => await getPlayerMentionName(player.id)));
   const rightNames = await Promise.all(right.map(async player => await getPlayerMentionName(player.id)));
 
   const text = `>${leftNames.join(', ')} ${
-    leftScore > rightScore ? (leftScore > 4 && rightScore === 0 ? '🍼 ' : '🏆 ') : ''
+    leftScore > rightScore ? getWinnerIcon(rightScore, leftScore) : ''
   }*${leftScore}* ✕ *${rightScore}* ${
-    rightScore > leftScore ? (rightScore > 4 && leftScore === 0 ? '🍼 ' : '🏆 ') : ''
+    rightScore > leftScore ? getWinnerIcon(leftScore, rightScore) : ''
   }${rightNames.join(', ')}\n>_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
   try {
