@@ -1,43 +1,12 @@
-import { APIResponse } from '@/lib/types/api';
-import type { NextApiHandler } from 'next';
-import { createApi } from 'unsplash-js';
-import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
+import getRandomPhotoHandler from '@/lib/api/handlers/getRandomPhotoHandler';
+import { NextApiRequest, NextApiResponse } from 'next';
+import nc from 'next-connect';
 
-export type RandomPhotoApiResponse = APIResponse<{ photo: UnsplashPhoto }>;
-
-const handler: NextApiHandler<RandomPhotoApiResponse> = async (req, res) => {
-  res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
-  if (req.method !== 'GET') {
-    res.status(403).json({ status: 'error', message: 'Invalid method' });
-    return;
-  }
-
-  const accessKey = process.env.UNSPLASH_API_KEY;
-
-  if (!accessKey) {
-    res.status(403).json({ status: 'error', message: 'Missing UNSPLASH_API_KEY' });
-    return;
-  }
-
-  const unsplash = createApi({
-    accessKey,
-  });
-
-  const query = Array.isArray(req.query.q) ? req.query.q.join('') : req.query.q;
-  const perPage = req.query.perPage ? Math.min(+req.query.perPage, 20) : 5;
-
-  const unsplashQuery = await unsplash?.search.getPhotos({ query, perPage });
-  const results = unsplashQuery?.response?.results;
-
-  if (!results) {
-    res.status(404).json({ status: 'error', message: 'No results found' });
-    return;
-  }
-
-  res.status(200).json({
-    status: 'ok',
-    photo: results[Math.floor(Math.random() * results.length)],
-  });
-};
+const handler = nc<NextApiRequest, NextApiResponse>({
+  onError: (err, _req, res, _next) => {
+    console.error(err.stack);
+    res.status(500).end('Internal server error');
+  },
+}).get(getRandomPhotoHandler);
 
 export default handler;

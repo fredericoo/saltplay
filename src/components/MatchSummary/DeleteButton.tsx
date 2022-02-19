@@ -2,7 +2,6 @@ import {
   Button,
   CloseButton,
   HStack,
-  Text,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -10,10 +9,13 @@ import {
   PopoverFooter,
   PopoverTrigger,
   Portal,
+  Text,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { Match } from '@prisma/client';
 import axios from 'axios';
+import Toast from '../Toast';
 
 type DeleteMatchButtonProps = {
   id: Match['id'];
@@ -29,15 +31,24 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
   onDeleteError,
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleClick = async () => {
     onDeleteStart?.();
     try {
-      await axios.delete(`/api/matches/${id}`);
+      await axios.delete(`/api/matches?matchId=${id}`);
+      toast({
+        render: () => <Toast status="success" heading={'It’s gone'} content="Match deleted successfully." />,
+        position: 'bottom',
+      });
+      onDeleteSuccess?.();
     } catch {
+      toast({
+        render: () => <Toast status="error" heading={'Oh no!'} content="Could not delete match." />,
+        position: 'bottom',
+      });
       onDeleteError?.();
     }
-    onDeleteSuccess?.();
   };
 
   return (

@@ -1,4 +1,4 @@
-import getUserGradient from '@/theme/palettes';
+import getGradientFromId from '@/theme/palettes';
 import { Stack, Text } from '@chakra-ui/react';
 
 type ToastProps = {
@@ -9,14 +9,14 @@ type ToastProps = {
 
 const toastStyles = {
   error: {
-    color: getUserGradient('4'),
+    color: getGradientFromId('4'),
     shadow:
-      '0px 0px 32px rgba(254, 142, 180, 0.1), 0px 8px 16px rgba(254, 142, 180, 0.15), 0px 4px 9px rgba(0, 0, 0, 0.1)',
+      '0px 0px 32px rgba(254, 142, 180, 0.3), 0px 8px 16px rgba(254, 142, 180, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)',
   },
   success: {
-    color: getUserGradient('1'),
+    color: getGradientFromId('1'),
     shadow:
-      '0px 0px 32px rgba(96, 211, 205, 0.1), 0px 8px 16px rgba(96, 211, 205, 0.15), 0px 4px 9px rgba(0, 0, 0, 0.1)',
+      '0px 0px 32px rgba(96, 211, 205, 0.3), 0px 8px 16px rgba(96, 211, 205, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)',
   },
   info: {
     color: 'gray.900',
@@ -31,7 +31,7 @@ const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
       <Text fontWeight="bold" bg={toastStyles[status].color} backgroundClip="text">
         {heading}
       </Text>
-      {content && <Text color="gray.600">{content}</Text>}
+      {content && <Text color="gray.500">{content}</Text>}
     </Stack>
   );
 };

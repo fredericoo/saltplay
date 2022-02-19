@@ -1,8 +1,9 @@
-export const STARTING_POINTS = 100;
-export const BASE_MATCH_POINTS = 10;
-export const MIN_MATCH_POINTS = 1;
-export const MAX_MATCH_POINTS = 100;
+import { MAX_MATCH_POINTS, MIN_MATCH_POINTS } from '@/constants';
 
+/**
+ * Calculates how many points a match will be worth.
+ * @returns a positive integer representing points to be moved.
+ */
 export const calculateMatchPoints = (p1TotalPoints: number, p2TotalPoints: number, scoreDifference: number) => {
   if (scoreDifference === 0) return 0;
   const hasP1Won = scoreDifference > 0;

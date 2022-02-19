@@ -1,27 +1,32 @@
+import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/postMatchesHandler';
 import {
+  Button,
+  ButtonProps,
+  Center,
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  useDisclosure,
-  Center,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { Game, Match } from '@prisma/client';
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useToast } from '@chakra-ui/react';
+import { IoAddCircleOutline } from 'react-icons/io5';
+import useLatestMatches from '../LatestMatches/useLatestMatches';
+import useLeaderboard from '../Leaderboard/useLeaderboard';
 import LoadingIcon from '../LoadingIcon';
-import { MatchesPOSTAPIResponse } from '@/pages/api/matches';
 import { Player } from '../PlayerPicker/types';
-import Teams from './steps/Teams';
-import Scores from './steps/Scores';
 import Toast from '../Toast';
+import Scores from './steps/Scores';
+import Teams from './steps/Teams';
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
@@ -34,47 +39,65 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
   left: Player[];
 };
 
-const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSuccess, maxPlayersPerTeam }) => {
+const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
+  gameId,
+  maxPlayersPerTeam,
+  ...chakraProps
+}) => {
   const { status } = useSession();
+  const { mutate: mutateLatestMatches } = useLatestMatches({ gameId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
   const isLoggedIn = status === 'authenticated';
-
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const form = useForm<MatchFormInputs>();
   const toast = useToast();
   if (!isLoggedIn)
     return (
-      <Button w="100%" variant="solid" bg="gray.300" _hover={{ bg: 'gray.300' }} isDisabled onClick={onOpen}>
+      <Button
+        w="100%"
+        variant="solid"
+        bg="gray.300"
+        _hover={{ bg: 'gray.300' }}
+        size="lg"
+        isDisabled
+        onClick={onOpen}
+        {...chakraProps}
+      >
         Sign in to submit a match!
       </Button>
     );
 
   const onSubmit = async (data: MatchFormInputs) => {
     setIsLoading(true);
-    const matchToAdd = {
-      leftids: data.left.map(({ id }) => id),
-      leftscore: data.leftscore,
-      rightids: data.right.map(({ id }) => id),
-      rightscore: data.rightscore,
-      gameid: gameId,
+
+    const req = {
+      left: {
+        players: data.left.map(({ id, source }) => ({ id, source: source || 'user' })),
+        score: data.leftscore,
+      },
+      right: {
+        players: data.right.map(({ id, source }) => ({ id, source: source || 'user' })),
+        score: data.rightscore,
+      },
+      gameId,
     };
     try {
-      const res: MatchesPOSTAPIResponse = await fetch('/api/matches', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(matchToAdd),
-      }).then(res => res.json());
+      const res = await axios.post<MatchesPOSTAPIResponse>('/api/matches', req).then(res => res.data);
 
       if (res.status !== 'ok') throw new Error('Error creating match');
       toast({
-        render: () => <Toast status="success" heading="Match added" />,
+        render: () => <Toast status="success" heading="Well done" content="Your match has been added." />,
         position: 'bottom',
       });
       form.reset();
-      onSubmitSuccess && onSubmitSuccess();
+      mutateLatestMatches();
+      mutateLeaderboard();
     } catch {
       toast({
-        render: () => <Toast status="error" heading="Error adding match" />,
+        render: () => (
+          <Toast status="error" heading="Let’s try that again" content="An error occurred when adding your match." />
+        ),
         position: 'bottom',
       });
       return;
@@ -86,7 +109,14 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
 
   return (
     <>
-      <Button w="100%" variant="primary" onClick={onOpen} leftIcon={<span>+</span>}>
+      <Button
+        w="100%"
+        variant="primary"
+        size="lg"
+        onClick={onOpen}
+        leftIcon={<IoAddCircleOutline size={24} />}
+        {...chakraProps}
+      >
         Submit new match
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -111,7 +141,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps> = ({ gameId, onSubmitSucces
             </FormProvider>
           </ModalBody>
 
-          <ModalFooter flexDir="column">
+          <ModalFooter pb={6} flexDir="column">
             <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%">
               Submit
             </Button>

@@ -1,4 +1,5 @@
-import { BASE_MATCH_POINTS, calculateMatchPoints, STARTING_POINTS } from './leaderboard';
+import { BASE_MATCH_POINTS, STARTING_POINTS } from '@/constants';
+import { calculateMatchPoints } from './leaderboard';
 
 describe('Given players 1 and 2 TOTAL POINTS and the difference in MATCH SCORE between 1 and 2', () => {
   test('when both players have the same score, the match is worth the base points', () => {

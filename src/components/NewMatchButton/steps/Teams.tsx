@@ -1,17 +1,19 @@
+import ErrorBox from '@/components/ErrorBox';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
 import fetcher from '@/lib/fetcher';
-import { STARTING_POINTS } from '@/lib/leaderboard';
+import { STARTING_POINTS } from '@/constants';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import getUserGradient from '@/theme/palettes';
-import { Badge, Box, Circle, HStack, Skeleton, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import getGradientFromId from '@/theme/palettes';
+import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Game } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { FieldError, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
+import InvitePicker from '../InvitePicker';
 import { MatchFormInputs } from '../NewMatchButton';
 
 type TeamsProps = {
@@ -27,20 +29,18 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     data: opponentsQuery,
     error: opponentsError,
     mutate,
-  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher);
+  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher, { revalidateOnFocus: false });
 
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 
   const { data: session } = useSession();
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
-
   const [left, right] = watch(['left', 'right']);
   const sides = { left, right };
-  const teamSize = Math.max(left?.length, right?.length, 1);
 
+  const teamSize = Math.max(left?.length, right?.length, 1);
   const players = opponentsQuery?.opponents?.filter(({ id }) => id !== session?.user.id);
   const thisPlayer = opponentsQuery?.opponents?.find(({ id }) => id === session?.user.id);
-
   register('right', { required: true, value: [] });
   register('left', { required: true, value: [] });
 
@@ -80,6 +80,9 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     setSelectedSide(side);
   };
 
+  if (opponentsError || opponentsQuery?.status === 'error')
+    return <ErrorBox heading={["Couldn't load opponents", opponentsQuery?.message].join(': ')} />;
+
   if (!opponentsQuery)
     return (
       <HStack as="aside" spacing={1} mb={4}>
@@ -93,41 +96,86 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     <Box>
       <HStack as="aside" spacing={1} mb={4}>
         <Side
+          label={maxPlayersPerTeam === 1 ? 'You' : 'Your team'}
           isReverse
           players={left}
           isSelected={selectedSide === 'left'}
           onClick={() => handleSelectedSide('left')}
-          selectedColour={getUserGradient('1')}
+          selectedColour={getGradientFromId('1')}
           emptySlots={teamSize - left?.length}
         />
         <Badge>Vs</Badge>
         <Side
+          label={maxPlayersPerTeam === 1 ? 'Opponent' : 'Opposing team'}
           players={right}
           isSelected={selectedSide === 'right'}
           onClick={() => handleSelectedSide('right')}
-          selectedColour={getUserGradient('4')}
+          selectedColour={getGradientFromId('4')}
           emptySlots={teamSize - right?.length}
         />
       </HStack>
       <AnimatePresence initial={false}>
         {selectedSide && (
-          <MotionBox initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} overflow="hidden">
+          <MotionBox
+            key={selectedSide}
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            overflow="hidden"
+          >
+            <Tabs isLazy>
+              <TabList mb="2">
+                <Tab>Players</Tab>
+                <Tab>
+                  Slack{' '}
+                  <Badge
+                    ml={2}
+                    mr={-2}
+                    bg={[
+                      //@ts-ignore
+                      [
+                        'linear-gradient(-135deg, #FBB826, #FE33A1)',
+                        'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+                      ],
+                    ]}
+                    color="white"
+                    pb="0.5em"
+                    fontSize=".6rem"
+                    letterSpacing="wide"
+                  >
+                    New!
+                  </Badge>
+                </Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel px={0}>
+                  <PlayerPicker
+                    players={players?.filter(
+                      ({ id }) => !sides[selectedSide === 'left' ? 'right' : 'left'].find(player => player.id === id)
+                    )}
+                    isAlphabetical
+                    selectedPlayers={sides[selectedSide]}
+                    refetch={mutate}
+                    isLoading={!opponentsQuery}
+                    isError={opponentsError}
+                    onSelect={handleSelect}
+                    selectedColour={selectedSide === 'left' ? getGradientFromId('1') : getGradientFromId('4')}
+                  />
+                </TabPanel>
+                <TabPanel px={0}>
+                  <InvitePicker
+                    selectedPlayers={sides[selectedSide]}
+                    onSelect={handleSelect}
+                    selectedColour={selectedSide === 'left' ? getGradientFromId('1') : getGradientFromId('4')}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
             {maxPlayersPerTeam > 1 && (
-              <Text mb={2} textAlign="center" fontSize="small" color="gray.500">
+              <Text mt={2} textAlign="center" fontSize="small" color="gray.500">
                 Select up to {maxPlayersPerTeam} players
               </Text>
             )}
-            <PlayerPicker
-              players={players?.filter(
-                ({ id }) => !sides[selectedSide === 'left' ? 'right' : 'left'].find(player => player.id === id)
-              )}
-              selectedPlayers={sides[selectedSide]}
-              refetch={mutate}
-              isLoading={!opponentsQuery}
-              isError={opponentsError}
-              onSelect={handleSelect}
-              selectedColour={selectedSide === 'left' ? getUserGradient('1') : getUserGradient('4')}
-            />
           </MotionBox>
         )}
       </AnimatePresence>
@@ -136,6 +184,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 };
 
 type SideProps = {
+  label: string;
   players?: Player[];
   isReverse?: boolean;
   isSelected?: boolean;
@@ -144,11 +193,20 @@ type SideProps = {
   emptySlots: number;
 };
 
-const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, selectedColour, emptySlots = 0 }) => {
+const Side: React.VFC<SideProps> = ({
+  label,
+  players,
+  isReverse,
+  isSelected,
+  onClick,
+  selectedColour,
+  emptySlots = 0,
+}) => {
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
   const teamAveragePoints = players
     ? Math.ceil(
-        players?.reduce((acc, cur) => acc + (cur.scores?.[0]?.points || STARTING_POINTS), 0) / players?.length
+        players?.reduce((acc, cur) => acc + (('scores' in cur && cur.scores?.[0]?.points) || STARTING_POINTS), 0) /
+          players?.length
       ) || 0
     : 0;
 
@@ -164,7 +222,7 @@ const Side: React.VFC<SideProps> = ({ players, isReverse, isSelected, onClick, s
       onClick={onClick}
     >
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Text fontWeight="bold">{!isReverse ? 'Opponent team' : 'Your team'}</Text>
+        <Text fontWeight="bold">{label}</Text>
       </HStack>
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined} spacing={0} minH="76px">
         <AnimatePresence initial={false}>

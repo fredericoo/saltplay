@@ -1,5 +1,6 @@
-import { Game, User } from '@prisma/client';
 import prisma from '@/lib/prisma';
+import { Game, User } from '@prisma/client';
+import { getGameFlags } from '../flagAttributes';
 import slack from './client';
 
 type NotifyOptions = {
@@ -22,7 +23,15 @@ const getPlayerMentionName = async (id: User['id']) => {
   return player.name;
 };
 
-export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, right }: NotifyOptions) => {
+export const notifyMatchOnSlack = async ({
+  gameId,
+  leftScore,
+  rightScore,
+  left,
+  right,
+}: NotifyOptions): Promise<boolean> => {
+  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return true;
+
   const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
 
   const game = await prisma.game.findUnique({
@@ -30,6 +39,7 @@ export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, 
     select: {
       name: true,
       icon: true,
+      flags: true,
       office: {
         select: {
           name: true,
@@ -38,18 +48,29 @@ export const notifyMatchOnSlack = async ({ gameId, leftScore, rightScore, left, 
     },
   });
 
+  const flags = getGameFlags(game?.flags);
+  const getWinnerIcon = (loserScore: number, winnerScore: number) => {
+    if (loserScore === 0 && winnerScore > 4 && flags.babyBottleIfHumiliated) return '🍼';
+    return '🏆';
+  };
+
   const leftNames = await Promise.all(left.map(async player => await getPlayerMentionName(player.id)));
   const rightNames = await Promise.all(right.map(async player => await getPlayerMentionName(player.id)));
 
   const text = `>${leftNames.join(', ')} ${
-    leftScore > rightScore ? (leftScore > 4 && rightScore === 0 ? '🍼 ' : '🏆 ') : ''
+    leftScore > rightScore ? getWinnerIcon(rightScore, leftScore) : ''
   }*${leftScore}* ✕ *${rightScore}* ${
-    rightScore > leftScore ? (rightScore > 4 && leftScore === 0 ? '🍼 ' : '🏆 ') : ''
+    rightScore > leftScore ? getWinnerIcon(leftScore, rightScore) : ''
   }${rightNames.join(', ')}\n>_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
-  return await slack.chat.postMessage({
-    channel,
-    mrkdwn: true,
-    text,
-  });
+  try {
+    await slack.chat.postMessage({
+      channel,
+      mrkdwn: true,
+      text,
+    });
+    return true;
+  } catch {
+    return false;
+  }
 };

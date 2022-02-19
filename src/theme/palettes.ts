@@ -8,11 +8,11 @@ const colourPalettes = [
   ['#60D3CD', '#7FDDEF', '#9AF2C8'],
 ];
 
-const getUserGradient = (userId?: User['id']) => {
+const getGradientFromId = (userId?: User['id']) => {
   if (!userId) return '#f0f0f0';
   const uniqueKey = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const nameColour = colourPalettes[uniqueKey % colourPalettes.length];
   return `linear-gradient(135deg, ${nameColour.join(',')})`;
 };
 
-export default getUserGradient;
+export default getGradientFromId;

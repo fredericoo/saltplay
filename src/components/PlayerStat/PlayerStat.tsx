@@ -1,6 +1,6 @@
 import fetcher from '@/lib/fetcher';
 import { PlayerStatsAPIResponse } from '@/pages/api/players/[id]/stats';
-import { Skeleton, Stack, Stat, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import { Skeleton, Stack, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import useSWR from 'swr';
 
@@ -16,7 +16,9 @@ const labels = {
 };
 
 const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
-  const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher);
+  const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher, {
+    revalidateOnFocus: false,
+  });
   if (!id || error) return null;
   return (
     <Stack bg="gray.200" borderRadius="xl" p={4} spacing={0} flex={1}>

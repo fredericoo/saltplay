@@ -1,5 +1,5 @@
-import { mode, transparentize } from '@chakra-ui/theme-tools';
 import type { SystemStyleFunction, SystemStyleObject } from '@chakra-ui/theme-tools';
+import { mode, transparentize } from '@chakra-ui/theme-tools';
 
 const variantSubtle: SystemStyleFunction = props => {
   const { colorScheme: c, theme } = props;
@@ -15,6 +15,9 @@ const variantSubtle: SystemStyleFunction = props => {
     },
     _active: {
       bg: mode(`${c}.200`, darkActiveBg)(props),
+    },
+    _disabled: {
+      pointerEvents: 'none',
     },
   };
 };
@@ -33,6 +36,9 @@ const variantPrimary: SystemStyleObject = {
   },
   _active: {
     opacity: 1,
+  },
+  _disabled: {
+    pointerEvents: 'none',
   },
 };
 
