@@ -99,7 +99,7 @@ export const notifyDeletedMatch = async ({
   if (!message) throw new Error('No message found');
 
   const lines = message.text?.split('\n');
-  const strikedLines = lines?.map(line => line.replaceAll('&gt;', '&gt;~') + '~').join('\n');
+  const strikedLines = lines?.map(line => line.replace(/&gt;/g, '&gt;~') + '~').join('\n');
   const text = strikedLines + `\n❌ This match has been deleted by ${triggeredBy}`;
 
   const edit = await slack.chat.update({ as_user: true, channel: CHANNEL, ts: timestamp, text });
