@@ -1,7 +1,10 @@
 import prisma from '@/lib/prisma';
 import { Game, User } from '@prisma/client';
+import { ChatPostMessageResponse } from '@slack/web-api';
 import { getGameFlags } from '../flagAttributes';
 import slack from './client';
+
+const CHANNEL = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
 
 type NotifyOptions = {
   gameId: Game['id'];
@@ -29,10 +32,8 @@ export const notifyMatchOnSlack = async ({
   rightScore,
   left,
   right,
-}: NotifyOptions): Promise<boolean> => {
-  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return true;
-
-  const channel = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
+}: NotifyOptions): Promise<ChatPostMessageResponse | undefined> => {
+  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return;
 
   const game = await prisma.game.findUnique({
     where: { id: gameId },
@@ -64,13 +65,44 @@ export const notifyMatchOnSlack = async ({
   }${rightNames.join(', ')}\n>_${game?.icon} ${game?.name} at the ${game?.office.name} office_`;
 
   try {
-    await slack.chat.postMessage({
-      channel,
+    const message = await slack.chat.postMessage({
+      channel: CHANNEL,
       mrkdwn: true,
       text,
     });
-    return true;
+    return message;
   } catch {
-    return false;
+    return;
   }
+};
+
+type NotifyDeleteOptions = {
+  timestamp: string;
+  triggeredBy: string;
+};
+
+export const notifyDeletedMatch = async ({
+  timestamp,
+  triggeredBy,
+}: NotifyDeleteOptions): Promise<string | undefined> => {
+  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return;
+
+  const current = await slack.conversations.history({
+    channel: CHANNEL,
+    latest: timestamp,
+    limit: 1,
+    inclusive: true,
+  });
+
+  const message = current?.messages?.[0];
+
+  if (!message) throw new Error('No message found');
+
+  const lines = message.text?.split('\n');
+  const strikedLines = lines?.map(line => line.replaceAll('&gt;', '&gt;~') + '~').join('\n');
+  const text = strikedLines + `\n❌ This match has been deleted by ${triggeredBy}`;
+
+  const edit = await slack.chat.update({ as_user: true, channel: CHANNEL, ts: timestamp, text });
+
+  return edit.message?.edited?.ts;
 };
