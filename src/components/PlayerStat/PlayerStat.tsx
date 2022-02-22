@@ -10,9 +10,9 @@ type PlayerStatProps = {
 };
 
 const labels = {
-  played: '🏁 matches played',
-  won: '🏆 matches won',
-  lost: '😢 matches lost',
+  played: 'Played',
+  won: 'Won',
+  lost: 'Lost',
 };
 
 const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
@@ -21,11 +21,11 @@ const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
   });
   if (!id || error) return null;
   return (
-    <Stack bg="gray.200" borderRadius="xl" p={4} spacing={0} flex={1}>
-      <Text fontSize="md" mt="auto" color="gray.600" mb={2} flexGrow={1}>
+    <Stack as="dl" bg="gray.100" borderRadius="xl" p={4} spacing={0} flex={1}>
+      <Text as="dt" fontSize="md" mt="auto" color="gray.500" mb={2} flexGrow={1}>
         {labels[stat]}
       </Text>
-      <Text fontSize="4xl" fontWeight="normal" lineHeight={1}>
+      <Text as="dd" fontSize="4xl" fontWeight="normal" color="gray.700" lineHeight={1}>
         <Skeleton isLoaded={!!data}>{data ? data?.[stat] : '…'}</Skeleton>
       </Text>
     </Stack>

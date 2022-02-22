@@ -21,7 +21,7 @@ const OfficeStat: React.VFC<OfficeStatProps> = ({ id, stat }) => {
   });
   if (!id || error) return null;
   return (
-    <Stat bg="gray.200" borderRadius="xl" p={4}>
+    <Stat bg="gray.100" borderRadius="xl" p={4}>
       <StatLabel fontSize="md" color="gray.500" mb={2}>
         {labels[stat]}
       </StatLabel>

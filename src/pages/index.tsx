@@ -1,6 +1,7 @@
 import LatestMatches from '@/components/LatestMatches';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import SEO from '@/components/SEO';
+import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import { Badge, Box, Button, Heading, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
@@ -20,6 +21,8 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
   const { status } = useSession();
   const isLoggedIn = status === 'authenticated';
   const officesWithGames = offices?.filter(office => office.games.length) || [];
+  useNavigationState('Offices');
+
   return (
     <Box>
       <SEO />
@@ -89,6 +92,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
           position="absolute"
           bg="linear-gradient(to bottom, rgb(226, 232, 240, 0) 75%, rgb(226, 232, 240, 1))"
           zIndex="2"
+          pointerEvents="none"
         />
         <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
           <MemoPlayersDeco players={players} />

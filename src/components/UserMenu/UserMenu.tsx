@@ -4,7 +4,11 @@ import Link from 'next/link';
 import PlayerAvatar from '../PlayerAvatar';
 import DevUserMenu from './DevUserMenu';
 
-const UserMenu: React.VFC = () => {
+type UserMenuProps = {
+  showUserName?: boolean;
+};
+
+const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
   const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
@@ -33,9 +37,11 @@ const UserMenu: React.VFC = () => {
         isLoading={isLoading}
         leftIcon={session?.user && <PlayerAvatar size={6} user={session?.user} />}
       >
-        <Text isTruncated maxW="128px">
-          {session?.user?.name?.split(' ')[0] || session?.user?.email}
-        </Text>
+        {showUserName && (
+          <Text isTruncated maxW="128px">
+            {session?.user?.name?.split(' ')[0] || session?.user?.email}
+          </Text>
+        )}
       </MenuButton>
       <MenuList>
         <Link href={`/player/${session?.user.id}`} passHref>

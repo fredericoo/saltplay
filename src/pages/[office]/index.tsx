@@ -4,6 +4,7 @@ import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
+import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import getUserGradient from '@/theme/palettes';
@@ -34,12 +35,13 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
     revalidateOnFocus: false,
   });
+  useNavigationState(office?.name);
   if (!office) return <Box>404</Box>;
 
   return (
     <Stack spacing={{ base: 1, md: 0.5 }} maxW="container.sm" mx="auto">
       <SEO title={office.name} />
-      <Box bg="gray.50" borderRadius="xl" overflow="hidden">
+      <Box bg="gray.50" borderRadius="18" overflow="hidden">
         <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
           {data?.photo && (
             <Image
@@ -56,11 +58,11 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
             {office.name} office
           </Text>
         </Box>
+        <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch" p={1}>
+          <OfficeStat id={office.id} stat="mostPlayedGame" />
+          <OfficeStat id={office.id} stat="matchesCount" />
+        </HStack>
       </Box>
-      <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
-        <OfficeStat id={office.id} stat="mostPlayedGame" />
-        <OfficeStat id={office.id} stat="matchesCount" />
-      </HStack>
       <Stack spacing={6} pt={4}>
         <Tabs>
           <TabList mb={8}>

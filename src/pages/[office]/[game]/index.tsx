@@ -4,6 +4,7 @@ import NewMatchButton from '@/components/NewMatchButton';
 import { PageHeader } from '@/components/PageHeader/types';
 import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
+import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
@@ -35,6 +36,7 @@ type GamePageProps = {
 
 const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const isDesktop = useMediaQuery('xl');
+  useNavigationState(game?.name);
 
   if (!game) {
     return <div>404</div>;

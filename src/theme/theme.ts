@@ -29,6 +29,11 @@ const theme = extendTheme({
     xl: '16px',
   },
   components: {
+    Container: {
+      baseStyle: {
+        px: 2,
+      },
+    },
     Badge: {
       variants: {
         subtle: {

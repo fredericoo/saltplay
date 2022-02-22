@@ -9,7 +9,7 @@ import { InferType, number, object, string } from 'yup';
 const isProd = process.env.NODE_ENV === 'production';
 
 const querySchema = object({
-  gameId: string().required(),
+  gameId: string(),
   userId: string(),
   perPage: number().max(20).default(PAGE_SIZE),
   page: number().min(1).default(1),
@@ -67,7 +67,7 @@ const getLeaderboardPositions = async ({ gameId, userId, perPage, page }: Leader
   const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId } } });
 
   const playerScores = await prisma.game.findUnique({ where: { id: gameId } }).scores({
-    cursor: !!userId ? { gameid_playerid: { gameid: gameId, playerid: userId } } : undefined,
+    cursor: !!userId && !!gameId ? { gameid_playerid: { gameid: gameId, playerid: userId } } : undefined,
     orderBy: [{ points: 'desc' }, { player: { name: 'asc' } }],
     skip: perPage * (page - 1),
     take: perPage,

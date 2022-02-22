@@ -3,6 +3,7 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerStat from '@/components/PlayerStat';
 import SEO from '@/components/SEO';
 import fetcher from '@/lib/fetcher';
+import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { getRoleStyles } from '@/lib/roles';
 import { PromiseElement } from '@/lib/types/utils';
@@ -27,6 +28,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher, {
     revalidateOnFocus: false,
   });
+  useNavigationState(player?.name || 'Profile');
 
   if (!player) return null;
 
@@ -34,7 +36,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   return (
     <Stack spacing={{ base: 1, md: 0.5 }} maxW="container.sm" mx="auto">
       <SEO title={`${playerName}’s profile`} />
-      <Box bg="gray.50" borderRadius="xl" overflow="hidden">
+      <Box bg="gray.50" borderRadius="18" overflow="hidden">
         <Box bg={getGradientFromId(player.id)} h="32" />
         <Box p={4} mt="-16">
           <PlayerAvatar user={player} size={32} />
@@ -42,45 +44,40 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
           <Text
             {...getRoleStyles(player.roleId)}
             as="h1"
-            fontSize={'2rem'}
+            lineHeight={1.2}
+            fontSize="4xl"
             letterSpacing="tight"
             mt={2}
             overflow="hidden"
+            color="gray.900"
           >
             {playerName}
           </Text>
-          <HStack spacing={2}>
-            {data?.games?.map(game => (
-              <Box
-                fontSize="sm"
-                letterSpacing="wide"
-                bg="gray.100"
-                color="gray.600"
-                borderRadius="8"
-                px={2}
-                py={1}
-                key={game}
-              >
-                {game}
-              </Box>
-            ))}
-          </HStack>
         </Box>
+        <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
+          <PlayerStat id={player.id} stat="played" />
+          <PlayerStat id={player.id} stat="won" />
+          <PlayerStat id={player.id} stat="lost" />
+        </HStack>
       </Box>
-      <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
-        <PlayerStat id={player.id} stat="played" />
-        <PlayerStat id={player.id} stat="won" />
-        <PlayerStat id={player.id} stat="lost" />
-      </HStack>
+
       <Stack spacing={6} pt={4}>
         <Tabs>
           <TabList mb={8}>
-            <Tab>Latest Matches</Tab>
+            <Tab>All</Tab>
+            {data?.games?.map(game => (
+              <Tab key={game.id}>{game.name}</Tab>
+            ))}
           </TabList>
           <TabPanels>
             <TabPanel>
               <LatestMatches userId={player.id} />
             </TabPanel>
+            {data?.games?.map(game => (
+              <TabPanel key={game.id}>
+                <LatestMatches userId={player.id} gameId={game.id} />
+              </TabPanel>
+            ))}
           </TabPanels>
         </Tabs>
       </Stack>
