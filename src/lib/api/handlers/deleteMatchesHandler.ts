@@ -39,7 +39,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
 
       if (!match) return res.status(404).json({ status: 'error', message: 'Match not found' });
 
-      if (!match.left.find(player => player.id === session.user.id))
+      if (![...match.left, ...match.right].find(player => player.id === session.user.id))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       const matchPlayers = [

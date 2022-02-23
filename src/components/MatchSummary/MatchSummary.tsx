@@ -39,6 +39,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const canDelete = [...left, ...right].find(player => player.id === session?.user.id);
 
   return (
     <VStack
@@ -50,15 +51,14 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       px={2}
       position="relative"
     >
-      {left.find(player => player.id === session?.user.id) &&
-        !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
-          <DeleteMatchButton
-            id={id}
-            onDeleteStart={() => setIsLoading(true)}
-            onDeleteError={() => setIsLoading(false)}
-            onDeleteSuccess={() => onDelete?.()}
-          />
-        )}
+      {canDelete && !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
+        <DeleteMatchButton
+          id={id}
+          onDeleteStart={() => setIsLoading(true)}
+          onDeleteError={() => setIsLoading(false)}
+          onDeleteSuccess={() => onDelete?.()}
+        />
+      )}
       {createdAt && (
         <Box
           color="gray.700"
