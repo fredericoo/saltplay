@@ -3,7 +3,6 @@ import { Center, ChakraProps } from '@chakra-ui/react';
 import { Role } from '@prisma/client';
 
 const roleIcons: Record<Role['id'], string> = {
-  0: '🔑',
   2: '👻',
 };
 
