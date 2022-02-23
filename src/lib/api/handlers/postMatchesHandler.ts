@@ -39,7 +39,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      if (!body.left.players.find(p => p.id === session.user.id))
+      if (session.user.roleId !== 0 && !body.left.players.find(p => p.id === session.user.id))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       const maxPlayersPerTeam =

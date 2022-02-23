@@ -1,9 +1,8 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
-import { MATCH_DELETE_DAYS } from '@/lib/constants';
+import canDeleteMatch from '@/lib/canDeleteMatch';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
-import { differenceInDays } from 'date-fns';
 import formatRelative from 'date-fns/formatRelative';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
@@ -39,6 +38,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const canDelete = canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
 
   return (
     <VStack
@@ -50,15 +50,14 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       px={2}
       position="relative"
     >
-      {left.find(player => player.id === session?.user.id) &&
-        !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
-          <DeleteMatchButton
-            id={id}
-            onDeleteStart={() => setIsLoading(true)}
-            onDeleteError={() => setIsLoading(false)}
-            onDeleteSuccess={() => onDelete?.()}
-          />
-        )}
+      {canDelete && (
+        <DeleteMatchButton
+          id={id}
+          onDeleteStart={() => setIsLoading(true)}
+          onDeleteError={() => setIsLoading(false)}
+          onDeleteSuccess={() => onDelete?.()}
+        />
+      )}
       {createdAt && (
         <Box
           color="gray.700"

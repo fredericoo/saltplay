@@ -2,8 +2,8 @@ import ErrorBox from '@/components/ErrorBox';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
-import fetcher from '@/lib/fetcher';
 import { STARTING_POINTS } from '@/constants';
+import fetcher from '@/lib/fetcher';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
@@ -45,7 +45,10 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   register('left', { required: true, value: [] });
 
   useEffect(() => {
-    thisPlayer && !left?.find(player => player.id === thisPlayer.id) && setValue('left', [thisPlayer]);
+    session?.user.roleId !== 0 &&
+      thisPlayer &&
+      !left?.find(player => player.id === thisPlayer.id) &&
+      setValue('left', [thisPlayer]);
   }, [left, session, setValue, thisPlayer]);
 
   const handleSelect = (user: Player) => {

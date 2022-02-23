@@ -1,4 +1,5 @@
 import { STARTING_POINTS } from '@/constants';
+import canDeleteMatch from '@/lib/canDeleteMatch';
 import prisma from '@/lib/prisma';
 import { notifyDeletedMatch } from '@/lib/slackbot/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
@@ -39,7 +40,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
 
       if (!match) return res.status(404).json({ status: 'error', message: 'Match not found' });
 
-      if (!match.left.find(player => player.id === session.user.id))
+      if (!canDeleteMatch({ user: session.user, players: [...match.left, ...match.right], createdAt: match.createdAt }))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       const matchPlayers = [
