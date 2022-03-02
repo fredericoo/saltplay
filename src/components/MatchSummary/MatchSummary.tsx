@@ -4,6 +4,7 @@ import canDeleteMatch from '@/lib/canDeleteMatch';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import formatRelative from 'date-fns/formatRelative';
+import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
 import { Fragment, useState } from 'react';
 import DeleteMatchButton from './DeleteButton';
@@ -74,7 +75,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           fontSize="xs"
           letterSpacing="wide"
         >
-          {formatRelative(new Date(createdAt), new Date())} {officeName && `at ${officeName}`}
+          {formatRelative(new Date(createdAt), new Date(), { locale: enGB })} {officeName && `at ${officeName}`}
         </Box>
       )}
       <HStack p={4} w="100%" justifyContent="center" gap={4}>
