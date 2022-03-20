@@ -124,8 +124,18 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
         <Tabs variant={'bottom'}>
           <SEO title={game.name} />
           <TabList>
-            <Tab>Leaderboard</Tab>
-            <Tab>Latest Matches</Tab>
+            <Tab>
+              <Box fontSize="lg" aria-hidden>
+                🏆
+              </Box>
+              <Box>Leaderboard</Box>
+            </Tab>
+            <Tab>
+              <Box fontSize="lg" aria-hidden>
+                {game.icon}
+              </Box>
+              <Box>Latest Matches</Box>
+            </Tab>
           </TabList>
           <TabPanels>
             <TabPanel>

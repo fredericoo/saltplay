@@ -40,22 +40,27 @@ const variantPill = {
 const variantBottomBar = {
   ...variantPill,
   tablist: {
-    ...variantPill.tablist,
+    display: 'flex',
+    overflow: 'auto',
     position: 'fixed',
     bottom: 0,
-    pb: 'calc(env(safe-area-inset-bottom, 0.5vh) + 32px)',
     zIndex: 'overlay',
     w: '100%',
     boxShadow:
       '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
     p: 1,
+    pb: 'calc(env(safe-area-inset-bottom, 0.5vh) + 32px)',
     bg: 'grey.1',
+    borderTopRadius: 24,
     borderBottomRadius: 0,
   },
   tab: {
     ...variantPill.tab,
+    flexDirection: 'column',
+    borderRadius: 20,
     flex: 1,
-    py: 4,
+    py: 3,
+    fontSize: 'xs',
     _selected: {
       bg: 'primary.3',
       color: 'primary.10',

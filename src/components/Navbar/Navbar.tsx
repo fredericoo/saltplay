@@ -28,6 +28,7 @@ const Navbar: React.VFC = () => {
 
   return (
     <HStack
+      id="navbar"
       px={{ base: 2, md: 6 }}
       w="100%"
       zIndex="docked"

@@ -42,9 +42,9 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
   return (
     <Box>
       <SEO />
-      <Container maxW="container.lg" position="sticky" top={0} zIndex="0">
-        <SimpleGrid mx="auto" minH="80vh" columns={{ md: 2 }} gap={8} alignItems="center">
-          <Box py={32}>
+      <Container maxW="container.lg">
+        <SimpleGrid mx="auto" columns={{ md: 2 }} gap={8} alignItems="center">
+          <Box pt={32} pb={16}>
             <Heading
               as="h1"
               fontSize={{ base: '4rem', md: '6rem' }}
@@ -69,11 +69,11 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
             </Text>
           </Box>
 
-          <Box pb={8}>
+          <Box py={8}>
             <Heading as="h2" mb={4} fontSize="md" color="grey.10" pl={14}>
               Explore games in
             </Heading>
-            <List>
+            <List columns={officesWithGames.length > 4 ? 2 : 1}>
               {officesWithGames.map(office => (
                 <ListItem
                   key={office.slug}
