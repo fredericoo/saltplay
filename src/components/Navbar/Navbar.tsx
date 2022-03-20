@@ -28,7 +28,6 @@ const Navbar: React.VFC = () => {
 
   return (
     <HStack
-      py={2}
       px={{ base: 2, md: 6 }}
       w="100%"
       zIndex="docked"
@@ -40,39 +39,40 @@ const Navbar: React.VFC = () => {
       bg={hasScrolled ? 'hsl(300, 7.7%, 97.5%, 0.85)' : undefined}
       backdropFilter={hasScrolled ? 'saturate(180%) blur(20px)' : undefined}
       boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
-      overflow="hidden"
     >
       <HStack flex={1} isTruncated alignSelf="stretch">
         <NavigationBackButton />
       </HStack>
 
-      <VStack
-        alignSelf="flex-start"
-        flexGrow={0.01}
-        h={`calc(${NAVBAR_HEIGHT} * 2 - 2rem)`}
-        spacing={0}
-        transition="transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)"
-        transform={pathname !== '/' && currentNavigaton?.title && hasScrolled ? 'translateY(-50%)' : 'none'}
-      >
-        <Link href="/" passHref>
-          <HStack h="50%" as="a" align="center" spacing="0" p={2}>
-            <Logo h="2rem" w="2rem" mr={3} />
-            <Box
-              overflow="hidden"
-              whiteSpace="nowrap"
-              fontSize="lg"
-              fontWeight="bold"
-              letterSpacing="tight"
-              color="grey.12"
-            >
-              saltplay
-            </Box>
+      <Box overflow="hidden" h="100%">
+        <VStack
+          alignSelf="flex-start"
+          flexGrow={0.01}
+          h={'200%'}
+          spacing={0}
+          transition="transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)"
+          transform={pathname !== '/' && currentNavigaton?.title && hasScrolled ? 'translateY(-50%)' : 'none'}
+        >
+          <Link href="/" passHref>
+            <HStack h="50%" as="a" align="center" spacing="0" p={2}>
+              <Logo h="2rem" w="2rem" mr={3} />
+              <Box
+                overflow="hidden"
+                whiteSpace="nowrap"
+                fontSize="lg"
+                fontWeight="bold"
+                letterSpacing="tight"
+                color="grey.12"
+              >
+                saltplay
+              </Box>
+            </HStack>
+          </Link>
+          <HStack h="50%" flex={1} fontWeight="bold">
+            <Text isTruncated>{currentNavigaton?.title}</Text>
           </HStack>
-        </Link>
-        <HStack h="50%" flex={1} fontWeight="bold">
-          <Text isTruncated>{currentNavigaton?.title}</Text>
-        </HStack>
-      </VStack>
+        </VStack>
+      </Box>
 
       <HStack justify="flex-end" flex={1}>
         <ModalButton
