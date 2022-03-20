@@ -42,7 +42,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
   return (
     <Box>
       <SEO />
-      <Container maxW="container.lg">
+      <Container maxW="container.lg" position={{ md: 'sticky' }} top="0" zIndex="0">
         <SimpleGrid mx="auto" columns={{ md: 2 }} gap={8} alignItems="center">
           <Box pt={32} pb={16}>
             <Heading
