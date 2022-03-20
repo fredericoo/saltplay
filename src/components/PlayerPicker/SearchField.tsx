@@ -15,14 +15,14 @@ const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSea
     <HStack
       mx={1}
       spacing={2}
-      bg="white"
+      bg="grey.1"
       zIndex={3}
       borderRadius="12"
       transition=".3s ease-out"
-      boxShadow="lg"
+      boxShadow="md"
       {...props}
     >
-      <Box as="label" htmlFor="search" color="gray.500">
+      <Box as="label" htmlFor="search" color="grey.9">
         <IoSearchCircle size="32" />
       </Box>
       <Input
@@ -31,6 +31,8 @@ const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSea
         type="text"
         onChange={e => setSearch(e.target.value)}
         value={search}
+        color="grey.12"
+        _placeholder={{ color: 'grey.8' }}
         placeholder="Type to search…"
         variant="unstyled"
         flexGrow={1}
@@ -44,8 +46,8 @@ const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSea
             exit={{ scale: 0 }}
             as="button"
             onClick={() => setSearch('')}
-            color="gray.400"
-            _hover={{ color: 'gray.600' }}
+            color="grey.9"
+            _hover={{ color: 'grey.11' }}
             px={1}
           >
             <IoCloseCircleOutline size="24" />

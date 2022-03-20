@@ -14,7 +14,7 @@ const DevUserMenu: React.VFC = () => {
   const { data } = useSWR<DevUsersAPIResponse>('/api/dev/users', fetcher);
   return (
     <Menu isLazy>
-      <MenuButton as={Button} variant="solid" colorScheme="blue" textAlign="left" fontSize="xs" size="sm">
+      <MenuButton as={Button} variant="subtle" colorScheme="primary" textAlign="left" fontSize="xs" size="sm">
         <Text isTruncated maxW="128px">
           Dev Sign in
         </Text>

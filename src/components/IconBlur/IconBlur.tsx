@@ -37,6 +37,7 @@ const IconBlur: React.VFC<IconBlurProps & Omit<ChakraProps, keyof IconBlurProps>
       position="absolute"
       w="100%"
       h="100%"
+      filter="saturate(200%)"
       {...boxProps}
     >
       <canvas ref={canvasRef} style={{ height: '100%', top: 0, left: 0, width: '100%' }} height="1" width="1" />

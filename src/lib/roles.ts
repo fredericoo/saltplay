@@ -3,7 +3,7 @@ import { Role } from '@prisma/client';
 
 const roleStyles: Record<Role['id'], TextProps | undefined> = {
   1: undefined,
-  2: { color: 'gray.600' },
+  2: { color: 'grey.12' },
 };
 
 export const getRoleStyles = (roleId?: Role['id']) => {

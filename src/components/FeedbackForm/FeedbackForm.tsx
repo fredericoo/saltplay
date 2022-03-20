@@ -58,7 +58,7 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
   if (isLoading)
     return (
       <Center py={16}>
-        <LoadingIcon color="gray.500" size={16} />
+        <LoadingIcon color="grey.4" size={16} />
       </Center>
     );
 

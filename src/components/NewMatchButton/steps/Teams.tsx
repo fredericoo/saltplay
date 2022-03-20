@@ -2,8 +2,9 @@ import ErrorBox from '@/components/ErrorBox';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
-import fetcher from '@/lib/fetcher';
+import PointIcon from '@/components/PointIcon';
 import { STARTING_POINTS } from '@/constants';
+import fetcher from '@/lib/fetcher';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
@@ -94,7 +95,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
 
   return (
     <Box>
-      <HStack as="aside" spacing={1} mb={4}>
+      <HStack as="aside" spacing={-1} mb={4}>
         <Side
           label={maxPlayersPerTeam === 1 ? 'You' : 'Your team'}
           isReverse
@@ -104,7 +105,9 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           selectedColour={getGradientFromId('1')}
           emptySlots={teamSize - left?.length}
         />
-        <Badge>Vs</Badge>
+        <Badge variant="solid" colorScheme="danger" zIndex="docked">
+          Vs
+        </Badge>
         <Side
           label={maxPlayersPerTeam === 1 ? 'Opponent' : 'Opposing team'}
           players={right}
@@ -126,26 +129,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
             <Tabs isLazy>
               <TabList mb="2">
                 <Tab>Players</Tab>
-                <Tab>
-                  Slack{' '}
-                  <Badge
-                    ml={2}
-                    mr={-2}
-                    bg={[
-                      //@ts-ignore
-                      [
-                        'linear-gradient(-135deg, #FBB826, #FE33A1)',
-                        'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
-                      ],
-                    ]}
-                    color="white"
-                    pb="0.5em"
-                    fontSize=".6rem"
-                    letterSpacing="wide"
-                  >
-                    New!
-                  </Badge>
-                </Tab>
+                <Tab>Invite</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel px={0}>
@@ -172,7 +156,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
               </TabPanels>
             </Tabs>
             {maxPlayersPerTeam > 1 && (
-              <Text mt={2} textAlign="center" fontSize="small" color="gray.500">
+              <Text mt={2} textAlign="center" fontSize="small" color="grey.10">
                 Select up to {maxPlayersPerTeam} players
               </Text>
             )}
@@ -215,14 +199,16 @@ const Side: React.VFC<SideProps> = ({
       as="button"
       type="button"
       flex={1}
-      bg={isSelected ? selectedColour || '#fbb826' : undefined}
+      bg={isSelected ? 'grey.4' : undefined}
       transition=".3s ease-in-out"
-      borderRadius="lg"
+      borderRadius="xl"
       p={2}
       onClick={onClick}
     >
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Text fontWeight="bold">{label}</Text>
+        <Text as="h2" color={isSelected ? 'grey.12' : 'grey.10'} fontWeight="bold">
+          {label}
+        </Text>
       </HStack>
       <HStack flexFlow={isReverse ? 'row-reverse' : undefined} spacing={0} minH="76px">
         <AnimatePresence initial={false}>
@@ -255,7 +241,7 @@ const Side: React.VFC<SideProps> = ({
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
             >
-              <Circle bg="gray.100" pb="100%" w="100%" h="0" position="relative" boxShadow="0 0 0 3px white">
+              <Circle bg="grey.3" pb="100%" w="100%" h="0" position="relative" boxShadow="0 0 0 3px white">
                 <Box
                   position="absolute"
                   inset="0"
@@ -264,7 +250,7 @@ const Side: React.VFC<SideProps> = ({
                   alignItems="center"
                   fontSize="2xl"
                   lineHeight={1}
-                  color="gray.500"
+                  color="grey.10"
                 >
                   +
                 </Box>
@@ -274,7 +260,9 @@ const Side: React.VFC<SideProps> = ({
         </AnimatePresence>
       </HStack>
       <HStack mt={2} flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Badge bg="gray.100">{teamAveragePoints} PTS</Badge>
+        <Badge variant="subtle" colorScheme="grey" bg="grey.1">
+          {teamAveragePoints} <PointIcon bg="grey.8" /> {(players?.length || 0) > 1 ? 'avg.' : ' '}
+        </Badge>
       </HStack>
     </Box>
   );

@@ -42,6 +42,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
 
   return (
     <VStack
+      role="group"
       opacity={isLoading ? 0.2 : 1}
       transition="opacity .2s ease-out"
       spacing="0"
@@ -49,6 +50,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       borderRadius={16}
       px={2}
       position="relative"
+      _hover={{ boxShadow: '0px 0px 1px 0 var(--chakra-colors-grey-9)' }}
     >
       {left.find(player => player.id === session?.user.id) &&
         !(differenceInDays(new Date(), new Date(createdAt)) > MATCH_DELETE_DAYS) && (
@@ -61,11 +63,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
         )}
       {createdAt && (
         <Box
-          color="gray.700"
+          color="grey.11"
           textAlign="center"
           bg="white"
           border="1px"
-          borderColor="gray.200"
+          borderColor="grey.4"
           px={4}
           py={1}
           borderRadius="full"
@@ -103,7 +105,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
               {leftscore > rightscore && <WinnerIcon />}
               <Text>{leftscore}</Text>
             </HStack>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="sm" color="grey.9">
               ✕
             </Text>
             <HStack flex={1}>
@@ -112,7 +114,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
             </HStack>
           </HStack>
           {gameName && (
-            <Text textAlign="center" textTransform="uppercase" fontSize="xs" color="gray.400" letterSpacing="wider">
+            <Text textAlign="center" textTransform="uppercase" fontSize="xs" color="grey.9" letterSpacing="wider">
               {gameName}
             </Text>
           )}

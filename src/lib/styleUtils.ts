@@ -20,4 +20,11 @@ export const centraliseEmoji = {
     },
 };
 
+export const gradientProps = [
+  [
+    'linear-gradient(-135deg, #FBB826, #FE33A1)',
+    'linear-gradient(-135deg, color(display-p3 1 0.638 0), color(display-p3 1 0 0.574))',
+  ],
+] as unknown as string[];
+
 export default hideScrollbar;

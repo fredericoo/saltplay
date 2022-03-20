@@ -1,14 +1,16 @@
 import LatestMatches from '@/components/LatestMatches';
+import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerStat from '@/components/PlayerStat';
 import SEO from '@/components/SEO';
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
+import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
 import { getRoleStyles } from '@/lib/roles';
 import { PromiseElement } from '@/lib/types/utils';
 import getGradientFromId from '@/theme/palettes';
-import { Box, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import useSWR from 'swr';
@@ -28,60 +30,64 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher, {
     revalidateOnFocus: false,
   });
-  useNavigationState(player?.name || 'Profile');
+  useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
 
   if (!player) return null;
 
   const playerName = player.name || `Player ${player?.id}`;
+  const hasMultipleGames = !!data?.games?.length && data.games.length > 1;
   return (
-    <Stack spacing={{ base: 1, md: 0.5 }} maxW="container.sm" mx="auto">
-      <SEO title={`${playerName}’s profile`} />
-      <Box bg="gray.50" borderRadius="18" overflow="hidden">
-        <Box bg={getGradientFromId(player.id)} h="32" />
-        <Box p={4} mt="-16">
-          <PlayerAvatar user={player} size={32} />
+    <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
+      <Stack spacing={{ base: 1, md: 0.5 }}>
+        <SEO title={`${playerName}’s profile`} />
+        <Box bg="white" borderRadius="18" overflow="hidden">
+          <Box bg={getGradientFromId(player.id)} h="32" />
+          <Box p={4} mt="-16">
+            <PlayerAvatar user={player} size={32} />
 
-          <Text
-            {...getRoleStyles(player.roleId)}
-            as="h1"
-            lineHeight={1.2}
-            fontSize="4xl"
-            letterSpacing="tight"
-            mt={2}
-            overflow="hidden"
-            color="gray.900"
-          >
-            {playerName}
-          </Text>
+            <Text
+              {...getRoleStyles(player.roleId)}
+              as="h1"
+              lineHeight={1.2}
+              fontSize="3xl"
+              letterSpacing="tight"
+              mt={2}
+              overflow="hidden"
+            >
+              {playerName}
+            </Text>
+          </Box>
+          <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
+            <PlayerStat id={player.id} stat="played" />
+            <PlayerStat id={player.id} stat="won" />
+            <PlayerStat id={player.id} stat="lost" />
+          </HStack>
         </Box>
-        <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
-          <PlayerStat id={player.id} stat="played" />
-          <PlayerStat id={player.id} stat="won" />
-          <PlayerStat id={player.id} stat="lost" />
-        </HStack>
-      </Box>
 
-      <Stack spacing={6} pt={4}>
-        <Tabs>
-          <TabList mb={8}>
-            <Tab>All</Tab>
-            {data?.games?.map(game => (
-              <Tab key={game.id}>{game.name}</Tab>
-            ))}
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <LatestMatches userId={player.id} />
-            </TabPanel>
-            {data?.games?.map(game => (
-              <TabPanel key={game.id}>
-                <LatestMatches userId={player.id} gameId={game.id} />
-              </TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
+        <Stack spacing={6} pt={4}>
+          <Tabs isLazy>
+            <TabList>
+              {hasMultipleGames && <Tab>All</Tab>}
+              {data?.games?.map(game => (
+                <Tab key={game.id}>{game.name}</Tab>
+              ))}
+            </TabList>
+            <TabPanels>
+              {hasMultipleGames && (
+                <TabPanel pt={8}>
+                  <LatestMatches userId={player.id} />
+                </TabPanel>
+              )}
+              {data?.games?.map(game => (
+                <TabPanel pt={8} key={game.id}>
+                  <LatestMatches userId={player.id} gameId={game.id} />
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        </Stack>
       </Stack>
-    </Stack>
+    </Container>
   );
 };
 

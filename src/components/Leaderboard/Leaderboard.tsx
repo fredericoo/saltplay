@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
+import PointIcon from '../PointIcon';
+import PositionNumber from './PositionNumber';
 import useLeaderboard from './useLeaderboard';
 
 const PositionWrapper = motion(HStack);
@@ -13,13 +15,6 @@ const PositionWrapper = motion(HStack);
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
-};
-
-const medals: Record<number, string> = {
-  0: '🙋',
-  1: '🥇',
-  2: '🥈',
-  3: '🥉',
 };
 
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
@@ -33,17 +28,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
-            <Box
-              textAlign="right"
-              w="2.5rem"
-              pr={2}
-              fontSize="3xl"
-              color="gray.400"
-              whiteSpace="nowrap"
-              overflow="hidden"
-            >
-              {hasIcons && medals[i + 1] ? medals[i + 1] : i + 1}
-            </Box>
+            <PositionNumber position={i + 1} displayMedals={hasIcons} />
             <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
           </HStack>
         ))}
@@ -54,8 +39,8 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   if (allPositions && allPositions.length === 0)
     return (
-      <Text textAlign="center" color="gray.500">
-        No leaderboard available yet.
+      <Text textAlign="center" color="grey.10" py={8}>
+        No leaderboard available yet!
       </Text>
     );
 
@@ -78,7 +63,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         );
       })}
       {hasNextPage && (
-        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+        <Button isLoading={isValidating} variant="subtle" colorScheme="grey" onClick={() => setSize(size => size + 1)}>
           Load more
         </Button>
       )}
@@ -139,39 +124,34 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   const isMe = session?.user.id === id;
   return (
     <PositionWrapper layout>
-      <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
-        {hasIcons && medals[position] ? medals[position] : position}
-      </Box>
+      <PositionNumber position={position} displayMedals={hasIcons} />
       <HStack
         bg="white"
         p={4}
         borderRadius="xl"
         gap={4}
         position="relative"
-        boxShadow={
-          isMe
-            ? '0px 0px 32px rgba(154, 242, 200, 0.3), 0px 8px 16px rgba(154, 242, 200, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)'
-            : isFirstPlace
-            ? '0 32px 64px 0 rgba(0,0,0,0.1)'
-            : undefined
-        }
+        boxShadow={isFirstPlace ? '0 32px 64px 0 rgba(0,0,0,0.1)' : undefined}
         zIndex={isFirstPlace ? 1 : undefined}
         w="100%"
         overflow="hidden"
-        border="2px solid transparent"
+        border="1px solid transparent"
+        borderColor={isMe ? 'primary.9' : undefined}
       >
         <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
         <Box flexGrow={1}>
           <HStack spacing={1}>
             <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
           </HStack>
-          <HStack fontSize="sm" color="gray.500">
+          <HStack fontSize="sm" color="grey.9">
             <Text>{wins} wins</Text>
             <Text>{losses} losses</Text>
           </HStack>
         </Box>
         <Box>
-          <Badge>{points} pts</Badge>
+          <Badge variant="subtle">
+            {points} <PointIcon />
+          </Badge>
         </Box>
       </HStack>
     </PositionWrapper>

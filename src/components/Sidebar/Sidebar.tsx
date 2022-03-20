@@ -11,7 +11,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   return (
     <Stack
       as="nav"
-      bg={{ base: 'rgb(255, 255, 255, 0.75)', md: 'gray.50' }}
+      bg={{ base: 'rgb(255, 255, 255, 0.75)', md: 'grey.1' }}
       backdropFilter={{ base: 'saturate(180%) blur(20px)', md: undefined }}
       direction={{ base: 'row', md: 'column' }}
       borderRadius={16}
@@ -44,10 +44,10 @@ const SidebarItem: React.VFC<SidebarItemProps> = ({ title, href, icon, isActive 
         direction={{ base: 'column', md: 'row' }}
         as="a"
         p={4}
-        bg={isActive ? 'gray.100' : undefined}
-        _hover={{ bg: 'gray.100' }}
+        bg={isActive ? 'grey.3' : undefined}
+        _hover={{ bg: 'grey.3' }}
         borderRadius={12}
-        _active={{ bg: 'gray.200' }}
+        _active={{ bg: 'grey.4' }}
         spacing={{ base: 0, md: 3 }}
         transition={'.15s ease-in-out'}
         position="relative"

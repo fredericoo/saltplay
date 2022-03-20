@@ -8,7 +8,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
   Stack,
   useDisclosure,
@@ -122,9 +121,8 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Submit match results</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody pt={6}>
             <FormProvider {...form}>
               <form id="new-match" onSubmit={form.handleSubmit(onSubmit)}>
                 {isLoading ? (
@@ -142,7 +140,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
           </ModalBody>
 
           <ModalFooter pb={6} flexDir="column">
-            <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%">
+            <Button variant="primary" flexGrow="1" type="submit" form="new-match" w="100%" size="lg">
               Submit
             </Button>
           </ModalFooter>

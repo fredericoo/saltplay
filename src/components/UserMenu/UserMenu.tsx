@@ -17,7 +17,7 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
     return (
       <>
         <Link href="/api/auth/signin" passHref>
-          <Button as="a" size="sm">
+          <Button as="a" size="sm" variant="subtle" colorScheme="grey">
             Sign in
           </Button>
         </Link>
@@ -27,10 +27,10 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   }
 
   return (
-    <Menu isLazy>
+    <Menu>
       <MenuButton
         as={Button}
-        variant="ghost"
+        variant="subtle"
         textAlign="left"
         fontSize="xs"
         size="sm"

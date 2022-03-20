@@ -10,6 +10,14 @@ const pastHistory = atom<HistoryState[]>({
   default: [],
 });
 
+export const currentHistoryState = selector<HistoryState | undefined>({
+  key: 'currentHistoryState',
+  get: ({ get }) => {
+    const history = get(pastHistory);
+    return history[history.length - 1];
+  },
+});
+
 export const lastHistoryState = selector<HistoryState | undefined>({
   key: 'lastHistoryState',
   get: ({ get }) => {

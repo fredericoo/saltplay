@@ -61,8 +61,8 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
           right="0"
           top="0"
           transform="translate(25%, -25%)"
-          bg="gray.300"
-          _hover={{ bg: '#FBB826' }}
+          bg="grey.6"
+          _hover={{ bg: 'danger.9', color: 'grey.1' }}
           borderRadius="full"
           onClick={onToggle}
         />
@@ -72,11 +72,15 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
           <PopoverArrow />
           <PopoverBody>
             <Text fontWeight="bold">Are you sure?</Text>
-            <Text>Deleting the match will revert the points moved.</Text>
+            <Text color="grey.10">Deleting the match will revert the points moved.</Text>
           </PopoverBody>
-          <HStack as={PopoverFooter}>
+          <HStack as={PopoverFooter} p={0} spacing={0}>
             <Button
-              colorScheme="red"
+              borderRadius={0}
+              borderBottomLeftRadius="lg"
+              flex={1}
+              variant="solid"
+              colorScheme="danger"
               onClick={() => {
                 handleClick();
                 onClose();
@@ -84,7 +88,16 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
             >
               Delete
             </Button>
-            <Button variant="subtle" top={0} left={0} onClick={onClose}>
+            <Button
+              borderRadius={0}
+              borderBottomRightRadius="lg"
+              flex={1}
+              variant="subtle"
+              colorScheme="grey"
+              top={0}
+              left={0}
+              onClick={onClose}
+            >
               Cancel
             </Button>
           </HStack>

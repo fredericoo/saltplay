@@ -7,7 +7,7 @@ const BlurBox = motion(Box);
 
 const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
   return (
-    <Box py={8} zIndex="-1" position="relative">
+    <Box py={8} position="relative">
       <AnimatePresence>
         <BlurBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <IconBlur
@@ -20,10 +20,13 @@ const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
         </BlurBox>
       </AnimatePresence>
 
-      <Heading as="h1" size="md">
+      <Heading as="h1" size="md" pl={{ md: 8 }}>
+        <Box as="span" w="6">
+          {icon}
+        </Box>{' '}
         {title}
       </Heading>
-      <Heading size="md" color="gray.400">
+      <Heading size="md" color="grey.8" pl={{ base: 6, md: 14 }}>
         {subtitle}
       </Heading>
     </Box>
