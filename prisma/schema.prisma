@@ -71,6 +71,7 @@ model Match {
     gameid String
     game   Game @relation(fields: [gameid], references: [id])
     points Int @default(0)
+    notification_id String?
 }
 
 model Game {

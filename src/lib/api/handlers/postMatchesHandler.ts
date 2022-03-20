@@ -39,7 +39,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      if (!body.left.players.find(p => p.id === session.user.id))
+      if (session.user.roleId !== 0 && !body.left.players.find(p => p.id === session.user.id))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       const maxPlayersPerTeam =
@@ -107,12 +107,18 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
       }
 
       try {
-        await notifyMatchOnSlack({
+        const notification = await notifyMatchOnSlack({
           gameId: body.gameId,
           leftScore: body.left.score,
           rightScore: body.right.score,
           left: sides.left,
           right: sides.right,
+        });
+        if (!notification?.message) throw new Error();
+
+        await prisma.match.update({
+          where: { id: createdMatch.id },
+          data: { notification_id: notification.message.ts },
         });
       } catch {
         console.error('Error sending match to slack');

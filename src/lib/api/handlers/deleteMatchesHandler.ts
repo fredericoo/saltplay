@@ -1,5 +1,7 @@
 import { STARTING_POINTS } from '@/constants';
+import canDeleteMatch from '@/lib/canDeleteMatch';
 import prisma from '@/lib/prisma';
+import { notifyDeletedMatch } from '@/lib/slackbot/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
@@ -32,12 +34,13 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
           rightscore: true,
           points: true,
           createdAt: true,
+          notification_id: true,
         },
       });
 
       if (!match) return res.status(404).json({ status: 'error', message: 'Match not found' });
 
-      if (!match.left.find(player => player.id === session.user.id))
+      if (!canDeleteMatch({ user: session.user, players: [...match.left, ...match.right], createdAt: match.createdAt }))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       const matchPlayers = [
@@ -88,6 +91,14 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
       await prisma.match.delete({
         where: { id: matchId },
       });
+
+      const timestamp = match.notification_id;
+      if (timestamp)
+        try {
+          await notifyDeletedMatch({ timestamp, triggeredBy: session.user.name || 'Anonymous' });
+        } catch (e) {
+          console.error(e);
+        }
 
       res.status(200).json({ status: 'ok' });
     })
