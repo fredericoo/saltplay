@@ -12,7 +12,7 @@ const DashboardLayout: LayoutComponent = ({ children }) => {
         <Box bg="white" position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" p="0.25rem">
           <Logo h="1.5rem" w="1.5rem" />
         </Box>
-        <QR renderAs="svg" height="10rem" width="10rem" value={WEBSITE_URL} />
+        <QR renderAs="svg" includeMargin height="12rem" width="12rem" value={WEBSITE_URL} />
       </Box>
     </Box>
   );
