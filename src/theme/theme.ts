@@ -51,6 +51,12 @@ const theme = extendTheme({
         color: 'grey.12',
       },
     },
+    Skeleton: {
+      defaultProps: {
+        startColor: 'grey.4',
+        endColor: 'grey.8',
+      },
+    },
     Badge,
     Popover,
     Menu,
