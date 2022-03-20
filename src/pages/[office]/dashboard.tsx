@@ -1,6 +1,6 @@
-import DashboardLayout from '@/components/Layout/DashboardLayout';
-import { PageWithLayout } from '@/components/Layout/types';
 import Leaderboard from '@/components/Leaderboard';
+import DashboardLayout from '@/layouts/DashboardLayout';
+import { PageWithLayout } from '@/layouts/types';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';

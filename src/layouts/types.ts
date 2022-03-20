@@ -1,6 +1,6 @@
 import { NextPage } from 'next/types';
-import { PageHeader } from '../PageHeader/types';
-import { Sidebar } from '../Sidebar/types';
+import { PageHeader } from '../components/PageHeader/types';
+import { Sidebar } from '../components/Sidebar/types';
 
 export type LayoutProps = {
   sidebar?: Sidebar;

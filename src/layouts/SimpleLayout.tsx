@@ -1,11 +1,11 @@
 import { Box } from '@chakra-ui/react';
-import Footer from '../Footer';
-import Navbar from '../Navbar';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 import { LayoutComponent } from './types';
 
 const SimpleLayout: LayoutComponent = ({ children, pageHeader }) => {
   return (
-    <Box as="main" pb={{ base: '96px', md: '0' }}>
+    <Box pb={{ base: '96px', md: '0' }}>
       <Navbar />
       {children}
       <Footer />

@@ -98,7 +98,7 @@ const Navbar: React.VFC = () => {
             ''
           )}
         </ModalButton>
-        <UserMenu />
+        <UserMenu showUserName={isDesktop} />
       </HStack>
     </HStack>
   );

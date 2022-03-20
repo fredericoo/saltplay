@@ -1,5 +1,5 @@
-import SimpleLayout from '@/components/Layout/SimpleLayout';
-import { PageWithLayout } from '@/components/Layout/types';
+import SimpleLayout from '@/layouts/SimpleLayout';
+import { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
 import Fonts from '@/theme/Fonts';
 import theme from '@/theme/theme';

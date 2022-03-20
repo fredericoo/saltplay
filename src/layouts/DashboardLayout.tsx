@@ -1,7 +1,7 @@
 import { WEBSITE_URL } from '@/constants';
 import { Box } from '@chakra-ui/react';
 import QR from 'qrcode.react';
-import Logo from '../Logo';
+import Logo from '../components/Logo';
 import { LayoutComponent } from './types';
 
 const DashboardLayout: LayoutComponent = ({ children }) => {

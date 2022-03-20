@@ -64,7 +64,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
     return (
       <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
         <PageHeader {...header} />
-        <Grid w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
+        <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <SEO title={game.name} />
           <Box as="section" bg="grey.4" p={2} borderRadius="xl">
             <HStack justifyContent="flex-end" pb="4">
@@ -98,35 +98,37 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
       <PageHeader {...header} />
-      <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-      <Tabs variant={'bottom'}>
-        <SEO title={game.name} />
-        <TabList>
-          <Tab>Leaderboard</Tab>
-          <Tab>Latest Matches</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <Button
-              w="100%"
-              size="md"
-              isLoading={isValidating}
-              variant="subtle"
-              colorScheme="grey"
-              bg="grey.1"
-              mb={4}
-              onClick={() => mutate()}
-              leftIcon={<IoRefreshSharp size="1.5rem" />}
-            >
-              Refresh
-            </Button>
-            <Leaderboard gameId={game.id} />
-          </TabPanel>
-          <TabPanel>
-            <LatestMatches gameId={game.id} />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <Box position="relative">
+        <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+        <Tabs variant={'bottom'}>
+          <SEO title={game.name} />
+          <TabList>
+            <Tab>Leaderboard</Tab>
+            <Tab>Latest Matches</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <Button
+                w="100%"
+                size="md"
+                isLoading={isValidating}
+                variant="subtle"
+                colorScheme="grey"
+                bg="grey.1"
+                mb={4}
+                onClick={() => mutate()}
+                leftIcon={<IoRefreshSharp size="1.5rem" />}
+              >
+                Refresh
+              </Button>
+              <Leaderboard gameId={game.id} />
+            </TabPanel>
+            <TabPanel>
+              <LatestMatches gameId={game.id} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Box>
     </Container>
   );
 };

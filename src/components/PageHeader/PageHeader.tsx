@@ -7,26 +7,25 @@ const BlurBox = motion(Box);
 
 const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
   return (
-    <Box py={8} position="relative">
+    <Box py={8} position="relative" zIndex={0}>
       <AnimatePresence>
         <BlurBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <IconBlur
-            zIndex={1}
             icon={icon}
-            height="200%"
+            height="400%"
             opacity={0.2}
-            transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -75%)' }}
+            transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -66%)' }}
           />
         </BlurBox>
       </AnimatePresence>
 
-      <Heading as="h1" size="md" pl={{ md: 8 }}>
+      <Heading position="relative" as="h1" size="md" pl={{ md: 8 }}>
         <Box as="span" w="6">
           {icon}
         </Box>{' '}
         {title}
       </Heading>
-      <Heading size="md" color="grey.8" pl={{ base: 6, md: 14 }}>
+      <Heading position="relative" fontWeight="normal" size="md" color="grey.9" pl={{ base: 6, md: 14 }}>
         {subtitle}
       </Heading>
     </Box>
