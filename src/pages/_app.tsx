@@ -1,4 +1,5 @@
 import SimpleLayout from '@/components/Layout/SimpleLayout';
+import { PageWithLayout } from '@/components/Layout/types';
 import fetcher from '@/lib/fetcher';
 import Fonts from '@/theme/Fonts';
 import theme from '@/theme/theme';
@@ -8,8 +9,10 @@ import type { AppProps } from 'next/app';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig } from 'swr';
 
-const App: React.VFC<AppProps> = ({ Component, pageProps: { session, ...pageProps } }) => {
-  const Layout = SimpleLayout;
+type AppComponent = React.VFC<AppProps & { Component: PageWithLayout }>;
+
+const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) => {
+  const Layout = Component.Layout || SimpleLayout;
 
   return (
     <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>

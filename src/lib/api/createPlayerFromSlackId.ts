@@ -1,3 +1,4 @@
+import { WEBSITE_URL } from '@/constants';
 import prisma from '@/lib/prisma';
 import { GUEST_ROLE_ID } from '../constants';
 import slack from '../slackbot/client';
@@ -36,7 +37,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: "Heads up!\nYou've been invited to SaltPlay.\nGo to https://saltplay.app to view the latest matches or join #saltplay-matches to keep track of who’s taking ownership of the games room.",
+          text: `Heads up!\nYou've been invited to SaltPlay.\nGo to ${WEBSITE_URL} to view the latest matches or join #saltplay-matches to keep track of who’s taking ownership of the games room.`,
         },
       },
       {
@@ -50,7 +51,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
               text: 'View all matches',
             },
             style: 'primary',
-            url: 'https://saltplay.app',
+            url: WEBSITE_URL,
           },
         ],
       },

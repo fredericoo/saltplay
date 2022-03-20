@@ -59,6 +59,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
             points={player.points}
             roleId={player.roleId}
             position={player.position}
+            hasIcons={hasIcons}
           />
         );
       })}

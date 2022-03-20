@@ -1,8 +1,10 @@
+import DashboardLayout from '@/components/Layout/DashboardLayout';
+import { PageWithLayout } from '@/components/Layout/types';
 import Leaderboard from '@/components/Leaderboard';
 import prisma from '@/lib/prisma';
 import { PromiseElement } from '@/lib/types/utils';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
@@ -14,7 +16,7 @@ type OfficePageProps = {
   office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
 };
 
-const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
+const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
   return (
@@ -30,6 +32,8 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
     </SimpleGrid>
   );
 };
+
+OfficePage.Layout = DashboardLayout;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const offices = await prisma.office.findMany({
