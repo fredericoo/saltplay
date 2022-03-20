@@ -3,7 +3,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { LayoutComponent } from './types';
 
-const SimpleLayout: LayoutComponent = ({ children, pageHeader }) => {
+const SimpleLayout: LayoutComponent = ({ children }) => {
   return (
     <Box pb={{ base: '96px', md: '0' }}>
       <Navbar />

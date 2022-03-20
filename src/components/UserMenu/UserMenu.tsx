@@ -1,4 +1,4 @@
-import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import { Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import PlayerAvatar from '../PlayerAvatar';
@@ -28,20 +28,15 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
 
   return (
     <Menu>
-      <MenuButton
-        as={Button}
-        variant="subtle"
-        textAlign="left"
-        fontSize="xs"
-        size="sm"
-        isLoading={isLoading}
-        leftIcon={session?.user && <PlayerAvatar size={6} user={session?.user} />}
-      >
-        {showUserName && (
-          <Text isTruncated maxW="128px">
-            {session?.user?.name?.split(' ')[0] || session?.user?.email}
-          </Text>
-        )}
+      <MenuButton as={Button} variant="subtle" textAlign="left" fontSize="xs" size="sm" isLoading={isLoading}>
+        <HStack>
+          {session?.user && <PlayerAvatar size={6} user={session?.user} />}
+          {showUserName && (
+            <Text isTruncated maxW="128px">
+              {session?.user?.name?.split(' ')[0] || session?.user?.email}
+            </Text>
+          )}
+        </HStack>
       </MenuButton>
       <MenuList>
         <Link href={`/player/${session?.user.id}`} passHref>

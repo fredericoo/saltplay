@@ -20,7 +20,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
         <ChakraProvider theme={theme}>
           <Fonts />
           <SessionProvider session={session}>
-            <Layout sidebar={pageProps.sidebar} pageHeader={pageProps.header}>
+            <Layout sidebar={pageProps.sidebar}>
               <Component {...pageProps} />
             </Layout>
           </SessionProvider>
