@@ -35,7 +35,6 @@ const Navbar: React.VFC = () => {
       h={NAVBAR_HEIGHT}
       top={0}
       spacing={4}
-      transition="background .6s ease-out"
       bg={hasScrolled ? 'hsl(300, 7.7%, 97.5%, 0.85)' : undefined}
       backdropFilter={hasScrolled ? 'saturate(180%) blur(20px)' : undefined}
       boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
