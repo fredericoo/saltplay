@@ -53,16 +53,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
   const toast = useToast();
   if (!isLoggedIn)
     return (
-      <Button
-        w="100%"
-        variant="solid"
-        bg="gray.300"
-        _hover={{ bg: 'gray.300' }}
-        size="lg"
-        isDisabled
-        onClick={onOpen}
-        {...chakraProps}
-      >
+      <Button w="100%" bg="grey.4" size="lg" isDisabled {...chakraProps}>
         Sign in to submit a match!
       </Button>
     );
@@ -127,7 +118,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
               <form id="new-match" onSubmit={form.handleSubmit(onSubmit)}>
                 {isLoading ? (
                   <Center py={16}>
-                    <LoadingIcon color="gray.400" size={16} />
+                    <LoadingIcon color="grey.6" size={16} />
                   </Center>
                 ) : (
                   <Stack spacing={8}>
