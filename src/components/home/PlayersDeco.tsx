@@ -23,6 +23,7 @@ const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name' | 'ro
             bottom={0}
             filter={`blur(${random * 4}px)`}
             transform={`scale(${random * 1 + 0.5})`}
+            opacity={1.0 - random * 0.9}
           >
             <PlayerAvatar size={16} user={user} />
           </MotionBox>

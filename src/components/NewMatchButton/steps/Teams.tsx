@@ -1,29 +1,26 @@
 import ErrorBox from '@/components/ErrorBox';
-import PlayerAvatar from '@/components/PlayerAvatar';
+import { MotionBox } from '@/components/Motion';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
-import PointIcon from '@/components/PointIcon';
-import { STARTING_POINTS } from '@/constants';
 import fetcher from '@/lib/fetcher';
 import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getGradientFromId from '@/theme/palettes';
-import { Badge, Box, Circle, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import useSWR from 'swr';
 import InvitePicker from '../InvitePicker';
 import { MatchFormInputs } from '../NewMatchButton';
+import Side from '../Side';
 
 type TeamsProps = {
   gameId: Game['id'];
   maxPlayersPerTeam: number;
   onFinish?: () => void;
 };
-
-const MotionBox = motion(Box);
 
 const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) => {
   const {
@@ -108,7 +105,6 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           players={left}
           isSelected={selectedSide === 'left'}
           onClick={() => handleSelectedSide('left')}
-          selectedColour={getGradientFromId('1')}
           emptySlots={teamSize - left?.length}
         />
         <Badge variant="solid" colorScheme="danger" zIndex="docked">
@@ -119,7 +115,6 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           players={right}
           isSelected={selectedSide === 'right'}
           onClick={() => handleSelectedSide('right')}
-          selectedColour={getGradientFromId('4')}
           emptySlots={teamSize - right?.length}
         />
       </HStack>
@@ -169,107 +164,6 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           </MotionBox>
         )}
       </AnimatePresence>
-    </Box>
-  );
-};
-
-type SideProps = {
-  label: string;
-  players?: Player[];
-  isReverse?: boolean;
-  isSelected?: boolean;
-  onClick: () => void;
-  selectedColour?: string;
-  emptySlots: number;
-};
-
-const Side: React.VFC<SideProps> = ({
-  label,
-  players,
-  isReverse,
-  isSelected,
-  onClick,
-  selectedColour,
-  emptySlots = 0,
-}) => {
-  const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
-  const teamAveragePoints = players
-    ? Math.ceil(
-        players?.reduce((acc, cur) => acc + (('scores' in cur && cur.scores?.[0]?.points) || STARTING_POINTS), 0) /
-          players?.length
-      ) || 0
-    : 0;
-
-  return (
-    <Box
-      as="button"
-      type="button"
-      flex={1}
-      bg={isSelected ? 'grey.4' : undefined}
-      transition=".3s ease-in-out"
-      borderRadius="xl"
-      p={2}
-      onClick={onClick}
-    >
-      <HStack flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Text as="h2" color={isSelected ? 'grey.12' : 'grey.10'} fontWeight="bold">
-          {label}
-        </Text>
-      </HStack>
-      <HStack flexFlow={isReverse ? 'row-reverse' : undefined} spacing={0} minH="76px">
-        <AnimatePresence initial={false}>
-          {players?.map((player, index) => (
-            <MotionBox
-              flex={1}
-              maxW="25%"
-              ml={isReverse ? -2 : 0}
-              mr={isReverse ? 0 : -2}
-              key={index}
-              zIndex={paddingAvatars.length + players.length - index}
-              layout
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-            >
-              <PlayerAvatar user={player} size={'100%'} />
-            </MotionBox>
-          ))}
-          {paddingAvatars.map((_, index) => (
-            <MotionBox
-              flex={1}
-              maxW="25%"
-              ml={isReverse ? -2 : 0}
-              mr={isReverse ? 0 : -2}
-              key={(players?.length || 0) + index}
-              zIndex={paddingAvatars.length - index}
-              layout
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-            >
-              <Circle bg="grey.3" pb="100%" w="100%" h="0" position="relative" boxShadow="0 0 0 3px white">
-                <Box
-                  position="absolute"
-                  inset="0"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  fontSize="2xl"
-                  lineHeight={1}
-                  color="grey.10"
-                >
-                  +
-                </Box>
-              </Circle>
-            </MotionBox>
-          ))}
-        </AnimatePresence>
-      </HStack>
-      <HStack mt={2} flexFlow={isReverse ? 'row-reverse' : undefined}>
-        <Badge variant="subtle" colorScheme="grey" bg="grey.1">
-          {teamAveragePoints} <PointIcon bg="grey.8" /> {(players?.length || 0) > 1 ? 'avg.' : ' '}
-        </Badge>
-      </HStack>
     </Box>
   );
 };

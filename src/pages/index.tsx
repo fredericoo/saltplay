@@ -24,7 +24,7 @@ const Home: NextPage<HomeProps> = ({ offices, players, mostRecentGameId }) => {
       <Container bg="grey.2" position="relative" maxW="container.xl">
         <SimpleGrid columns={{ md: 2 }} gap={4}>
           <LeaderboardBlock gameId={mostRecentGameId} />
-          <AddMatchBlock />
+          <AddMatchBlock players={players} />
           <PlayersBlock players={players} />
         </SimpleGrid>
       </Container>

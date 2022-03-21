@@ -3,6 +3,7 @@ export const Modal = {
   variants: {
     custom: {
       dialog: {
+        bg: 'grey.1',
         borderRadius: '28',
       },
       dialogContainer: {
