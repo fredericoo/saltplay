@@ -1,12 +1,11 @@
 import getAllSlackMembers from '@/lib/slackbot/getAllSlackMembers';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../auth/[...nextauth]';
 
 export type SlackMembersAPIResponse = APIResponse<{
-  members: PromiseElement<ReturnType<typeof getAllSlackMembers>>;
+  members: Awaited<ReturnType<typeof getAllSlackMembers>>;
 }>;
 
 const slackMembersHandler: NextApiHandler<SlackMembersAPIResponse> = async (req, res) => {

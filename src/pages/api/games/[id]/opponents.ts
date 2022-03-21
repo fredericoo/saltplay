@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
@@ -21,7 +20,7 @@ const getOpponents = (gameid: string) =>
   });
 
 export type OpponentsAPIResponse = APIResponse<{
-  opponents: PromiseElement<ReturnType<typeof getOpponents>>;
+  opponents: Awaited<ReturnType<typeof getOpponents>>;
 }>;
 
 const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res) => {

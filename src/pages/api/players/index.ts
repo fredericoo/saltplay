@@ -1,8 +1,7 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { PromiseElement } from '@/lib/types/utils';
-import { User } from '@prisma/client';
 import { APIResponse } from '@/lib/types/api';
+import { User } from '@prisma/client';
+import { NextApiHandler } from 'next';
 
 const getPlayers = (take: number, cursor?: Pick<User, 'id'>) =>
   prisma.user.findMany({
@@ -19,7 +18,7 @@ const getPlayers = (take: number, cursor?: Pick<User, 'id'>) =>
   });
 
 export type PlayerAPIResponse = APIResponse<{
-  players: PromiseElement<ReturnType<typeof getPlayers>>;
+  players: Awaited<ReturnType<typeof getPlayers>>;
   nextCursor?: User['id'];
 }>;
 

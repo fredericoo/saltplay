@@ -1,8 +1,7 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { PromiseElement } from '@/lib/types/utils';
-import { Match } from '@prisma/client';
 import { APIResponse } from '@/lib/types/api';
+import { Match } from '@prisma/client';
+import { NextApiHandler } from 'next';
 
 const getOfficeMatches = (officeid: string, take: number, cursor?: Pick<Match, 'id'>) =>
   prisma.match.findMany({
@@ -22,7 +21,7 @@ const getOfficeMatches = (officeid: string, take: number, cursor?: Pick<Match, '
   });
 
 export type OfficeMatchesAPIResponse = APIResponse<{
-  matches: PromiseElement<ReturnType<typeof getOfficeMatches>>;
+  matches: Awaited<ReturnType<typeof getOfficeMatches>>;
   nextCursor?: Match['id'];
 }>;
 

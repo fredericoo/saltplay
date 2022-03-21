@@ -9,7 +9,6 @@ import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { PromiseElement } from '@/lib/types/utils';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
@@ -31,7 +30,7 @@ export const getOfficeBySlug = async (slug: string) =>
   });
 
 type OfficePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
+  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
   sidebar?: Sidebar;
 };
 

@@ -2,7 +2,6 @@ import Leaderboard from '@/components/Leaderboard';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { PageWithLayout } from '@/layouts/types';
 import prisma from '@/lib/prisma';
-import { PromiseElement } from '@/lib/types/utils';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
@@ -13,7 +12,7 @@ export const getOfficeBySlug = async (slug: string) =>
   });
 
 type OfficePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
+  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
 };
 
 const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {

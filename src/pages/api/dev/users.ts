@@ -1,7 +1,6 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
+import { NextApiHandler } from 'next';
 
 const getUsers = () =>
   prisma.user.findMany({
@@ -12,7 +11,7 @@ const getUsers = () =>
   });
 
 export type DevUsersAPIResponse = APIResponse<{
-  users: PromiseElement<ReturnType<typeof getUsers>>;
+  users: Awaited<ReturnType<typeof getUsers>>;
 }>;
 
 const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) => {

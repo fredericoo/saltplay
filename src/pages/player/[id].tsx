@@ -8,7 +8,6 @@ import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
 import { getRoleStyles } from '@/lib/roles';
-import { PromiseElement } from '@/lib/types/utils';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
@@ -23,7 +22,7 @@ export const getPlayerById = async (id: User['id']) =>
   });
 
 type PlayerPageProps = {
-  player?: PromiseElement<ReturnType<typeof getPlayerById>>;
+  player?: Awaited<ReturnType<typeof getPlayerById>>;
 };
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {

@@ -7,7 +7,6 @@ import SEO from '@/components/SEO';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { gradientProps } from '@/lib/styleUtils';
-import { PromiseElement } from '@/lib/types/utils';
 import { Box, Button, Container, Heading, SimpleGrid, styled, Text, VStack } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import { motion } from 'framer-motion';
@@ -17,8 +16,9 @@ import Link from 'next/link';
 import { memo } from 'react';
 
 type HomeProps = {
-  offices: PromiseElement<ReturnType<typeof getOffices>>;
-  players: PromiseElement<ReturnType<typeof getPlayerSample>>;
+  offices: Awaited<ReturnType<typeof getOffices>>;
+  players: Awaited<ReturnType<typeof getPlayerSample>>;
+  mostRecentGameId: Awaited<ReturnType<typeof getMostRecentGameId>>;
 };
 
 const Section = styled(Box, {
@@ -33,7 +33,7 @@ const Section = styled(Box, {
 });
 Section.defaultProps = { as: 'section' };
 
-const Home: NextPage<HomeProps> = ({ offices, players }) => {
+const Home: NextPage<HomeProps> = ({ offices, players, mostRecentGameId }) => {
   const { status } = useSession();
   const isLoggedIn = status === 'authenticated';
   const officesWithGames = offices?.filter(office => office.games.length) || [];
@@ -96,7 +96,7 @@ const Home: NextPage<HomeProps> = ({ offices, players }) => {
               Climb up the leaderboards
             </Heading>
             <Box left="25%" position="absolute" w="100%" zIndex="0">
-              <Leaderboard gameId={officesWithGames[1].games[0].id} />
+              {mostRecentGameId && <Leaderboard gameId={mostRecentGameId} />}
             </Box>
           </Section>
           <Section>
@@ -206,12 +206,16 @@ const getPlayerSample = () =>
     select: { id: true, name: true, image: true, roleId: true },
   });
 
+const getMostRecentGameId = () =>
+  prisma.game.findFirst({ orderBy: { matches: { _count: 'desc' } }, select: { id: true } }).then(res => res?.id);
+
 export const getStaticProps: GetStaticProps = async () => {
   const offices = await getOffices();
   const players = await getPlayerSample();
+  const mostRecentGameId = await getMostRecentGameId();
 
   return {
-    props: { offices, players },
+    props: { offices, players, mostRecentGameId },
     revalidate: 60 * 60 * 24,
   };
 };

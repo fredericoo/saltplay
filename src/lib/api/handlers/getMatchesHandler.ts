@@ -1,7 +1,6 @@
 import { PAGE_SIZE } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
 import { Match } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
@@ -56,7 +55,7 @@ const getMatches = ({ first, after, userId, gameId, officeId }: GetMatchesOption
   });
 
 export type MatchesGETAPIResponse = APIResponse<{
-  matches: PromiseElement<ReturnType<typeof getMatches>>;
+  matches: Awaited<ReturnType<typeof getMatches>>;
   nextCursor?: Match['id'];
 }>;
 
