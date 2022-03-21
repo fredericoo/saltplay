@@ -20,7 +20,7 @@ const NavigationBackButton = () => {
         leftIcon={<VscChevronLeft />}
         color="grey.12"
         bg="transparent"
-        _hover={{ bg: 'grey.1' }}
+        _hover={{ bg: 'grey.2' }}
         _focus={{ boxShadow: 'none' }}
       >
         <Text as="span" isTruncated>

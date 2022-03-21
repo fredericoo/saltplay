@@ -36,11 +36,10 @@ const Navbar: React.VFC = () => {
       h={NAVBAR_HEIGHT}
       top={0}
       spacing={4}
-      bg={hasScrolled ? 'hsl(300, 7.7%, 97.5%, 0.85)' : undefined}
-      backdropFilter={hasScrolled ? 'saturate(180%) blur(20px)' : undefined}
+      bg={hasScrolled ? 'grey.1' : undefined}
       boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
     >
-      <HStack flex={1} isTruncated alignSelf="stretch">
+      <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
         <NavigationBackButton />
       </HStack>
 
