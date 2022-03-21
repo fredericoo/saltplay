@@ -14,15 +14,14 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
 
   if (!isLoading && !session) {
-    return (
-      <>
-        <Link href="/api/auth/signin" passHref>
-          <Button as="a" size="sm" variant="subtle" colorScheme="grey">
-            Sign in
-          </Button>
-        </Link>
-        {isDev && <DevUserMenu />}
-      </>
+    return isDev ? (
+      <DevUserMenu />
+    ) : (
+      <Link href="/api/auth/signin" passHref>
+        <Button as="a" size="sm" variant="subtle" colorScheme="grey">
+          Sign in
+        </Button>
+      </Link>
     );
   }
 
