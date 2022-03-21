@@ -1,6 +1,5 @@
 import LatestMatches from '@/components/LatestMatches';
 import List from '@/components/List';
-import ListItem from '@/components/ListItem';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import OfficeStat from '@/components/OfficeStat';
 import SEO from '@/components/SEO';
@@ -77,9 +76,9 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
               <TabPanel>
                 <List>
                   {sidebar?.items?.map(item => (
-                    <ListItem href={item.href} icon={item.icon || undefined} key={item.title}>
+                    <List.Item href={item.href} icon={item.icon || undefined} key={item.title}>
                       {item.title}
-                    </ListItem>
+                    </List.Item>
                   ))}
                 </List>
               </TabPanel>
