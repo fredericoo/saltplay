@@ -4,6 +4,7 @@ import { Badge, Box, Button, HStack, Skeleton, Stack, StackProps, Text } from '@
 import { Game, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
+import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 import PlayerAvatar from '../PlayerAvatar';
 import PointIcon from '../PointIcon';
@@ -20,7 +21,27 @@ type LeaderboardProps = {
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
   const { data: session } = useSession();
   const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = data?.[data.length - 1].nextPage;
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '500px',
+      threshold: 1,
+    };
+    const handleObserver: IntersectionObserverCallback = entities => {
+      const target = entities[0];
+      if (target.isIntersecting) {
+        setSize(size => size + 1);
+      }
+    };
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (hasNextPage && loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+    return () => observer.disconnect();
+  }, [hasNextPage, setSize, data]);
 
   if (error) return <Box>Error</Box>;
   if (!data)
@@ -64,7 +85,13 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         );
       })}
       {hasNextPage && (
-        <Button isLoading={isValidating} variant="subtle" colorScheme="grey" onClick={() => setSize(size => size + 1)}>
+        <Button
+          ref={loadMoreRef}
+          isLoading={isValidating}
+          variant="subtle"
+          colorScheme="grey"
+          onClick={() => setSize(size => size + 1)}
+        >
           Load more
         </Button>
       )}
