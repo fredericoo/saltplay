@@ -1,5 +1,5 @@
 import { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/getMatchesHandler';
-import { Game, User } from '@prisma/client';
+import { Game, Office, User } from '@prisma/client';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 const getKey =
@@ -15,10 +15,11 @@ const getKey =
 type UseLatestMatches = (options: {
   gameId?: Game['id'];
   userId?: User['id'];
+  officeId?: Office['id'];
 }) => SWRInfiniteResponse<MatchesGETAPIResponse>;
 
-const useLatestMatches: UseLatestMatches = ({ gameId, userId }) => {
-  return useSWRInfinite<MatchesGETAPIResponse>(getKey({ gameId, userId }));
+const useLatestMatches: UseLatestMatches = ({ gameId, userId, officeId }) => {
+  return useSWRInfinite<MatchesGETAPIResponse>(getKey({ gameId, userId, officeId }));
 };
 
 export default useLatestMatches;

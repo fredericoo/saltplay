@@ -49,7 +49,7 @@ const Hero: React.VFC<HeroProps> = ({ offices }) => {
           >
             Explore games in
           </Heading>
-          <List columns={officesWithGames.length > 4 ? 2 : 1}>
+          <List columns={{ lg: officesWithGames.length > 4 ? 2 : 1 }}>
             {officesWithGames.map(office => (
               <List.Item
                 key={office.slug}

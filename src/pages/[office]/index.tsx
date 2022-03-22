@@ -83,7 +83,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
                 </List>
               </TabPanel>
               <TabPanel pt={4}>
-                <LatestMatches />
+                <LatestMatches officeId={office.id} canLoadMore />
               </TabPanel>
             </TabPanels>
           </Tabs>

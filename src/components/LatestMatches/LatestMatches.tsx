@@ -1,7 +1,7 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/lib/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import { Game, Office, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
@@ -12,12 +12,13 @@ const MotionBox = motion(Box);
 type LatestMatchesProps = {
   gameId?: Game['id'];
   userId?: User['id'];
+  officeId?: Office['id'];
   canLoadMore?: boolean;
 };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, officeId, canLoadMore = true }) => {
   const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
-  const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId });
+  const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = data?.[data.length - 1].nextCursor;
 
