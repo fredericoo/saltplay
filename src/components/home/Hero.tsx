@@ -11,7 +11,7 @@ const Hero: React.VFC<HeroProps> = ({ offices }) => {
   const officesWithGames = offices?.filter(office => office.games.length) || [];
 
   return (
-    <Container maxW="container.xl" px={{ lg: 8 }} position={{ md: 'sticky' }} top="0" zIndex="0">
+    <Container maxW="container.xl" px={{ base: 4, lg: 8 }} position={{ md: 'sticky' }} top="0" zIndex="0">
       <SimpleGrid mx="auto" columns={{ lg: 2 }} gap={8} alignItems="center" minH="90vh">
         <Box pt={32} pb={16} textAlign={{ base: 'center', lg: 'left' }}>
           <Heading
@@ -39,7 +39,14 @@ const Hero: React.VFC<HeroProps> = ({ offices }) => {
         </Box>
 
         <Box py={8}>
-          <Heading as="h2" mb={4} fontSize="md" color="grey.10" pl={14}>
+          <Heading
+            as="h2"
+            mb={4}
+            fontSize="md"
+            color="grey.10"
+            pl={{ lg: 14 }}
+            textAlign={{ base: 'center', lg: 'left' }}
+          >
             Explore games in
           </Heading>
           <List columns={officesWithGames.length > 4 ? 2 : 1}>
