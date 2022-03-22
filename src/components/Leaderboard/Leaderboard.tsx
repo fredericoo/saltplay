@@ -1,6 +1,6 @@
 import PlayerName from '@/components/PlayerName';
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
-import { Badge, Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Button, HStack, Skeleton, Stack, StackProps, Text } from '@chakra-ui/react';
 import { Game, Role, User } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
@@ -105,11 +105,22 @@ const PlayerPosition: React.VFC<{ gameId: Game['id'] }> = ({ gameId }) => {
       points={playerPosition?.points}
       roleId={playerPosition?.roleId}
       position={playerPosition?.position}
+      pos="sticky"
+      bottom="0"
+      zIndex="docked"
+      _before={{
+        zIndex: '-1',
+        content: "''",
+        position: 'absolute',
+        inset: '-1rem',
+        bg: 'var(--chakra-colors-grey-3)',
+        maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 50%) ',
+      }}
     />
   );
 };
 
-const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
+const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps, keyof LeaderboardPositionProps>> = ({
   id,
   roleId,
   position,
@@ -119,12 +130,13 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
   wins,
   losses,
   hasIcons = true,
+  ...chakraProps
 }) => {
   const isFirstPlace = position === 1;
   const { data: session } = useSession();
   const isMe = session?.user.id === id;
   return (
-    <PositionWrapper layout>
+    <PositionWrapper layout {...chakraProps}>
       <PositionNumber position={position} displayMedals={hasIcons} />
       <HStack
         bg="white"
