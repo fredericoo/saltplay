@@ -64,7 +64,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
         </Box>
 
         <Stack spacing={6} pt={4}>
-          <Tabs isLazy>
+          <Tabs isLazy key={player.id}>
             <TabList>
               {hasMultipleGames && <Tab>All</Tab>}
               {data?.games?.map(game => (
