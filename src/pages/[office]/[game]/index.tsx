@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 
 export const getOfficeWithGames = async (officeSlug: string) =>
@@ -57,14 +57,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
   const isDesktop = useMediaQuery('xl');
   const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
 
-  const [canScrollLeaderboard, setCanScrollLeaderboard] = useState(false);
-  const leaderboardRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleScroll = () =>
-      leaderboardRef.current && setCanScrollLeaderboard(window.scrollY > leaderboardRef.current?.scrollTop);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   if (!game) {
     return <div>404</div>;
@@ -74,10 +67,9 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
     return (
       <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
         <SEO title={game.name} />
-        <PageHeader {...header} />
+        <PageHeader {...header} ref={headerRef} />
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box
-            ref={leaderboardRef}
             as="section"
             bg="grey.4"
             p={2}
@@ -85,8 +77,8 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
             alignSelf="start"
             position="sticky"
             top={`calc(${NAVBAR_HEIGHT} + 1rem)`}
-            h={`calc(100vh - ${NAVBAR_HEIGHT} - 2rem)`}
-            overflow={canScrollLeaderboard ? 'auto' : 'hidden'}
+            h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem - ${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
+            overflow={'auto'}
           >
             <HStack justifyContent="flex-end" pb="4">
               <Heading as="h2" size="md" pl="12" color="grey.10" flexGrow="1">
