@@ -81,6 +81,7 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
         {...Modal.variants.custom.dialog}
         transform={{ md: 'translate(25%, 25%)' }}
         w="80%"
+        minW="400px"
         mx="auto"
         p={4}
         pointerEvents="none"
