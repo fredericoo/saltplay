@@ -31,7 +31,7 @@ const Navbar: React.VFC = () => {
       id="navbar"
       px={{ base: 2, md: 6 }}
       w="100%"
-      zIndex="docked"
+      zIndex="overlay"
       position="fixed"
       h={NAVBAR_HEIGHT}
       top={0}

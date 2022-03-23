@@ -114,6 +114,7 @@ type LeaderboardPositionProps = {
   wins?: number;
   losses?: number;
   hasIcons?: boolean;
+  offsetPlayerBottom?: string;
 };
 
 const PlayerPosition: React.VFC<{ gameId: Game['id']; offsetPlayerBottom?: string }> = ({
@@ -138,17 +139,7 @@ const PlayerPosition: React.VFC<{ gameId: Game['id']; offsetPlayerBottom?: strin
       points={playerPosition?.points}
       roleId={playerPosition?.roleId}
       position={playerPosition?.position}
-      pos="sticky"
-      bottom={offsetPlayerBottom || 0}
-      zIndex="docked"
-      _before={{
-        zIndex: '-1',
-        content: "''",
-        position: 'absolute',
-        inset: '-1rem',
-        bg: 'var(--chakra-colors-grey-3)',
-        maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 50%) ',
-      }}
+      offsetPlayerBottom={offsetPlayerBottom}
     />
   );
 };
@@ -163,13 +154,30 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
   wins,
   losses,
   hasIcons = true,
+  offsetPlayerBottom,
   ...chakraProps
 }) => {
   const isFirstPlace = position === 1;
   const { data: session } = useSession();
   const isMe = session?.user.id === id;
+  const meProps = isMe
+    ? {
+        pos: 'sticky',
+        bottom: offsetPlayerBottom || 0,
+        zIndex: 'docked',
+        _before: {
+          zIndex: '-1',
+          content: "''",
+          position: 'absolute',
+          inset: '-1rem',
+          bg: 'var(--chakra-colors-grey-3)',
+          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 50%) ',
+        },
+      }
+    : {};
+
   return (
-    <PositionWrapper layout {...chakraProps}>
+    <PositionWrapper layout {...chakraProps} {...meProps}>
       <PositionNumber position={position} displayMedals={hasIcons} />
       <HStack
         bg="white"
