@@ -16,9 +16,10 @@ const PositionWrapper = motion(HStack);
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
+  offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -96,7 +97,9 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
         </Button>
       )}
 
-      {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
+      {!allPositions.find(position => position?.id === session?.user?.id) && (
+        <PlayerPosition offsetPlayerBottom={offsetPlayerBottom} gameId={gameId} />
+      )}
     </Stack>
   );
 };
@@ -113,7 +116,10 @@ type LeaderboardPositionProps = {
   hasIcons?: boolean;
 };
 
-const PlayerPosition: React.VFC<{ gameId: Game['id'] }> = ({ gameId }) => {
+const PlayerPosition: React.VFC<{ gameId: Game['id']; offsetPlayerBottom?: string }> = ({
+  gameId,
+  offsetPlayerBottom,
+}) => {
   const { data: session } = useSession();
   const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
     `/api/leaderboard?gameId=${gameId}&userId=${session?.user?.id}`
@@ -133,7 +139,7 @@ const PlayerPosition: React.VFC<{ gameId: Game['id'] }> = ({ gameId }) => {
       roleId={playerPosition?.roleId}
       position={playerPosition?.position}
       pos="sticky"
-      bottom="0"
+      bottom={offsetPlayerBottom || 0}
       zIndex="docked"
       _before={{
         zIndex: '-1',

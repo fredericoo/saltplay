@@ -144,7 +144,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
               >
                 Refresh
               </Button>
-              <Leaderboard gameId={game.id} />
+              <Leaderboard gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" />
             </TabPanel>
             <TabPanel pt={4}>
               <LatestMatches gameId={game.id} />
