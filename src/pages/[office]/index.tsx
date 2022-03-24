@@ -8,6 +8,7 @@ import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
@@ -21,6 +22,7 @@ export const getOfficeBySlug = async (slug: string) =>
       name: true,
       id: true,
       slug: true,
+      icon: true,
       games: {
         orderBy: { name: 'asc' },
         select: { name: true, id: true, slug: true, icon: true },
@@ -34,6 +36,7 @@ type OfficePageProps = {
 };
 
 const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
+  const isDesktop = useMediaQuery('md');
   const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
     revalidateOnFocus: false,
   });
@@ -67,10 +70,24 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
           </HStack>
         </Box>
         <Stack spacing={6} pt={4}>
-          <Tabs isLazy>
+          <Tabs variant={isDesktop ? undefined : 'bottom'} isLazy>
             <TabList mb={2}>
-              <Tab>Games</Tab>
-              <Tab>Latest Matches</Tab>
+              <Tab>
+                {!isDesktop && (
+                  <Box fontSize="lg" aria-hidden>
+                    🎲
+                  </Box>
+                )}
+                <Box>Games</Box>
+              </Tab>
+              <Tab>
+                {!isDesktop && (
+                  <Box fontSize="lg" aria-hidden>
+                    {office.icon}
+                  </Box>
+                )}
+                <Box>Latest Matches</Box>
+              </Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
