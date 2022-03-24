@@ -1,6 +1,6 @@
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
 import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
@@ -11,10 +11,11 @@ import useLeaderboard from './useLeaderboard';
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
+  stickyMe?: boolean;
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, offsetPlayerBottom }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -65,6 +66,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, off
     <Stack>
       {allPositions?.map(player => {
         if (!player) return null;
+        const isMe = session?.user.id === player.id;
         return (
           <LeaderboardPosition
             id={player.id}
@@ -77,6 +79,8 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, off
             roleId={player.roleId}
             position={player.position}
             hasIcons={hasIcons}
+            isMe={isMe}
+            bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
           />
         );
       })}
@@ -92,36 +96,35 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, off
         </Button>
       )}
 
-      {!allPositions.find(position => position?.id === session?.user?.id) && (
-        <PlayerPosition offsetPlayerBottom={offsetPlayerBottom} gameId={gameId} />
+      {!allPositions.find(position => position?.id === session?.user?.id) && session?.user.id && (
+        <PlayerPosition id={session.user.id} bottom={stickyMe ? offsetPlayerBottom || 0 : undefined} gameId={gameId} />
       )}
     </Stack>
   );
 };
 
-const PlayerPosition: React.VFC<{ gameId: Game['id']; offsetPlayerBottom?: string }> = ({
+const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id'] }> = ({
+  id,
   gameId,
-  offsetPlayerBottom,
+  bottom,
 }) => {
-  const { data: session } = useSession();
-  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
-    `/api/leaderboard?gameId=${gameId}&userId=${session?.user?.id}`
-  );
-  const playerPosition = playerPositions?.positions?.[0];
-  if (!playerPosition) return null;
+  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
+  const player = playerPositions?.positions?.[0];
+  if (!player) return null;
 
   return (
     <LeaderboardPosition
-      id={playerPosition?.id}
-      key={playerPosition?.id}
-      name={playerPosition?.name || 'Anonymous'}
-      photo={playerPosition?.image}
-      wins={playerPosition?.wins}
-      losses={playerPosition?.losses}
-      points={playerPosition?.points}
-      roleId={playerPosition?.roleId}
-      position={playerPosition?.position}
-      offsetPlayerBottom={offsetPlayerBottom}
+      id={player.id}
+      key={player.id}
+      name={player.name || 'Anonymous'}
+      photo={player.image}
+      wins={player.wins}
+      losses={player.losses}
+      points={player.points}
+      roleId={player.roleId}
+      position={player.position}
+      bottom={bottom}
+      isMe
     />
   );
 };

@@ -69,17 +69,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
         <SEO title={game.name} />
         <PageHeader {...header} ref={headerRef} />
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
-          <Box
-            as="section"
-            bg="grey.4"
-            p={2}
-            borderRadius="xl"
-            alignSelf="start"
-            position="sticky"
-            top={`calc(${NAVBAR_HEIGHT} + 1rem)`}
-            h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem - ${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
-            overflow={'auto'}
-          >
+          <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
             <HStack justifyContent="flex-end" pb="4">
               <Heading as="h2" size="md" pl="12" color="grey.10" flexGrow="1">
                 Leaderboard
@@ -95,14 +85,52 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 <IoRefreshSharp size="1.5rem" />
               </Button>
             </HStack>
-            <Leaderboard gameId={game.id} />
+            <Leaderboard gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
           </Box>
-          <Box as="section">
-            <Heading as="h2" size="md" pb={4} color="grey.10">
-              Latest matches
-            </Heading>
-            <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} mb={8} />
+          <Box
+            as="section"
+            position="sticky"
+            top={`calc(${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
+            h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem)`}
+            overflow={'auto'}
+          >
+            <Box
+              as="header"
+              position="sticky"
+              top="0"
+              zIndex="docked"
+              _before={{
+                zIndex: '-1',
+                content: "''",
+                position: 'absolute',
+                inset: '0',
+                bg: 'var(--chakra-colors-grey-2)',
+                maskImage: 'linear-gradient(to top, rgba(0,0,0,0) , rgba(0,0,0,1) 33%) ',
+              }}
+            >
+              <Heading as="h2" size="md" pb={4} color="grey.10">
+                Latest matches
+              </Heading>
+              <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} mb={8} />
+            </Box>
             <LatestMatches gameId={game.id} />
+            <Box
+              aria-hidden
+              zIndex="2"
+              position="sticky"
+              height="4rem"
+              width="100%"
+              bottom="0"
+              left="0"
+              _before={{
+                zIndex: '-1',
+                content: "''",
+                position: 'absolute',
+                inset: '0',
+                bg: 'var(--chakra-colors-grey-2)',
+                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 75%) ',
+              }}
+            />
           </Box>
         </Grid>
       </Container>
@@ -144,7 +172,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
               >
                 Refresh
               </Button>
-              <Leaderboard gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" />
+              <Leaderboard gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" stickyMe />
             </TabPanel>
             <TabPanel pt={4}>
               <LatestMatches gameId={game.id} />
