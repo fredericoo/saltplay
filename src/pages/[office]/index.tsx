@@ -71,7 +71,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
         </Box>
         <Stack spacing={6} pt={4}>
           <Tabs variant={isDesktop ? undefined : 'bottom'} isLazy>
-            <TabList mb={2}>
+            <TabList>
               <Tab>
                 {!isDesktop && (
                   <Box fontSize="lg" aria-hidden>
@@ -90,7 +90,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
               </Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel pt={6}>
                 <List>
                   {sidebar?.items?.map(item => (
                     <List.Item href={item.href} icon={item.icon || undefined} key={item.title}>
@@ -99,7 +99,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
                   ))}
                 </List>
               </TabPanel>
-              <TabPanel pt={4}>
+              <TabPanel pt={6}>
                 <LatestMatches officeId={office.id} canLoadMore />
               </TabPanel>
             </TabPanels>
