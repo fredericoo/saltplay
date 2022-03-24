@@ -19,7 +19,7 @@ const toastStyles = {
       '0px 0px 32px rgba(96, 211, 205, 0.3), 0px 8px 16px rgba(96, 211, 205, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)',
   },
   info: {
-    color: 'gray.900',
+    color: 'grey.12',
     shadow:
       '0px 0px 32px rgba(126, 128, 134, 0.1), 0px 8px 16px rgba(126, 128, 134, 0.1), 0px 4px 9px rgba(0, 0, 0, 0.1)',
   },
@@ -31,7 +31,7 @@ const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
       <Text fontWeight="bold" bg={toastStyles[status].color} backgroundClip="text">
         {heading}
       </Text>
-      {content && <Text color="gray.500">{content}</Text>}
+      {content && <Text color="grey.10">{content}</Text>}
     </Stack>
   );
 };

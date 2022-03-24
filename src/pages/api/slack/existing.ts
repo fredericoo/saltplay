@@ -1,12 +1,11 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../auth/[...nextauth]';
 
 export type ExistingSlackUsersAPIResponse = APIResponse<{
-  userIds: PromiseElement<ReturnType<typeof getExistingUserIds>>;
+  userIds: Awaited<ReturnType<typeof getExistingUserIds>>;
 }>;
 
 const getExistingUserIds = async () => {

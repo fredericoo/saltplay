@@ -29,6 +29,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         position="relative"
         boxShadow="0 0 0 3px white"
         size={size}
+        borderRadius="44%"
         bg={getGradientFromId(user.id)}
         overflow="hidden"
       >
@@ -48,7 +49,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             justifyContent="center"
             alignItems="center"
             sx={{ aspectRatio: '1' }}
-            color="gray.500"
+            color="grey.9"
             fontWeight="bold"
             userSelect={'none'}
             mixBlendMode={'multiply'}

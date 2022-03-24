@@ -1,7 +1,8 @@
 import { SlackMembersAPIResponse } from '@/pages/api/slack';
 import { ExistingSlackUsersAPIResponse } from '@/pages/api/slack/existing';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, HStack, Text } from '@chakra-ui/react';
 import axios from 'axios';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import useSWR from 'swr';
 import ErrorBox from '../ErrorBox';
 import PlayerPicker, { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
@@ -28,9 +29,13 @@ const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPl
 
   return (
     <Box>
-      <Text fontSize="sm" py={4} textAlign="center" color="gray.600">
-        The players you select will be invited to join SaltPlay and may reject the match.
-      </Text>
+      <HStack bg="secondary.3" p={2} color="secondary.11" borderRadius="lg" mb={2}>
+        <IoInformationCircleOutline size="1.2em" />
+        <Text fontSize="sm" textAlign="center">
+          Players you select will be notified and invited to join the app.
+        </Text>
+      </HStack>
+
       <PlayerPicker
         players={data?.members}
         isAlphabetical

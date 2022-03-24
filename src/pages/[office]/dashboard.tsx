@@ -1,8 +1,9 @@
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
-import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
-import prisma from '@/lib/prisma';
-import { PromiseElement } from '@/lib/types/utils';
 import Leaderboard from '@/components/Leaderboard';
+import DashboardLayout from '@/layouts/DashboardLayout';
+import { PageWithLayout } from '@/layouts/types';
+import prisma from '@/lib/prisma';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 export const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
@@ -11,16 +12,16 @@ export const getOfficeBySlug = async (slug: string) =>
   });
 
 type OfficePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
+  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
 };
 
-const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
+const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
   return (
     <SimpleGrid minChildWidth={'400px'} maxChildWidth={'600px'} gap={4}>
       {office.games.map(game => (
-        <Box bg="gray.50" key={game.id} p={4} borderRadius="xl">
+        <Box bg="grey.1" key={game.id} p={4} borderRadius="xl">
           <Text mb={4} fontSize="3xl">
             {game.name}
           </Text>
@@ -30,6 +31,8 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
     </SimpleGrid>
   );
 };
+
+OfficePage.Layout = DashboardLayout;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const offices = await prisma.office.findMany({

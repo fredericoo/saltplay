@@ -1,12 +1,16 @@
+import LatestMatches from '@/components/LatestMatches';
+import List from '@/components/List';
+import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import OfficeStat from '@/components/OfficeStat';
 import SEO from '@/components/SEO';
 import { Sidebar } from '@/components/Sidebar/types';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
+import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { PromiseElement } from '@/lib/types/utils';
-import getGradientFromId from '@/theme/palettes';
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
+import useMediaQuery from '@/lib/useMediaQuery';
+import getUserGradient from '@/theme/palettes';
+import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Image from 'next/image';
 import useSWR from 'swr';
@@ -18,6 +22,7 @@ export const getOfficeBySlug = async (slug: string) =>
       name: true,
       id: true,
       slug: true,
+      icon: true,
       games: {
         orderBy: { name: 'asc' },
         select: { name: true, id: true, slug: true, icon: true },
@@ -26,41 +31,82 @@ export const getOfficeBySlug = async (slug: string) =>
   });
 
 type OfficePageProps = {
-  office?: PromiseElement<ReturnType<typeof getOfficeBySlug>>;
+  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
+  sidebar?: Sidebar;
 };
 
-const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
+const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
+  const isDesktop = useMediaQuery('md');
   const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
     revalidateOnFocus: false,
   });
+  useNavigationState(office?.name);
   if (!office) return <Box>404</Box>;
 
   return (
-    <Box>
-      <SEO title={office.name} />
-      <Box bg={getGradientFromId(office.id.toString())} borderRadius="xl" overflow="hidden">
-        <Box pb={{ base: '50%', md: '25%' }} position="relative" mixBlendMode="overlay">
-          {data?.photo && (
-            <Image
-              src={data.photo.urls.regular}
-              alt={data.photo.alt_description || ''}
-              objectFit="cover"
-              layout="fill"
-              unoptimized
-            />
-          )}
+    <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
+      <Stack spacing={{ base: 1, md: 0.5 }}>
+        <SEO title={office.name} />
+        <Box bg="white" borderRadius="18" overflow="hidden">
+          <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
+            {data?.photo && (
+              <Image
+                src={data.photo.urls.regular}
+                alt={data.photo.alt_description || ''}
+                objectFit="cover"
+                layout="fill"
+                unoptimized
+              />
+            )}
+          </Box>
+          <Box p={4}>
+            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
+              {office.name} office
+            </Text>
+          </Box>
+          <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} p={1}>
+            <OfficeStat id={office.id} stat="mostPlayedGame" />
+            <OfficeStat id={office.id} stat="matchesCount" />
+          </HStack>
         </Box>
-      </Box>
-      <Box py={8}>
-        <Text as="h1" fontSize="2rem">
-          {office.name} office
-        </Text>
-      </Box>
-      <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
-        <OfficeStat id={office.id} stat="mostPlayedGame" />
-        <OfficeStat id={office.id} stat="matchesCount" />
-      </SimpleGrid>
-    </Box>
+        <Stack spacing={6} pt={4}>
+          <Tabs variant={isDesktop ? undefined : 'bottom'} isLazy>
+            <TabList>
+              <Tab>
+                {!isDesktop && (
+                  <Box fontSize="lg" aria-hidden>
+                    🎲
+                  </Box>
+                )}
+                <Box>Games</Box>
+              </Tab>
+              <Tab>
+                {!isDesktop && (
+                  <Box fontSize="lg" aria-hidden>
+                    {office.icon}
+                  </Box>
+                )}
+                <Box>Latest Matches</Box>
+              </Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel pt={6}>
+                <List>
+                  {sidebar?.items?.map(item => (
+                    <List.Item href={item.href} icon={item.icon || undefined} key={item.title}>
+                      {item.title}
+                    </List.Item>
+                  ))}
+                </List>
+              </TabPanel>
+              <TabPanel pt={6}>
+                <LatestMatches officeId={office.id} canLoadMore />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Stack>
+      </Stack>
+    </Container>
   );
 };
 

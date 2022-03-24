@@ -1,16 +1,25 @@
+import { currentHistoryState } from '@/lib/navigationHistory/state';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { HStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IoBulbOutline } from 'react-icons/io5';
+import { IoBulb } from 'react-icons/io5';
+import { useRecoilValue } from 'recoil';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
+import NavigationBackButton from '../NavigationBackButton';
 import UserMenu from '../UserMenu/UserMenu';
+
+export const NAVBAR_HEIGHT = '64px';
 
 const Navbar: React.VFC = () => {
   const isDesktop = useMediaQuery('md');
   const [hasScrolled, setHasScrolled] = useState(false);
+  const currentNavigaton = useRecoilValue(currentHistoryState);
+  const { pathname } = useRouter();
+
   useEffect(() => {
     const handleScroll = () => setHasScrolled(window.scrollY > 0);
     window.addEventListener('scroll', handleScroll);
@@ -19,42 +28,76 @@ const Navbar: React.VFC = () => {
 
   return (
     <HStack
-      py={4}
-      px={6}
+      id="navbar"
+      px={{ base: 2, md: 6 }}
       w="100%"
-      zIndex="docked"
-      position="sticky"
+      zIndex="overlay"
+      position="fixed"
+      h={NAVBAR_HEIGHT}
       top={0}
-      transition="background .6s ease-out"
-      bg={hasScrolled ? 'rgba(237, 242, 247, 0.85)' : undefined}
-      backdropFilter={hasScrolled ? 'saturate(180%) blur(20px)' : undefined}
-      boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.1)' : undefined}
+      spacing={4}
+      bg={hasScrolled ? 'grey.1' : undefined}
+      boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
     >
-      <Link href="/" passHref>
-        <HStack as="a">
-          <Logo h="2rem" w="2rem" />
-          <Text fontWeight="bold" fontSize="lg" pl="2" letterSpacing="tight">
-            SaltPlay
-          </Text>
-        </HStack>
-      </Link>
+      <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
+        <NavigationBackButton />
+      </HStack>
 
-      <HStack justify="flex-end" flexGrow="1">
+      <Box overflow="hidden" h="100%">
+        <VStack
+          alignSelf="flex-start"
+          flexGrow={0.01}
+          h={'200%'}
+          spacing={0}
+          transition="transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)"
+          transform={pathname !== '/' && currentNavigaton?.title && hasScrolled ? 'translateY(-50%)' : 'none'}
+        >
+          <Link href="/" passHref>
+            <HStack h="50%" as="a" align="center" spacing="0" p={2}>
+              <Logo h="2rem" w="2rem" mr={3} />
+              <Box
+                overflow="hidden"
+                whiteSpace="nowrap"
+                fontSize="lg"
+                fontWeight="bold"
+                letterSpacing="tight"
+                color="grey.12"
+              >
+                saltplay
+              </Box>
+            </HStack>
+          </Link>
+          <HStack h="50%" flex={1} fontWeight="bold">
+            <Text isTruncated>{currentNavigaton?.title}</Text>
+          </HStack>
+        </VStack>
+      </Box>
+
+      <HStack justify="flex-end" flex={1}>
         <ModalButton
-          variant="outline"
-          borderColor="gray.400"
-          _hover={{ borderColor: 'gray.500' }}
-          color="gray.500"
+          variant="subtle"
+          border="1px solid"
+          bg={{ md: 'grey.2' }}
+          borderColor={{ base: 'transparent', md: 'grey.8' }}
+          _hover={{ borderColor: 'grey.9' }}
           cursor="text"
           size="sm"
           borderRadius="md"
-          modalTitle="Send us your feedback"
+          modalTitle="How are you enjoying SaltPlay?"
           Form={FeedbackForm}
         >
-          <IoBulbOutline />
-          {isDesktop ? 'Feedback' : ''}
+          <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
+            <IoBulb />
+          </Box>
+          {isDesktop ? (
+            <Text ml={2} color="grey.9">
+              Feedback
+            </Text>
+          ) : (
+            ''
+          )}
         </ModalButton>
-        <UserMenu />
+        <UserMenu showUserName={isDesktop} />
       </HStack>
     </HStack>
   );

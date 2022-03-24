@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { User } from '@prisma/client';
 import { APIResponse } from '@/lib/types/api';
+import { Game, User } from '@prisma/client';
+import { NextApiHandler } from 'next';
 
 const getPlayerMatches = (userId: User['id']) =>
   prisma.match.findMany({
@@ -21,6 +21,7 @@ const getGamesFromPlayer = (userId: User['id']) =>
     select: {
       game: {
         select: {
+          id: true,
           name: true,
           icon: true,
         },
@@ -33,7 +34,7 @@ export type PlayerStatsAPIResponse = APIResponse<{
   won: number;
   lost: number;
   tied: number;
-  games: string[];
+  games: Pick<Game, 'id' | 'name'>[];
 }>;
 
 const gamesHandler: NextApiHandler<PlayerStatsAPIResponse> = async (req, res) => {
@@ -58,9 +59,12 @@ const gamesHandler: NextApiHandler<PlayerStatsAPIResponse> = async (req, res) =>
       .length;
   const tied = played - won - lost;
 
-  const games = Array.from(new Set(playerScores.map(score => [score.game.icon, score.game.name].join(' '))).values());
+  const games = Array.from(
+    new Set(
+      playerScores.map(score => ({ id: score.game.id, name: [score.game.icon, score.game.name].join(' ') }))
+    ).values()
+  );
 
-  // res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=300');
   res.status(200).json({ status: 'ok', played, won, lost, tied, games });
 };
 

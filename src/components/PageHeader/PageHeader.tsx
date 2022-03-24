@@ -1,33 +1,37 @@
 import IconBlur from '@/components/IconBlur';
 import { Box, Heading } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { forwardRef } from 'react';
+import { MotionBox } from '../Motion';
 import { PageHeader as PageHeaderProps } from './types';
 
-const BlurBox = motion(Box);
-
-const PageHeader: React.VFC<PageHeaderProps> = ({ title, subtitle, icon }) => {
+const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(({ title, subtitle, icon }, ref) => {
   return (
-    <Box py={8} zIndex="-1" position="relative">
+    <Box py={8} position="relative" zIndex={0} ref={ref}>
       <AnimatePresence>
-        <BlurBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <MotionBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <IconBlur
-            zIndex={1}
             icon={icon}
-            height="200%"
+            height="400%"
             opacity={0.2}
-            transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -75%)' }}
+            transform={{ base: 'translate(-50%, -50%)', md: 'translate(-50%, -66%)' }}
           />
-        </BlurBox>
+        </MotionBox>
       </AnimatePresence>
 
-      <Heading as="h1" size="md">
+      <Heading position="relative" as="h1" size="md" pl={{ md: 8 }}>
+        <Box as="span" w="6">
+          {icon}
+        </Box>{' '}
         {title}
       </Heading>
-      <Heading size="md" color="gray.400">
+      <Heading position="relative" fontWeight="normal" size="md" color="grey.9" pl={{ base: 6, md: 14 }}>
         {subtitle}
       </Heading>
     </Box>
   );
-};
+});
+
+PageHeader.displayName = 'PageHeader';
 
 export default PageHeader;

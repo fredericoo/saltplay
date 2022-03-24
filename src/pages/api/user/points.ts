@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { PromiseElement } from '@/lib/types/utils';
 import { Game, User } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -15,7 +14,7 @@ const getUserPoints = async (playerid: User['id'], gameid: Game['id']) => {
 };
 
 export type PlayerPointsAPIResponse = APIResponse<{
-  points: PromiseElement<ReturnType<typeof getUserPoints>>;
+  points: Awaited<ReturnType<typeof getUserPoints>>;
 }>;
 
 const pointsHandler: NextApiHandler<PlayerPointsAPIResponse> = async (req, res) => {

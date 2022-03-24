@@ -1,4 +1,5 @@
-import { Box, HStack, Text } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
+import PointIcon from '../PointIcon';
 
 type ScoreTrendProps = {
   score: number;
@@ -7,18 +8,21 @@ type ScoreTrendProps = {
 
 const ScoreTrend: React.VFC<ScoreTrendProps> = ({ score, isPositive }) => {
   if (!score) return null;
+  const color = isPositive ? 'success.9' : 'danger.9';
   return (
-    <HStack fontSize="xs" spacing={1}>
-      <Box
-        border=".5em solid"
-        borderColor="transparent"
-        borderTopColor={isPositive ? undefined : 'red.300'}
-        borderBottomColor={isPositive ? 'cyan.400' : undefined}
-        transform={`translateY(${isPositive ? '-12.5%' : '25%'})`}
-        h={0}
-        w={0}
-      />
-      <Text color="gray.600">{score}</Text>
+    <HStack
+      fontSize="xs"
+      fontWeight="bold"
+      spacing={1}
+      color={{ base: color, md: 'grey.8' }}
+      _groupHover={{ color }}
+      transition=".3s ease-out"
+    >
+      <Text>
+        {isPositive ? '+' : '–'}
+        {score}
+      </Text>
+      <PointIcon bg="currentColor" />
     </HStack>
   );
 };

@@ -1,8 +1,9 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/lib/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import { Game, Office, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
 import useLatestMatches from './useLatestMatches';
 
@@ -11,19 +12,46 @@ const MotionBox = motion(Box);
 type LatestMatchesProps = {
   gameId?: Game['id'];
   userId?: User['id'];
+  officeId?: Office['id'];
   canLoadMore?: boolean;
+  canDelete?: boolean;
 };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({
+  gameId,
+  userId,
+  officeId,
+  canLoadMore = true,
+  canDelete = true,
+}) => {
   const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
-  const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId });
-
+  const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
+  const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = data?.[data.length - 1].nextCursor;
 
   const refetch = () => {
     mutate();
     mutateLeaderboard();
   };
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '500px',
+      threshold: 1,
+    };
+    const handleObserver: IntersectionObserverCallback = entities => {
+      const target = entities[0];
+      if (target.isIntersecting) {
+        setSize(size => size + 1);
+      }
+    };
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (hasNextPage && canLoadMore && loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+    return () => observer.disconnect();
+  }, [canLoadMore, hasNextPage, setSize, data]);
 
   if (error || data?.[0].status === 'error') {
     return (
@@ -49,11 +77,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
 
   if (allMatches.length === 0)
     return (
-      <Stack gap={3}>
-        <Text textAlign="center" color="gray.500">
-          No matches yet!
-        </Text>
-      </Stack>
+      <Text textAlign="center" color="grey.10" py={8}>
+        No matches yet!
+      </Text>
     );
 
   return (
@@ -79,7 +105,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
                 right={match.right}
                 gameName={match?.game?.name}
                 officeName={match?.game?.office?.name}
-                onDelete={refetch}
+                onDelete={canDelete ? refetch : undefined}
                 points={match.points}
               />
             </MotionBox>
@@ -87,7 +113,14 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, canLoadM
         })}
 
         {hasNextPage && canLoadMore && (
-          <Button key="loadMore" isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+          <Button
+            ref={loadMoreRef}
+            key="loadMore"
+            isLoading={isValidating}
+            variant="subtle"
+            colorScheme="grey"
+            onClick={() => setSize(size => size + 1)}
+          >
             Load more
           </Button>
         )}

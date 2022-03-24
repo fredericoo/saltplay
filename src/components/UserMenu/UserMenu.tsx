@@ -1,41 +1,41 @@
-import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import { Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import PlayerAvatar from '../PlayerAvatar';
 import DevUserMenu from './DevUserMenu';
 
-const UserMenu: React.VFC = () => {
+type UserMenuProps = {
+  showUserName?: boolean;
+};
+
+const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
   const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
 
   if (!isLoading && !session) {
-    return (
-      <>
-        <Link href="/api/auth/signin" passHref>
-          <Button as="a" size="sm">
-            Sign in
-          </Button>
-        </Link>
-        {isDev && <DevUserMenu />}
-      </>
+    return isDev ? (
+      <DevUserMenu />
+    ) : (
+      <Link href="/api/auth/signin" passHref>
+        <Button as="a" size="sm" variant="subtle" colorScheme="grey">
+          Sign in
+        </Button>
+      </Link>
     );
   }
 
   return (
-    <Menu isLazy>
-      <MenuButton
-        as={Button}
-        variant="ghost"
-        textAlign="left"
-        fontSize="xs"
-        size="sm"
-        isLoading={isLoading}
-        leftIcon={session?.user && <PlayerAvatar size={6} user={session?.user} />}
-      >
-        <Text isTruncated maxW="128px">
-          {session?.user?.name?.split(' ')[0] || session?.user?.email}
-        </Text>
+    <Menu>
+      <MenuButton as={Button} variant="subtle" textAlign="left" fontSize="xs" size="sm" isLoading={isLoading}>
+        <HStack>
+          {session?.user && <PlayerAvatar size={6} user={session?.user} />}
+          {showUserName && (
+            <Text isTruncated maxW="128px">
+              {session?.user?.name?.split(' ')[0] || session?.user?.email}
+            </Text>
+          )}
+        </HStack>
       </MenuButton>
       <MenuList>
         <Link href={`/player/${session?.user.id}`} passHref>

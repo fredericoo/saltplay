@@ -1,3 +1,5 @@
+export const WEBSITE_URL = 'https://saltplay.app';
+
 // game constants
 export const STARTING_POINTS = 100;
 export const BASE_MATCH_POINTS = 10;

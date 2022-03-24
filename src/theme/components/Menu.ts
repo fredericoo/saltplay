@@ -6,17 +6,19 @@ export const Menu = {
       list: {
         fontSize: { base: 'md', md: 'sm' },
         border: 'none',
-        boxShadow: 'md',
+        boxShadow: 'lg',
         borderRadius: '8',
         p: '3px',
       },
       item: {
-        color: 'gray.700',
+        color: 'grey.12',
         transition: 'none',
         borderRadius: '6',
         _hover: {
-          bg: 'gray.500',
-          color: 'white',
+          bg: 'grey.4',
+        },
+        _focus: {
+          bg: 'grey.3',
         },
       },
     },

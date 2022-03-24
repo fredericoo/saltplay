@@ -95,27 +95,28 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
 
   if (isLoading) {
     return (
-      <Center bg="gray.100" h="256px" borderRadius="xl" position="relative">
-        <LoadingIcon color="gray.400" size={12} />
+      <Center bg="grey.4" h="256px" borderRadius="xl" position="relative">
+        <LoadingIcon color="grey.9" size={12} />
       </Center>
     );
   }
 
   return (
-    <Box bg="gray.100" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" px="3px">
+    <Box bg="grey.4" h="256px" borderRadius="xl" position="relative" ref={virtualiserRef} overflow="auto" px="3px">
       <Box
         borderTopRadius="xl"
         as="nav"
         position="sticky"
         top="0"
         zIndex="sticky"
-        bg="rgb(226, 232, 240,0.75)"
-        backdropFilter="saturate(180%) blur(20px)"
+        bg="grey.6"
         mx="-3px"
         overflow="hidden"
+        borderBottom="1px solid"
+        borderColor="grey.7"
       >
         {isSearching && (
-          <SearchField mb="2" top="3px" position="sticky" focusOnMount search={search} setSearch={setSearch} />
+          <SearchField mb="2" top="4px" position="sticky" focusOnMount search={search} setSearch={setSearch} />
         )}
         <HStack display="flex" overflow="auto" css={hideScrollbar} pl={1} pr={4} py="1">
           <Box
@@ -123,11 +124,12 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
             left="0"
             as="button"
             type="button"
-            color="gray.500"
+            color="grey.11"
             borderRadius="full"
-            bg="gray.200"
-            boxShadow="0px 0px 8px 8px rgb(226, 232, 240, 1)"
-            _hover={{ color: 'gray.600' }}
+            bg="grey.6"
+            mr="2"
+            boxShadow="0px 0px 8px 12px var(--chakra-colors-grey-6)"
+            _hover={{ color: 'grey.12' }}
             onClick={() => {
               setIsSearching(!isSearching);
               setSearch('');
@@ -146,10 +148,12 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
               key={index}
               width={'2rem'}
               py={1}
-              bg="gray.100"
+              bg="grey.2"
+              _hover={{ bg: 'grey.1' }}
+              boxShadow="sm"
               borderRadius="md"
               fontSize="sm"
-              color="gray.600"
+              color="grey.11"
               fontWeight="bold"
             >
               {text}
@@ -164,12 +168,13 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
           if (typeof row === 'string')
             return (
               <Box
-                mt="3px"
+                mt="1px"
                 key={virtualRow.index}
                 pl={16}
                 py={1}
-                bg="gray.50"
-                color="gray.400"
+                bg="grey.2"
+                color="grey.10"
+                fontWeight="bold"
                 letterSpacing="wider"
                 fontSize="sm"
                 borderRadius="12"
@@ -177,7 +182,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
                 top={0}
                 left={0}
                 w="100%"
-                h={`${virtualRow.size}px`}
+                h={`${virtualRow.size - 4}px`}
                 transform={`translateY(${virtualRow.start}px)`}
               >
                 {row.toUpperCase()}
@@ -194,7 +199,8 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
               top={0}
               left={0}
               w="100%"
-              h={`${virtualRow.size}px`}
+              mt="1px"
+              h={`${virtualRow.size - 4}px`}
               transform={`translateY(${virtualRow.start}px)`}
               onSelect={player => {
                 onSelect(player);

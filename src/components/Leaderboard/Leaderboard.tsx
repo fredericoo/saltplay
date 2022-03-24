@@ -1,31 +1,45 @@
-import PlayerName from '@/components/PlayerName';
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
-import { Badge, Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Role, User } from '@prisma/client';
-import { motion } from 'framer-motion';
+import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Game, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
-import PlayerAvatar from '../PlayerAvatar';
+import LeaderboardPosition from './LeaderboardPosition';
+import PositionNumber from './PositionNumber';
 import useLeaderboard from './useLeaderboard';
-
-const PositionWrapper = motion(HStack);
 
 type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
+  stickyMe?: boolean;
+  bg?: string;
+  offsetPlayerBottom?: string;
 };
 
-const medals: Record<number, string> = {
-  0: '🙋',
-  1: '🥇',
-  2: '🥈',
-  3: '🥉',
-};
-
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = data?.[data.length - 1].nextPage;
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '500px',
+      threshold: 1,
+    };
+    const handleObserver: IntersectionObserverCallback = entities => {
+      const target = entities[0];
+      if (target.isIntersecting) {
+        setSize(size => size + 1);
+      }
+    };
+    const observer = new IntersectionObserver(handleObserver, options);
+    if (hasNextPage && loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+    return () => observer.disconnect();
+  }, [hasNextPage, setSize, data]);
 
   if (error) return <Box>Error</Box>;
   if (!data)
@@ -33,17 +47,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
-            <Box
-              textAlign="right"
-              w="2.5rem"
-              pr={2}
-              fontSize="3xl"
-              color="gray.400"
-              whiteSpace="nowrap"
-              overflow="hidden"
-            >
-              {hasIcons && medals[i + 1] ? medals[i + 1] : i + 1}
-            </Box>
+            <PositionNumber position={i + 1} displayMedals={hasIcons} />
             <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
           </HStack>
         ))}
@@ -54,8 +58,8 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
 
   if (allPositions && allPositions.length === 0)
     return (
-      <Text textAlign="center" color="gray.500">
-        No leaderboard available yet.
+      <Text textAlign="center" color="grey.10" py={8}>
+        No leaderboard available yet!
       </Text>
     );
 
@@ -63,6 +67,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
     <Stack>
       {allPositions?.map(player => {
         if (!player) return null;
+        const isMe = session?.user.id === player.id;
         return (
           <LeaderboardPosition
             id={player.id}
@@ -74,107 +79,57 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true }) =
             points={player.points}
             roleId={player.roleId}
             position={player.position}
+            hasIcons={hasIcons}
+            isMe={isMe}
+            bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
+            bg={bg}
           />
         );
       })}
       {hasNextPage && (
-        <Button isLoading={isValidating} variant="subtle" onClick={() => setSize(size => size + 1)}>
+        <Button
+          ref={loadMoreRef}
+          isLoading={isValidating}
+          variant="subtle"
+          colorScheme="grey"
+          onClick={() => setSize(size => size + 1)}
+        >
           Load more
         </Button>
       )}
 
-      {!allPositions.find(position => position?.id === session?.user?.id) && <PlayerPosition gameId={gameId} />}
+      {!allPositions.find(position => position?.id === session?.user?.id) && session?.user.id && (
+        <PlayerPosition id={session.user.id} bottom={stickyMe ? offsetPlayerBottom || 0 : undefined} gameId={gameId} />
+      )}
     </Stack>
   );
 };
 
-type LeaderboardPositionProps = {
-  id: User['id'];
-  position: number;
-  roleId: Role['id'];
-  name: string;
-  photo?: string | null;
-  points: number;
-  wins?: number;
-  losses?: number;
-  hasIcons?: boolean;
-};
-
-const PlayerPosition: React.VFC<{ gameId: Game['id'] }> = ({ gameId }) => {
-  const { data: session } = useSession();
-  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
-    `/api/leaderboard?gameId=${gameId}&userId=${session?.user?.id}`
-  );
-  const playerPosition = playerPositions?.positions?.[0];
-  if (!playerPosition) return null;
+const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id']; bg?: string }> = ({
+  id,
+  gameId,
+  bottom,
+  bg,
+}) => {
+  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
+  const player = playerPositions?.positions?.[0];
+  if (!player) return null;
 
   return (
     <LeaderboardPosition
-      id={playerPosition?.id}
-      key={playerPosition?.id}
-      name={playerPosition?.name || 'Anonymous'}
-      photo={playerPosition?.image}
-      wins={playerPosition?.wins}
-      losses={playerPosition?.losses}
-      points={playerPosition?.points}
-      roleId={playerPosition?.roleId}
-      position={playerPosition?.position}
+      id={player.id}
+      key={player.id}
+      name={player.name || 'Anonymous'}
+      photo={player.image}
+      wins={player.wins}
+      losses={player.losses}
+      points={player.points}
+      roleId={player.roleId}
+      position={player.position}
+      bottom={bottom}
+      isMe
+      bg={bg}
     />
-  );
-};
-
-const LeaderboardPosition: React.VFC<LeaderboardPositionProps> = ({
-  id,
-  roleId,
-  position,
-  name,
-  photo,
-  points,
-  wins,
-  losses,
-  hasIcons = true,
-}) => {
-  const isFirstPlace = position === 1;
-  const { data: session } = useSession();
-  const isMe = session?.user.id === id;
-  return (
-    <PositionWrapper layout>
-      <Box textAlign="right" w="2.5rem" pr={2} fontSize="3xl" color="gray.400" whiteSpace="nowrap" overflow="hidden">
-        {hasIcons && medals[position] ? medals[position] : position}
-      </Box>
-      <HStack
-        bg="white"
-        p={4}
-        borderRadius="xl"
-        gap={4}
-        position="relative"
-        boxShadow={
-          isMe
-            ? '0px 0px 32px rgba(154, 242, 200, 0.3), 0px 8px 16px rgba(154, 242, 200, 0.4), 0px 4px 9px rgba(0, 0, 0, 0.1)'
-            : isFirstPlace
-            ? '0 32px 64px 0 rgba(0,0,0,0.1)'
-            : undefined
-        }
-        zIndex={isFirstPlace ? 1 : undefined}
-        w="100%"
-        overflow="hidden"
-        border="2px solid transparent"
-      >
-        <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
-        <Box flexGrow={1}>
-          <HStack spacing={1}>
-            <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />
-          </HStack>
-          <HStack fontSize="sm" color="gray.500">
-            <Text>{wins} wins</Text>
-            <Text>{losses} losses</Text>
-          </HStack>
-        </Box>
-        <Box>
-          <Badge>{points} pts</Badge>
-        </Box>
-      </HStack>
-    </PositionWrapper>
   );
 };
 

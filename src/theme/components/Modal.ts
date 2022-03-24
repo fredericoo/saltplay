@@ -1,9 +1,13 @@
 export const Modal = {
-  parts: ['dialog'],
+  parts: ['dialog', 'dialogContainer'],
   variants: {
     custom: {
       dialog: {
-        borderRadius: 'xl',
+        bg: 'grey.1',
+        borderRadius: '28',
+      },
+      dialogContainer: {
+        px: 2,
       },
     },
   },

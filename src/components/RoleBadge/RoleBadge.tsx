@@ -16,9 +16,7 @@ export const RoleBadge: React.VFC<ChakraProps & { roleId: Role['id'] }> = ({ rol
       h="1.5em"
       w="1.5em"
       whiteSpace="nowrap"
-      bg="gray.100"
-      border="2px solid"
-      borderColor="white"
+      bg="grey.1"
       borderRadius="full"
       sx={centraliseEmoji}
       {...props}

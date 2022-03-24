@@ -21,12 +21,11 @@ const PlayerItem: React.VFC<PlayerItemProps & ChakraProps> = ({
   const score = player?.scores?.[0];
   return (
     <HStack
-      my={0.5}
       w="100%"
       p={4}
       overflow="hidden"
-      bg={isSelected ? selectedColour || '#fbb826' : undefined}
-      _hover={{ bg: isSelected ? undefined : 'gray.200' }}
+      bg={isSelected ? selectedColour || 'primary.9' : undefined}
+      _hover={{ bg: isSelected ? undefined : 'grey.2' }}
       onClick={() => onSelect?.(player)}
       as="button"
       type="button"

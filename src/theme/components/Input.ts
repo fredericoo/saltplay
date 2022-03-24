@@ -2,11 +2,12 @@ export const Input = {
   variants: {
     custom: {
       field: {
-        color: 'gray.900',
+        color: 'grey.12',
         border: '1px solid',
-        borderColor: 'gray.300',
+        borderRadius: 'lg',
+        borderColor: 'grey.6',
 
-        _focus: { borderColor: 'gray.400', boxShadow: 'none' },
+        _focus: { borderColor: 'grey.8', boxShadow: 'none' },
       },
     },
   },
