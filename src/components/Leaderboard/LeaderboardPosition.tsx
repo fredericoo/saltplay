@@ -18,6 +18,7 @@ export type LeaderboardPositionProps = {
   hasIcons?: boolean;
   isMe?: boolean;
   bottom?: number | string;
+  bg?: string;
 };
 
 const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps, keyof LeaderboardPositionProps>> = ({
@@ -32,6 +33,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
   hasIcons = true,
   isMe = false,
   bottom,
+  bg,
   ...chakraProps
 }) => {
   const isFirstPlace = position === 1;
@@ -46,7 +48,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
             content: "''",
             position: 'absolute',
             inset: '-.5rem',
-            bg: 'var(--chakra-colors-grey-4)',
+            bg,
             maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 33%) ',
           },
         }

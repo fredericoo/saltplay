@@ -85,7 +85,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 <IoRefreshSharp size="1.5rem" />
               </Button>
             </HStack>
-            <Leaderboard gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
+            <Leaderboard bg="grey.4" gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
           </Box>
           <Box
             as="section"
@@ -175,7 +175,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
               >
                 Refresh
               </Button>
-              <Leaderboard gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" stickyMe />
+              <Leaderboard bg="grey.2" gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" stickyMe />
             </TabPanel>
             <TabPanel pt={4}>
               <LatestMatches gameId={game.id} />

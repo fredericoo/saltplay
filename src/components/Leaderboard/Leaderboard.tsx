@@ -12,10 +12,11 @@ type LeaderboardProps = {
   gameId: Game['id'];
   hasIcons?: boolean;
   stickyMe?: boolean;
+  bg?: string;
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, offsetPlayerBottom }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -81,6 +82,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
             hasIcons={hasIcons}
             isMe={isMe}
             bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
+            bg={bg}
           />
         );
       })}
@@ -103,10 +105,11 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
   );
 };
 
-const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id'] }> = ({
+const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id']; bg?: string }> = ({
   id,
   gameId,
   bottom,
+  bg,
 }) => {
   const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
   const player = playerPositions?.positions?.[0];
@@ -125,6 +128,7 @@ const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; 
       position={player.position}
       bottom={bottom}
       isMe
+      bg={bg}
     />
   );
 };

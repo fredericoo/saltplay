@@ -1,3 +1,5 @@
+import hideScrollbar from '@/lib/styleUtils';
+
 const variantPill = {
   root: {
     display: 'flex',
@@ -30,7 +32,8 @@ const variantPill = {
     bg: 'grey.4',
     borderRadius: 12,
     boxShadow: 'inset 0px 0px 8px rgba(0, 0, 0, 0.0125), inset 0px 2px 4px rgba(0, 0, 0, 0.025)',
-    overflow: 'hidden',
+    maxW: '100%',
+    ...hideScrollbar,
   },
   tabpanel: {
     p: 0,
