@@ -93,6 +93,8 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
             top={`calc(${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
             h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem)`}
             overflow={'auto'}
+            px={4}
+            mx={-4}
           >
             <Box
               as="header"
@@ -103,9 +105,10 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 zIndex: '-1',
                 content: "''",
                 position: 'absolute',
-                inset: '0',
+                inset: '0 calc(var(--chakra-space-4) * -1)',
                 bg: 'var(--chakra-colors-grey-2)',
                 maskImage: 'linear-gradient(to top, rgba(0,0,0,0) , rgba(0,0,0,1) 33%) ',
+                pointerEvents: 'none',
               }}
             >
               <Heading as="h2" size="md" pb={4} color="grey.10">

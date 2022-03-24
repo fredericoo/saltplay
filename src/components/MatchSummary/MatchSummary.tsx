@@ -39,7 +39,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const canDelete = canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
+  const canDelete = onDelete && canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
 
   return (
     <VStack
@@ -58,7 +58,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           id={id}
           onDeleteStart={() => setIsLoading(true)}
           onDeleteError={() => setIsLoading(false)}
-          onDeleteSuccess={() => onDelete?.()}
+          onDeleteSuccess={() => onDelete()}
         />
       )}
       {createdAt && (

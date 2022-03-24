@@ -57,7 +57,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
             great players
           </Heading>
           <Box h="400px" overflow="hidden" maxW="container.sm" mx="auto" pt={8}>
-            <LatestMatches canLoadMore={false} />
+            <LatestMatches canLoadMore={false} canDelete={false} />
           </Box>
         </Box>
       </Section>

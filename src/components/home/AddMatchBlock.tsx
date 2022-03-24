@@ -1,7 +1,6 @@
 import { getPlayerSample } from '@/lib/home';
 import { Modal } from '@/theme/components/Modal';
 import { Badge, Box, Heading, HStack, Input } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Side from '../NewMatchButton/Side';
 import { Player } from '../PlayerPicker/types';
@@ -12,7 +11,6 @@ type AddMatchBlockProps = {
 };
 
 const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
-  const { data: session } = useSession();
   const [step, setStep] = useState(0);
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
   const [teamsComp, setTeamsComp] = useState<Record<'left' | 'right', Player[]>>({ left: [], right: [] });
@@ -29,7 +27,7 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
         setBgColor(false);
         break;
       case 2:
-        setTeamsComp({ left: [session?.user || players?.[0]], right: [] });
+        setTeamsComp({ left: [players?.[0]], right: [] });
         break;
       case 3:
         setTeamsComp(comp => ({ left: [...comp.left, players[2]], right: [] }));

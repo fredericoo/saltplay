@@ -14,9 +14,16 @@ type LatestMatchesProps = {
   userId?: User['id'];
   officeId?: Office['id'];
   canLoadMore?: boolean;
+  canDelete?: boolean;
 };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, officeId, canLoadMore = true }) => {
+const LatestMatches: React.VFC<LatestMatchesProps> = ({
+  gameId,
+  userId,
+  officeId,
+  canLoadMore = true,
+  canDelete = true,
+}) => {
   const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
   const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -98,7 +105,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({ gameId, userId, officeId
                 right={match.right}
                 gameName={match?.game?.name}
                 officeName={match?.game?.office?.name}
-                onDelete={refetch}
+                onDelete={canDelete ? refetch : undefined}
                 points={match.points}
               />
             </MotionBox>
