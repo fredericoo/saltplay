@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
 import { USER_ROLE_ID } from './constants';
-import mixpanel from './mixpanel';
+import mixpanel, { aliasAndSetUser } from './mixpanel';
 import notifyNewcomer from './slackbot/notifyNewcomer';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
@@ -13,8 +13,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
       where: { provider_providerAccountId },
       select: { user: true },
     });
-    account?.user.id && mixpanel.alias(account?.user.id);
-    mixpanel.people.set({ $name: account?.user?.name, $email: account?.user.email, $updated: new Date() });
+    account?.user && aliasAndSetUser(account.user);
     return account?.user || null;
   },
   updateUser: data => prisma.user.update({ where: { id: data.id }, data }),

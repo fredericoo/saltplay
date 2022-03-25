@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import mixpanel from 'mixpanel-browser';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -8,7 +9,17 @@ const Mixpanel = () => {
   return mixpanel;
 };
 
-export const useTrackRouteChange = () => {
+export const aliasAndSetUser = (user: Pick<User, 'name' | 'id' | 'email'>) => {
+  mixpanel.alias(user.id);
+  mixpanel.people.set({ $name: user.name, $email: user.email, $created: new Date() });
+};
+
+export const identifyAndSetUser = (user: Pick<User, 'name' | 'id' | 'email'>) => {
+  mixpanel.identify(user.id);
+  mixpanel.people.set({ $name: user.name, $email: user.email, $updated: new Date() });
+};
+
+export const useMixpanel = () => {
   const router = useRouter();
 
   useEffect(() => {

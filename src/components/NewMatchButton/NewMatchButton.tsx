@@ -1,4 +1,5 @@
 import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/postMatchesHandler';
+import mixpanel from '@/lib/mixpanel';
 import {
   Button,
   ButtonProps,
@@ -79,6 +80,13 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       toast({
         render: () => <Toast status="success" heading="Well done" content="Your match has been added." />,
         position: 'bottom',
+      });
+      mixpanel.track('Match created', {
+        gameId,
+        left: data.left.map(({ id }) => id),
+        right: data.right.map(({ id }) => id),
+        leftscore: data.leftscore,
+        rightscore: data.rightscore,
       });
       form.reset();
       mutateLatestMatches();
