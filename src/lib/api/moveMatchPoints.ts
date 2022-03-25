@@ -1,6 +1,7 @@
 import { STARTING_POINTS } from '@/constants';
 import prisma from '@/lib/prisma';
 import { Match, User } from '@prisma/client';
+import { getPlayerPointsToMove, getPointsToMove } from '../points';
 
 /**
  * Moves points from the losing side to the winning side.
@@ -20,37 +21,49 @@ const moveMatchPoints = async (
 ) => {
   if (data.pointsToMove === 0) return true;
 
-  type NewScore = { id: User['id']; operation: 'increment' | 'decrement'; side: 'left' | 'right' };
+  type NewScore = {
+    id: User['id'];
+    operation: 'increment' | 'decrement';
+    side: 'left' | 'right';
+    pointsToMove: number;
+  };
+
+  const pointsToMove = getPointsToMove({
+    leftLength: data.left.length,
+    rightLength: data.right.length,
+    matchPoints: data.pointsToMove,
+  });
 
   const newScores = [
     ...data.left.map<NewScore>(user => ({
       id: user.id,
       operation: data.leftToRight ? 'decrement' : 'increment',
       side: 'left',
+      pointsToMove: getPlayerPointsToMove({ pointsToMove, teamLength: data.left.length }),
     })),
     ...data.right.map<NewScore>(user => ({
       id: user.id,
       operation: data.leftToRight ? 'increment' : 'decrement',
       side: 'right',
+      pointsToMove: getPlayerPointsToMove({ pointsToMove, teamLength: data.right.length }),
     })),
   ];
 
-  return await Promise.all(
-    newScores.map(async player => {
-      const playerPointsToMove = data.pointsToMove;
-      await prisma.playerScore.upsert({
+  await prisma.$transaction(
+    newScores.map(player =>
+      prisma.playerScore.upsert({
         where: { gameid_playerid: { gameid: data.gameid, playerid: player.id } },
-        update: { points: { [player.operation]: playerPointsToMove } },
+        update: {
+          points: { [player.operation]: player.pointsToMove },
+        },
         create: {
-          points: STARTING_POINTS + (player.operation === 'increment' ? playerPointsToMove : -playerPointsToMove),
+          points: STARTING_POINTS + (player.operation === 'increment' ? player.pointsToMove : -player.pointsToMove),
           gameid: data.gameid,
           playerid: player.id,
         },
-      });
-    })
-  )
-    .then(() => true)
-    .catch(() => false);
+      })
+    )
+  );
 };
 
 export default moveMatchPoints;
