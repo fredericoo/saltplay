@@ -57,7 +57,7 @@ const variantBottomBar: SystemStyleFunction = props => ({
     left: 4,
     right: 4,
     bottom: 'calc(env(safe-area-inset-bottom) + 8px)',
-    bg: mode('grey.1', 'grey.6')(props),
+    bg: mode('grey.1', 'grey.4')(props),
     borderRadius: 'full',
   },
   tab: {
@@ -65,11 +65,11 @@ const variantBottomBar: SystemStyleFunction = props => ({
     borderRadius: 20,
     flex: 1,
     py: 2,
-    fontSize: 'sm',
-    fontWeight: 'bold',
+    fontSize: 'md',
+
     color: mode('grey.9', 'grey.11')(props),
     _selected: {
-      bg: mode('grey.4', 'grey.10')(props),
+      bg: mode('grey.4', 'grey.8')(props),
       color: mode('grey.12', 'grey.12')(props),
       boxShadow: 'none',
     },
