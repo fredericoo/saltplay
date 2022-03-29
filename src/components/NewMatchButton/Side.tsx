@@ -71,7 +71,14 @@ const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onC
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
             >
-              <Circle bg="grey.3" pb="100%" w="100%" h="0" position="relative" boxShadow="0 0 0 3px white">
+              <Circle
+                bg="grey.3"
+                pb="100%"
+                w="100%"
+                h="0"
+                position="relative"
+                boxShadow="0 0 0 3px var(--chakra-colors-grey-4)"
+              >
                 <Box
                   position="absolute"
                   inset="0"

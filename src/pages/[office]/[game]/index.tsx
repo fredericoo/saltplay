@@ -167,7 +167,6 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 size="md"
                 isLoading={isValidating}
                 variant="subtle"
-                colorScheme="grey"
                 bg="grey.1"
                 mb={4}
                 onClick={() => mutate()}

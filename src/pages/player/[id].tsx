@@ -39,7 +39,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <Stack spacing={{ base: 1, md: 0.5 }}>
         <SEO title={`${playerName}’s profile`} />
-        <Box bg="white" borderRadius="18" overflow="hidden">
+        <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getGradientFromId(player.id)} h="32" />
           <Box p={4} mt="-16">
             <PlayerAvatar user={player} size={32} />

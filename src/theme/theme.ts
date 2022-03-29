@@ -1,5 +1,5 @@
-import { extendTheme } from '@chakra-ui/react';
-import { amber, crimson, cyan, mauve } from '@radix-ui/colors';
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { amber, crimson, cyan, mauve, mauveDark } from '@radix-ui/colors';
 import Badge from './components/Badge';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
@@ -11,14 +11,35 @@ import { Tabs } from './components/Tabs';
 const radixToChakraColour = <T extends string>(radixColour: Record<`${T}${number}`, string>, name: T) =>
   Object.fromEntries(Object.entries(radixColour).map(([key, value]) => [key.replace(name, ''), value]));
 
+const radixToSemantic = <T extends string>(
+  defaultColor: Record<`${T}${number}`, string>,
+  darkColor: Record<`${T}${number}`, string>,
+  name: T,
+  newName: string
+) =>
+  Object.fromEntries(
+    Object.entries(defaultColor).map(([key, value], index) => [
+      key.replace(name, newName + '.'),
+      { default: value, _dark: darkColor[`${name}${index + 1}`] },
+    ])
+  );
+
+const config: ThemeConfig = {
+  initialColorMode: 'light',
+  useSystemColorMode: true,
+};
+
 const theme = extendTheme({
   colors: {
-    grey: radixToChakraColour(mauve, 'mauve'),
     primary: radixToChakraColour(crimson, 'crimson'),
     secondary: radixToChakraColour(amber, 'amber'),
     success: radixToChakraColour(cyan, 'cyan'),
     danger: radixToChakraColour(crimson, 'crimson'),
   },
+  semanticTokens: {
+    colors: { ...radixToSemantic(mauve, mauveDark, 'mauve', 'grey') },
+  },
+  config,
   styles: {
     global: {
       'html, body': {
@@ -39,7 +60,7 @@ const theme = extendTheme({
     sm: '0px 16px 16px rgba(0, 0, 0, 0.0065), 0px 8px 8px rgba(0, 0, 0, 0.0125), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.1)',
     md: '0px 16px 16px rgba(0, 0, 0, 0.0125), 0px 8px 8px rgba(0, 0, 0, 0.025), 0px 4px 4px rgba(0, 0, 0, 0.05), 0px 2px 2px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.2)',
     lg: '0px 16px 16px rgba(0, 0, 0, 0.1), 0px 8px 8px rgba(0, 0, 0, 0.05), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.0125), 0px 1px 1px rgba(0, 0, 0, 0.0075)',
-    outline: '0 0 0 3px rgba(0, 0, 0, 0.1)',
+    outline: '0 0 0 3px var(--chakra-colors-grey-4)',
   },
   radii: {
     xl: '16px',
@@ -53,8 +74,8 @@ const theme = extendTheme({
     },
     Skeleton: {
       defaultProps: {
-        startColor: 'grey.4',
-        endColor: 'grey.8',
+        startColor: 'grey.3',
+        endColor: 'grey.6',
       },
     },
     Badge,

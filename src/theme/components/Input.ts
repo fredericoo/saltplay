@@ -2,6 +2,7 @@ export const Input = {
   variants: {
     custom: {
       field: {
+        bg: 'grey.1',
         color: 'grey.12',
         border: '1px solid',
         borderRadius: 'lg',

@@ -16,7 +16,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
 
   return (
     <>
-      <Section gridColumn="1/-1">
+      <Section gridColumn="1/-1" pb={0}>
         <Box
           h="100%"
           w="100%"

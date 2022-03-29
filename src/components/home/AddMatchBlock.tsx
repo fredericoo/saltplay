@@ -1,6 +1,6 @@
 import { getPlayerSample } from '@/lib/home';
 import { Modal } from '@/theme/components/Modal';
-import { Badge, Box, Heading, HStack, Input } from '@chakra-ui/react';
+import { Badge, Box, Heading, HStack, Input, useColorMode } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Side from '../NewMatchButton/Side';
 import { Player } from '../PlayerPicker/types';
@@ -12,10 +12,16 @@ type AddMatchBlockProps = {
 
 const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
   const [step, setStep] = useState(0);
+  const { colorMode } = useColorMode();
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
   const [teamsComp, setTeamsComp] = useState<Record<'left' | 'right', Player[]>>({ left: [], right: [] });
   const [teamsScores, setTeamsScores] = useState<Record<'left' | 'right', number>>({ left: 0, right: 0 });
   const [bgColor, setBgColor] = useState(false);
+
+  const colors = {
+    success: colorMode === 'light' ? 'success.4' : 'success.12',
+    danger: colorMode === 'light' ? 'danger.4' : 'danger.12',
+  };
 
   useEffect(() => {
     if (!players) return;
@@ -68,8 +74,8 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
         teamsScores.left === teamsScores.right || !bgColor
           ? undefined
           : teamsScores.left > teamsScores.right
-          ? 'success.4'
-          : 'danger.4'
+          ? colors.success
+          : colors.danger
       }
     >
       <Heading as="h2" color="grey.11" fontSize="2xl" p={4}>

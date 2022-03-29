@@ -4,8 +4,9 @@ import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IoBulb } from 'react-icons/io5';
+import { IoChatbubble } from 'react-icons/io5';
 import { useRecoilValue } from 'recoil';
+import ColorModeToggler from '../ColorModeToggler';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
@@ -36,8 +37,8 @@ const Navbar: React.VFC = () => {
       h={NAVBAR_HEIGHT}
       top={0}
       spacing={4}
-      bg={hasScrolled ? 'grey.1' : undefined}
-      boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
+      bg={hasScrolled ? 'grey.2' : undefined}
+      boxShadow={hasScrolled ? '0 1px 0 0 var(--chakra-colors-grey-6)' : undefined}
     >
       <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
         <NavigationBackButton />
@@ -74,20 +75,15 @@ const Navbar: React.VFC = () => {
       </Box>
 
       <HStack justify="flex-end" flex={1}>
+        <ColorModeToggler />
         <ModalButton
-          variant="subtle"
-          border="1px solid"
-          bg={{ md: 'grey.2' }}
-          borderColor={{ base: 'transparent', md: 'grey.8' }}
-          _hover={{ borderColor: 'grey.9' }}
-          cursor="text"
-          size="sm"
-          borderRadius="md"
+          bg="transparent"
           modalTitle="How are you enjoying SaltPlay?"
           Form={FeedbackForm}
+          sx={{ aspectRatio: { base: '1', md: 'initial' } }}
         >
           <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
-            <IoBulb />
+            <IoChatbubble />
           </Box>
           {isDesktop ? (
             <Text ml={2} color="grey.9">

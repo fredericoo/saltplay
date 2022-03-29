@@ -51,7 +51,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       opacity={isLoading ? 0.2 : 1}
       transition="opacity .2s ease-out"
       spacing="0"
-      bg="white"
+      bg="grey.1"
       borderRadius={16}
       px={2}
       position="relative"
@@ -69,7 +69,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
         <Box
           color="grey.11"
           textAlign="center"
-          bg="white"
+          bg="grey.1"
           border="1px"
           borderColor="grey.4"
           px={4}

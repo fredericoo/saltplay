@@ -1,3 +1,5 @@
+import theme from '@/theme/theme';
+import { ColorModeScript } from '@chakra-ui/react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import { ReactElement } from 'react';
 
@@ -63,6 +65,7 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/pwa.png" />
         </Head>
         <body>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           <Main />
           <NextScript />
         </body>

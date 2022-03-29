@@ -1,43 +1,47 @@
 import hideScrollbar from '@/lib/styleUtils';
+import type { SystemStyleFunction } from '@chakra-ui/theme-tools';
+import { mode } from '@chakra-ui/theme-tools';
 
-const variantPill = {
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    pt: 4,
-  },
-  tab: {
-    color: 'grey.11',
-    borderRadius: 10,
-    px: 4,
-    py: 1.5,
-    _hover: {
-      bg: 'grey.1',
+const variantPill: SystemStyleFunction = props => {
+  return {
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      pt: 4,
     },
-    ':not(:last-child)': { mr: 1 },
-    _selected: {
-      bg: 'grey.1',
-      color: 'grey.12',
-      boxShadow: 'sm',
+    tab: {
+      color: 'grey.11',
+      borderRadius: 10,
+      px: 4,
+      py: 1.5,
+      _hover: {
+        bg: mode('grey.1', 'grey.6')(props),
+      },
+      ':not(:last-child)': { mr: 1 },
+      _selected: {
+        bg: mode('grey.1', 'grey.8')(props),
+        color: mode('grey.12', 'grey.12')(props),
+        boxShadow: 'sm',
+      },
+      _focus: {
+        boxShadow: 'sm',
+      },
+      fontSize: 'sm',
     },
-    _focus: {
-      boxShadow: 'sm',
+    tablist: {
+      display: 'flex',
+      p: 0.5,
+      bg: mode('grey.4', 'grey.1')(props),
+      borderRadius: 12,
+      boxShadow: 'inset 0px 0px 8px rgba(0, 0, 0, 0.0125), inset 0px 2px 4px rgba(0, 0, 0, 0.025)',
+      maxW: '100%',
+      ...hideScrollbar,
     },
-    fontSize: 'sm',
-  },
-  tablist: {
-    display: 'flex',
-    p: 0.5,
-    bg: 'grey.4',
-    borderRadius: 12,
-    boxShadow: 'inset 0px 0px 8px rgba(0, 0, 0, 0.0125), inset 0px 2px 4px rgba(0, 0, 0, 0.025)',
-    maxW: '100%',
-    ...hideScrollbar,
-  },
-  tabpanel: {
-    p: 0,
-  },
+    tabpanel: {
+      p: 0,
+    },
+  };
 };
 
 const variantBottomBar = {
@@ -47,6 +51,7 @@ const variantBottomBar = {
     overflow: 'auto',
     position: 'fixed',
     bottom: 0,
+    left: 0,
     zIndex: 'overlay',
     w: '100%',
     boxShadow:
@@ -58,7 +63,6 @@ const variantBottomBar = {
     borderBottomRadius: 0,
   },
   tab: {
-    ...variantPill.tab,
     flexDirection: 'column',
     borderRadius: 20,
     flex: 1,
@@ -69,6 +73,9 @@ const variantBottomBar = {
       color: 'primary.10',
       boxShadow: 'none',
     },
+  },
+  tabpanel: {
+    px: 0,
   },
 };
 
