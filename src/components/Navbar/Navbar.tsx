@@ -76,23 +76,25 @@ const Navbar: React.VFC = () => {
 
       <HStack justify="flex-end" flex={1}>
         <ColorModeToggler />
-        <ModalButton
-          bg="transparent"
-          modalTitle="How are you enjoying SaltPlay?"
-          Form={FeedbackForm}
-          sx={{ aspectRatio: { base: '1', md: 'initial' } }}
-        >
-          <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
-            <IoChatbubble />
-          </Box>
-          {isDesktop ? (
-            <Text ml={2} color="grey.9">
-              Feedback
-            </Text>
-          ) : (
-            ''
-          )}
-        </ModalButton>
+        {isDesktop && (
+          <ModalButton
+            bg="transparent"
+            modalTitle="How are you enjoying SaltPlay?"
+            Form={FeedbackForm}
+            sx={{ aspectRatio: { base: '1', md: 'initial' } }}
+          >
+            <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
+              <IoChatbubble />
+            </Box>
+            {isDesktop ? (
+              <Text ml={2} color="grey.9">
+                Feedback
+              </Text>
+            ) : (
+              ''
+            )}
+          </ModalButton>
+        )}
         <UserMenu showUserName={isDesktop} />
       </HStack>
     </HStack>
