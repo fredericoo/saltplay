@@ -8,7 +8,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="theme-color" content="#f9f8f9" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="copyright" content="Bruno Campos + Frederico Batista" />
 
@@ -59,7 +58,6 @@ class MyDocument extends Document {
 
           {/* WEB APP */}
           <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
           <link rel="icon" href="/favicon.png" />
           <link rel="apple-touch-icon" href="/pwa.png" />

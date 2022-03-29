@@ -44,40 +44,40 @@ const variantPill: SystemStyleFunction = props => {
   };
 };
 
-const variantBottomBar = {
+const variantBottomBar: SystemStyleFunction = props => ({
   ...variantPill,
   tablist: {
     display: 'flex',
     overflow: 'auto',
     position: 'fixed',
-    bottom: 0,
-    left: 0,
     zIndex: 'overlay',
-    w: '100%',
     boxShadow:
       '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
     p: 1,
-    pb: 'calc(env(safe-area-inset-bottom, 0.5vh) + 32px)',
-    bg: 'grey.1',
-    borderTopRadius: 24,
-    borderBottomRadius: 0,
+    left: 4,
+    right: 4,
+    bottom: 'calc(env(safe-area-inset-bottom) + 8px)',
+    bg: mode('grey.1', 'grey.6')(props),
+    borderRadius: 'full',
   },
   tab: {
     flexDirection: 'column',
     borderRadius: 20,
     flex: 1,
-    py: 3,
-    fontSize: 'xs',
+    py: 2,
+    fontSize: 'sm',
+    fontWeight: 'bold',
+    color: mode('grey.9', 'grey.11')(props),
     _selected: {
-      bg: 'primary.3',
-      color: 'primary.10',
+      bg: mode('grey.4', 'grey.10')(props),
+      color: mode('grey.12', 'grey.12')(props),
       boxShadow: 'none',
     },
   },
   tabpanel: {
     px: 0,
   },
-};
+});
 
 export const Tabs = {
   parts: ['root', 'tab', 'tablist', 'tabpanel'],

@@ -72,22 +72,8 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
         <Stack spacing={6} pt={4}>
           <Tabs variant={isDesktop ? undefined : 'bottom'} isLazy>
             <TabList>
-              <Tab>
-                {!isDesktop && (
-                  <Box fontSize="lg" aria-hidden>
-                    🎲
-                  </Box>
-                )}
-                <Box>Games</Box>
-              </Tab>
-              <Tab>
-                {!isDesktop && (
-                  <Box fontSize="lg" aria-hidden>
-                    {office.icon}
-                  </Box>
-                )}
-                <Box>Latest Matches</Box>
-              </Tab>
+              <Tab>Games</Tab>
+              <Tab>Latest Matches</Tab>
             </TabList>
             <TabPanels>
               <TabPanel pt={6}>

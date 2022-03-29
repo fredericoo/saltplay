@@ -13,7 +13,7 @@ import ModalButton from '../ModalButton';
 import NavigationBackButton from '../NavigationBackButton';
 import UserMenu from '../UserMenu/UserMenu';
 
-export const NAVBAR_HEIGHT = '64px';
+export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
 
 const Navbar: React.VFC = () => {
   const isDesktop = useMediaQuery('md');
@@ -39,6 +39,8 @@ const Navbar: React.VFC = () => {
       spacing={4}
       bg={hasScrolled ? 'grey.2' : undefined}
       boxShadow={hasScrolled ? '0 1px 0 0 var(--chakra-colors-grey-6)' : undefined}
+      pt="env(safe-area-inset-top)"
+      transition="box-shadow .15s ease-out"
     >
       <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
         <NavigationBackButton />

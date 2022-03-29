@@ -147,18 +147,8 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
         <Tabs variant={'bottom'}>
           <SEO title={game.name} />
           <TabList>
-            <Tab>
-              <Box fontSize="lg" aria-hidden>
-                🏆
-              </Box>
-              <Box>Leaderboard</Box>
-            </Tab>
-            <Tab>
-              <Box fontSize="lg" aria-hidden>
-                {game.icon}
-              </Box>
-              <Box>Latest Matches</Box>
-            </Tab>
+            <Tab>Leaderboard</Tab>
+            <Tab>Latest Matches</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
@@ -174,9 +164,14 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
               >
                 Refresh
               </Button>
-              <Leaderboard bg="grey.2" gameId={game.id} offsetPlayerBottom="calc(105px - .5rem)" stickyMe />
+              <Leaderboard
+                bg="grey.2"
+                gameId={game.id}
+                offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
+                stickyMe
+              />
             </TabPanel>
-            <TabPanel pt={4}>
+            <TabPanel pt={{ base: 8, md: 4 }}>
               <LatestMatches gameId={game.id} />
             </TabPanel>
           </TabPanels>

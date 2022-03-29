@@ -13,8 +13,8 @@ const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name' | 'ro
         return (
           <MotionBox
             zIndex={0}
-            initial={{ translateY: 1000 }}
-            animate={{ translateY: -1000 }}
+            initial={{ translateY: 1000, opacity: 1 }}
+            animate={{ translateY: -1000, opacity: 0 }}
             transition={{ repeat: Infinity, duration: random * -6 + 12 }}
             pointerEvents={'none'}
             key={user.id}
