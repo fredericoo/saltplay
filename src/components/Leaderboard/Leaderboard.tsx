@@ -99,7 +99,12 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
       )}
 
       {!allPositions.find(position => position?.id === session?.user?.id) && session?.user.id && (
-        <PlayerPosition id={session.user.id} bottom={stickyMe ? offsetPlayerBottom || 0 : undefined} gameId={gameId} />
+        <PlayerPosition
+          id={session.user.id}
+          bottom={stickyMe ? offsetPlayerBottom || 0 : undefined}
+          gameId={gameId}
+          bg={bg}
+        />
       )}
     </Stack>
   );

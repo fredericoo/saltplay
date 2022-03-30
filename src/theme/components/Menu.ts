@@ -4,8 +4,9 @@ export const Menu = {
   variants: {
     custom: {
       list: {
+        bg: 'grey.1',
         fontSize: { base: 'md', md: 'sm' },
-        border: 'none',
+        border: '1px solid var(--chakra-colors-grey-5)',
         boxShadow: 'lg',
         borderRadius: '8',
         p: '3px',

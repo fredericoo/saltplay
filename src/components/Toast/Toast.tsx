@@ -27,7 +27,7 @@ const toastStyles = {
 
 const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
   return (
-    <Stack spacing={2} bg="white" padding="16px" boxShadow={toastStyles[status].shadow} borderRadius="xl">
+    <Stack spacing={2} bg="grey.1" padding="16px" boxShadow={toastStyles[status].shadow} borderRadius="xl">
       <Text fontWeight="bold" bg={toastStyles[status].color} backgroundClip="text">
         {heading}
       </Text>

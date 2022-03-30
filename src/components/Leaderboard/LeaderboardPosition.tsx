@@ -58,7 +58,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
     <MotionHStack layout {...chakraProps} {...meProps}>
       <PositionNumber position={position} displayMedals={hasIcons} />
       <HStack
-        bg="white"
+        bg="grey.1"
         p={4}
         borderRadius="xl"
         gap={4}

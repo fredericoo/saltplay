@@ -12,20 +12,18 @@ const baseStyle: SystemStyleObject = {
 };
 
 const variantSolid: SystemStyleFunction = props => {
-  const { colorScheme: c, theme } = props;
-  const dark = transparentize(`${c}.10`, 0.6)(theme);
+  const { colorScheme: c } = props;
   return {
-    bg: mode(`${c}.9`, dark)(props),
-    color: mode(`white`, `whiteAlpha.800`)(props),
+    bg: mode(`${c}.9`, `${c}.9`)(props),
+    color: mode(`grey.1`, `grey.12`)(props),
   };
 };
 
 const variantSubtle: SystemStyleFunction = props => {
-  const { colorScheme: c, theme } = props;
-  const darkBg = transparentize(`${c}.2`, 0.16)(theme);
+  const { colorScheme: c } = props;
   return {
-    bg: mode(`${c}.4`, darkBg)(props),
-    color: mode(`${c}.12`, `${c}.1`)(props),
+    bg: mode(`${c}.4`, `${c}.4`)(props),
+    color: mode(`${c}.12`, `${c}.12`)(props),
   };
 };
 

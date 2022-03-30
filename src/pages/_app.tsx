@@ -6,6 +6,7 @@ import theme from '@/theme/theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig } from 'swr';
 
@@ -16,6 +17,12 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
 
   return (
     <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
+      <Head>
+        <meta
+          name="viewport"
+          content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </Head>
       <RecoilRoot>
         <ChakraProvider theme={theme}>
           <Fonts />
