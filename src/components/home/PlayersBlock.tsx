@@ -29,7 +29,14 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
           sx={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,1))' }}
           borderBottomRadius="xl"
         />
-        <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
+        <Box
+          position="absolute"
+          zIndex={0}
+          inset={0}
+          transform="rotate(-15deg)"
+          borderBottomRadius="xl"
+          overflow="hidden"
+        >
           <PlayersDeco players={players} />
         </Box>
         <Box zIndex={1} position="relative">
