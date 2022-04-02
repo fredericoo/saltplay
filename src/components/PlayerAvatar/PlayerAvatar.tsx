@@ -27,7 +27,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
 
       <Circle
         position="relative"
-        boxShadow="0 0 0 3px var(--chakra-colors-grey-4)"
+        boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
         size={size}
         borderRadius="44%"
         bg={getGradientFromId(user.id)}

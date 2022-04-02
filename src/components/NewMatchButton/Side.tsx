@@ -77,7 +77,7 @@ const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onC
                 w="100%"
                 h="0"
                 position="relative"
-                boxShadow="0 0 0 3px var(--chakra-colors-grey-4)"
+                boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
               >
                 <Box
                   position="absolute"

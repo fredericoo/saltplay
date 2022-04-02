@@ -55,7 +55,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       borderRadius={16}
       px={2}
       position="relative"
-      _hover={{ boxShadow: '0px 0px 1px 0 var(--chakra-colors-grey-9)' }}
+      _hover={{ boxShadow: '0px 0px 1px 0 var(--wrkplay-colors-grey-9)' }}
     >
       {canDelete && (
         <DeleteMatchButton

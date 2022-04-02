@@ -6,7 +6,7 @@ export const Menu = {
       list: {
         bg: 'grey.1',
         fontSize: { base: 'md', md: 'sm' },
-        border: '1px solid var(--chakra-colors-grey-5)',
+        border: '1px solid var(--wrkplay-colors-grey-5)',
         boxShadow: 'lg',
         borderRadius: '8',
         p: '3px',

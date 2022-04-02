@@ -105,8 +105,8 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 zIndex: '-1',
                 content: "''",
                 position: 'absolute',
-                inset: '0 calc(var(--chakra-space-4) * -1)',
-                bg: 'var(--chakra-colors-grey-2)',
+                inset: '0 calc(var(--wrkplay-space-4) * -1)',
+                bg: 'var(--wrkplay-colors-grey-2)',
                 maskImage: 'linear-gradient(to top, rgba(0,0,0,0) , rgba(0,0,0,1) 33%) ',
                 pointerEvents: 'none',
               }}
@@ -130,7 +130,7 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
                 content: "''",
                 position: 'absolute',
                 inset: '0',
-                bg: 'var(--chakra-colors-grey-2)',
+                bg: 'var(--wrkplay-colors-grey-2)',
                 maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) , rgba(0,0,0,1) 75%) ',
               }}
             />
