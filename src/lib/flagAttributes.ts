@@ -1,5 +1,6 @@
 import { GAME_FLAGS } from '@/constants';
 import { Game } from '@prisma/client';
+import { number } from 'yup';
 
 export const getFlagTogglesFromNumber = <T extends Record<string, number>>(
   flagKeys: T,
@@ -22,3 +23,7 @@ export const getFlagNumberFromToggles = (flagToggles: Record<string, boolean>): 
 };
 
 export const getGameFlags = (flags?: Game['flags']) => getFlagTogglesFromNumber(GAME_FLAGS, flags || 0);
+
+export const flagsSchema = number()
+  .min(0)
+  .max(Object.values(GAME_FLAGS).reduce((acc, cur) => acc + cur));

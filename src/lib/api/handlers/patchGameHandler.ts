@@ -1,7 +1,7 @@
-import { GAME_FLAGS } from '@/constants';
+import { flagsSchema } from '@/lib/flagAttributes';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
-import { validateSlug } from '@/lib/slug';
+import { slugSchema } from '@/lib/slug';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Game } from '@prisma/client';
@@ -14,15 +14,9 @@ export type GamePATCHAPIResponse = APIResponse<{ data: Game }>;
 const editableFieldsSchema = object({
   name: string(),
   icon: string(),
-  slug: string().test(
-    'is-slug',
-    d => `${d.value} does not match a slug format`,
-    slug => typeof slug === 'undefined' || validateSlug(slug)
-  ),
-  flags: number()
-    .min(0)
-    .max(Object.values(GAME_FLAGS).reduce((acc, cur) => acc + cur)),
-  maxPlayersPerTeam: number(),
+  slug: slugSchema,
+  flags: flagsSchema,
+  maxPlayersPerTeam: number().max(10),
 });
 
 const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) => {

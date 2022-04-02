@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
+import { slugSchema } from '@/lib/slug';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Office } from '@prisma/client';
@@ -12,7 +13,7 @@ export type OfficePATCHAPIResponse = APIResponse<{ data: Office }>;
 const editableFieldsSchema = object().shape({
   name: string(),
   icon: string(),
-  slug: string(),
+  slug: slugSchema,
 });
 
 const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, res) => {

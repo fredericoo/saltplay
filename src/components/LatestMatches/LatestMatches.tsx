@@ -24,7 +24,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   canLoadMore = true,
   canDelete = true,
 }) => {
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, userId });
   const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = data?.[data.length - 1].nextCursor;
@@ -64,7 +64,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
     );
   }
 
-  if (!data)
+  if (!data || data.some(page => page.status !== 'ok'))
     return (
       <Stack>
         {new Array(PAGE_SIZE).fill(0).map((_, i) => (
