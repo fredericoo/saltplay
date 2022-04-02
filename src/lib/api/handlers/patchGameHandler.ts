@@ -38,12 +38,6 @@ const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) 
             office: true,
           },
         });
-        try {
-          await res.unstable_revalidate(`/${game.office.slug}/${game.slug}`);
-          await res.unstable_revalidate(`/${game.office.slug}`);
-        } catch {
-          console.warn('Failed to revalidate');
-        }
         res.status(200).json({ status: 'ok', data: game });
       } catch (e) {
         console.error(e);

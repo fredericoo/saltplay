@@ -32,12 +32,6 @@ const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, r
           where: { id: officeId },
           data: body,
         });
-        try {
-          await res.unstable_revalidate(`/${office.slug}`);
-          await res.unstable_revalidate(`/`);
-        } catch {
-          console.warn('Failed to revalidate');
-        }
         res.status(200).json({ status: 'ok', data: office });
       } catch {
         res.status(500).json({ status: 'error', message: 'Internal server error' });
