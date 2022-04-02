@@ -28,7 +28,7 @@ const radixToSemantic = <T extends string>(
 export const config: ThemeConfig = {
   cssVarPrefix: 'wrkplay',
   initialColorMode: 'system',
-  useSystemColorMode: true,
+  useSystemColorMode: false,
 };
 
 const theme = extendTheme({

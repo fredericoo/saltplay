@@ -1,7 +1,6 @@
 import SimpleLayout from '@/layouts/SimpleLayout';
 import { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
-import { localStorageManager } from '@/lib/sessionStorageManager';
 import Fonts from '@/theme/Fonts';
 import theme from '@/theme/theme';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -26,7 +25,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
         />
       </Head>
       <RecoilRoot>
-        <ChakraProvider theme={theme} colorModeManager={localStorageManager}>
+        <ChakraProvider theme={theme}>
           <Fonts />
           <SessionProvider session={session}>
             <NextNProgress color="var(--wrkplay-colors-primary-11)" stopDelayMs={0} options={{ showSpinner: false }} />
