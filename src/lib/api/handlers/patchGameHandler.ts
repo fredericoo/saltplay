@@ -45,9 +45,8 @@ const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) 
           },
         });
         try {
-          res.unstable_revalidate(`/${game.office.slug}/${game.slug}`);
-          res.unstable_revalidate(`/${game.office.slug}`);
-          res.unstable_revalidate(`/`);
+          await res.unstable_revalidate(`/${game.office.slug}/${game.slug}`);
+          await res.unstable_revalidate(`/${game.office.slug}`);
         } catch {
           console.warn('Failed to revalidate');
         }
