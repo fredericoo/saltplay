@@ -24,7 +24,7 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
-import { GetServerSideProps, GetStaticPaths, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 
@@ -179,18 +179,6 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
       </Box>
     </Container>
   );
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const offices = await prisma.office.findMany({
-    include: { games: true },
-  });
-  return {
-    paths: offices
-      .map(office => office.games.map(game => ({ params: { office: office.slug, game: game.slug } })))
-      .flat(),
-    fallback: 'blocking',
-  };
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
