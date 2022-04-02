@@ -15,6 +15,7 @@ const variantPill: SystemStyleFunction = props => {
       borderRadius: 10,
       px: 4,
       py: 1.5,
+      whiteSpace: 'nowrap',
       _hover: {
         bg: mode('grey.1', 'grey.6')(props),
       },
