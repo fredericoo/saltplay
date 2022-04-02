@@ -11,7 +11,7 @@ import { getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import useSWR from 'swr';
 import { PlayerStatsAPIResponse } from '../api/players/[id]/stats';
 
@@ -90,15 +90,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const players = await prisma.user.findMany({ select: { id: true } });
-  return {
-    paths: players.map(player => ({ params: { id: player.id } })),
-    fallback: 'blocking',
-  };
-};
-
-export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { props: {} };
   }
@@ -113,7 +105,6 @@ export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }
     props: {
       player,
     },
-    revalidate: 60 * 60,
   };
 };
 
