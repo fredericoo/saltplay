@@ -24,7 +24,7 @@ import {
   Tabs,
 } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, GetStaticPaths, NextPage } from 'next';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 
@@ -193,7 +193,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (typeof params?.office !== 'string' || typeof params?.game !== 'string') {
     return {
       props: {},
@@ -230,7 +230,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       sidebar,
       header,
     },
-    revalidate: 60 * 60 * 24,
   };
 };
 

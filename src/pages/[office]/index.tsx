@@ -11,7 +11,7 @@ import prisma from '@/lib/prisma';
 import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, GetStaticPaths, NextPage } from 'next';
 import Image from 'next/image';
 import useSWR from 'swr';
 
@@ -106,7 +106,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (typeof params?.office !== 'string') {
     return { props: {} };
   }
@@ -130,7 +130,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       office,
       sidebar,
     },
-    revalidate: 60 * 60 * 24,
   };
 };
 
