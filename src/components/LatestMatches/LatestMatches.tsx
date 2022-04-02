@@ -1,5 +1,5 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
-import { PAGE_SIZE } from '@/lib/constants';
+import { PAGE_SIZE } from '@/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Office, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';

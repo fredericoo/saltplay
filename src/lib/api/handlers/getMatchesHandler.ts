@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from '@/lib/constants';
+import { PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Match } from '@prisma/client';

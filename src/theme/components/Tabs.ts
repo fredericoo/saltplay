@@ -79,10 +79,48 @@ const variantBottomBar: SystemStyleFunction = props => ({
   },
 });
 
+export const variantSidebar = {
+  root: {
+    css: { '--sidebar-width': '300px' },
+    display: 'grid',
+    gridTemplateColumns: { md: 'var(--sidebar-width) 1fr' },
+    pt: 0,
+  },
+  tab: {
+    display: 'flex',
+    alignItems: 'center',
+    color: 'grey.11',
+    px: 4,
+    py: 1.5,
+    _hover: {
+      bg: 'grey.3',
+    },
+    ':not(:last-child)': { mb: 1 },
+    _selected: {
+      bg: 'grey.3',
+      color: 'primary.10',
+    },
+    fontSize: 'sm',
+    justifyContent: 'flex-start',
+  },
+  tablist: {
+    display: 'flex',
+    flexDirection: 'column',
+    borderRight: { md: '1px solid' },
+    borderColor: { md: 'grey.4' },
+    pt: 4,
+  },
+  tabpanel: {
+    py: 0,
+    px: 4,
+  },
+};
+
 export const Tabs = {
   parts: ['root', 'tab', 'tablist', 'tabpanel'],
   variants: {
     custom: variantPill,
+    sidebar: variantSidebar,
     bottom: variantBottomBar,
   },
   defaultProps: {

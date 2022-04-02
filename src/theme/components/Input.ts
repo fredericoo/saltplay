@@ -9,6 +9,7 @@ export const Input = {
         borderColor: 'grey.6',
 
         _focus: { borderColor: 'grey.8', boxShadow: 'none' },
+        _invalid: { borderColor: 'danger.9' },
       },
     },
   },

@@ -1,11 +1,12 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import { amber, crimson, cyan, mauve, mauveDark } from '@radix-ui/colors';
+import { amber, amberDark, crimson, crimsonDark, cyan, cyanDark, mauve, mauveDark } from '@radix-ui/colors';
 import Badge from './components/Badge';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
 import Popover from './components/Popover';
+import { Switch } from './components/Switch';
 import { Tabs } from './components/Tabs';
 
 const radixToChakraColour = <T extends string>(radixColour: Record<`${T}${number}`, string>, name: T) =>
@@ -32,9 +33,13 @@ const config: ThemeConfig = {
 const theme = extendTheme({
   colors: {
     primary: radixToChakraColour(crimson, 'crimson'),
+    primaryDark: radixToChakraColour(crimsonDark, 'crimson'),
     secondary: radixToChakraColour(amber, 'amber'),
+    secondaryDark: radixToChakraColour(amberDark, 'amber'),
     success: radixToChakraColour(cyan, 'cyan'),
+    successDark: radixToChakraColour(cyanDark, 'cyan'),
     danger: radixToChakraColour(crimson, 'crimson'),
+    dangerDark: radixToChakraColour(crimsonDark, 'crimson'),
   },
   semanticTokens: {
     colors: { ...radixToSemantic(mauve, mauveDark, 'mauve', 'grey') },
@@ -85,6 +90,7 @@ const theme = extendTheme({
     Textarea: { ...Input, variants: { custom: Input.variants.custom.field } },
     Button,
     Modal,
+    Switch,
     Tabs,
   },
 });

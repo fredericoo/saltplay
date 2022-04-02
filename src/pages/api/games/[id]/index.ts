@@ -1,0 +1,15 @@
+import deleteGameHandler from '@/lib/api/handlers/deleteGameHandler';
+import patchGameHandler from '@/lib/api/handlers/patchGameHandler';
+import { NextApiRequest, NextApiResponse } from 'next';
+import nc from 'next-connect';
+
+const handler = nc<NextApiRequest, NextApiResponse>({
+  onError: (err, _req, res, _next) => {
+    console.error(err.stack);
+    res.status(500).end('Internal server error');
+  },
+})
+  .patch(patchGameHandler)
+  .delete(deleteGameHandler);
+
+export default handler;

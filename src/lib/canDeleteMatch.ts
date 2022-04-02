@@ -1,6 +1,6 @@
+import { MATCH_DELETE_DAYS } from '@/constants';
 import { User } from '@prisma/client';
 import { differenceInDays } from 'date-fns';
-import { MATCH_DELETE_DAYS } from './constants';
 
 type CanDeleteMatchOptions = {
   user?: Pick<User, 'roleId' | 'id'>;

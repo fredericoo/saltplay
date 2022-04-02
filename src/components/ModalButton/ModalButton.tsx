@@ -44,7 +44,7 @@ const ModalButton: ModalButton = ({ modalProps, modalTitle, Form, ...props }) =>
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="primary" type="submit" form={htmlId} mr={3}>
+            <Button variant="subtle" colorScheme="success" type="submit" form={htmlId} mr={3}>
               Submit
             </Button>
             <Button variant="subtle" onClick={onClose}>

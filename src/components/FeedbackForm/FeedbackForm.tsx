@@ -69,8 +69,8 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
           <Button
             p={8}
             fontSize="2rem"
-            bg={rating === -1 ? 'red.200' : undefined}
-            _hover={{ bg: rating === 1 ? 'red.200' : undefined }}
+            variant="solid"
+            colorScheme={rating === -1 ? 'danger' : 'grey'}
             onClick={() => setValue('rating', -1)}
           >
             👎
@@ -78,8 +78,8 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
           <Button
             p={8}
             fontSize="2rem"
-            bg={rating === 1 ? 'green.200' : undefined}
-            _hover={{ bg: rating === 1 ? 'green.200' : undefined }}
+            variant="solid"
+            colorScheme={rating === 1 ? 'success' : 'grey'}
             onClick={() => setValue('rating', 1)}
           >
             👍

@@ -1,3 +1,4 @@
+import { DASHBOARD_ROLES } from '@/constants';
 import { TextProps } from '@chakra-ui/react';
 import { Role } from '@prisma/client';
 
@@ -10,3 +11,5 @@ export const getRoleStyles = (roleId?: Role['id']) => {
   if (typeof roleId === 'undefined') return roleStyles[1];
   return roleStyles[roleId];
 };
+
+export const canViewDashboard = (roleId?: number) => typeof roleId === 'number' && DASHBOARD_ROLES.includes(roleId);

@@ -1,6 +1,6 @@
+import { GUEST_ROLE_ID } from '@/constants';
 import PrismaAdapter from '@/lib/adapter';
 import turnGuestToUser from '@/lib/api/turnGuestToUser';
-import { GUEST_ROLE_ID } from '@/lib/constants';
 import prisma from '@/lib/prisma';
 import { User } from '@prisma/client';
 import NextAuth, { NextAuthOptions } from 'next-auth';

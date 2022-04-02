@@ -1,3 +1,4 @@
+import { canViewDashboard } from '@/lib/roles';
 import { Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -50,6 +51,11 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
         <Link href={`/player/${session?.user.id}`} passHref>
           <MenuItem as="a">My Profile</MenuItem>
         </Link>
+        {canViewDashboard(session?.user.roleId) && (
+          <Link href={`/admin`} passHref>
+            <MenuItem as="a">Admin Panel</MenuItem>
+          </Link>
+        )}
         <Link href="/api/auth/signout" passHref>
           <MenuItem as="a">Log out</MenuItem>
         </Link>
