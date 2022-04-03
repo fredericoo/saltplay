@@ -1,6 +1,5 @@
+import SettingsGroup from '@/components/admin/SettingsGroup';
 import DeleteButton from '@/components/DeleteButton';
-import Editable, { EditableInput } from '@/components/Editable';
-import EditableSlider from '@/components/Editable/EditableSlider';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PageHeader from '@/components/PageHeader';
@@ -38,14 +37,12 @@ export const getGame = (id: string) =>
   });
 
 const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
-  const [editingFieldKey, setEditingFieldKey] = useState<string | null>(null);
   const [response, setResponse] = useState<Game | undefined>();
-  const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
   const isDesktop = useMediaQuery('md');
   useNavigationState(response?.name || game?.name);
 
-  const EDITABLE_FIELDS: EditableField<Game>[] = [
+  const editableFields: EditableField<Game>[] = [
     { id: 'name', label: 'Name', type: 'text' },
     { id: 'icon', label: 'Icon', type: 'text' },
     {
@@ -66,25 +63,19 @@ const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
     id: EditableField<Game>['id'];
     value: string | number | boolean;
   }) => {
-    setIsLoading(true);
     try {
       const res = await axios.patch(`/api/games/${game?.id}`, { [id]: value }).then(res => res.data);
       if (res.status === 'ok') {
-        setEditingFieldKey(null);
         setResponse(res.data);
       }
     } catch (e) {
       console.error(e);
     }
-
-    setIsLoading(false);
   };
 
   const handleDeleteOffice = async () => {
-    setIsLoading(true);
     await axios.delete(`/api/games/${game?.id}`);
     push('/admin');
-    setIsLoading(false);
   };
 
   return (
@@ -96,46 +87,7 @@ const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
         </TabList>
         <TabPanels pt={4}>
           <TabPanel as={Stack} spacing={8}>
-            <Settings.List>
-              {EDITABLE_FIELDS.map(field => {
-                const value = response?.[field.id] || game?.[field.id];
-                return (
-                  <Settings.Item key={field.id} label={field.label} htmlFor={field.id}>
-                    <Editable
-                      id={field.id}
-                      value={value}
-                      isEditing={editingFieldKey === field.id}
-                      onEdit={() => setEditingFieldKey(field.id)}
-                      onCancel={() => setEditingFieldKey(null)}
-                      onSave={handleSaveField}
-                      isDisabled={editingFieldKey === field.id && isLoading}
-                      preText={field.preText}
-                      // error={'Name is too short.'}
-                    >
-                      {field.type === 'text' ? (
-                        <EditableInput
-                          fontSize="sm"
-                          type="text"
-                          name={field.id}
-                          defaultValue={value?.toString()}
-                          autoComplete="off"
-                          format={field.format}
-                          validate={field.validate}
-                          autoFocus
-                        />
-                      ) : field.type === 'number' ? (
-                        <EditableSlider
-                          name={field.id}
-                          min={field.min}
-                          max={field.max}
-                          defaultValue={value ? +value : undefined}
-                        />
-                      ) : null}
-                    </Editable>
-                  </Settings.Item>
-                );
-              })}
-            </Settings.List>
+            <SettingsGroup fields={editableFields} saveEndpoint={`/api/games/${game?.id}`} data={game} />
 
             <FlagsSwitch
               onChange={async value => await handleSaveField({ id: 'flags', value })}

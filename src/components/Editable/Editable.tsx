@@ -3,11 +3,11 @@ import { FormEventHandler } from 'react';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 import { VscAdd, VscEdit } from 'react-icons/vsc';
 
-export type EditableProps<TID extends string> = {
+export type EditableProps<TID extends PropertyKey> = {
   id: TID;
   isEditing?: boolean;
   isDisabled?: boolean;
-  value?: string | number | null;
+  value?: JSX.Element | string | number | null;
   error?: string;
   preText?: string;
   onEdit?: () => void;
@@ -16,7 +16,7 @@ export type EditableProps<TID extends string> = {
   children?: JSX.Element | null;
 };
 
-const Editable = <T extends string>({
+const Editable = <T extends PropertyKey>({
   id,
   children,
   isEditing,
@@ -69,7 +69,7 @@ const Editable = <T extends string>({
   const handleSubmit: FormEventHandler = e => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const value = formData.get(id);
+    const value = formData.get(id.toString());
     !!value && onSave?.({ id, value: typeof value === 'string' ? value : '' });
   };
 

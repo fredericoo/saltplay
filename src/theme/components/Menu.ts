@@ -16,7 +16,7 @@ export const Menu = {
         transition: 'none',
         borderRadius: '6',
         _hover: {
-          bg: 'grey.4',
+          bg: 'grey.5',
         },
         _focus: {
           bg: 'grey.3',

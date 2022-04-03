@@ -9,7 +9,7 @@ type TypedField =
   | { type: 'number'; min?: number; max?: number }
   | { type: 'flags'; flags: Record<string, number> };
 
-export type EditableField<T extends object> = {
+export type EditableField<T extends Record<string, unknown>> = {
   id: keyof T;
   label: string;
   helper?: string;

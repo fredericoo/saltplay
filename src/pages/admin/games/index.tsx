@@ -19,10 +19,10 @@ export const getGames = () =>
   });
 
 const AdminPage: NextPage<AdminPageProps> = ({ games }) => {
-  useNavigationState('Users');
+  useNavigationState('Games');
   return (
     <Container maxW="container.md" pt={NAVBAR_HEIGHT}>
-      <SEO title="Users" />
+      <SEO title="Games" />
       <PageHeader title={'Games'} icon={'🎲'} subtitle={`showing ${games.length} results`} />
       <Settings.List>
         {games.map(game => (
