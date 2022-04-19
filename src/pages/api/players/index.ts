@@ -31,7 +31,7 @@ const gamesHandler: NextApiHandler<PlayerAPIResponse> = async (req, res) => {
   const nextCursor = players.length >= take ? players[players.length - 1].id : undefined;
 
   res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600');
-  res.status(200).json({ status: 'ok', players, nextCursor });
+  res.status(200).json({ status: 'ok', data: { players, nextCursor } });
 };
 
 export default gamesHandler;

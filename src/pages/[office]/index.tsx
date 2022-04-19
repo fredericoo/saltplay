@@ -37,9 +37,13 @@ type OfficePageProps = {
 
 const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
   const isDesktop = useMediaQuery('md');
-  const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
-    revalidateOnFocus: false,
-  });
+  const { data: randomPhoto } = useSWR<RandomPhotoApiResponse>(
+    office ? `/api/photo/random?q=${office.name}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
   useNavigationState(office?.name);
   if (!office) return <Box>404</Box>;
 
@@ -49,10 +53,10 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
         <SEO title={office.name} />
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
-            {data?.photo && (
+            {randomPhoto?.data?.photo && (
               <Image
-                src={data.photo.urls.regular}
-                alt={data.photo.alt_description || ''}
+                src={randomPhoto.data.photo.urls.regular}
+                alt={randomPhoto.data.photo.alt_description || ''}
                 objectFit="cover"
                 layout="fill"
                 unoptimized

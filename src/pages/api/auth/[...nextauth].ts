@@ -1,4 +1,4 @@
-import { GUEST_ROLE_ID } from '@/constants';
+import { GUEST_ROLE_ID, SESSION_MAX_AGE } from '@/constants';
 import PrismaAdapter from '@/lib/adapter';
 import turnGuestToUser from '@/lib/api/turnGuestToUser';
 import prisma from '@/lib/prisma';
@@ -49,6 +49,9 @@ export const nextAuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers,
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    maxAge: SESSION_MAX_AGE,
+  },
   callbacks: {
     session({ session, user }) {
       return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };

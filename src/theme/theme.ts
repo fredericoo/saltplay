@@ -25,9 +25,11 @@ const radixToSemantic = <T extends string>(
     ])
   );
 
+export const initialColorMode = 'dark';
+
 export const config: ThemeConfig = {
   cssVarPrefix: 'wrkplay',
-  initialColorMode: 'system',
+  initialColorMode,
   useSystemColorMode: false,
 };
 
@@ -66,6 +68,7 @@ const theme = extendTheme({
     sm: '0px 16px 16px rgba(0, 0, 0, 0.0065), 0px 8px 8px rgba(0, 0, 0, 0.0125), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.1)',
     md: '0px 16px 16px rgba(0, 0, 0, 0.0125), 0px 8px 8px rgba(0, 0, 0, 0.025), 0px 4px 4px rgba(0, 0, 0, 0.05), 0px 2px 2px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.2)',
     lg: '0px 16px 16px rgba(0, 0, 0, 0.1), 0px 8px 8px rgba(0, 0, 0, 0.05), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.0125), 0px 1px 1px rgba(0, 0, 0, 0.0075)',
+    soft: '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
     outline: '0 0 0 3px var(--wrkplay-colors-grey-6)',
   },
   radii: {
@@ -82,6 +85,16 @@ const theme = extendTheme({
       defaultProps: {
         startColor: 'blackAlpha.100',
         endColor: 'blackAlpha.400',
+      },
+    },
+    Tooltip: {
+      baseStyle: {
+        borderRadius: 'lg',
+        bg: 'grey.4',
+        border: '1px solid',
+        borderColor: 'grey.6',
+        color: 'grey.11',
+        boxShadow: 'soft',
       },
     },
     Badge,

@@ -1,4 +1,4 @@
-import getLeaderboardHandler from '@/lib/api/handlers/getLeaderboardHandler';
+import getLeaderboardHandler from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 

@@ -1,75 +1,58 @@
 import DeleteButton from '@/components/DeleteButton';
-import Editable from '@/components/Editable';
-import PointIcon from '@/components/PointIcon';
 import Settings from '@/components/Settings';
-import { HStack, Input } from '@chakra-ui/react';
+import { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
+import { patchPlayerScoreSchema } from '@/lib/api/schemas';
+import { Box, Heading, Stack } from '@chakra-ui/react';
 import { Game, PlayerScore } from '@prisma/client';
 import axios from 'axios';
 import { useState } from 'react';
 import { IoTrashOutline } from 'react-icons/io5';
+import SettingsGroup from '../SettingsGroup';
 
 type PlayerScoresProps = { scores: (Pick<PlayerScore, 'points' | 'id'> & { game: Pick<Game, 'name' | 'icon'> })[] };
 
 const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
-  const [editingFieldKey, setEditingFieldKey] = useState<string | null>(null);
-  const [response, setResponse] = useState<PlayerScore | undefined>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [deletedScores, setDeletedScores] = useState<PlayerScore['id'][]>([]);
 
-  const handleSave = async ({ id, points }: Pick<PlayerScore, 'id' | 'points'>) => {
-    setIsLoading(true);
-    try {
-      const res = await axios.patch(`/api/scores/${id}`, { points }).then(res => res.data);
-      if (res.status === 'ok') {
-        setEditingFieldKey(null);
-        setResponse(res);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
+  const handleDeleteSession = async (id: PlayerScore['id']) => {
+    const deletePlayerScore = await axios
+      .delete<PlayerScoreDELETEAPIResponse>(`/api/scores/${id}`)
+      .then(res => res.data);
+    const deletedPlayerScoreId = deletePlayerScore.data?.id;
+    if (deletedPlayerScoreId) {
+      setDeletedScores(scores => [...scores, deletedPlayerScoreId]);
     }
   };
 
   return (
-    <Settings.List>
-      {scores?.map(score => (
-        <Settings.Item key={score.id} label={score.game.icon + ' ' + score.game.name}>
-          <HStack>
-            <Editable
-              onEdit={() => setEditingFieldKey(score.id)}
-              onCancel={() => setEditingFieldKey(null)}
-              onSave={({ id, value }) => handleSave({ id, points: +value })}
-              isDisabled={isLoading && editingFieldKey !== score.id}
-              id={score.id}
-              isEditing={editingFieldKey === score.id}
-              value={
-                <>
-                  {response?.points || score.points} <PointIcon />
-                </>
-              }
+    <Stack spacing={8}>
+      {scores
+        ?.filter(score => !deletedScores.includes(score.id))
+        .map(score => (
+          <Box key={score.id}>
+            <Heading size="md" px={4} py={2}>
+              {score.game.name}
+            </Heading>
+            <SettingsGroup<PlayerScore>
+              data={score}
+              saveEndpoint={`/api/scores/${score.id}`}
+              fields={[{ id: 'points', type: 'number', label: 'Points' }]}
+              fieldSchema={patchPlayerScoreSchema}
             >
-              <Input
-                name={score.id}
-                textAlign="right"
-                type="number"
-                defaultValue={response?.points || score.points}
-                autoFocus
-              />
-            </Editable>
-            {editingFieldKey !== score.id && (
-              <DeleteButton
-                onDelete={() => {}}
-                keyword={`I want to remove ${score.game.name} scores for this player`}
-                variant="solid"
-                css={{ aspectRatio: '1' }}
-              >
-                <IoTrashOutline />
-              </DeleteButton>
-            )}
-          </HStack>
-        </Settings.Item>
-      ))}
-    </Settings.List>
+              <Settings.Item label="Delete scores">
+                <DeleteButton
+                  onDelete={() => handleDeleteSession(score.id)}
+                  keyword={`I want to remove ${score.game.name} scores for this player`}
+                  variant="solid"
+                  css={{ aspectRatio: '1' }}
+                >
+                  <IoTrashOutline />
+                </DeleteButton>
+              </Settings.Item>
+            </SettingsGroup>
+          </Box>
+        ))}
+    </Stack>
   );
 };
 

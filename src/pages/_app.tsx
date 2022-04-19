@@ -1,4 +1,4 @@
-import SimpleLayout from '@/layouts/SimpleLayout';
+import Default from '@/layouts/Default';
 import { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
 import Fonts from '@/theme/Fonts';
@@ -14,7 +14,7 @@ import { SWRConfig } from 'swr';
 type AppComponent = React.VFC<AppProps & { Component: PageWithLayout }>;
 
 const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) => {
-  const Layout = Component.Layout || SimpleLayout;
+  const Layout = Component.Layout || Default;
 
   return (
     <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>

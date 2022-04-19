@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
-import { Office } from '@prisma/client';
 import { APIResponse } from '@/lib/types/api';
+import { Office } from '@prisma/client';
+import { NextApiHandler } from 'next';
 
 const getOfficePlayerCount = (officeid: Office['id']) =>
   prisma.playerScore.aggregate({
@@ -48,15 +48,10 @@ const officeStatsHandler: NextApiHandler<OfficeStatsAPIResponse> = async (req, r
       return acc;
     }, matchesPerGame[0])?.name || 'None yet';
 
-  // res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=300');
-  res
-    .status(200)
-    .json({
-      status: 'ok',
-      matchesCount,
-      playerCount: playerScoreCount._count.playerid,
-      mostPlayedGame: mostPlayedGame,
-    });
+  res.status(200).json({
+    status: 'ok',
+    data: { matchesCount, playerCount: playerScoreCount._count.playerid, mostPlayedGame: mostPlayedGame },
+  });
 };
 
 export default officeStatsHandler;

@@ -1,30 +1,27 @@
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Admin from '@/layouts/Admin';
+import { PageWithLayout } from '@/layouts/types';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
-import { Container } from '@chakra-ui/react';
-import type { NextPage } from 'next';
 
-const AdminPage: NextPage = () => {
+const AdminPage: PageWithLayout = () => {
   useNavigationState('Dashboard');
   return (
-    <Container maxW="container.md" pt={NAVBAR_HEIGHT}>
+    <Settings.List>
       <SEO title="Dashboard" />
-      <PageHeader title={'Admin Panel'} />
-      <Settings.List>
-        <Settings.Link href="/admin/offices" icon="🏢">
-          Offices
-        </Settings.Link>
-        <Settings.Link href="/admin/games" icon="🎲">
-          Games
-        </Settings.Link>
-        <Settings.Link href="/admin/users" icon="🙋‍♀️">
-          Users
-        </Settings.Link>
-      </Settings.List>
-    </Container>
+      <Settings.Link href="/admin/offices" icon="🏢">
+        Offices
+      </Settings.Link>
+      <Settings.Link href="/admin/games" icon="🎲">
+        Games
+      </Settings.Link>
+      <Settings.Link href="/admin/users" icon="🙋‍♀️">
+        Users
+      </Settings.Link>
+    </Settings.List>
   );
 };
+
+AdminPage.Layout = Admin;
 
 export default AdminPage;

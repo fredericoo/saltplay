@@ -17,19 +17,17 @@ const querySchema = object({
 
 export type LeaderboardGETOptions = InferType<typeof querySchema>;
 
-export type LeaderboardGETAPIResponse = APIResponse<{
-  positions: {
-    position: number;
-    id: Player['id'];
-    name: Player['name'];
-    image: Player['image'];
-    roleId: Player['roleId'];
-    points: PlayerScore['points'];
-    wins: number;
-    losses: number;
-  }[];
-  nextPage?: number;
-}>;
+export type LeaderboardGETAPIResponse = APIResponse<
+  {
+    positions: ({
+      position: number;
+      wins: number;
+      losses: number;
+    } & Pick<Player, 'id' | 'name' | 'image' | 'roleId'> &
+      Pick<PlayerScore, 'points'>)[];
+  },
+  { nextPage?: number }
+>;
 
 const calculateWinsAndLosses = (
   matchesPlayedAsLeft: Pick<Match, 'leftscore' | 'rightscore'>[],
@@ -114,7 +112,7 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
       });
       const nextPage = leaderboard.totalCount > options.perPage * options.page ? options.page + 1 : undefined;
 
-      res.status(200).json({ status: 'ok', positions, nextPage });
+      res.status(200).json({ status: 'ok', data: { positions }, pageInfo: { nextPage } });
     })
     .catch(err => {
       res.status(400).json({ status: 'error', message: !isProd ? err.message : 'Bad request' });

@@ -7,13 +7,13 @@ import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 
-export type GameDELETEAPIResponse = APIResponse<{ data: Office }>;
+export type OfficeDELETEAPIResponse = APIResponse<Office>;
 
 const requestSchema = object().shape({
   id: string(),
 });
 
-const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res) => {
+const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req, res) => {
   await requestSchema
     .validate(req.query, { abortEarly: false })
     .then(async query => {
@@ -21,20 +21,26 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      const [_, __, game] = await prisma.$transaction([
-        prisma.match.deleteMany({ where: { gameid: query.id } }),
-        prisma.playerScore.deleteMany({ where: { gameid: query.id } }),
-        prisma.game.delete({ where: { id: query.id }, include: { office: true } }),
+      const gameIds = await prisma.office
+        .findUnique({ where: { id: query.id }, select: { games: { select: { id: true } } } })
+        .then(office => office?.games.map(game => game.id) || []);
+
+      const [_, __, ___, office] = await prisma.$transaction([
+        prisma.match.deleteMany({ where: { gameid: { in: gameIds } } }),
+        prisma.playerScore.deleteMany({ where: { gameid: { in: gameIds } } }),
+        prisma.game.deleteMany({ where: { officeid: query.id } }),
+        prisma.office.delete({
+          where: { id: query.id },
+        }),
       ]);
 
       try {
         await res.unstable_revalidate(`/`);
-        await res.unstable_revalidate(`/${game.office.slug}`);
-        await res.unstable_revalidate(`/${game.office.slug}/${game.slug}`);
       } catch {
         console.warn('Failed to revalidate');
       }
-      res.status(200).json({ status: 'ok', data: game });
+      office.slug && (await res.unstable_revalidate(`/${office.slug}`));
+      res.status(200).json({ status: 'ok', data: office });
     })
     .catch(err => {
       console.error(err);
@@ -42,4 +48,4 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
     });
 };
 
-export default deleteGameHandler;
+export default deleteOfficeHandler;

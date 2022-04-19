@@ -1,4 +1,4 @@
-import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/postMatchesHandler';
+import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
 import {
   Button,
   ButtonProps,

@@ -6,8 +6,8 @@ type EditableInputProps = Omit<InputProps, 'onChange' | 'value' | 'isInvalid' | 
   validate?: (value: string) => boolean;
   format?: (value: string) => string;
 };
-const EditableInput: React.VFC<EditableInputProps> = ({ validate, format, ...props }) => {
-  const [value, setValue] = useState<string>(props.defaultValue || '');
+const EditableInput: React.VFC<EditableInputProps> = ({ validate, format, defaultValue, ...props }) => {
+  const [value, setValue] = useState<string>(defaultValue || '');
   const isInvalid = !!validate && !validate(value);
   return (
     <Input

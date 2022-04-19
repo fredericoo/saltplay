@@ -1,13 +1,11 @@
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import PageHeader from '@/components/PageHeader';
 import RoleBadge from '@/components/RoleBadge';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Admin from '@/layouts/Admin';
+import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { Container } from '@chakra-ui/react';
-import type { NextPage } from 'next';
 
 type AdminPageProps = {
   users: Awaited<ReturnType<typeof getUsers>>;
@@ -19,22 +17,21 @@ export const getUsers = () =>
     select: { id: true, name: true, image: true, roleId: true },
   });
 
-const AdminPage: NextPage<AdminPageProps> = ({ users }) => {
+const AdminPage: PageWithLayout<AdminPageProps> = ({ users }) => {
   useNavigationState('Users');
   return (
-    <Container maxW="container.md" pt={NAVBAR_HEIGHT}>
+    <Settings.List>
       <SEO title="Users" />
-      <PageHeader title={'Users'} icon={'🙋‍♀️'} subtitle={`showing ${users.length} results`} />
-      <Settings.List>
-        {users.map(user => (
-          <Settings.Link icon={<RoleBadge roleId={user.roleId} />} href={`/admin/users/${user.id}`} key={user.id}>
-            {user.name}
-          </Settings.Link>
-        ))}
-      </Settings.List>
-    </Container>
+      {users.map(user => (
+        <Settings.Link icon={<RoleBadge roleId={user.roleId} />} href={`/admin/users/${user.id}`} key={user.id}>
+          {user.name}
+        </Settings.Link>
+      ))}
+    </Settings.List>
   );
 };
+
+AdminPage.Layout = Admin;
 
 export default AdminPage;
 

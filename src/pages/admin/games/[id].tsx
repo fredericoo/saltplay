@@ -1,24 +1,26 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import DeleteButton from '@/components/DeleteButton';
 import FlagsSwitch from '@/components/FlagsSwitch';
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import PageHeader from '@/components/PageHeader';
+import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
+import Admin from '@/layouts/Admin';
+import { PageWithLayout } from '@/layouts/types';
 import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { GamePATCHAPIResponse, ValidGamePatchResponse } from '@/lib/api/handlers/game/patchGameHandler';
+import { patchGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { toSlug, validateSlug } from '@/lib/slug';
-import useMediaQuery from '@/lib/useMediaQuery';
-import { Container, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import axios from 'axios';
-import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 type AdminPageProps = {
   game: Awaited<ReturnType<typeof getGame>>;
+  offices: Awaited<ReturnType<typeof getOffices>>;
 };
 
 export const getGame = (id: string) =>
@@ -36,15 +38,25 @@ export const getGame = (id: string) =>
     },
   });
 
-const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
-  const [response, setResponse] = useState<Game | undefined>();
+const getOffices = () =>
+  prisma.office.findMany({
+    select: { id: true, name: true },
+  });
+
+const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
+  const [response, setResponse] = useState<ValidGamePatchResponse | undefined>();
   const { push } = useRouter();
-  const isDesktop = useMediaQuery('md');
   useNavigationState(response?.name || game?.name);
 
-  const editableFields: EditableField<Game>[] = [
+  const editableFields: EditableField<typeof game>[] = [
     { id: 'name', label: 'Name', type: 'text' },
-    { id: 'icon', label: 'Icon', type: 'text' },
+    {
+      id: 'officeid',
+      label: 'Office',
+      type: 'select',
+      options: offices.map(office => ({ label: office.name, value: office.id })),
+    },
+    { id: 'icon', label: 'Icon', type: 'emoji' },
     {
       id: 'slug',
       label: 'Slug',
@@ -64,7 +76,9 @@ const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
     value: string | number | boolean;
   }) => {
     try {
-      const res = await axios.patch(`/api/games/${game?.id}`, { [id]: value }).then(res => res.data);
+      const res = await axios
+        .patch<GamePATCHAPIResponse>(`/api/games/${game?.id}`, { [id]: value })
+        .then(res => res.data);
       if (res.status === 'ok') {
         setResponse(res.data);
       }
@@ -79,39 +93,44 @@ const AdminPage: NextPage<AdminPageProps> = ({ game }) => {
   };
 
   return (
-    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <PageHeader title={response?.name || game?.name} icon={response?.icon || game?.icon} />
-      <Tabs variant={isDesktop ? 'sidebar' : undefined} css={{ '--sidebar-width': '300px' }}>
-        <TabList>
-          <Tab>Info</Tab>
-        </TabList>
-        <TabPanels pt={4}>
-          <TabPanel as={Stack} spacing={8}>
-            <SettingsGroup fields={editableFields} saveEndpoint={`/api/games/${game?.id}`} data={game} />
+    <Tabs>
+      <TabList>
+        <Tab>Info</Tab>
+      </TabList>
+      <TabPanels>
+        <TabPanel as={Stack} spacing={8}>
+          <SEO title={response?.name || game?.name} />
+          <SettingsGroup<Game>
+            fieldSchema={patchGameSchema}
+            fields={editableFields}
+            saveEndpoint={`/api/games/${game?.id}`}
+            data={game}
+          />
 
-            <FlagsSwitch
-              onChange={async value => await handleSaveField({ id: 'flags', value })}
-              label="Game features"
-              flags={GAME_FLAGS}
-              defaultValue={game?.flags ?? undefined}
-            />
+          <FlagsSwitch
+            onChange={async value => await handleSaveField({ id: 'flags', value })}
+            label="Game features"
+            flags={GAME_FLAGS}
+            defaultValue={game?.flags ?? undefined}
+          />
 
-            <Settings.List>
-              <Settings.Item label="Danger zone">
-                <DeleteButton
-                  keyword={`I want to delete all matches for ${response?.name || game?.name || 'this game'}`}
-                  onDelete={handleDeleteOffice}
-                >
-                  Delete Game
-                </DeleteButton>
-              </Settings.Item>
-            </Settings.List>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Container>
+          <Settings.List>
+            <Settings.Item label="Danger zone">
+              <DeleteButton
+                keyword={`I want to delete all matches for ${response?.name || game?.name || 'this game'}`}
+                onDelete={handleDeleteOffice}
+              >
+                Delete Game
+              </DeleteButton>
+            </Settings.Item>
+          </Settings.List>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
+
+AdminPage.Layout = Admin;
 
 export default AdminPage;
 
@@ -122,6 +141,7 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   return {
     props: {
       game: await getGame(params.id),
+      offices: await getOffices(),
     },
   };
 });

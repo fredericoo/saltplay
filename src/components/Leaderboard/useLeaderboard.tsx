@@ -1,12 +1,15 @@
-import { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/getLeaderboardHandler';
+import { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Game, User } from '@prisma/client';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 const getKey =
   (options: Partial<LeaderboardGETOptions>) => (pageIndex: number, previousPageData: LeaderboardGETAPIResponse) => {
     if (options.userId) return null;
-    if (previousPageData && !previousPageData.nextPage) return null; // reached the end
-    const queryParams = Object.entries({ page: pageIndex > 0 ? previousPageData.nextPage : undefined, ...options })
+    if (previousPageData && !previousPageData.pageInfo?.nextPage) return null; // reached the end
+    const queryParams = Object.entries({
+      page: pageIndex > 0 ? previousPageData?.pageInfo?.nextPage : undefined,
+      ...options,
+    })
       .filter(([, value]) => value)
       .map(entry => entry.join('='))
       .join('&');

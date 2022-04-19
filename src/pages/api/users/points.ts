@@ -26,7 +26,7 @@ const pointsHandler: NextApiHandler<PlayerPointsAPIResponse> = async (req, res) 
 
   const points = await getUserPoints(session?.user?.id, req.query.gameid);
 
-  res.status(200).json({ status: 'ok', points });
+  res.status(200).json({ status: 'ok', data: { points } });
 };
 
 export default pointsHandler;

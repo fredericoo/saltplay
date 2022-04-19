@@ -34,7 +34,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
   if (!player) return null;
 
   const playerName = player.name || `Player ${player?.id}`;
-  const hasMultipleGames = !!data?.games?.length && data.games.length > 1;
+  const hasMultipleGames = !!data?.data?.games?.length && data.data.games.length > 1;
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <Stack spacing={{ base: 1, md: 0.5 }}>
@@ -67,7 +67,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
           <Tabs isLazy key={player.id}>
             <TabList>
               {hasMultipleGames && <Tab>All</Tab>}
-              {data?.games?.map(game => (
+              {data?.data?.games?.map(game => (
                 <Tab key={game.id}>{game.name}</Tab>
               ))}
             </TabList>
@@ -77,7 +77,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
                   <LatestMatches userId={player.id} />
                 </TabPanel>
               )}
-              {data?.games?.map(game => (
+              {data?.data?.games?.map(game => (
                 <TabPanel pt={8} key={game.id}>
                   <LatestMatches userId={player.id} gameId={game.id} />
                 </TabPanel>

@@ -1,23 +1,16 @@
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
-import { slugSchema } from '@/lib/slug';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Office } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
-import { object, string } from 'yup';
+import { patchOfficeSchema } from '../../schemas';
 
-export type OfficePATCHAPIResponse = APIResponse<{ data: Office }>;
-
-const editableFieldsSchema = object().shape({
-  name: string(),
-  icon: string(),
-  slug: slugSchema,
-});
+export type OfficePATCHAPIResponse = APIResponse<Office>;
 
 const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, res) => {
-  await editableFieldsSchema
+  await patchOfficeSchema
     .validate(req.body, { abortEarly: false })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);

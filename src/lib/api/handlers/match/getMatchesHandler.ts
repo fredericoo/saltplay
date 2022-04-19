@@ -54,10 +54,12 @@ const getMatches = ({ first, after, userId, gameId, officeId }: GetMatchesOption
     },
   });
 
-export type MatchesGETAPIResponse = APIResponse<{
-  matches: Awaited<ReturnType<typeof getMatches>>;
-  nextCursor?: Match['id'];
-}>;
+export type MatchesGETAPIResponse = APIResponse<
+  {
+    matches: Awaited<ReturnType<typeof getMatches>>;
+  },
+  { nextCursor?: Match['id'] }
+>;
 
 const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
   querySchema
@@ -66,7 +68,7 @@ const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res
       const matches = await getMatches({ ...options });
       const nextCursor = matches.length >= (options.first || PAGE_SIZE) ? matches[matches.length - 1].id : undefined;
 
-      res.status(200).json({ status: 'ok', matches, nextCursor });
+      res.status(200).json({ status: 'ok', data: { matches }, pageInfo: { nextCursor } });
     })
     .catch(err => {
       res.status(400).json({ status: 'error', message: !isProd ? err.message : 'Bad request' });

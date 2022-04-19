@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { LayoutComponent } from './types';
 
-const SimpleLayout: LayoutComponent = ({ children }) => {
+const Default: LayoutComponent = ({ children }) => {
   const statusBarStyle = useColorModeValue('default', 'black-translucent');
   const themeColor = useColorModeValue(mauve.mauve2, mauveDark.mauve2);
 
@@ -22,4 +22,4 @@ const SimpleLayout: LayoutComponent = ({ children }) => {
   );
 };
 
-export default SimpleLayout;
+export default Default;

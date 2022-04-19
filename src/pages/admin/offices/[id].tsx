@@ -1,18 +1,18 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import DeleteButton from '@/components/DeleteButton';
 import List from '@/components/List';
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import PageHeader from '@/components/PageHeader';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
+import Admin from '@/layouts/Admin';
+import { PageWithLayout } from '@/layouts/types';
 import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { patchOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import useMediaQuery from '@/lib/useMediaQuery';
-import { Button, Container, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { toSlug, validateSlug } from '@/lib/slug';
+import { Button, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import axios from 'axios';
-import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { VscAdd } from 'react-icons/vsc';
 
@@ -22,8 +22,15 @@ type AdminPageProps = {
 
 const editableFields: EditableField<Office>[] = [
   { id: 'name', label: 'Name', type: 'text' },
-  { id: 'icon', label: 'Icon', type: 'text' },
-  { id: 'slug', label: 'Slug', type: 'text', preText: WEBSITE_URL + '/' },
+  { id: 'icon', label: 'Icon', type: 'emoji' },
+  {
+    id: 'slug',
+    label: 'Slug',
+    type: 'text',
+    preText: WEBSITE_URL + '/',
+    validate: validateSlug,
+    format: toSlug,
+  },
 ];
 
 export const getOffice = (id: string) =>
@@ -32,9 +39,8 @@ export const getOffice = (id: string) =>
     select: { id: true, name: true, icon: true, slug: true, games: { select: { id: true, name: true, icon: true } } },
   });
 
-const AdminPage: NextPage<AdminPageProps> = ({ office }) => {
+const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
   const { push } = useRouter();
-  const isDesktop = useMediaQuery('md');
   useNavigationState(office?.name);
 
   const handleDeleteOffice = async () => {
@@ -43,44 +49,48 @@ const AdminPage: NextPage<AdminPageProps> = ({ office }) => {
   };
 
   return (
-    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <PageHeader title={office?.name} icon={office?.icon} />
-      <Tabs variant={isDesktop ? 'sidebar' : undefined} css={{ '--sidebar-width': '300px' }}>
-        <TabList>
-          <Tab>Info</Tab>
-          <Tab>Games</Tab>
-        </TabList>
-        <TabPanels pt={4}>
-          <TabPanel as={Stack} spacing={8}>
-            <SettingsGroup fields={editableFields} saveEndpoint={`/api/offices/${office?.id}`} data={office} />
-            <Settings.List>
-              <Settings.Item label="Danger zone">
-                <DeleteButton
-                  keyword={`I want to delete all games and matches in ${office?.name || 'this office'}`}
-                  onDelete={handleDeleteOffice}
-                >
-                  Delete Office
-                </DeleteButton>
-              </Settings.Item>
-            </Settings.List>
-          </TabPanel>
-          <TabPanel>
-            <List>
-              {office?.games.map(game => (
-                <List.Item icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
-                  {game.name}
-                </List.Item>
-              ))}
-              <Button variant="subtle" colorScheme="success" leftIcon={<VscAdd />}>
-                Create game
-              </Button>
-            </List>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Container>
+    <Tabs>
+      <TabList>
+        <Tab>Info</Tab>
+        <Tab>Games</Tab>
+      </TabList>
+      <TabPanels pt={4}>
+        <TabPanel as={Stack} spacing={8}>
+          <SettingsGroup<Office>
+            fieldSchema={patchOfficeSchema}
+            fields={editableFields}
+            saveEndpoint={`/api/offices/${office?.id}`}
+            data={office}
+          />
+          <Settings.List>
+            <Settings.Item label="Danger zone">
+              <DeleteButton
+                keyword={`I want to delete all games and matches in ${office?.name || 'this office'}`}
+                onDelete={handleDeleteOffice}
+              >
+                Delete Office
+              </DeleteButton>
+            </Settings.Item>
+          </Settings.List>
+        </TabPanel>
+        <TabPanel>
+          <List>
+            {office?.games.map(game => (
+              <List.Item icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
+                {game.name}
+              </List.Item>
+            ))}
+            <Button variant="subtle" colorScheme="success" leftIcon={<VscAdd />}>
+              Create game
+            </Button>
+          </List>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
+
+AdminPage.Layout = Admin;
 
 export default AdminPage;
 

@@ -7,8 +7,8 @@ import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { array, InferType, number, object, string } from 'yup';
-import getPlayerUserIds from '../getPlayerUserIds';
-import moveMatchPoints from '../moveMatchPoints';
+import getPlayerUserIds from '../../getPlayerUserIds';
+import moveMatchPoints from '../../moveMatchPoints';
 
 const sideSchema = object().shape({
   score: number().required(),

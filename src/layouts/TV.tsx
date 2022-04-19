@@ -4,7 +4,7 @@ import QR from 'qrcode.react';
 import Logo from '../components/Logo';
 import { LayoutComponent } from './types';
 
-const DashboardLayout: LayoutComponent = ({ children }) => {
+const TV: LayoutComponent = ({ children }) => {
   return (
     <Box as="main" position="relative" h="100vh" overflow="hidden">
       {children}
@@ -18,4 +18,4 @@ const DashboardLayout: LayoutComponent = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default TV;

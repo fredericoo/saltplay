@@ -65,7 +65,7 @@ const gamesHandler: NextApiHandler<PlayerStatsAPIResponse> = async (req, res) =>
     ).values()
   );
 
-  res.status(200).json({ status: 'ok', played, won, lost, tied, games });
+  res.status(200).json({ status: 'ok', data: { played, won, lost, tied, games } });
 };
 
 export default gamesHandler;

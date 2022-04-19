@@ -52,8 +52,7 @@ const variantBottomBar: SystemStyleFunction = props => ({
     overflow: 'auto',
     position: 'fixed',
     zIndex: 'overlay',
-    boxShadow:
-      '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
+    boxShadow: 'soft',
     p: 1,
     left: 4,
     right: 4,
@@ -101,19 +100,25 @@ export const variantSidebar = {
       bg: 'grey.3',
       color: 'primary.10',
     },
+    _focus: {
+      bg: 'grey.3',
+      boxShadow: 'none',
+    },
     fontSize: 'sm',
     justifyContent: 'flex-start',
   },
   tablist: {
     display: 'flex',
+    alignSelf: 'start',
     flexDirection: 'column',
-    borderRight: { md: '1px solid' },
-    borderColor: { md: 'grey.4' },
+    position: 'sticky',
+    top: 'calc(64px + env(safe-area-inset-top))',
     pt: 4,
   },
   tabpanel: {
-    py: 0,
-    px: 4,
+    borderLeft: { md: '1px solid' },
+    borderColor: { md: 'grey.4' },
+    p: 4,
   },
 };
 

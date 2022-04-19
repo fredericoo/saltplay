@@ -18,6 +18,9 @@ export const Menu = {
         _hover: {
           bg: 'grey.5',
         },
+        '&[data-active]': {
+          bg: 'grey.6',
+        },
         _focus: {
           bg: 'grey.3',
         },

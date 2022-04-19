@@ -37,7 +37,7 @@ const gamesHandler: NextApiHandler<OfficeMatchesAPIResponse> = async (req, res) 
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
 
   // res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=300');
-  res.status(200).json({ status: 'ok', matches, nextCursor });
+  res.status(200).json({ status: 'ok', data: { matches, nextCursor } });
 };
 
 export default gamesHandler;

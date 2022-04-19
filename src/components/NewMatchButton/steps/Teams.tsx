@@ -33,9 +33,9 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   const teamSize = Math.max(left?.length, right?.length, 1);
   const players =
     session?.user.roleId === 0
-      ? opponentsQuery?.opponents
-      : opponentsQuery?.opponents?.filter(({ id }) => id !== session?.user.id);
-  const thisPlayer = opponentsQuery?.opponents?.find(({ id }) => id === session?.user.id);
+      ? opponentsQuery?.data?.opponents
+      : opponentsQuery?.data?.opponents?.filter(({ id }) => id !== session?.user.id);
+  const thisPlayer = opponentsQuery?.data?.opponents?.find(({ id }) => id === session?.user.id);
   register('right', { required: true, value: [] });
   register('left', { required: true, value: [] });
 

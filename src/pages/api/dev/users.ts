@@ -23,7 +23,7 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
 
   res.status(200).json({
     status: 'ok',
-    users,
+    data: { users },
   });
 };
 

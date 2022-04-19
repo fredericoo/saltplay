@@ -27,6 +27,7 @@
     "axios": "^0.25.0",
     "cookie": "^0.4.1",
     "date-fns": "^2.27.0",
+    "emoji-picker-react": "^3.5.1",
     "framer-motion": "^4",
     "next": "^12.1.4",
     "next-auth": "^4.0.5",

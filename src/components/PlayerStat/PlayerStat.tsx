@@ -16,11 +16,13 @@ const labels = {
 };
 
 const PlayerStat: React.VFC<PlayerStatProps> = ({ id, stat }) => {
-  const { data, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher, {
+  const { data: playerStats, error } = useSWR<PlayerStatsAPIResponse>(id ? `/api/players/${id}/stats` : null, fetcher, {
     revalidateOnFocus: false,
   });
   if (!id || error) return null;
-  return <Stat label={labels[stat]} content={data?.[stat]} isLoading={typeof data === 'undefined'} />;
+  return (
+    <Stat label={labels[stat]} content={playerStats?.data?.[stat]} isLoading={typeof playerStats === 'undefined'} />
+  );
 };
 
 export default PlayerStat;

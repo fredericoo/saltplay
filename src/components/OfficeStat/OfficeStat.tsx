@@ -16,11 +16,13 @@ const labels = {
 };
 
 const OfficeStat: React.VFC<OfficeStatProps> = ({ id, stat }) => {
-  const { data, error } = useSWR<OfficeStatsAPIResponse>(id ? `/api/offices/${id}/stats` : null, fetcher, {
+  const { data: officeStats, error } = useSWR<OfficeStatsAPIResponse>(id ? `/api/offices/${id}/stats` : null, fetcher, {
     revalidateOnFocus: false,
   });
   if (!id || error) return null;
-  return <Stat label={labels[stat]} content={data?.[stat]} isLoading={typeof data === 'undefined'} />;
+  return (
+    <Stat label={labels[stat]} content={officeStats?.data?.[stat]} isLoading={typeof officeStats === 'undefined'} />
+  );
 };
 
 export default OfficeStat;

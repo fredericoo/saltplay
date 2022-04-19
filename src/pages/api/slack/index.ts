@@ -16,7 +16,7 @@ const slackMembersHandler: NextApiHandler<SlackMembersAPIResponse> = async (req,
   const members = await getAllSlackMembers();
 
   res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=86400');
-  res.status(200).json({ status: 'ok', members });
+  res.status(200).json({ status: 'ok', data: { members } });
 };
 
 export default slackMembersHandler;

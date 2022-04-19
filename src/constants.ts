@@ -1,4 +1,5 @@
 export const WEBSITE_URL = 'https://saltplay.app';
+export const SESSION_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
 export const DASHBOARD_ROLES = [0];
 export const GUEST_ROLE_ID = 2;

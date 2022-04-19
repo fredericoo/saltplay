@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import LoadingIcon from '../LoadingIcon';
 import { ModalFormProps } from '../ModalButton/ModalButton';
+import Toast from '../Toast';
 
 export type FeedbackFormData = {
   rating: number;
@@ -36,18 +37,14 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
       });
       if (!res.ok) throw new Error('Error creating feedback');
       toast({
-        title: 'Cheers!',
-        status: 'success',
-        description: 'Your feedback was sent successfully.',
+        render: () => <Toast status="success" heading="Cheers!" content={'We have received your feedback.'} />,
       });
       reset();
       closeModal();
     } catch (e: unknown) {
       const description = e instanceof Error ? e.message : 'Unknown error';
       toast({
-        title: 'Whoops',
-        status: 'error',
-        description,
+        render: () => <Toast status="error" heading="Whoops" content={description} />,
       });
       return;
     } finally {

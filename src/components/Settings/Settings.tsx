@@ -1,8 +1,9 @@
 import { Box, ChakraProps, FormControl, Heading, HStack, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
+import { ReactNode } from 'react';
 import { VscChevronRight } from 'react-icons/vsc';
 
-const Item: React.FC<{ label?: string; htmlFor?: string }> = ({ children, label, htmlFor }) => {
+const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, label, htmlFor }) => {
   return (
     <FormControl
       fontSize="sm"
@@ -70,7 +71,7 @@ const Action: React.FC<{ href: string; icon?: JSX.Element | string; helper?: str
   );
 };
 
-const List: React.FC<{ label?: string } & ChakraProps> = ({ children, label, ...props }) => {
+const List: React.FC<{ label?: ReactNode } & ChakraProps> = ({ children, label, ...props }) => {
   return (
     <Box {...props}>
       {label && (
@@ -78,7 +79,11 @@ const List: React.FC<{ label?: string } & ChakraProps> = ({ children, label, ...
           {label}
         </Heading>
       )}
-      <Stack as="ul" spacing={0.5} borderRadius="xl" overflow="hidden">
+      <Stack
+        as="ul"
+        spacing={0.5}
+        sx={{ '&>*:first-child': { borderTopRadius: 'xl' }, '&>*:last-child': { borderBottomRadius: 'xl' } }}
+      >
         {children}
       </Stack>
     </Box>

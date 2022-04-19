@@ -33,15 +33,17 @@ const Editable = <T extends PropertyKey>({
       <HStack flexShrink={1} flexGrow={1} justifyContent="flex-end" overflow="hidden">
         {value && (
           <Box
+            as="button"
             textAlign="right"
-            onClick={onEdit}
+            onClick={isDisabled ? undefined : onEdit}
             color="grey.11"
-            _hover={{ bg: 'grey.2', borderColor: 'grey.5' }}
+            _hover={isDisabled ? undefined : { bg: 'grey.2', borderColor: 'grey.5' }}
             px={3}
             py={2}
             borderRadius="md"
             border="1px solid transparent"
             cursor="text"
+            opacity={isDisabled ? 0.5 : 1}
             isTruncated
           >
             <Text as="span" color="grey.8">
