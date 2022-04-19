@@ -12,6 +12,12 @@ export const gameFlagsSchema = number()
   .min(0)
   .max(Object.values(GAME_FLAGS).reduce((acc, cur) => acc + cur));
 
+export const postOfficeSchema = object().shape({
+  name: string().required(),
+  icon: string(),
+  slug: slugSchema.required(),
+});
+
 export const patchOfficeSchema = object().shape({
   name: string(),
   icon: string(),

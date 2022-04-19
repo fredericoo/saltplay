@@ -1,4 +1,4 @@
-import { postGameSchema } from '@/lib/api/schemas';
+import { postOfficeSchema } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
@@ -7,32 +7,28 @@ import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
 
-type PostGameBody = InferType<typeof postGameSchema>;
-export type ValidGamePostResponse = Awaited<ReturnType<typeof createGame>>;
-export type GamePOSTAPIResponse = APIResponse<ValidGamePostResponse>;
+type PostOfficeBody = InferType<typeof postOfficeSchema>;
+export type ValidGamePostResponse = Awaited<ReturnType<typeof createOffice>>;
+export type OfficePOSTAPIResponse = APIResponse<ValidGamePostResponse>;
 
-const createGame = async ({ officeId, ...body }: PostGameBody) =>
-  await prisma.game.create({
-    data: { ...body, office: { connect: { id: officeId } } },
-    include: {
-      office: true,
-    },
+const createOffice = (body: PostOfficeBody) =>
+  prisma.office.create({
+    data: body,
   });
 
-const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) => {
-  await postGameSchema
-    .validate(req.body, { abortEarly: true })
+const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res) => {
+  await postOfficeSchema
+    .validate(req.body, { abortEarly: false })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
-
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       try {
-        const game = await createGame(body);
-        res.status(200).json({ status: 'ok', data: game });
-      } catch (e) {
-        console.error(e);
+        const office = await createOffice(body);
+
+        res.status(200).json({ status: 'ok', data: office });
+      } catch {
         res.status(500).json({ status: 'error', message: 'Internal server error' });
       }
     })
@@ -47,4 +43,4 @@ const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) =>
     });
 };
 
-export default postGameHandler;
+export default postOfficeHandler;
