@@ -18,6 +18,15 @@ export const patchOfficeSchema = object().shape({
   slug: slugSchema,
 });
 
+export const postGameSchema = object({
+  name: string().required().min(2),
+  icon: string().max(3),
+  slug: slugSchema.required(),
+  flags: gameFlagsSchema.default(0),
+  maxPlayersPerTeam: number().max(10).default(1),
+  officeId: string().required(),
+});
+
 export const patchGameSchema = object({
   name: string().min(2),
   icon: string().max(3),
