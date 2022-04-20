@@ -12,14 +12,16 @@ type PatchPlayerScoreSchema = InferType<typeof patchPlayerScoreSchema>;
 export type ValidPlayerScoreResponse = Awaited<ReturnType<typeof updatePlayerScore>>;
 export type PlayerScorePATCHAPIResponse = APIResponse<ValidPlayerScoreResponse>;
 
-const updatePlayerScore = async (id: PlayerScore['id'], body: PatchPlayerScoreSchema) =>
-  await prisma.playerScore.update({
+const updatePlayerScore = async (id: PlayerScore['id'], { gameId, ...body }: PatchPlayerScoreSchema) => {
+  const data = gameId ? { ...body, game: { connect: { id: gameId } } } : body;
+  return await prisma.playerScore.update({
     where: { id },
-    data: body,
+    data,
     include: {
       game: { select: { name: true, icon: true, id: true } },
     },
   });
+};
 
 const patchPlayerScoreHandler: NextApiHandler<PlayerScorePATCHAPIResponse> = async (req, res) => {
   await patchPlayerScoreSchema

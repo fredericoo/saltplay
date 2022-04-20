@@ -9,9 +9,12 @@ import { useState } from 'react';
 import { IoTrashOutline } from 'react-icons/io5';
 import SettingsGroup from '../SettingsGroup';
 
-type PlayerScoresProps = { scores: (Pick<PlayerScore, 'points' | 'id'> & { game: Pick<Game, 'name' | 'icon'> })[] };
+type PlayerScoresProps = {
+  scores: (Pick<PlayerScore, 'points' | 'id' | 'gameid'> & { game: Pick<Game, 'name' | 'icon'> })[];
+  games: Pick<Game, 'id' | 'name'>[];
+};
 
-const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
+const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores, games }) => {
   const [deletedScores, setDeletedScores] = useState<PlayerScore['id'][]>([]);
 
   const handleDeleteSession = async (id: PlayerScore['id']) => {
@@ -36,7 +39,15 @@ const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
             <SettingsGroup<PlayerScore>
               data={score}
               saveEndpoint={`/api/scores/${score.id}`}
-              fields={[{ id: 'points', type: 'number', label: 'Points' }]}
+              fields={[
+                { id: 'points', type: 'number', label: 'Points' },
+                {
+                  id: 'gameid',
+                  type: 'select',
+                  label: 'Game',
+                  options: games.map(game => ({ value: game.id, label: game.name })),
+                },
+              ]}
               fieldSchema={patchPlayerScoreSchema}
             >
               <Settings.Item label="Delete scores">

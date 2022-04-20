@@ -48,7 +48,8 @@ export const patchUserSchema = object({
 
 export const patchPlayerScoreSchema = object().shape({
   id: string(),
-  points: number().required(),
+  points: number(),
+  gameId: string(),
 });
 
 export const deletePlayerScoreSchema = object().shape({
