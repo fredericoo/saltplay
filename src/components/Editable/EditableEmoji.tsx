@@ -1,4 +1,5 @@
 import {
+  Center,
   ChakraProps,
   HStack,
   Input,
@@ -10,10 +11,15 @@ import {
 import { IEmojiPickerProps } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import LoadingIcon from '../LoadingIcon';
 
 const EmojiPicker = dynamic<IEmojiPickerProps>(() => import('emoji-picker-react'), {
   ssr: false,
-  loading: () => <p>Loading ...</p>,
+  loading: () => (
+    <Center minH="300px">
+      <LoadingIcon color="grey.200" size={16} />
+    </Center>
+  ),
 });
 
 type EditableEmojiProps = ChakraProps & {
