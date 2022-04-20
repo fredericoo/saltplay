@@ -96,7 +96,7 @@ export default AdminPage;
 
 export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   if (typeof params?.id !== 'string') {
-    return { props: {} };
+    return { notFound: true };
   }
   return {
     props: {
