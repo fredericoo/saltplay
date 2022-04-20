@@ -5,6 +5,7 @@ import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 const getKey =
   (options: Partial<LeaderboardGETOptions>) => (pageIndex: number, previousPageData: LeaderboardGETAPIResponse) => {
     if (options.userId) return null;
+    if (!options.gameId && !options.userId) return null;
     if (previousPageData && !previousPageData.pageInfo?.nextPage) return null; // reached the end
     const queryParams = Object.entries({
       page: pageIndex > 0 ? previousPageData?.pageInfo?.nextPage : undefined,
