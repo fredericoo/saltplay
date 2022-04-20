@@ -1,4 +1,3 @@
-import RoleBadge from '@/components/RoleBadge';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
@@ -6,6 +5,7 @@ import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { roleIcons } from '@/lib/roles';
 
 type AdminPageProps = {
   users: Awaited<ReturnType<typeof getUsers>>;
@@ -23,7 +23,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ users }) => {
     <Settings.List>
       <SEO title="Users" />
       {users.map(user => (
-        <Settings.Link icon={<RoleBadge roleId={user.roleId} />} href={`/admin/users/${user.id}`} key={user.id}>
+        <Settings.Link icon={roleIcons[user.roleId]} href={`/admin/users/${user.id}`} key={user.id}>
           {user.name}
         </Settings.Link>
       ))}

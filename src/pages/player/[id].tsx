@@ -1,6 +1,7 @@
 import LatestMatches from '@/components/LatestMatches';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
+import PlayerName from '@/components/PlayerName';
 import PlayerStat from '@/components/PlayerStat';
 import SEO from '@/components/SEO';
 import fetcher from '@/lib/fetcher';
@@ -53,7 +54,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
               mt={2}
               overflow="hidden"
             >
-              {playerName}
+              <PlayerName user={player} />
             </Text>
           </Box>
           <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">

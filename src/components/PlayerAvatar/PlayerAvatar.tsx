@@ -1,4 +1,4 @@
-import RoleBadge from '@/components/RoleBadge';
+import { isRemoved } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Circle, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
@@ -13,18 +13,9 @@ type PlayerAvatarProps = {
 
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
   const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
+  const isUserRemoved = isRemoved(user.roleId);
   return (
-    <LinkWrapper href={isLink ? `/player/${user.id}` : undefined}>
-      <RoleBadge
-        fontSize={fontSize(1 / 16)}
-        position="absolute"
-        zIndex="2"
-        bottom=".5em"
-        right=".5em"
-        transform="translate(50%,50%)"
-        roleId={user.roleId}
-      />
-
+    <LinkWrapper href={isLink && !isUserRemoved ? `/player/${user.id}` : undefined}>
       <Circle
         position="relative"
         boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
@@ -33,7 +24,16 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         bg={getGradientFromId(user.id)}
         overflow="hidden"
       >
-        {user.image ? (
+        {isUserRemoved ? (
+          <Image
+            src={'/avatars/anonymous.png'}
+            height="300"
+            width="300"
+            unoptimized
+            alt={`Anonymous avatar`}
+            objectFit="cover"
+          />
+        ) : user.image ? (
           <Image
             src={user.image}
             height="300"
