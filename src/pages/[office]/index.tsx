@@ -1,9 +1,8 @@
 import LatestMatches from '@/components/LatestMatches';
 import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import OfficeStat from '@/components/OfficeStat';
 import SEO from '@/components/SEO';
-import { Sidebar } from '@/components/Sidebar/types';
+import Stat from '@/components/Stat';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
@@ -11,11 +10,12 @@ import prisma from '@/lib/prisma';
 import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Office } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
 import Image from 'next/image';
 import useSWR from 'swr';
 
-export const getOfficeBySlug = async (slug: string) =>
+export const getOfficeBySlug = async (slug: Office['slug']) =>
   await prisma.office.findUnique({
     where: { slug },
     select: {
@@ -25,17 +25,26 @@ export const getOfficeBySlug = async (slug: string) =>
       icon: true,
       games: {
         orderBy: { name: 'asc' },
-        select: { name: true, id: true, slug: true, icon: true },
+        select: {
+          _count: {
+            select: {
+              matches: true,
+            },
+          },
+          name: true,
+          id: true,
+          slug: true,
+          icon: true,
+        },
       },
     },
   });
 
 type OfficePageProps = {
-  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
-  sidebar?: Sidebar;
+  office: NonNullable<Awaited<ReturnType<typeof getOfficeBySlug>>>;
 };
 
-const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
+const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   const isDesktop = useMediaQuery('md');
   const { data: randomPhoto } = useSWR<RandomPhotoApiResponse>(
     office ? `/api/photo/random?q=${office.name}` : null,
@@ -44,8 +53,22 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
       revalidateOnFocus: false,
     }
   );
-  useNavigationState(office?.name);
-  if (!office) return <Box>404</Box>;
+
+  const matchesPerGame = office.games;
+  const matchesCount = matchesPerGame?.reduce((acc, cur) => acc + cur._count.matches, 0) || 0;
+  const mostPlayedGame =
+    matchesPerGame?.reduce((acc, cur) => {
+      if (cur._count.matches > acc._count.matches) return cur;
+      return acc;
+    })?.name || 'None yet';
+  const sidebar = {
+    items: office.games.map(game => ({
+      title: game.name,
+      href: `/${office.slug}/${game.slug}`,
+      icon: game.icon || null,
+    })),
+  };
+  useNavigationState(office.name);
 
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
@@ -69,8 +92,8 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
             </Text>
           </Box>
           <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} p={1}>
-            <OfficeStat id={office.id} stat="mostPlayedGame" />
-            <OfficeStat id={office.id} stat="matchesCount" />
+            <Stat label="Most played game" content={mostPlayedGame} />
+            <Stat label="Matches" content={matchesCount} />
           </HStack>
         </Box>
         <Stack spacing={6} pt={4}>
@@ -99,29 +122,22 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
     </Container>
   );
 };
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
   if (typeof params?.office !== 'string') {
     return { props: {} };
   }
 
   const office = await getOfficeBySlug(params?.office);
 
-  if (!office) {
-    return { props: {} };
+  if (!office || office === null) {
+    return { notFound: true };
   }
 
-  const sidebar: Sidebar = {
-    items: office.games.map(game => ({
-      title: game.name,
-      href: `/${office.slug}/${game.slug}`,
-      icon: game.icon || null,
-    })),
-  };
+  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
 
   return {
     props: {
       office,
-      sidebar,
     },
   };
 };
