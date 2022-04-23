@@ -1,24 +1,27 @@
+import Breadcrumbs from '@/components/Breadcrumbs';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import useNavigationState from '@/lib/navigationHistory/useNavigationState';
+import { Stack } from '@chakra-ui/react';
 
 const AdminPage: PageWithLayout = () => {
-  useNavigationState('Dashboard');
   return (
-    <Settings.List>
-      <SEO title="Dashboard" />
-      <Settings.Link href="/admin/offices" icon="🏢">
-        Offices
-      </Settings.Link>
-      <Settings.Link href="/admin/games" icon="🎲">
-        Games
-      </Settings.Link>
-      <Settings.Link href="/admin/users" icon="🙋‍♀️">
-        Users
-      </Settings.Link>
-    </Settings.List>
+    <Stack spacing={8}>
+      <Breadcrumbs px={2} levels={[{ label: 'Admin' }]} />
+      <Settings.List>
+        <SEO title="Dashboard" />
+        <Settings.Link href="/admin/offices" icon="🏢">
+          Offices
+        </Settings.Link>
+        <Settings.Link href="/admin/games" icon="🎲">
+          Games
+        </Settings.Link>
+        <Settings.Link href="/admin/users" icon="🙋‍♀️">
+          Users
+        </Settings.Link>
+      </Settings.List>
+    </Stack>
   );
 };
 

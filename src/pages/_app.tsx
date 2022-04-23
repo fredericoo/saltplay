@@ -17,14 +17,14 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
   const Layout = Component.Layout || Default;
 
   return (
-    <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-      <Head>
-        <meta
-          name="viewport"
-          content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-      </Head>
-      <RecoilRoot>
+    <RecoilRoot>
+      <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
+        <Head>
+          <meta
+            name="viewport"
+            content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          />
+        </Head>
         <ChakraProvider theme={theme}>
           <Fonts />
           <SessionProvider session={session}>
@@ -34,8 +34,8 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
             </Layout>
           </SessionProvider>
         </ChakraProvider>
-      </RecoilRoot>
-    </SWRConfig>
+      </SWRConfig>
+    </RecoilRoot>
   );
 };
 

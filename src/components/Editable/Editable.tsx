@@ -1,5 +1,6 @@
 import { Box, HStack, IconButton, Text, Tooltip } from '@chakra-ui/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect, useRef } from 'react';
+import FocusLock from 'react-focus-lock';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 import { VscAdd, VscEdit } from 'react-icons/vsc';
 
@@ -28,11 +29,19 @@ const Editable = <T extends PropertyKey>({
   error,
   preText,
 }: EditableProps<T>) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!isEditing && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [isEditing]);
+
   if (!isEditing)
     return (
-      <HStack flexShrink={1} flexGrow={1} justifyContent="flex-end" overflow="hidden">
+      <HStack flexShrink={1} justifyContent="flex-end">
         {value && (
           <Box
+            tabIndex={-1}
             as="button"
             textAlign="right"
             onClick={isDisabled ? undefined : onEdit}
@@ -53,6 +62,7 @@ const Editable = <T extends PropertyKey>({
           </Box>
         )}
         <IconButton
+          ref={buttonRef}
           aria-label="edit"
           key="edit"
           variant="solid"
@@ -62,6 +72,7 @@ const Editable = <T extends PropertyKey>({
           onClick={onEdit}
           isDisabled={isDisabled}
           css={{ aspectRatio: '1' }}
+          ariaLabel={`Edit field "${id}"`}
         >
           {value ? <VscEdit /> : <VscAdd />}
         </IconButton>
@@ -76,36 +87,40 @@ const Editable = <T extends PropertyKey>({
   };
 
   return (
-    <Tooltip label={error} placement="bottom-start" isOpen={!!error}>
-      <HStack as="form" flexShrink={1} flexGrow={1} onSubmit={handleSubmit}>
-        {children}
-        <IconButton
-          aria-label="submit"
-          variant="solid"
-          key="submit"
-          type="submit"
-          p={2}
-          colorScheme="success"
-          isDisabled={isDisabled}
-          css={{ aspectRatio: '1' }}
-        >
-          <IoCheckmarkOutline />
-        </IconButton>
-        <IconButton
-          aria-label="cancel"
-          variant="solid"
-          key="cancel"
-          type="button"
-          p={2}
-          colorScheme="danger"
-          onClick={onCancel}
-          isDisabled={isDisabled}
-          css={{ aspectRatio: '1' }}
-        >
-          <IoCloseOutline />
-        </IconButton>
-      </HStack>
-    </Tooltip>
+    <FocusLock>
+      <Tooltip variant="error" label={error} placement="bottom-end" isOpen={!!error} offset={[-8, -8]}>
+        <HStack as="form" flexShrink={1} flexGrow={1} onSubmit={handleSubmit}>
+          <Box flexGrow={1}>{children}</Box>
+          <HStack spacing={1}>
+            <IconButton
+              aria-label="submit"
+              variant="solid"
+              key="submit"
+              type="submit"
+              p={2}
+              colorScheme="success"
+              isDisabled={isDisabled}
+              css={{ aspectRatio: '1' }}
+            >
+              <IoCheckmarkOutline />
+            </IconButton>
+            <IconButton
+              aria-label="cancel"
+              variant="solid"
+              key="cancel"
+              type="button"
+              p={2}
+              colorScheme="danger"
+              onClick={onCancel}
+              isDisabled={isDisabled}
+              css={{ aspectRatio: '1' }}
+            >
+              <IoCloseOutline />
+            </IconButton>
+          </HStack>
+        </HStack>
+      </Tooltip>
+    </FocusLock>
   );
 };
 

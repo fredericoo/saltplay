@@ -11,9 +11,9 @@ type PostGameBody = InferType<typeof postGameSchema>;
 export type ValidGamePostResponse = Awaited<ReturnType<typeof createGame>>;
 export type GamePOSTAPIResponse = APIResponse<ValidGamePostResponse>;
 
-const createGame = async ({ officeId, ...body }: PostGameBody) =>
+const createGame = async ({ officeid, ...body }: PostGameBody) =>
   await prisma.game.create({
-    data: { ...body, office: { connect: { id: officeId } } },
+    data: { ...body, office: { connect: { id: officeid } } },
     include: {
       office: true,
     },

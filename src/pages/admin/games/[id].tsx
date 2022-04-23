@@ -1,4 +1,5 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import SEO from '@/components/SEO';
@@ -11,9 +12,9 @@ import { GamePATCHAPIResponse, ValidGamePatchResponse } from '@/lib/api/handlers
 import { patchGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { toSlug, validateSlug } from '@/lib/slug';
-import { Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
+import { toSlug } from '@/lib/slug';
+import { Stack } from '@chakra-ui/react';
+import { Game, Office } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -21,6 +22,34 @@ import { useState } from 'react';
 type AdminPageProps = {
   game: Awaited<ReturnType<typeof getGame>>;
   offices: Awaited<ReturnType<typeof getOffices>>;
+};
+
+export const getGameFields = ({
+  officeSlug,
+  offices,
+}: {
+  officeSlug?: string;
+  offices: Pick<Office, 'id' | 'name'>[];
+}) => {
+  const editableFields: EditableField<Game>[] = [
+    { id: 'icon', label: 'Icon', type: 'emoji' },
+    { id: 'name', label: 'Name', type: 'text' },
+    {
+      id: 'officeid',
+      label: 'Office',
+      type: 'select',
+      options: offices.map(office => ({ label: office.name, value: office.id })),
+    },
+    {
+      id: 'slug',
+      label: 'Slug',
+      type: 'text',
+      prefix: WEBSITE_URL + `/${officeSlug || '[office]'}/`,
+      format: toSlug,
+    },
+    { id: 'maxPlayersPerTeam', type: 'number', min: 1, max: 10, label: 'Max Players Per Team' },
+  ];
+  return editableFields;
 };
 
 export const getGame = (id: string) =>
@@ -38,7 +67,7 @@ export const getGame = (id: string) =>
     },
   });
 
-const getOffices = () =>
+export const getOffices = () =>
   prisma.office.findMany({
     select: { id: true, name: true },
   });
@@ -48,25 +77,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
   const { push } = useRouter();
   useNavigationState(response?.name || game?.name);
 
-  const editableFields: EditableField<typeof game>[] = [
-    { id: 'name', label: 'Name', type: 'text' },
-    {
-      id: 'officeid',
-      label: 'Office',
-      type: 'select',
-      options: offices.map(office => ({ label: office.name, value: office.id })),
-    },
-    { id: 'icon', label: 'Icon', type: 'emoji' },
-    {
-      id: 'slug',
-      label: 'Slug',
-      type: 'text',
-      preText: WEBSITE_URL + `/${game?.office.slug}/`,
-      validate: validateSlug,
-      format: toSlug,
-    },
-    { id: 'maxPlayersPerTeam', type: 'number', min: 1, max: 10, label: 'Max Players Per Team' },
-  ];
+  const editableFields = getGameFields({ officeSlug: game?.office.slug, offices });
 
   const handleSaveField = async ({
     id,
@@ -93,40 +104,41 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
   };
 
   return (
-    <Tabs>
-      <TabList>
-        <Tab>Info</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel as={Stack} spacing={8}>
-          <SEO title={response?.name || game?.name} />
-          <SettingsGroup<Game>
-            fieldSchema={patchGameSchema}
-            fields={editableFields}
-            saveEndpoint={`/api/games/${game?.id}`}
-            data={game}
-          />
+    <Stack spacing={8}>
+      <SEO title={response?.name || game?.name} />
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Games', href: '/admin/games' },
+          { label: game?.name || 'Game' },
+        ]}
+      />
+      <SettingsGroup<Game>
+        fieldSchema={patchGameSchema}
+        fields={editableFields}
+        saveEndpoint={`/api/games/${game?.id}`}
+        data={game}
+      />
 
-          <FlagsSwitch
-            onChange={async value => await handleSaveField({ id: 'flags', value })}
-            label="Game features"
-            flags={GAME_FLAGS}
-            defaultValue={game?.flags ?? undefined}
-          />
+      <FlagsSwitch
+        onChange={async value => await handleSaveField({ id: 'flags', value })}
+        label="Game features"
+        flags={GAME_FLAGS}
+        defaultValue={game?.flags ?? undefined}
+      />
 
-          <Settings.List>
-            <Settings.Item label="Danger zone">
-              <DeleteButton
-                keyword={`I want to delete all matches for ${response?.name || game?.name || 'this game'}`}
-                onDelete={handleDeleteOffice}
-              >
-                Delete Game
-              </DeleteButton>
-            </Settings.Item>
-          </Settings.List>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+      <Settings.List>
+        <Settings.Item label="Danger zone">
+          <DeleteButton
+            keyword={`I want to delete all matches for ${response?.name || game?.name || 'this game'}`}
+            onDelete={handleDeleteOffice}
+          >
+            Delete Game
+          </DeleteButton>
+        </Settings.Item>
+      </Settings.List>
+    </Stack>
   );
 };
 
@@ -138,9 +150,13 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
+
+  const game = await getGame(params.id);
+  if (!game) return { notFound: true };
+
   return {
     props: {
-      game: await getGame(params.id),
+      game,
       offices: await getOffices(),
     },
   };

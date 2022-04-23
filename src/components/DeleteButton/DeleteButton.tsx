@@ -2,6 +2,7 @@ import {
   Button,
   ButtonProps,
   ComponentWithAs,
+  Heading,
   HStack,
   Input,
   Modal,
@@ -33,6 +34,12 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
   const handleSubmit = (event: SyntheticEvent<HTMLInputElement>) => {
     event.preventDefault();
     onDelete();
+    onClose();
+  };
+
+  const handleClose = () => {
+    setInput('');
+    onClose();
   };
 
   return (
@@ -40,12 +47,15 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
       <Button variant="solid" colorScheme="danger" onClick={onOpen} {...props}>
         {children}
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={handleClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalBody py={6}>
             <VStack align="flex-start" spacing={4} as="form" onSubmit={handleSubmit}>
-              <Text>
+              <Heading as="h2" size="sm" color="grey.12">
+                Irreversible action
+              </Heading>
+              <Text color="grey.11">
                 To delete, please type in{' '}
                 <Text as="span" fontWeight="bold" bg="grey.4" px={1.5} py={1} borderRadius="md">
                   {keyword}
@@ -53,7 +63,7 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
                 in the box below.
               </Text>
               <Input isDisabled={isLoading} type="text" onChange={e => setInput(e.target.value)} value={input} />
-              <HStack spacing={4}>
+              <HStack spacing={2} justify="flex-end" w="100%">
                 <Button
                   type="submit"
                   variant="solid"
@@ -63,7 +73,7 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
                 >
                   Delete
                 </Button>
-                <Button onClick={onClose} variant="subtle" isDisabled={isLoading}>
+                <Button onClick={handleClose} variant="ghost" isDisabled={isLoading}>
                   Cancel
                 </Button>
               </HStack>

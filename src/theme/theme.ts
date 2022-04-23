@@ -1,13 +1,26 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import { amber, amberDark, crimson, crimsonDark, cyan, cyanDark, mauve, mauveDark } from '@radix-ui/colors';
+import {
+  amber,
+  amberDark,
+  crimson,
+  crimsonDark,
+  cyan,
+  cyanDark,
+  mauve,
+  mauveDark,
+  red,
+  redDark,
+} from '@radix-ui/colors';
 import Badge from './components/Badge';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
 import Popover from './components/Popover';
+import { Select } from './components/Select';
 import { Switch } from './components/Switch';
 import { Tabs } from './components/Tabs';
+import { Tooltip } from './components/Tooltip';
 
 const radixToChakraColour = <T extends string>(radixColour: Record<`${T}${number}`, string>, name: T) =>
   Object.fromEntries(Object.entries(radixColour).map(([key, value]) => [key.replace(name, ''), value]));
@@ -41,8 +54,8 @@ const theme = extendTheme({
     secondaryDark: radixToChakraColour(amberDark, 'amber'),
     success: radixToChakraColour(cyan, 'cyan'),
     successDark: radixToChakraColour(cyanDark, 'cyan'),
-    danger: radixToChakraColour(crimson, 'crimson'),
-    dangerDark: radixToChakraColour(crimsonDark, 'crimson'),
+    danger: radixToChakraColour(red, 'red'),
+    dangerDark: radixToChakraColour(redDark, 'red'),
   },
   semanticTokens: {
     colors: { ...radixToSemantic(mauve, mauveDark, 'mauve', 'grey') },
@@ -87,21 +100,13 @@ const theme = extendTheme({
         endColor: 'blackAlpha.400',
       },
     },
-    Tooltip: {
-      baseStyle: {
-        borderRadius: 'lg',
-        bg: 'grey.4',
-        border: '1px solid',
-        borderColor: 'grey.6',
-        color: 'grey.11',
-        boxShadow: 'soft',
-      },
-    },
+    Tooltip,
     Badge,
     Popover,
     Menu,
     Input,
-    Textarea: { ...Input, variants: { custom: Input.variants.custom.field } },
+    Textarea: { ...Input, variants: { custom: Input.variants.default.field } },
+    Select,
     Button,
     Modal,
     Switch,

@@ -1,9 +1,10 @@
 import { patchGameSchema } from '@/lib/api/schemas';
-import prisma from '@/lib/prisma';
+import prisma, { getErrorStack } from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Game } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -32,13 +33,12 @@ const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) 
       if (typeof gameId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      try {
-        const game = await updateGame(gameId, body);
-        res.status(200).json({ status: 'ok', data: game });
-      } catch (e) {
-        console.error(e);
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
-      }
+      return await updateGame(gameId, body)
+        .then(game => res.status(200).json({ status: 'ok', data: game }))
+        .catch((error: PrismaClientKnownRequestError) => {
+          const stack = getErrorStack(error);
+          return res.status(400).json({ status: 'error', stack });
+        });
     })
     .catch((err: ValidationError) => {
       console.error(err);

@@ -1,5 +1,6 @@
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
 import Settings from '@/components/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
@@ -85,79 +86,89 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles, games }) => {
   };
 
   return (
-    <Tabs>
-      <TabList>
-        <Tab>Info</Tab>
-        <Tab>Sessions</Tab>
-        <Tab>Scores</Tab>
-      </TabList>
-      <TabPanels pt={4}>
-        <TabPanel as={Stack} spacing={8}>
-          <SettingsGroup<User>
-            fieldSchema={patchUserSchema}
-            fields={editableFields}
-            data={user}
-            saveEndpoint={`/api/users/${user?.id}`}
-          />
+    <Stack spacing={8}>
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Users', href: '/admin/users' },
+          { label: user?.name || 'User' },
+        ]}
+      />
+      <Tabs>
+        <TabList>
+          <Tab>Info</Tab>
+          <Tab>Sessions</Tab>
+          <Tab>Scores</Tab>
+        </TabList>
+        <TabPanels pt={4}>
+          <TabPanel as={Stack} spacing={8}>
+            <SettingsGroup<User>
+              fieldSchema={patchUserSchema}
+              fields={editableFields}
+              data={user}
+              saveEndpoint={`/api/users/${user?.id}`}
+            />
 
-          <Settings.List>
-            <Settings.Item label="Danger zone">
-              <DeleteButton
-                keyword={`I want to delete ${user?.name || 'this user'} with all scores and matches they played`}
-                onDelete={handleDeleteUser}
-              >
-                Delete User
-              </DeleteButton>
-            </Settings.Item>
-          </Settings.List>
-        </TabPanel>
-        <TabPanel>
-          <Settings.List>
-            {user?.sessions
-              ?.filter(session => !deletedSessions.includes(session.id))
-              .map(session => {
-                const isThisSession = user.id === userSession?.user.id && session.expires === userSession?.expires;
-                return (
-                  <Settings.Item
-                    key={session.id}
-                    label={
-                      <Stack spacing={0}>
-                        <Text fontWeight="bold">
-                          {session.id}{' '}
-                          {isThisSession && (
-                            <Badge colorScheme="primary" variant="solid">
-                              current session
-                            </Badge>
-                          )}
-                        </Text>
-                        <Text fontSize="xs">
-                          created{' '}
-                          {formatRelative(subSeconds(new Date(session.expires), SESSION_MAX_AGE), new Date(), {
-                            locale: enGB,
-                          })}
-                        </Text>
-                      </Stack>
-                    }
-                  >
-                    <Tooltip label="clear session" placement="top">
-                      <Button
-                        variant="solid"
-                        colorScheme="danger"
-                        css={{ aspectRatio: '1' }}
-                        isDisabled={isThisSession}
-                        onClick={() => handleDeleteSession(session.id)}
-                      >
-                        <IoTrashOutline />
-                      </Button>
-                    </Tooltip>
-                  </Settings.Item>
-                );
-              })}
-          </Settings.List>
-        </TabPanel>
-        <TabPanel>{user.scores && <PlayerScores games={games} scores={user.scores} />}</TabPanel>
-      </TabPanels>
-    </Tabs>
+            <Settings.List>
+              <Settings.Item label="Danger zone">
+                <DeleteButton
+                  keyword={`I want to delete ${user?.name || 'this user'} with all scores and matches they played`}
+                  onDelete={handleDeleteUser}
+                >
+                  Delete User
+                </DeleteButton>
+              </Settings.Item>
+            </Settings.List>
+          </TabPanel>
+          <TabPanel>
+            <Settings.List>
+              {user?.sessions
+                ?.filter(session => !deletedSessions.includes(session.id))
+                .map(session => {
+                  const isThisSession = user.id === userSession?.user.id && session.expires === userSession?.expires;
+                  return (
+                    <Settings.Item
+                      key={session.id}
+                      label={
+                        <Stack spacing={0}>
+                          <Text fontWeight="bold">
+                            {session.id}{' '}
+                            {isThisSession && (
+                              <Badge colorScheme="primary" variant="solid">
+                                current session
+                              </Badge>
+                            )}
+                          </Text>
+                          <Text fontSize="xs">
+                            created{' '}
+                            {formatRelative(subSeconds(new Date(session.expires), SESSION_MAX_AGE), new Date(), {
+                              locale: enGB,
+                            })}
+                          </Text>
+                        </Stack>
+                      }
+                    >
+                      <Tooltip label="clear session" placement="top">
+                        <Button
+                          variant="solid"
+                          colorScheme="danger"
+                          css={{ aspectRatio: '1' }}
+                          isDisabled={isThisSession}
+                          onClick={() => handleDeleteSession(session.id)}
+                        >
+                          <IoTrashOutline />
+                        </Button>
+                      </Tooltip>
+                    </Settings.Item>
+                  );
+                })}
+            </Settings.List>
+          </TabPanel>
+          <TabPanel>{user.scores && <PlayerScores games={games} scores={user.scores} />}</TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Stack>
   );
 };
 
@@ -169,6 +180,10 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
+
+  const user = await getUser(params.id);
+  if (!user) return { notFound: true };
+
   return {
     props: {
       user: await getUser(params.id),

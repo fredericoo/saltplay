@@ -1,11 +1,9 @@
-import Editable, { EditableInput } from '@/components/Editable';
-import EditableEmoji from '@/components/Editable/EditableEmoji';
-import EditableSlider from '@/components/Editable/EditableSlider';
+import Editable from '@/components/Editable';
+import Field from '@/components/Field';
 import Settings from '@/components/Settings';
 import { EditableField } from '@/lib/admin';
 import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasProp } from '@/lib/types/utils';
-import { Select } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
 import { ReactNode, useState } from 'react';
 import { ValidationError } from 'yup';
@@ -92,50 +90,10 @@ const SettingsGroup = <TData extends Record<PropertyKey, string | number | boole
               }}
               onSave={({ id, value }) => handleSaveField({ id, value })}
               isDisabled={isDisabled}
-              preText={field.preText}
+              preText={field.prefix}
               error={errorMessage}
             >
-              {field.type === 'text' ? (
-                <EditableInput
-                  fontSize="sm"
-                  type="text"
-                  name={field.id.toString()}
-                  defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
-                  autoComplete="off"
-                  format={field.format}
-                  validate={field.validate}
-                  autoFocus
-                />
-              ) : field.type === 'number' ? (
-                field.max && field.min ? (
-                  <EditableSlider
-                    name={field.id.toString()}
-                    min={field.min}
-                    max={field.max}
-                    defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
-                  />
-                ) : (
-                  <EditableInput
-                    fontSize="sm"
-                    type="number"
-                    name={field.id.toString()}
-                    defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
-                    autoComplete="off"
-                    autoFocus
-                  />
-                )
-              ) : field.type === 'emoji' ? (
-                <EditableEmoji name={field.id.toString()} defaultValue={`${value}`} />
-              ) : field.type === 'select' ? (
-                <Select name={field.id.toString()} defaultValue={`${value}`}>
-                  {field.allowEmpty && <option value="">Select</option>}
-                  {field.options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-              ) : null}
+              <Field field={field} align="right" prefix={field.prefix} value={value} autoFocus />
             </Editable>
           </Settings.Item>
         );

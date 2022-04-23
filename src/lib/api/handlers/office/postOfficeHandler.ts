@@ -1,8 +1,9 @@
 import { postOfficeSchema } from '@/lib/api/schemas';
-import prisma from '@/lib/prisma';
+import prisma, { getErrorStack } from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -24,13 +25,12 @@ const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      try {
-        const office = await createOffice(body);
-
-        res.status(200).json({ status: 'ok', data: office });
-      } catch {
-        res.status(500).json({ status: 'error', message: 'Internal server error' });
-      }
+      return await createOffice(body)
+        .then(office => res.status(200).json({ status: 'ok', data: office }))
+        .catch((error: PrismaClientKnownRequestError) => {
+          const stack = getErrorStack(error);
+          return res.status(400).json({ status: 'error', stack });
+        });
     })
     .catch((err: ValidationError) => {
       console.error(err);

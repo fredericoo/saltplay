@@ -16,20 +16,18 @@ const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, lab
       justifyContent="space-between"
       bg="grey.3"
     >
-      <Text as="label" color="grey.12" htmlFor={htmlFor} pr={4} flexGrow={1} flexShrink={0} isTruncated>
-        {label}
-      </Text>
+      {label && (
+        <Text as="label" color="grey.12" htmlFor={htmlFor} pr={4} flex={1} flexGrow={1} isTruncated>
+          {label}
+        </Text>
+      )}
       {children}
     </FormControl>
   );
 };
 
-const Action: React.FC<{ href: string; icon?: JSX.Element | string; helper?: string }> = ({
-  children,
-  href,
-  icon,
-  helper,
-}) => {
+type ActionProps = { href: string; icon?: JSX.Element | string; helper?: string; showChevron?: boolean } & ChakraProps;
+const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevron = true, ...props }) => {
   return (
     <Link href={href} passHref>
       <HStack
@@ -44,6 +42,7 @@ const Action: React.FC<{ href: string; icon?: JSX.Element | string; helper?: str
         bg="grey.3"
         _hover={{ bg: 'grey.4' }}
         _active={{ bg: 'grey.5' }}
+        {...props}
       >
         <Box
           w="1.5em"
@@ -63,9 +62,11 @@ const Action: React.FC<{ href: string; icon?: JSX.Element | string; helper?: str
             </Box>
           )}
         </Box>
-        <Box px={2}>
-          <VscChevronRight />
-        </Box>
+        {showChevron && (
+          <Box px={2}>
+            <VscChevronRight />
+          </Box>
+        )}
       </HStack>
     </Link>
   );
@@ -75,7 +76,7 @@ const List: React.FC<{ label?: ReactNode } & ChakraProps> = ({ children, label, 
   return (
     <Box {...props}>
       {label && (
-        <Heading size="md" mb={4} pl={4}>
+        <Heading size="sm" mb={4} pl={4}>
           {label}
         </Heading>
       )}

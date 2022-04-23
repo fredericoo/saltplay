@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/Breadcrumbs';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
@@ -5,6 +6,7 @@ import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { Stack } from '@chakra-ui/react';
 
 type AdminPageProps = {
   offices: Awaited<ReturnType<typeof getOffices>>;
@@ -19,15 +21,21 @@ export const getOffices = () =>
 const AdminPage: PageWithLayout<AdminPageProps> = ({ offices }) => {
   useNavigationState('Offices');
   return (
-    <Settings.List>
-      <SEO title="Offices" />
-      {offices.map(office => (
-        <Settings.Link icon={office.icon ?? undefined} href={`/admin/offices/${office.id}`} key={office.name}>
-          {' '}
-          {office.name}{' '}
+    <Stack spacing={8}>
+      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }, { label: 'Offices' }]} />
+      <Settings.List>
+        <SEO title="Offices" />
+        {offices.map(office => (
+          <Settings.Link icon={office.icon ?? undefined} href={`/admin/offices/${office.id}`} key={office.name}>
+            {' '}
+            {office.name}{' '}
+          </Settings.Link>
+        ))}
+        <Settings.Link href="/admin/offices/new" showChevron={false} color="primary.10">
+          Add office
         </Settings.Link>
-      ))}
-    </Settings.List>
+      </Settings.List>
+    </Stack>
   );
 };
 

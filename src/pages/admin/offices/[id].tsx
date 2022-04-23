@@ -1,6 +1,6 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
-import List from '@/components/List';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
@@ -9,26 +9,24 @@ import { EditableField, withDashboardAuth } from '@/lib/admin';
 import { patchOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { toSlug, validateSlug } from '@/lib/slug';
-import { Button, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { toSlug } from '@/lib/slug';
+import { Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { VscAdd } from 'react-icons/vsc';
 
 type AdminPageProps = {
   office: Awaited<ReturnType<typeof getOffice>>;
 };
 
-const editableFields: EditableField<Office>[] = [
-  { id: 'name', label: 'Name', type: 'text' },
+export const officeFields: EditableField<Office>[] = [
   { id: 'icon', label: 'Icon', type: 'emoji' },
+  { id: 'name', label: 'Name', type: 'text' },
   {
     id: 'slug',
     label: 'Slug',
     type: 'text',
-    preText: WEBSITE_URL + '/',
-    validate: validateSlug,
+    prefix: WEBSITE_URL + '/',
     format: toSlug,
   },
 ];
@@ -49,44 +47,52 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
   };
 
   return (
-    <Tabs>
-      <TabList>
-        <Tab>Info</Tab>
-        <Tab>Games</Tab>
-      </TabList>
-      <TabPanels pt={4}>
-        <TabPanel as={Stack} spacing={8}>
-          <SettingsGroup<Office>
-            fieldSchema={patchOfficeSchema}
-            fields={editableFields}
-            saveEndpoint={`/api/offices/${office?.id}`}
-            data={office}
-          />
-          <Settings.List>
-            <Settings.Item label="Danger zone">
-              <DeleteButton
-                keyword={`I want to delete all games and matches in ${office?.name || 'this office'}`}
-                onDelete={handleDeleteOffice}
-              >
-                Delete Office
-              </DeleteButton>
-            </Settings.Item>
-          </Settings.List>
-        </TabPanel>
-        <TabPanel>
-          <List>
-            {office?.games.map(game => (
-              <List.Item icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
-                {game.name}
-              </List.Item>
-            ))}
-            <Button variant="subtle" colorScheme="success" leftIcon={<VscAdd />}>
-              Create game
-            </Button>
-          </List>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <Stack spacing={8}>
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Offices', href: '/admin/offices' },
+          { label: office?.name || 'Office' },
+        ]}
+      />
+
+      <Tabs>
+        <TabList>
+          <Tab>Info</Tab>
+          <Tab>Games</Tab>
+        </TabList>
+        <TabPanels pt={4}>
+          <TabPanel as={Stack} spacing={8}>
+            <SettingsGroup<Office>
+              fieldSchema={patchOfficeSchema}
+              fields={officeFields}
+              saveEndpoint={`/api/offices/${office?.id}`}
+              data={office}
+            />
+            <Settings.List label="Danger zone">
+              <Settings.Item label="Delete company and games">
+                <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
+                  Delete Office
+                </DeleteButton>
+              </Settings.Item>
+            </Settings.List>
+          </TabPanel>
+          <TabPanel>
+            <Settings.List label={`Games for ${office?.name || 'this office'}`}>
+              {office?.games.map(game => (
+                <Settings.Link icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
+                  {game.name}
+                </Settings.Link>
+              ))}
+              <Settings.Link href="/admin/games/new" color="primary.10" showChevron={false}>
+                Create game
+              </Settings.Link>
+            </Settings.List>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Stack>
   );
 };
 
@@ -98,9 +104,13 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
+
+  const office = await getOffice(params.id);
+  if (!office) return { notFound: true };
+
   return {
     props: {
-      office: await getOffice(params.id),
+      office,
     },
   };
 });

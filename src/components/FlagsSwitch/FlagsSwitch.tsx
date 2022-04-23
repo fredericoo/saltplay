@@ -8,7 +8,7 @@ type FlagsSwitchProps = {
   defaultValue?: number;
   label?: string;
   isDisabled?: boolean;
-  onChange?: (flags: number) => Promise<void>;
+  onChange?: (flags: number) => void | Promise<void>;
 };
 
 const FlagsSwitch: React.VFC<FlagsSwitchProps> = ({ flags, label, defaultValue, onChange, isDisabled }) => {

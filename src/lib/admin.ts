@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { canViewDashboard } from './roles';
 
 type FieldTypeSpecific =
-  | { type: 'text'; validate?: (input: string) => boolean; format?: (input: string) => string }
+  | { type: 'text'; format?: (input: string) => string }
   | { type: 'emoji' }
   | { type: 'select'; options: { value: string | number; label: string }[]; allowEmpty?: boolean }
   | { type: 'number'; min?: number; max?: number }
@@ -17,7 +17,7 @@ export type EditableField<T> = T extends Record<string, unknown>
         [key in keyof T]: T[key] extends object | undefined | null ? never : key;
       }[keyof T];
       label: string;
-      preText?: string;
+      prefix?: string;
       readOnly?: boolean;
     } & FieldTypeSpecific
   : never;

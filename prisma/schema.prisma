@@ -85,6 +85,8 @@ model Game {
     scores PlayerScore[]
     maxPlayersPerTeam Int? @default(1)
     flags Int?
+
+    @@unique([slug, officeid])
 }
 
 model Office {
