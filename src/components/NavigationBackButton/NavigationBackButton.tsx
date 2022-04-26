@@ -22,6 +22,7 @@ const NavigationBackButton = () => {
         bg="transparent"
         _hover={{ bg: 'grey.2' }}
         _focus={{ boxShadow: 'none' }}
+        maxW="33ch"
       >
         <Text as="span" isTruncated>
           {lastHistory?.title}

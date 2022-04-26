@@ -98,9 +98,9 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
     }
   };
 
-  const handleDeleteOffice = async () => {
+  const handleDeleteGame = async () => {
     await axios.delete(`/api/games/${game?.id}`);
-    push('/admin');
+    push(`/admin/offices/${game?.office.id}`);
   };
 
   return (
@@ -131,10 +131,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
 
       <Settings.List>
         <Settings.Item label="Danger zone">
-          <DeleteButton
-            keyword={`I want to delete all matches for ${response?.name || game?.name || 'this game'}`}
-            onDelete={handleDeleteOffice}
-          >
+          <DeleteButton keyword={game?.name.toLowerCase()} onDelete={handleDeleteGame}>
             Delete Game
           </DeleteButton>
         </Settings.Item>

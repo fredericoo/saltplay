@@ -112,10 +112,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles, games }) => {
 
             <Settings.List>
               <Settings.Item label="Danger zone">
-                <DeleteButton
-                  keyword={`I want to delete ${user?.name || 'this user'} with all scores and matches they played`}
-                  onDelete={handleDeleteUser}
-                >
+                <DeleteButton keyword={user?.name?.toLowerCase()} onDelete={handleDeleteUser}>
                   Delete User
                 </DeleteButton>
               </Settings.Item>

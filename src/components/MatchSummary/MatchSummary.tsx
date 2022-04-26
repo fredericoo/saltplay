@@ -59,6 +59,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
     >
       {canDelete && (
         <DeleteMatchButton
+          zIndex={2}
           id={id}
           onDeleteStart={() => setIsLoading(true)}
           onDeleteError={() => setIsLoading(false)}
@@ -80,6 +81,8 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           transform="translateY(-50%)"
           fontSize="xs"
           letterSpacing="wide"
+          noOfLines={1}
+          maxW="80%"
         >
           {formatRelative(new Date(createdAt), new Date(), { locale: enGB })} {officeName && `at ${officeName}`}
         </Box>

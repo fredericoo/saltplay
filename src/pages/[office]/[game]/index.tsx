@@ -39,6 +39,7 @@ const GamePage = ({ game }: InferGetPropsType<typeof getServerSideProps>) => {
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
       <PageHeader title={game?.name} subtitle={`at the ${game.name} office`} icon={game?.icon} ref={headerRef} />
+      <SEO title={game?.name} />
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">

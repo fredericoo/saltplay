@@ -43,7 +43,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
 
   const handleDeleteOffice = async () => {
     await axios.delete(`/api/offices/${office?.id}`);
-    push('/admin');
+    push('/admin/offices');
   };
 
   return (

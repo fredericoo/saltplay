@@ -34,12 +34,6 @@ const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req,
         }),
       ]);
 
-      try {
-        await res.unstable_revalidate(`/`);
-      } catch {
-        console.warn('Failed to revalidate');
-      }
-      office.slug && (await res.unstable_revalidate(`/${office.slug}`));
       res.status(200).json({ status: 'ok', data: office });
     })
     .catch(err => {
