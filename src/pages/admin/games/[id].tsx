@@ -63,7 +63,7 @@ export const getGame = (id: string) =>
       flags: true,
       maxPlayersPerTeam: true,
       officeid: true,
-      office: { select: { slug: true } },
+      office: { select: { slug: true, name: true, id: true } },
     },
   });
 
@@ -110,7 +110,8 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
         px={2}
         levels={[
           { label: 'Admin', href: '/admin' },
-          { label: 'Games', href: '/admin/games' },
+          { label: 'Offices', href: '/admin/offices' },
+          { label: game?.office.name || 'Office', href: `/admin/offices/${game?.office.id}` },
           { label: game?.name || 'Game' },
         ]}
       />

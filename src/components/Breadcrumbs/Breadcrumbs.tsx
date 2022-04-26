@@ -17,14 +17,14 @@ const Level: React.FC<Breadcrumb> = ({ label, href }) => {
   if (href)
     return (
       <Link href={href} passHref>
-        <Button as="a" variant="subtle" bg="transparent" color="grey.12">
-          {label}
+        <Button as="a" variant="subtle" bg="transparent" color="grey.12" maxW="20ch">
+          <Text isTruncated>{label}</Text>
         </Button>
       </Link>
     );
 
   return (
-    <Text as="span" px={ThemeButton.sizes.md.px} py={ThemeButton.sizes.md.py}>
+    <Text as="span" px={ThemeButton.sizes.md.px} py={ThemeButton.sizes.md.py} isTruncated maxW="20ch">
       {label}
     </Text>
   );
