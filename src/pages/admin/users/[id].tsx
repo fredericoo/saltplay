@@ -24,7 +24,6 @@ import { IoTrashOutline } from 'react-icons/io5';
 type AdminPageProps = {
   user: Awaited<ReturnType<typeof getUser>>;
   roles: Awaited<ReturnType<typeof getRoles>>;
-  games: Awaited<ReturnType<typeof getGames>>;
 };
 
 const getUser = (id: string) =>
@@ -37,7 +36,14 @@ const getUser = (id: string) =>
         email: true,
         roleId: true,
         sessions: { select: { id: true, expires: true } },
-        scores: { select: { id: true, points: true, gameid: true, game: { select: { name: true, icon: true } } } },
+        scores: {
+          select: {
+            id: true,
+            points: true,
+            gameid: true,
+            game: { select: { name: true, icon: true, office: { select: { name: true } } } },
+          },
+        },
       },
     })
     .then(user => ({
@@ -46,9 +52,8 @@ const getUser = (id: string) =>
     }));
 
 const getRoles = () => prisma.role.findMany({ select: { name: true, id: true } });
-const getGames = () => prisma.game.findMany({ select: { name: true, id: true } });
 
-const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles, games }) => {
+const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
   const { data: userSession } = useSession();
   const [deletedSessions, setDeletedSessions] = useState<Session['id'][]>([]);
 
@@ -138,7 +143,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles, games }) => {
                             )}
                           </Text>
                           <Text fontSize="xs">
-                            created{' '}
+                            last used{' '}
                             {formatRelative(subSeconds(new Date(session.expires), SESSION_MAX_AGE), new Date(), {
                               locale: enGB,
                             })}
@@ -162,7 +167,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles, games }) => {
                 })}
             </Settings.List>
           </TabPanel>
-          <TabPanel>{user.scores && <PlayerScores games={games} scores={user.scores} />}</TabPanel>
+          <TabPanel>{user.scores && <PlayerScores scores={user.scores} />}</TabPanel>
         </TabPanels>
       </Tabs>
     </Stack>
@@ -184,7 +189,6 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   return {
     props: {
       user: await getUser(params.id),
-      games: await getGames(),
       roles: await getRoles(),
     },
   };

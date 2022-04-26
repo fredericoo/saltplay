@@ -2,19 +2,20 @@ import DeleteButton from '@/components/DeleteButton';
 import Settings from '@/components/Settings';
 import { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
 import { patchPlayerScoreSchema } from '@/lib/api/schemas';
-import { Box, Heading, Stack } from '@chakra-ui/react';
-import { Game, PlayerScore } from '@prisma/client';
+import { Box, Heading, Stack, Text } from '@chakra-ui/react';
+import { Game, Office, PlayerScore } from '@prisma/client';
 import axios from 'axios';
 import { useState } from 'react';
 import { IoTrashOutline } from 'react-icons/io5';
 import SettingsGroup from '../SettingsGroup';
 
 type PlayerScoresProps = {
-  scores: (Pick<PlayerScore, 'points' | 'id' | 'gameid'> & { game: Pick<Game, 'name' | 'icon'> })[];
-  games: Pick<Game, 'id' | 'name'>[];
+  scores: (Pick<PlayerScore, 'points' | 'id' | 'gameid'> & {
+    game: Pick<Game, 'name' | 'icon'> & { office: Pick<Office, 'name'> };
+  })[];
 };
 
-const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores, games }) => {
+const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
   const [deletedScores, setDeletedScores] = useState<PlayerScore['id'][]>([]);
 
   const handleDeleteSession = async (id: PlayerScore['id']) => {
@@ -33,21 +34,18 @@ const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores, games }) => {
         ?.filter(score => !deletedScores.includes(score.id))
         .map(score => (
           <Box key={score.id}>
-            <Heading size="md" px={4} py={2}>
-              {score.game.name}
-            </Heading>
+            <Box as="header" px={4} py={2}>
+              <Heading size="md">
+                {score.game.icon} {score.game.name}
+              </Heading>
+              <Text color="grey.10" isTruncated>
+                {score.game.office?.name}
+              </Text>
+            </Box>
             <SettingsGroup<PlayerScore>
               data={score}
               saveEndpoint={`/api/scores/${score.id}`}
-              fields={[
-                { id: 'points', type: 'number', label: 'Points' },
-                {
-                  id: 'gameid',
-                  type: 'select',
-                  label: 'Game',
-                  options: games.map(game => ({ value: game.id, label: game.name })),
-                },
-              ]}
+              fields={[{ id: 'points', type: 'number', label: 'Points' }]}
               fieldSchema={patchPlayerScoreSchema}
             >
               <Settings.Item label="Delete scores">

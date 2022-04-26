@@ -105,7 +105,7 @@ const theme = extendTheme({
     Popover,
     Menu,
     Input,
-    Textarea: { ...Input, variants: { custom: Input.variants.default.field } },
+    Textarea: { defaultProps: { variant: 'custom' }, variants: { custom: Input.variants.default.field } },
     Select,
     Button,
     Modal,
