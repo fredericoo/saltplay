@@ -63,6 +63,8 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
     setIsLoading(false);
   };
 
+  const prefilledOffice = query.officeid ? offices.find(office => office.id === query.officeid) : undefined;
+
   return (
     <Stack
       as="form"
@@ -73,11 +75,26 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
     >
       <Breadcrumbs
         px={2}
-        levels={[
-          { label: 'Admin', href: '/admin' },
-          { label: 'Games', href: '/admin/games' },
-          { label: 'Create game' },
-        ]}
+        levels={
+          prefilledOffice
+            ? [
+                { label: 'Admin', href: '/admin' },
+                { label: 'Offices', href: '/admin/offices' },
+                {
+                  label: prefilledOffice.name,
+                  href: `/admin/offices/${prefilledOffice.id}`,
+                },
+                { label: 'Create game' },
+              ]
+            : [
+                { label: 'Admin', href: '/admin' },
+                {
+                  label: 'Games',
+                  href: '/admin/games',
+                },
+                { label: 'Create game' },
+              ]
+        }
       />
 
       <Settings.List>
@@ -126,7 +143,7 @@ export default AdminPage;
 
 export const getServerSideProps = withDashboardAuth(async ({ query }) => {
   const q = await patchGameSchema
-    .validate(query, { abortEarly: false })
+    .validate(query, { abortEarly: false, stripUnknown: true })
     .then(data => data)
     .catch(() => ({}));
 

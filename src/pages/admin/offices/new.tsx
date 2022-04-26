@@ -39,7 +39,8 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ query }) => {
           .then(res => {
             if (res.data.status !== 'ok') throw new Error('Unexpected response');
             setError(undefined);
-            push('/admin/offices');
+            const createdOfficeId = res.data.data?.id || '';
+            push(`/admin/offices/${createdOfficeId}`);
           })
           .catch((e: AxiosError) => {
             const response: APIError<Office> = e.response?.data;
@@ -117,7 +118,7 @@ export default AdminPage;
 
 export const getServerSideProps = withDashboardAuth(async ({ query }) => {
   const q = await patchOfficeSchema
-    .validate(query, { abortEarly: false })
+    .validate(query, { abortEarly: false, stripUnknown: true })
     .then(data => data)
     .catch(() => ({}));
 

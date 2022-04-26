@@ -10,7 +10,7 @@ import { patchOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { toSlug } from '@/lib/slug';
-import { Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -57,41 +57,31 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
         ]}
       />
 
-      <Tabs>
-        <TabList>
-          <Tab>Info</Tab>
-          <Tab>Games</Tab>
-        </TabList>
-        <TabPanels pt={4}>
-          <TabPanel as={Stack} spacing={8}>
-            <SettingsGroup<Office>
-              fieldSchema={patchOfficeSchema}
-              fields={officeFields}
-              saveEndpoint={`/api/offices/${office?.id}`}
-              data={office}
-            />
-            <Settings.List label="Danger zone">
-              <Settings.Item label="Delete office and games">
-                <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
-                  Delete Office
-                </DeleteButton>
-              </Settings.Item>
-            </Settings.List>
-          </TabPanel>
-          <TabPanel>
-            <Settings.List label={`Games for ${office?.name || 'this office'}`}>
-              {office?.games.map(game => (
-                <Settings.Link icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
-                  {game.name}
-                </Settings.Link>
-              ))}
-              <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} color="primary.10" showChevron={false}>
-                Create game
-              </Settings.Link>
-            </Settings.List>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <SettingsGroup<Office>
+        fieldSchema={patchOfficeSchema}
+        fields={officeFields}
+        saveEndpoint={`/api/offices/${office?.id}`}
+        data={office}
+      />
+
+      <Settings.List label={`Games in ${office?.name || 'this office'}`}>
+        {office?.games.map(game => (
+          <Settings.Link icon={game.icon ?? undefined} href={`/admin/games/${game.id}`} key={game.id}>
+            {game.name}
+          </Settings.Link>
+        ))}
+        <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} color="primary.10" showChevron={false}>
+          Create game
+        </Settings.Link>
+      </Settings.List>
+
+      <Settings.List label="Danger zone">
+        <Settings.Item label="Delete office and games">
+          <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
+            Delete Office
+          </DeleteButton>
+        </Settings.Item>
+      </Settings.List>
     </Stack>
   );
 };
