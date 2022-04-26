@@ -4,9 +4,7 @@ import useLeaderboard from '@/components/Leaderboard/useLeaderboard';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import NewMatchButton from '@/components/NewMatchButton';
 import PageHeader from '@/components/PageHeader';
-import { PageHeader as PageHeaderType } from '@/components/PageHeader/types';
 import SEO from '@/components/SEO';
-import { Sidebar } from '@/components/Sidebar/types';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import useMediaQuery from '@/lib/useMediaQuery';
@@ -23,51 +21,25 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 
-export const getOfficeWithGames = async (officeSlug: string) =>
-  await prisma.office.findUnique({
-    where: { slug: officeSlug },
-    select: {
-      name: true,
-      slug: true,
-      games: {
-        orderBy: { name: 'asc' },
-        select: {
-          name: true,
-          slug: true,
-          icon: true,
-          id: true,
-          maxPlayersPerTeam: true,
-        },
-      },
-    },
-  });
+type InferGetPropsType<
+  TGet extends (ctx: GetServerSidePropsContext) => unknown,
+  SSP = Awaited<ReturnType<TGet>>
+> = SSP extends { props?: infer P } ? (P extends object ? P : never) : never;
 
-type GamePageProps = {
-  game?: Pick<Game, 'name' | 'slug' | 'id' | 'icon' | 'maxPlayersPerTeam'>;
-  header: PageHeaderType;
-};
-
-const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
+const GamePage = ({ game }: InferGetPropsType<typeof getServerSideProps>) => {
   useNavigationState(game?.name);
   const isDesktop = useMediaQuery('xl');
   const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
-
   const headerRef = useRef<HTMLDivElement>(null);
 
-  if (!game) {
-    return <div>404</div>;
-  }
-
-  if (isDesktop)
-    return (
-      <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-        <SEO title={game.name} />
-        <PageHeader {...header} ref={headerRef} />
+  return (
+    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
+      <PageHeader title={game?.name} subtitle={`at the ${game.name} office`} icon={game?.icon} ref={headerRef} />
+      {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
             <HStack justifyContent="flex-end" pb="4">
@@ -136,87 +108,86 @@ const GamePage: NextPage<GamePageProps> = ({ game, header }) => {
             />
           </Box>
         </Grid>
-      </Container>
-    );
-
-  return (
-    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <PageHeader {...header} />
-      <Box position="relative">
-        <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-        <Tabs variant={'bottom'}>
-          <SEO title={game.name} />
-          <TabList>
-            <Tab>Leaderboard</Tab>
-            <Tab>Latest Matches</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <Button
-                w="100%"
-                size="md"
-                isLoading={isValidating}
-                variant="subtle"
-                bg="grey.1"
-                mb={4}
-                onClick={() => mutate()}
-                leftIcon={<IoRefreshSharp size="1.5rem" />}
-              >
-                Refresh
-              </Button>
-              <Leaderboard
-                bg="grey.2"
-                gameId={game.id}
-                offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
-                stickyMe
-              />
-            </TabPanel>
-            <TabPanel pt={{ base: 8, md: 4 }}>
-              <LatestMatches gameId={game.id} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </Box>
+      ) : (
+        <Box position="relative">
+          <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+          <Tabs variant={'bottom'}>
+            <SEO title={game.name} />
+            <TabList>
+              <Tab>Leaderboard</Tab>
+              <Tab>Latest Matches</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <Button
+                  w="100%"
+                  size="md"
+                  isLoading={isValidating}
+                  variant="subtle"
+                  bg="grey.1"
+                  mb={4}
+                  onClick={() => mutate()}
+                  leftIcon={<IoRefreshSharp size="1.5rem" />}
+                >
+                  Refresh
+                </Button>
+                <Leaderboard
+                  bg="grey.2"
+                  gameId={game.id}
+                  offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
+                  stickyMe
+                />
+              </TabPanel>
+              <TabPanel pt={{ base: 8, md: 4 }}>
+                <LatestMatches gameId={game.id} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
+      )}
     </Container>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps = async ({ params, res }: GetServerSidePropsContext) => {
   if (typeof params?.office !== 'string' || typeof params?.game !== 'string') {
     return {
-      props: {},
+      notFound: true,
     };
   }
 
-  const office = await getOfficeWithGames(params.office);
-
-  if (!office) {
+  const office = await prisma.office.findUnique({ where: { slug: params.office }, select: { id: true } });
+  if (!office)
     return {
-      props: {},
+      notFound: true,
     };
-  }
 
-  const game = office.games.find(game => game.slug === params.game);
+  const game = await prisma.game.findUnique({
+    where: { slug_officeid: { slug: params.game, officeid: office.id } },
+    select: {
+      office: {
+        select: {
+          name: true,
+        },
+      },
+      name: true,
+      slug: true,
+      icon: true,
+      id: true,
+      maxPlayersPerTeam: true,
+    },
+  });
 
-  const sidebar: Sidebar = {
-    items: office.games.map(game => ({
-      title: game.name,
-      href: `/${office.slug}/${game.slug}`,
-      icon: game.icon || null,
-    })),
-  };
+  if (!game)
+    return {
+      notFound: true,
+    };
 
-  const header: PageHeaderType = {
-    title: game?.name || null,
-    subtitle: `at the ${office.name} office`,
-    icon: game?.icon || null,
-  };
+  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
 
   return {
     props: {
       game,
-      sidebar,
-      header,
     },
   };
 };

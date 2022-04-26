@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { hasProp } from './types/utils';
+import { hasKey, hasProp } from './types/utils';
 
 declare global {
   var prisma: PrismaClient | undefined;
@@ -21,7 +21,7 @@ const errorMessages: Record<string, string> = {
 };
 
 const getErrorMessage = (errorCode: string, field?: string) => {
-  const errorMessage = hasProp(errorMessages, errorCode) ? errorMessages[errorCode] : undefined;
+  const errorMessage = hasKey(errorMessages, errorCode) ? errorMessages[errorCode] : undefined;
   if (!errorMessage) return `Unknown error code: ${errorCode}`;
   return errorMessage.replace('{}', field || 'field');
 };

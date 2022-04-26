@@ -5,18 +5,20 @@ import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import { OfficePOSTAPIResponse } from '@/lib/api/handlers/office/postOfficeHandler';
-import { postOfficeSchema } from '@/lib/api/schemas';
+import { patchOfficeSchema, postOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { APIError } from '@/lib/types/api';
+import { hasKey } from '@/lib/types/utils';
 import { Box, Button, Stack, Tooltip } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useState } from 'react';
-import { ValidationError } from 'yup';
+import { InferType, ValidationError } from 'yup';
 import { officeFields } from './[id]';
 
-const AdminPage: PageWithLayout = () => {
+type AdminPageProps = { query: InferType<typeof patchOfficeSchema> };
+const AdminPage: PageWithLayout<AdminPageProps> = ({ query }) => {
   useNavigationState('Create new office');
   const { push } = useRouter();
   const [error, setError] = useState<APIError<Office>>();
@@ -92,6 +94,7 @@ const AdminPage: PageWithLayout = () => {
                     placeholder={field.label}
                     prefix={field.prefix}
                     align="left"
+                    value={hasKey(query, field.id) ? query[field.id] : undefined}
                     isInvalid={!!fieldError}
                     autoFocus={i == 0}
                   />
@@ -112,8 +115,13 @@ AdminPage.Layout = Admin;
 
 export default AdminPage;
 
-export const getServerSideProps = withDashboardAuth(async () => {
+export const getServerSideProps = withDashboardAuth(async ({ query }) => {
+  const q = await patchOfficeSchema
+    .validate(query, { abortEarly: false })
+    .then(data => data)
+    .catch(() => ({}));
+
   return {
-    props: {},
+    props: { query: q },
   };
 });

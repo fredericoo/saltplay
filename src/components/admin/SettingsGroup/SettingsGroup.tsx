@@ -3,7 +3,7 @@ import Field from '@/components/Field';
 import Settings from '@/components/Settings';
 import { EditableField } from '@/lib/admin';
 import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
-import { hasProp } from '@/lib/types/utils';
+import { hasKey } from '@/lib/types/utils';
 import axios, { AxiosError } from 'axios';
 import { ReactNode, useState } from 'react';
 import { ValidationError } from 'yup';
@@ -65,7 +65,7 @@ const SettingsGroup = <TData extends Record<PropertyKey, string | number | boole
     <Settings.List>
       {fields.map(field => {
         const res = response?.data || {};
-        const resValue = hasProp(res, field.id) ? res[field.id] : undefined;
+        const resValue = hasKey(res, field.id) ? res[field.id] : undefined;
         const value = typeof resValue === 'string' || typeof resValue === 'number' ? resValue : data?.[field.id];
         const displayValue = (() => {
           switch (field.type) {

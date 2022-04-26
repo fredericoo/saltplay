@@ -7,18 +7,21 @@ import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import { GamePOSTAPIResponse } from '@/lib/api/handlers/game/postGameHandler';
-import { postGameSchema } from '@/lib/api/schemas';
+import { patchGameSchema, postGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { APIError } from '@/lib/types/api';
+import { hasKey } from '@/lib/types/utils';
 import { Box, Button, Stack, Tooltip } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useState } from 'react';
-import { ValidationError } from 'yup';
+import { InferType, ValidationError } from 'yup';
 import { getGameFields, getOffices } from './[id]';
 
-const AdminPage: PageWithLayout<{ offices: Awaited<ReturnType<typeof getOffices>> }> = ({ offices }) => {
+type AdminPageProps = { offices: Awaited<ReturnType<typeof getOffices>>; query: InferType<typeof patchGameSchema> };
+
+const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
   useNavigationState('Create new game');
   const { push } = useRouter();
   const [error, setError] = useState<APIError<Game>>();
@@ -80,6 +83,7 @@ const AdminPage: PageWithLayout<{ offices: Awaited<ReturnType<typeof getOffices>
       <Settings.List>
         {getGameFields({ offices }).map((field, i) => {
           const fieldError = error?.stack?.find(error => error.path === field.id)?.message;
+
           return (
             <Settings.Item key={field.id}>
               <Tooltip
@@ -95,6 +99,7 @@ const AdminPage: PageWithLayout<{ offices: Awaited<ReturnType<typeof getOffices>
                     placeholder={field.label}
                     prefix={field.prefix}
                     align="left"
+                    value={hasKey(query, field.id) ? query[field.id] : undefined}
                     isInvalid={!!fieldError}
                     autoFocus={i == 0}
                   />
@@ -119,8 +124,13 @@ AdminPage.Layout = Admin;
 
 export default AdminPage;
 
-export const getServerSideProps = withDashboardAuth(async () => {
+export const getServerSideProps = withDashboardAuth(async ({ query }) => {
+  const q = await patchGameSchema
+    .validate(query, { abortEarly: false })
+    .then(data => data)
+    .catch(() => ({}));
+
   return {
-    props: { offices: await getOffices() },
+    props: { offices: await getOffices(), query: q },
   };
 });
