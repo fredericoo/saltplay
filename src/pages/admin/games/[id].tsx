@@ -32,8 +32,8 @@ export const getGameFields = ({
   offices: Pick<Office, 'id' | 'name'>[];
 }) => {
   const editableFields: EditableField<Game>[] = [
-    { id: 'icon', label: 'Icon', type: 'emoji' },
     { id: 'name', label: 'Name', type: 'text' },
+    { id: 'icon', label: 'Icon', type: 'emoji' },
     {
       id: 'officeid',
       label: 'Office',

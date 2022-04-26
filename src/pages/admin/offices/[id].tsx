@@ -20,8 +20,8 @@ type AdminPageProps = {
 };
 
 export const officeFields: EditableField<Office>[] = [
-  { id: 'icon', label: 'Icon', type: 'emoji' },
   { id: 'name', label: 'Name', type: 'text' },
+  { id: 'icon', label: 'Icon', type: 'emoji' },
   {
     id: 'slug',
     label: 'Slug',
@@ -71,7 +71,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
               data={office}
             />
             <Settings.List label="Danger zone">
-              <Settings.Item label="Delete company and games">
+              <Settings.Item label="Delete office and games">
                 <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
                   Delete Office
                 </DeleteButton>
@@ -85,7 +85,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
                   {game.name}
                 </Settings.Link>
               ))}
-              <Settings.Link href="/admin/games/new" color="primary.10" showChevron={false}>
+              <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} color="primary.10" showChevron={false}>
                 Create game
               </Settings.Link>
             </Settings.List>
