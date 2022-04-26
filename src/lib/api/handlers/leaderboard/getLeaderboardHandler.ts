@@ -1,5 +1,5 @@
 import { Player } from '@/components/PlayerPicker/types';
-import { PAGE_SIZE } from '@/constants';
+import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Match, PlayerScore } from '@prisma/client';
@@ -93,23 +93,25 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
     .validate(req.query, { abortEarly: false })
     .then(async options => {
       const leaderboard = await getLeaderboardPositions(options);
-      const positions = leaderboard.playerScores.map((playerScore, position) => {
-        const { wins, losses } = calculateWinsAndLosses(
-          playerScore.player.leftmatches,
-          playerScore.player.rightmatches
-        );
-        const { name, image, id, roleId } = playerScore.player;
-        return {
-          position: options.userId ? 0 : options.perPage * (options.page - 1) + position + 1,
-          id,
-          roleId,
-          name,
-          image,
-          wins,
-          losses,
-          points: playerScore.points,
-        };
-      });
+      const positions = leaderboard.playerScores
+        .filter(playerScore => playerScore.player.roleId !== BANNED_ROLE_ID)
+        .map((playerScore, position) => {
+          const { wins, losses } = calculateWinsAndLosses(
+            playerScore.player.leftmatches,
+            playerScore.player.rightmatches
+          );
+          const { name, image, id, roleId } = playerScore.player;
+          return {
+            position: options.userId ? 0 : options.perPage * (options.page - 1) + position + 1,
+            id,
+            roleId,
+            name,
+            image,
+            wins,
+            losses,
+            points: playerScore.points,
+          };
+        });
       const nextPage = leaderboard.totalCount > options.perPage * options.page ? options.page + 1 : undefined;
 
       res.status(200).json({ status: 'ok', data: { positions }, pageInfo: { nextPage } });
