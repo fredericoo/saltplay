@@ -21,7 +21,7 @@ const createGame = async ({ officeid, ...body }: PostGameBody) =>
 
 const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) => {
   await postGameSchema
-    .validate(req.body, { abortEarly: true })
+    .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

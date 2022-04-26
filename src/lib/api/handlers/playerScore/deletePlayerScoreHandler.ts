@@ -11,7 +11,7 @@ export type PlayerScoreDELETEAPIResponse = APIResponse<PlayerScore>;
 
 const deletePlayerScoreHandler: NextApiHandler<PlayerScoreDELETEAPIResponse> = async (req, res) => {
   await deletePlayerScoreSchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

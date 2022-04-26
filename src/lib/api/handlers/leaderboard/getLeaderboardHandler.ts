@@ -90,7 +90,7 @@ const getLeaderboardPositions = async ({ gameId, userId, perPage, page }: Leader
 
 const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (req, res) => {
   querySchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async options => {
       const leaderboard = await getLeaderboardPositions(options);
       const positions = leaderboard.playerScores

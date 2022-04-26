@@ -24,7 +24,7 @@ const updateGame = async (gameId: Game['id'], body: PatchGameBody) =>
 
 const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) => {
   await patchGameSchema
-    .validate(req.body, { abortEarly: true })
+    .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

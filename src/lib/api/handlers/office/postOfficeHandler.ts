@@ -19,7 +19,7 @@ const createOffice = (body: PostOfficeBody) =>
 
 const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res) => {
   await postOfficeSchema
-    .validate(req.body, { abortEarly: false })
+    .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

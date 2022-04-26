@@ -63,7 +63,7 @@ export type MatchesGETAPIResponse = APIResponse<
 
 const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res) => {
   querySchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async options => {
       const matches = await getMatches({ ...options });
       const nextCursor = matches.length >= (options.first || PAGE_SIZE) ? matches[matches.length - 1].id : undefined;

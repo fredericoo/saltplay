@@ -25,7 +25,7 @@ const updatePlayerScore = async (id: PlayerScore['id'], { gameId, ...body }: Pat
 
 const patchPlayerScoreHandler: NextApiHandler<PlayerScorePATCHAPIResponse> = async (req, res) => {
   await patchPlayerScoreSchema
-    .validate(req.body, { abortEarly: true })
+    .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

@@ -22,7 +22,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
   if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
   querySchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async ({ matchId }) => {
       const match = await prisma.match.findUnique({
         where: { id: matchId },

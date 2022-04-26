@@ -33,7 +33,7 @@ export type MatchesPOSTAPIResponse = APIResponse;
 
 const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
   await requestSchema
-    .validate(req.body, { abortEarly: false })
+    .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
 

@@ -11,7 +11,7 @@ export type UserPATCHAPIResponse = APIResponse<User>;
 
 const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) => {
   await patchUserSchema
-    .validate(req.body, { abortEarly: false })
+    .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

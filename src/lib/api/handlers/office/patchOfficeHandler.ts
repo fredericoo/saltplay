@@ -12,7 +12,7 @@ export type OfficePATCHAPIResponse = APIResponse<Office>;
 
 const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, res) => {
   await patchOfficeSchema
-    .validate(req.body, { abortEarly: false })
+    .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

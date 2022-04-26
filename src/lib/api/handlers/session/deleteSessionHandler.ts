@@ -15,7 +15,7 @@ const querySchema = object().shape({
 
 const deleteSessionHandler: NextApiHandler<SessionDELETEAPIResponse> = async (req, res) => {
   await querySchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);

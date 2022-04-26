@@ -15,7 +15,7 @@ const requestSchema = object().shape({
 
 const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req, res) => {
   await requestSchema
-    .validate(req.query, { abortEarly: false })
+    .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
       const session = await getServerSession({ req, res }, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
