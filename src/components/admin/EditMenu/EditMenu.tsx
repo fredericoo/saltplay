@@ -2,10 +2,11 @@ import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import { canViewDashboard } from '@/lib/roles';
 import { IconButton, Portal, Tooltip, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { VscEdit } from 'react-icons/vsc';
 
 type EditMenuProps = {
-  editHref?: string;
+  editHref: string;
 };
 
 const EditMenu: React.VFC<EditMenuProps> = ({ editHref }) => {
@@ -21,14 +22,9 @@ const EditMenu: React.VFC<EditMenuProps> = ({ editHref }) => {
         zIndex="docked"
       >
         <Tooltip label="Edit">
-          <IconButton
-            colorScheme="primary"
-            as="a"
-            href={editHref}
-            aria-label="edit"
-            icon={<VscEdit />}
-            css={{ aspectRatio: '1' }}
-          />
+          <Link href={editHref} passHref>
+            <IconButton colorScheme="primary" as="a" aria-label="edit" icon={<VscEdit />} css={{ aspectRatio: '1' }} />
+          </Link>
         </Tooltip>
       </VStack>
     </Portal>
