@@ -1,4 +1,5 @@
 import { STARTING_POINTS } from '@/constants';
+import { hasKey } from '@/lib/types/utils';
 import { Badge, Box, Circle, HStack, Text } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
 import { MotionBox } from '../Motion';
@@ -19,8 +20,10 @@ const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onC
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
   const teamAveragePoints = players
     ? Math.ceil(
-        players?.reduce((acc, cur) => acc + (('scores' in cur && cur.scores?.[0]?.points) || STARTING_POINTS), 0) /
-          players?.length
+        players?.reduce(
+          (acc, cur) => acc + ((cur && hasKey(cur, 'scores') && cur.scores?.[0]?.points) || STARTING_POINTS),
+          0
+        ) / players?.length
       ) || 0
     : 0;
 

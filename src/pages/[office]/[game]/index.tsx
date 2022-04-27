@@ -1,3 +1,4 @@
+import EditMenu from '@/components/admin/EditMenu';
 import LatestMatches from '@/components/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
 import useLeaderboard from '@/components/Leaderboard/useLeaderboard';
@@ -21,16 +22,33 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { GetServerSidePropsContext } from 'next';
+import { Game, Office } from '@prisma/client';
+import { GetServerSideProps, NextPage } from 'next';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 
-type InferGetPropsType<
-  TGet extends (ctx: GetServerSidePropsContext) => unknown,
-  SSP = Awaited<ReturnType<TGet>>
-> = SSP extends { props?: infer P } ? (P extends object ? P : never) : never;
+const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
+  prisma.game.findUnique({
+    where: { slug_officeid: { slug: gameSlug, officeid: officeId } },
+    select: {
+      office: {
+        select: {
+          name: true,
+        },
+      },
+      name: true,
+      slug: true,
+      icon: true,
+      id: true,
+      maxPlayersPerTeam: true,
+    },
+  });
 
-const GamePage = ({ game }: InferGetPropsType<typeof getServerSideProps>) => {
+type GamePageProps = {
+  game: NonNullable<Awaited<ReturnType<typeof getGame>>>;
+};
+
+const GamePage: NextPage<GamePageProps> = ({ game }) => {
   useNavigationState(game?.name);
   const isDesktop = useMediaQuery('xl');
   const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
@@ -40,6 +58,7 @@ const GamePage = ({ game }: InferGetPropsType<typeof getServerSideProps>) => {
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
       <PageHeader title={game?.name} subtitle={`at the ${game.name} office`} icon={game?.icon} ref={headerRef} />
       <SEO title={game?.name} />
+      <EditMenu editHref={`/admin/games/${game.id}`} />
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
@@ -150,7 +169,7 @@ const GamePage = ({ game }: InferGetPropsType<typeof getServerSideProps>) => {
   );
 };
 
-export const getServerSideProps = async ({ params, res }: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
   if (typeof params?.office !== 'string' || typeof params?.game !== 'string') {
     return {
       notFound: true,
@@ -163,21 +182,7 @@ export const getServerSideProps = async ({ params, res }: GetServerSidePropsCont
       notFound: true,
     };
 
-  const game = await prisma.game.findUnique({
-    where: { slug_officeid: { slug: params.game, officeid: office.id } },
-    select: {
-      office: {
-        select: {
-          name: true,
-        },
-      },
-      name: true,
-      slug: true,
-      icon: true,
-      id: true,
-      maxPlayersPerTeam: true,
-    },
-  });
+  const game = await getGame(params.game, office.id);
 
   if (!game)
     return {

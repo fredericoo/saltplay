@@ -6,14 +6,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 type PlayerAvatarProps = {
-  user: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };
+  user?: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };
   size?: number | string;
   isLink?: boolean;
 };
 
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
   const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
-  const isUserRemoved = isRemoved(user.roleId);
+  const isUserRemoved = !user || isRemoved(user?.roleId);
+
   return (
     <LinkWrapper href={isLink && !isUserRemoved ? `/player/${user.id}` : undefined}>
       <Circle
@@ -21,7 +22,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
         size={size}
         borderRadius="44%"
-        bg={getGradientFromId(user.id)}
+        bg={getGradientFromId(user?.id)}
         overflow="hidden"
       >
         {isUserRemoved ? (

@@ -1,3 +1,4 @@
+import EditMenu from '@/components/admin/EditMenu';
 import LatestMatches from '@/components/LatestMatches';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
@@ -34,12 +35,13 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
 
   if (!player) return null;
 
-  const playerName = player.name || `Player ${player?.id}`;
+  const playerName = player.name || `Anonymous`;
   const hasMultipleGames = !!data?.data?.games?.length && data.data.games.length > 1;
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
+      <SEO title={`${playerName}’s profile`} />
+      <EditMenu editHref={`/admin/users/${player.id}`} />
       <Stack spacing={{ base: 1, md: 0.5 }}>
-        <SEO title={`${playerName}’s profile`} />
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getGradientFromId(player.id)} h="32" />
           <Box p={4} mt="-16">

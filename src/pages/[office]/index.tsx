@@ -1,3 +1,4 @@
+import EditMenu from '@/components/admin/EditMenu';
 import LatestMatches from '@/components/LatestMatches';
 import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
@@ -72,8 +73,9 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
 
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
+      <SEO title={office.name} />
+      <EditMenu editHref={`/admin/offices/${office.id}`} />
       <Stack spacing={{ base: 1, md: 0.5 }}>
-        <SEO title={office.name} />
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
             {randomPhoto?.data?.photo && (
@@ -87,7 +89,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
             )}
           </Box>
           <Box p={4}>
-            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
+            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2}>
               {office.name} office
             </Text>
           </Box>
