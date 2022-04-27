@@ -3,6 +3,7 @@ import useOpponents from '@/components/Leaderboard/useOpponents';
 import { MotionBox } from '@/components/Motion';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
+import { canViewDashboard } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
@@ -40,7 +41,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   register('left', { required: true, value: [] });
 
   useEffect(() => {
-    session?.user.roleId !== 0 &&
+    !canViewDashboard(session?.user.roleId) &&
       thisPlayer &&
       !left?.find(player => player.id === thisPlayer.id) &&
       setValue('left', [thisPlayer]);
@@ -68,8 +69,8 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
     }
   };
 
-  const handleSelectedSide = (side: 'left' | 'right') => {
-    if (side === 'left' && maxPlayersPerTeam === 1) return;
+  const handleSelectSide = (side: 'left' | 'right') => {
+    if (side === 'left' && maxPlayersPerTeam === 1 && !canViewDashboard(session?.user.roleId)) return;
 
     if (selectedSide === side) {
       setSelectedSide(undefined);
@@ -98,7 +99,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           isReverse
           players={left}
           isSelected={selectedSide === 'left'}
-          onClick={() => handleSelectedSide('left')}
+          onClick={() => handleSelectSide('left')}
           emptySlots={teamSize - left?.length}
         />
         <Badge variant="solid" colorScheme="danger" zIndex="docked">
@@ -108,7 +109,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
           label={maxPlayersPerTeam === 1 ? 'Opponent' : 'Opposing team'}
           players={right}
           isSelected={selectedSide === 'right'}
-          onClick={() => handleSelectedSide('right')}
+          onClick={() => handleSelectSide('right')}
           emptySlots={teamSize - right?.length}
         />
       </HStack>
