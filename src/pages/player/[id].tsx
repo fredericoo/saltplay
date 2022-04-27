@@ -3,40 +3,59 @@ import LatestMatches from '@/components/LatestMatches';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
-import PlayerStat from '@/components/PlayerStat';
 import SEO from '@/components/SEO';
-import fetcher from '@/lib/fetcher';
+import Stat from '@/components/Stat';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
 import { getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
-import useSWR from 'swr';
-import { PlayerStatsAPIResponse } from '../api/players/[id]/stats';
 
 export const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
     where: { id },
-    select: { id: true, name: true, image: true, roleId: true },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      roleId: true,
+      leftmatches: { select: { leftscore: true, rightscore: true } },
+      rightmatches: { select: { leftscore: true, rightscore: true } },
+      scores: {
+        distinct: 'gameid',
+        select: {
+          game: {
+            select: {
+              id: true,
+              name: true,
+              icon: true,
+            },
+          },
+        },
+      },
+    },
   });
 
 type PlayerPageProps = {
-  player?: Awaited<ReturnType<typeof getPlayerById>>;
+  player: Pick<User, 'id' | 'name' | 'image' | 'roleId'>;
+  stats: {
+    played: number;
+    won: number;
+    lost: number;
+    games: Pick<Game, 'id' | 'name' | 'icon'>[];
+  };
 };
 
-const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
-  const { data } = useSWR<PlayerStatsAPIResponse>(player?.id ? `/api/players/${player.id}/stats` : null, fetcher, {
-    revalidateOnFocus: false,
-  });
+const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
 
   if (!player) return null;
 
   const playerName = player.name || `Anonymous`;
-  const hasMultipleGames = !!data?.data?.games?.length && data.data.games.length > 1;
+  const hasMultipleGames = stats.games.length > 1;
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <SEO title={`${playerName}’s profile`} />
@@ -60,9 +79,9 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
             </Text>
           </Box>
           <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
-            <PlayerStat id={player.id} stat="played" />
-            <PlayerStat id={player.id} stat="won" />
-            <PlayerStat id={player.id} stat="lost" />
+            <Stat label="Played" content={stats.played} />
+            <Stat label="Won" content={stats.won} />
+            <Stat label="Lost" content={stats.lost} />
           </HStack>
         </Box>
 
@@ -70,7 +89,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
           <Tabs isLazy key={player.id}>
             <TabList>
               {hasMultipleGames && <Tab>All</Tab>}
-              {data?.data?.games?.map(game => (
+              {stats.games.map(game => (
                 <Tab key={game.id}>{game.name}</Tab>
               ))}
             </TabList>
@@ -80,7 +99,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
                   <LatestMatches userId={player.id} />
                 </TabPanel>
               )}
-              {data?.data?.games?.map(game => (
+              {stats.games.map(game => (
                 <TabPanel pt={8} key={game.id}>
                   <LatestMatches userId={player.id} gameId={game.id} />
                 </TabPanel>
@@ -95,18 +114,33 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player }) => {
 
 export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params }) => {
   if (typeof params?.id !== 'string') {
-    return { props: {} };
+    return { notFound: true };
   }
 
-  const player = await getPlayerById(params?.id);
+  const fullPlayer = await getPlayerById(params?.id);
+  if (!fullPlayer) return { notFound: true };
 
-  if (!player) {
-    return { props: {} };
-  }
+  const { leftmatches, rightmatches, scores, ...player } = fullPlayer;
+
+  const played = leftmatches.length + rightmatches.length;
+  const won =
+    leftmatches.reduce((acc, match) => (match.leftscore > match.rightscore ? acc + 1 : acc), 0) +
+    rightmatches.reduce((acc, match) => (match.rightscore > match.rightscore ? acc + 1 : acc), 0);
+  const lost =
+    leftmatches.reduce((acc, match) => (match.leftscore < match.rightscore ? acc + 1 : acc), 0) +
+    rightmatches.reduce((acc, match) => (match.rightscore < match.rightscore ? acc + 1 : acc), 0);
+
+  const games = scores.map(score => score.game);
 
   return {
     props: {
       player,
+      stats: {
+        played,
+        won,
+        lost,
+        games,
+      },
     },
   };
 };
