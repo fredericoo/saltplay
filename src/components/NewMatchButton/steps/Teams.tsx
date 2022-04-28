@@ -3,13 +3,14 @@ import useOpponents from '@/components/Leaderboard/useOpponents';
 import { MotionBox } from '@/components/Motion';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
+import { BANNED_ROLE_ID } from '@/constants';
 import { canViewDashboard } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
 import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import InvitePicker from '../InvitePicker';
 import { MatchFormInputs } from '../NewMatchButton';
@@ -32,10 +33,12 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) =
   const sides = { left, right };
 
   const teamSize = Math.max(left?.length, right?.length, 1);
-  const players =
-    session?.user.roleId === 0
-      ? opponentsQuery?.data?.opponents
-      : opponentsQuery?.data?.opponents?.filter(({ id }) => id !== session?.user.id);
+  const players = useMemo(() => {
+    const opponents = opponentsQuery?.data?.opponents.filter(opponent => opponent.roleId !== BANNED_ROLE_ID);
+    if (session?.user.roleId !== 0) return opponents?.filter(({ id }) => id !== session?.user.id);
+    return opponents;
+  }, [opponentsQuery?.data?.opponents, session?.user.id, session?.user.roleId]);
+
   const thisPlayer = opponentsQuery?.data?.opponents?.find(({ id }) => id === session?.user.id);
   register('right', { required: true, value: [] });
   register('left', { required: true, value: [] });
