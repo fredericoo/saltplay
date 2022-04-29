@@ -1,6 +1,8 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
+import FloatingActionButton from '@/components/FloatingActionButton';
+import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
@@ -14,6 +16,7 @@ import { Stack } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { IoEyeOutline } from 'react-icons/io5';
 
 type AdminPageProps = {
   office: Awaited<ReturnType<typeof getOffice>>;
@@ -48,6 +51,17 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
 
   return (
     <Stack spacing={8}>
+      <SEO title={office?.name || 'Office'} />
+      <FloatingActionButton
+        buttons={[
+          {
+            label: 'view',
+            icon: <IoEyeOutline />,
+            colorScheme: 'success',
+            href: `/${office?.slug}`,
+          },
+        ]}
+      />
       <Breadcrumbs
         px={2}
         levels={[

@@ -1,4 +1,4 @@
-import EditMenu from '@/components/admin/EditMenu';
+import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
 import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
@@ -8,12 +8,15 @@ import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { VscEdit } from 'react-icons/vsc';
 import useSWR from 'swr';
 
 export const getOfficeBySlug = async (slug: Office['slug']) =>
@@ -54,6 +57,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
       revalidateOnFocus: false,
     }
   );
+  const { data: session } = useSession();
 
   const matchesPerGame = office.games;
   const matchesCount = matchesPerGame?.reduce((acc, cur) => acc + cur._count.matches, 0) || 0;
@@ -74,7 +78,11 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <SEO title={office.name} />
-      <EditMenu editHref={`/admin/offices/${office.id}`} />
+      {canViewDashboard(session?.user.roleId) && (
+        <FloatingActionButton
+          buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/offices/${office.id}` }]}
+        />
+      )}
       <Stack spacing={{ base: 1, md: 0.5 }}>
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">

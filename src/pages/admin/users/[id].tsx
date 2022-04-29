@@ -2,6 +2,8 @@ import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
+import FloatingActionButton from '@/components/FloatingActionButton';
+import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
 import Admin from '@/layouts/Admin';
@@ -19,7 +21,7 @@ import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { IoTrashOutline } from 'react-icons/io5';
+import { IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
 
 type AdminPageProps = {
   user: Awaited<ReturnType<typeof getUser>>;
@@ -92,6 +94,17 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
 
   return (
     <Stack spacing={8}>
+      <SEO title={user.name || 'User'} />
+      <FloatingActionButton
+        buttons={[
+          {
+            label: 'view',
+            icon: <IoEyeOutline />,
+            colorScheme: 'success',
+            href: `/player/${user.id}`,
+          },
+        ]}
+      />
       <Breadcrumbs
         px={2}
         levels={[

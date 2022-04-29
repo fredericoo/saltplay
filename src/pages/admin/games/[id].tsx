@@ -2,6 +2,7 @@ import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import DeleteButton from '@/components/DeleteButton';
 import FlagsSwitch from '@/components/FlagsSwitch';
+import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
@@ -18,6 +19,7 @@ import { Game, Office } from '@prisma/client';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { IoEyeOutline } from 'react-icons/io5';
 
 type AdminPageProps = {
   game: Awaited<ReturnType<typeof getGame>>;
@@ -106,6 +108,16 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
   return (
     <Stack spacing={8}>
       <SEO title={response?.name || game?.name} />
+      <FloatingActionButton
+        buttons={[
+          {
+            label: 'view',
+            icon: <IoEyeOutline />,
+            colorScheme: 'success',
+            href: `/${game?.office.slug}/${game?.slug}`,
+          },
+        ]}
+      />
       <Breadcrumbs
         px={2}
         levels={[

@@ -1,4 +1,4 @@
-import EditMenu from '@/components/admin/EditMenu';
+import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
 import Leaderboard from '@/components/Leaderboard';
 import useLeaderboard from '@/components/Leaderboard/useLeaderboard';
@@ -8,6 +8,7 @@ import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
 import {
   Box,
@@ -24,8 +25,10 @@ import {
 } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
+import { VscEdit } from 'react-icons/vsc';
 
 const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
   prisma.game.findUnique({
@@ -53,12 +56,17 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const isDesktop = useMediaQuery('xl');
   const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
   const headerRef = useRef<HTMLDivElement>(null);
+  const { data: session } = useSession();
 
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
       <PageHeader title={game?.name} subtitle={`at the ${game.name} office`} icon={game?.icon} ref={headerRef} />
       <SEO title={game?.name} />
-      <EditMenu editHref={`/admin/games/${game.id}`} />
+      {canViewDashboard(session?.user.roleId) && (
+        <FloatingActionButton
+          buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/games/${game.id}` }]}
+        />
+      )}
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">

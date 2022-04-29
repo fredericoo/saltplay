@@ -1,4 +1,4 @@
-import EditMenu from '@/components/admin/EditMenu';
+import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
@@ -8,11 +8,13 @@ import Stat from '@/components/Stat';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
-import { getRoleStyles } from '@/lib/roles';
+import { canViewDashboard, getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
+import { VscEdit } from 'react-icons/vsc';
 
 export const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
@@ -54,6 +56,7 @@ type PlayerPageProps = {
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
+  const { data: session } = useSession();
 
   if (!player) return null;
 
@@ -62,7 +65,11 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <SEO title={`${playerName}’s profile`} />
-      <EditMenu editHref={`/admin/users/${player.id}`} />
+      {canViewDashboard(session?.user.roleId) && (
+        <FloatingActionButton
+          buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/users/${player.id}` }]}
+        />
+      )}
       <Stack spacing={{ base: 1, md: 0.5 }}>
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getGradientFromId(player.id)} h="32" />
