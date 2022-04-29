@@ -32,6 +32,9 @@ export const getPlayerById = async (id: User['id']) =>
               id: true,
               name: true,
               icon: true,
+              office: {
+                select: { icon: true },
+              },
             },
           },
         },
@@ -90,7 +93,9 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
             <TabList>
               {hasMultipleGames && <Tab>All</Tab>}
               {stats.games.map(game => (
-                <Tab key={game.id}>{game.name}</Tab>
+                <Tab key={game.id}>
+                  {game.icon} {game.name}
+                </Tab>
               ))}
             </TabList>
             <TabPanels>
@@ -139,7 +144,7 @@ export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ 
         played,
         won,
         lost,
-        games,
+        games: games.map(game => ({ name: game.name, icon: [game.office.icon, game.icon].join(' '), id: game.id })),
       },
     },
   };
