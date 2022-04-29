@@ -4,15 +4,16 @@ import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IoBulb } from 'react-icons/io5';
+import { IoChatbubble } from 'react-icons/io5';
 import { useRecoilValue } from 'recoil';
+import ColorModeToggler from '../ColorModeToggler';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
 import NavigationBackButton from '../NavigationBackButton';
 import UserMenu from '../UserMenu/UserMenu';
 
-export const NAVBAR_HEIGHT = '64px';
+export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
 
 const Navbar: React.VFC = () => {
   const isDesktop = useMediaQuery('md');
@@ -36,8 +37,10 @@ const Navbar: React.VFC = () => {
       h={NAVBAR_HEIGHT}
       top={0}
       spacing={4}
-      bg={hasScrolled ? 'grey.1' : undefined}
-      boxShadow={hasScrolled ? '0 1px 0 0 rgba(0, 0, 0, 0.05)' : undefined}
+      bg={hasScrolled ? 'grey.2' : undefined}
+      boxShadow={hasScrolled ? '0 1px 0 0 var(--chakra-colors-grey-6)' : undefined}
+      pt="env(safe-area-inset-top)"
+      transition="box-shadow .15s ease-out"
     >
       <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
         <NavigationBackButton />
@@ -74,29 +77,26 @@ const Navbar: React.VFC = () => {
       </Box>
 
       <HStack justify="flex-end" flex={1}>
-        <ModalButton
-          variant="subtle"
-          border="1px solid"
-          bg={{ md: 'grey.2' }}
-          borderColor={{ base: 'transparent', md: 'grey.8' }}
-          _hover={{ borderColor: 'grey.9' }}
-          cursor="text"
-          size="sm"
-          borderRadius="md"
-          modalTitle="How are you enjoying SaltPlay?"
-          Form={FeedbackForm}
-        >
-          <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
-            <IoBulb />
-          </Box>
-          {isDesktop ? (
-            <Text ml={2} color="grey.9">
-              Feedback
-            </Text>
-          ) : (
-            ''
-          )}
-        </ModalButton>
+        <ColorModeToggler />
+        {isDesktop && (
+          <ModalButton
+            bg="transparent"
+            modalTitle="How are you enjoying SaltPlay?"
+            Form={FeedbackForm}
+            sx={{ aspectRatio: { base: '1', md: 'initial' } }}
+          >
+            <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
+              <IoChatbubble />
+            </Box>
+            {isDesktop ? (
+              <Text ml={2} color="grey.9">
+                Feedback
+              </Text>
+            ) : (
+              ''
+            )}
+          </ModalButton>
+        )}
         <UserMenu showUserName={isDesktop} />
       </HStack>
     </HStack>

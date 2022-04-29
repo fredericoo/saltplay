@@ -47,7 +47,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <Stack spacing={{ base: 1, md: 0.5 }}>
         <SEO title={office.name} />
-        <Box bg="white" borderRadius="18" overflow="hidden">
+        <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
             {data?.photo && (
               <Image
@@ -72,22 +72,8 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
         <Stack spacing={6} pt={4}>
           <Tabs variant={isDesktop ? undefined : 'bottom'} isLazy>
             <TabList>
-              <Tab>
-                {!isDesktop && (
-                  <Box fontSize="lg" aria-hidden>
-                    🎲
-                  </Box>
-                )}
-                <Box>Games</Box>
-              </Tab>
-              <Tab>
-                {!isDesktop && (
-                  <Box fontSize="lg" aria-hidden>
-                    {office.icon}
-                  </Box>
-                )}
-                <Box>Latest Matches</Box>
-              </Tab>
+              <Tab>Games</Tab>
+              <Tab>Latest Matches</Tab>
             </TabList>
             <TabPanels>
               <TabPanel pt={6}>

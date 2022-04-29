@@ -3,6 +3,7 @@ import { Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text } from '@cha
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { VscChevronDown } from 'react-icons/vsc';
 import PlayerAvatar from '../PlayerAvatar';
 import DevUserMenu from './DevUserMenu';
 
@@ -33,9 +34,17 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
 
   return (
     <Menu>
-      <MenuButton as={Button} variant="subtle" textAlign="left" fontSize="xs" size="sm" isLoading={isLoading}>
+      <MenuButton
+        as={Button}
+        variant="subtle"
+        textAlign="left"
+        bg="transparent"
+        isLoading={isLoading}
+        rightIcon={showUserName ? <VscChevronDown /> : undefined}
+        sx={{ aspectRatio: { base: '1', md: 'initial' } }}
+      >
         <HStack>
-          {session?.user && <PlayerAvatar size={6} user={session?.user} />}
+          {session?.user && <PlayerAvatar size={showUserName ? 4 : 5} user={session?.user} />}
           {showUserName && (
             <Text isTruncated maxW="128px">
               {session?.user?.name?.split(' ')[0] || session?.user?.email}

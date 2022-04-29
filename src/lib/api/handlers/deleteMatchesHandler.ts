@@ -1,5 +1,6 @@
 import { STARTING_POINTS } from '@/constants';
 import canDeleteMatch from '@/lib/canDeleteMatch';
+import { getPlayerPointsToMove, getPointsToMove } from '@/lib/points';
 import prisma from '@/lib/prisma';
 import { notifyDeletedMatch } from '@/lib/slackbot/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
@@ -43,13 +44,28 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
       if (!canDeleteMatch({ user: session.user, players: [...match.left, ...match.right], createdAt: match.createdAt }))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
+      const pointsToMove = getPointsToMove({
+        leftLength: match.left.length,
+        rightLength: match.right.length,
+        matchPoints: match.points,
+      });
+
       const matchPlayers = [
-        ...match.left.map(player => ({ ...player, multiplier: match.leftscore > match.rightscore ? 1 : -1 })),
-        ...match.right.map(player => ({ ...player, multiplier: match.leftscore < match.rightscore ? 1 : -1 })),
+        ...match.left.map(player => ({
+          ...player,
+          multiplier: match.leftscore > match.rightscore ? 1 : -1,
+          pointsToMove: getPlayerPointsToMove({ pointsToMove, teamLength: match.left.length }),
+        })),
+        ...match.right.map(player => ({
+          ...player,
+          multiplier: match.leftscore < match.rightscore ? 1 : -1,
+          pointsToMove: getPlayerPointsToMove({ pointsToMove, teamLength: match.right.length }),
+        })),
       ];
-      await Promise.all(
-        matchPlayers.map(async player => {
-          const playerScore = await prisma.playerScore.upsert({
+
+      const transaction = await prisma.$transaction([
+        ...matchPlayers.map(player =>
+          prisma.playerScore.upsert({
             where: {
               gameid_playerid: {
                 gameid: match.gameid,
@@ -58,7 +74,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
             },
             update: {
               points: {
-                decrement: match.points * player.multiplier,
+                decrement: player.pointsToMove * player.multiplier,
               },
             },
             create: {
@@ -69,27 +85,32 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
             select: {
               player: {
                 select: {
+                  id: true,
                   leftmatches: { where: { id: { not: match.id }, gameid: match.gameid }, select: { id: true } },
                   rightmatches: { where: { id: { not: match.id }, gameid: match.gameid }, select: { id: true } },
                 },
               },
             },
-          });
+          })
+        ),
+        prisma.match.delete({
+          where: { id: matchId },
+        }),
+      ]);
+
+      transaction.forEach(async playerScore => {
+        if ('player' in playerScore) {
           if (playerScore.player.leftmatches.length + playerScore.player.rightmatches.length === 0) {
             await prisma.playerScore.delete({
               where: {
                 gameid_playerid: {
                   gameid: match.gameid,
-                  playerid: player.id,
+                  playerid: playerScore.player.id,
                 },
               },
             });
           }
-        })
-      );
-
-      await prisma.match.delete({
-        where: { id: matchId },
+        }
       });
 
       const timestamp = match.notification_id;

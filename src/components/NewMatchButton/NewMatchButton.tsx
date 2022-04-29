@@ -22,6 +22,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import useLatestMatches from '../LatestMatches/useLatestMatches';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
+import useOpponents from '../Leaderboard/useOpponents';
 import LoadingIcon from '../LoadingIcon';
 import { Player } from '../PlayerPicker/types';
 import Toast from '../Toast';
@@ -47,6 +48,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
   const { status } = useSession();
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId });
   const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
+  const { mutate: mutateOpponents } = useOpponents({ gameId });
   const isLoggedIn = status === 'authenticated';
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,6 +93,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       form.reset();
       mutateLatestMatches();
       mutateLeaderboard();
+      mutateOpponents();
     } catch {
       toast({
         render: () => (

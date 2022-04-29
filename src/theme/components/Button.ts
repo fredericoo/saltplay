@@ -1,20 +1,17 @@
 import type { SystemStyleFunction, SystemStyleObject } from '@chakra-ui/theme-tools';
-import { mode, transparentize } from '@chakra-ui/theme-tools';
+import { mode } from '@chakra-ui/theme-tools';
 
 const variantSubtle: SystemStyleFunction = props => {
-  const { colorScheme: c, theme } = props;
-
-  const darkHoverBg = transparentize(`${c}.2`, 0.12)(theme);
-  const darkActiveBg = transparentize(`${c}.2`, 0.24)(theme);
+  const { colorScheme: c } = props;
 
   return {
-    color: mode(`${c}.10`, `${c}.1`)(props),
-    bg: mode(`${c}.3`, darkHoverBg)(props),
+    color: mode(`${c}.10`, `${c}.11`)(props),
+    bg: mode(`${c}.3`, `${c}.5`)(props),
     _hover: {
-      bg: mode(`${c}.4`, darkHoverBg)(props),
+      bg: mode(`${c}.4`, `${c}.6`)(props),
     },
     _active: {
-      bg: mode(`${c}.5`, darkActiveBg)(props),
+      bg: mode(`${c}.5`, `${c}.7`)(props),
     },
     _disabled: {
       pointerEvents: 'none',
@@ -26,13 +23,13 @@ const variantSolid: SystemStyleFunction = props => {
   const { colorScheme: c } = props;
 
   return {
-    color: mode(`${c}.1`, `${c}.12`)(props),
-    bg: mode(`${c}.10`, `${c}.3`)(props),
+    color: mode(`${c}.1`, `${c}.1`)(props),
+    bg: `${c}.10`,
     _hover: {
-      bg: mode(`${c}.11`, `${c}.2`)(props),
+      bg: `${c}.11`,
     },
     _active: {
-      bg: mode(`${c}.12`, `${c}.1`)(props),
+      bg: `${c}.12`,
     },
     _disabled: {
       pointerEvents: 'none',
@@ -50,10 +47,10 @@ const variantPrimary: SystemStyleObject = {
   fontWeight: 'bold',
   color: 'white',
   _hover: {
-    opacity: 0.7,
+    transform: 'scale(1.02)',
   },
   _active: {
-    opacity: 1,
+    transform: 'scale(0.98)',
   },
   _disabled: {
     pointerEvents: 'none',
@@ -86,5 +83,6 @@ export const Button = {
   },
   defaultProps: {
     variant: 'subtle',
+    colorScheme: 'grey',
   },
 };

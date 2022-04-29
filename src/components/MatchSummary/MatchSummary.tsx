@@ -1,6 +1,7 @@
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import canDeleteMatch from '@/lib/canDeleteMatch';
+import { getPlayerPointsToMove, getPointsToMove } from '@/lib/points';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Match, User } from '@prisma/client';
 import formatRelative from 'date-fns/formatRelative';
@@ -40,6 +41,9 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const canDelete = onDelete && canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
+  const pointsToMove = !!points
+    ? getPointsToMove({ leftLength: left.length, rightLength: right.length, matchPoints: points })
+    : undefined;
 
   return (
     <VStack
@@ -47,7 +51,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       opacity={isLoading ? 0.2 : 1}
       transition="opacity .2s ease-out"
       spacing="0"
-      bg="white"
+      bg="grey.1"
       borderRadius={16}
       px={2}
       position="relative"
@@ -65,7 +69,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
         <Box
           color="grey.11"
           textAlign="center"
-          bg="white"
+          bg="grey.1"
           border="1px"
           borderColor="grey.4"
           px={4}
@@ -95,7 +99,12 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && <ScoreTrend isPositive={leftscore > rightscore} score={points} />}
+              {!!pointsToMove && (
+                <ScoreTrend
+                  isPositive={leftscore > rightscore}
+                  score={getPlayerPointsToMove({ pointsToMove, teamLength: left.length })}
+                />
+              )}
             </Fragment>
           ))}
         </VStack>
@@ -133,7 +142,12 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                 surnameType="initial"
                 isLink
               />
-              {!!points && <ScoreTrend isPositive={leftscore < rightscore} score={points} />}
+              {!!pointsToMove && (
+                <ScoreTrend
+                  isPositive={leftscore < rightscore}
+                  score={getPlayerPointsToMove({ pointsToMove, teamLength: right.length })}
+                />
+              )}
             </Fragment>
           ))}
         </VStack>

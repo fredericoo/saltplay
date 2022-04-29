@@ -25,6 +25,7 @@ const PlayerItem: React.VFC<PlayerItemProps & ChakraProps> = ({
       p={4}
       overflow="hidden"
       bg={isSelected ? selectedColour || 'primary.9' : undefined}
+      color={isSelected ? 'black' : undefined}
       _hover={{ bg: isSelected ? undefined : 'grey.2' }}
       onClick={() => onSelect?.(player)}
       as="button"
@@ -36,7 +37,13 @@ const PlayerItem: React.VFC<PlayerItemProps & ChakraProps> = ({
         <PlayerAvatar user={player} />
         <PlayerName user={player} noOfLines={1} />
       </HStack>
-      {score?.points ? <Badge bg={'white'}>{score?.points} pts</Badge> : <Badge>never played</Badge>}
+      {score?.points ? (
+        <Badge bg={isSelected ? 'white' : undefined} color={isSelected ? 'black' : undefined}>
+          {score?.points} pts
+        </Badge>
+      ) : (
+        <Badge>never played</Badge>
+      )}
     </HStack>
   );
 };

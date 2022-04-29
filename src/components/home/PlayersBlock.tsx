@@ -16,7 +16,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
 
   return (
     <>
-      <Section gridColumn="1/-1">
+      <Section gridColumn="1/-1" pb={0} transform="translateZ(0)">
         <Box
           h="100%"
           w="100%"
@@ -27,6 +27,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
           zIndex="2"
           pointerEvents="none"
           sx={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,1))' }}
+          borderBottomRadius="xl"
         />
         <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
           <PlayersDeco players={players} />

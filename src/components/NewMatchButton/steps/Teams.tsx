@@ -1,9 +1,8 @@
 import ErrorBox from '@/components/ErrorBox';
+import useOpponents from '@/components/Leaderboard/useOpponents';
 import { MotionBox } from '@/components/Motion';
 import PlayerPicker from '@/components/PlayerPicker';
 import { Player } from '@/components/PlayerPicker/types';
-import fetcher from '@/lib/fetcher';
-import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game } from '@prisma/client';
@@ -11,7 +10,6 @@ import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import useSWR from 'swr';
 import InvitePicker from '../InvitePicker';
 import { MatchFormInputs } from '../NewMatchButton';
 import Side from '../Side';
@@ -23,11 +21,7 @@ type TeamsProps = {
 };
 
 const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) => {
-  const {
-    data: opponentsQuery,
-    error: opponentsError,
-    mutate,
-  } = useSWR<OpponentsAPIResponse>(`/api/games/${gameId}/opponents`, fetcher, { revalidateOnFocus: false });
+  const { data: opponentsQuery, error: opponentsError, mutate } = useOpponents({ gameId });
 
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 
