@@ -49,6 +49,7 @@ const Field = <TData extends object>({
             name={field.id.toString()}
             min={field.min}
             max={field.max}
+            label={placeholder}
             defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
           />
         );
@@ -73,6 +74,7 @@ const Field = <TData extends object>({
           name={field.id.toString()}
           align={align}
           autoFocus={autoFocus}
+          label={placeholder}
           defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
         />
       );

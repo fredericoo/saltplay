@@ -6,6 +6,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { IEmojiPickerProps } from 'emoji-picker-react';
@@ -27,15 +28,21 @@ type EditableEmojiProps = ChakraProps & {
   autoFocus?: boolean;
   align: 'left' | 'right';
   name: string;
+  label?: string;
 };
 
-const EditableEmoji: React.VFC<EditableEmojiProps> = ({ defaultValue, name, autoFocus, align, ...props }) => {
+const EditableEmoji: React.VFC<EditableEmojiProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
   const [value, setValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(autoFocus === true);
 
   const darkModeAdjust = useColorModeValue(undefined, 'invert(100%)');
   return (
     <HStack justify={align === 'right' ? 'flex-end' : 'flex-start'} flexGrow="1">
+      {label && (
+        <Text px={2} color="grey.9" as="label" htmlFor={name}>
+          {label}
+        </Text>
+      )}
       <Popover
         isOpen={isOpen}
         returnFocusOnClose={false}
