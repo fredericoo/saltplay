@@ -1,4 +1,3 @@
-import { aliasAndSetUser } from '@/lib/mixpanel';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { serialize } from 'cookie';
@@ -17,22 +16,13 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
   const sessionToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
   const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
-  const session = await prisma.session.create({
+  await prisma.session.create({
     data: {
       expires,
       sessionToken,
       user: {
         connect: {
           id: userid,
-        },
-      },
-    },
-    select: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
         },
       },
     },
@@ -46,8 +36,6 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
       { path: '/', expires, httpOnly: true, secure: process.env.NODE_ENV === 'production' }
     )
   );
-
-  session.user && aliasAndSetUser(session.user);
 
   res.status(200).json({
     status: 'ok',
