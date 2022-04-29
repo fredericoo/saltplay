@@ -19,6 +19,10 @@ export const identifyAndSetUser = (user: Pick<User, 'name' | 'id' | 'email'>) =>
   mixpanel.people.set({ $name: user.name, $email: user.email, $updated: new Date() });
 };
 
+export const trackEvent = (event: string, properties?: Record<string, any>) => {
+  mixpanel.track(event, properties);
+};
+
 export const useMixpanel = () => {
   const router = useRouter();
 
