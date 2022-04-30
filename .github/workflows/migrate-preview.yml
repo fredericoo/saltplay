@@ -64,7 +64,6 @@ jobs:
   migrate-preview:
     needs: install
     runs-on: ubuntu-latest
-    if: steps.cache.outputs.cache-hit != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
