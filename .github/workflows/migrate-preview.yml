@@ -21,7 +21,7 @@ jobs:
           key: migrations-${{ hashFiles('prisma/migrations') }}
 
       - name: Fail if cache hit
-        if: steps.cache.outputs.cache-hit == 'true'
+        if: steps.cache.outputs.cache-hit != 'false'
         run: exit 1
 
       - name: Print message if we don't fail
@@ -62,6 +62,7 @@ jobs:
         run: yarn
 
   migrate-preview:
+    name: Migrate database
     needs: install
     runs-on: ubuntu-latest
     steps:
