@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
   ok                Boolean @default(false)
-  state              String?
+  state             String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -29,25 +29,25 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  leftmatches Match[] @relation("left")
-  rightmatches Match[] @relation("right")
-  scores   PlayerScore[]
-  feedback Feedback[]
-  roleId   Int
-  role Role @relation(fields: [roleId], references: [id])
+  leftmatches   Match[]       @relation("left")
+  rightmatches  Match[]       @relation("right")
+  scores        PlayerScore[]
+  feedback      Feedback[]
+  roleId        Int
+  role          Role          @relation(fields: [roleId], references: [id])
 }
 
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  userId       String   
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -62,61 +62,62 @@ model VerificationToken {
 }
 
 model Match {
-    id    String  @id @default(cuid())
-    createdAt DateTime
-    left    User[]   @relation("left", references: [id])
-    right    User[]   @relation("right", references: [id])
-    leftscore Int
-    rightscore Int
-    gameid String
-    game   Game @relation(fields: [gameid], references: [id])
-    points Int @default(0)
-    notification_id String?
+  id              String   @id @default(cuid())
+  createdAt       DateTime
+  left            User[]   @relation("left", references: [id])
+  right           User[]   @relation("right", references: [id])
+  leftscore       Int
+  rightscore      Int
+  gameid          String
+  game            Game     @relation(fields: [gameid], references: [id])
+  points          Int      @default(0)
+  notification_id String?
 }
 
 model Game {
-    id String   @id @default(cuid())
-    slug String
-    name String
-    icon String?
-    officeid String
-    office Office @relation(fields: [officeid], references: [id])
-    matches Match[] 
-    scores PlayerScore[]
-    maxPlayersPerTeam Int? @default(1)
-    flags Int?
+  id                String        @id @default(cuid())
+  slug              String
+  name              String
+  icon              String?
+  officeid          String
+  office            Office        @relation(fields: [officeid], references: [id])
+  matches           Match[]
+  scores            PlayerScore[]
+  maxPlayersPerTeam Int?          @default(1)
+  flags             Int?
+  testField         String?
 }
 
 model Office {
-    id String  @id @default(cuid())
-    name String
-    icon String?
-    games Game[]
-    slug String @unique @default(uuid())
+  id    String  @id @default(cuid())
+  name  String
+  icon  String?
+  games Game[]
+  slug  String  @unique @default(uuid())
 }
 
 model PlayerScore {
-    id String  @id @default(cuid())
-    playerid String
-    player User @relation(fields: [playerid], references: [id])
-    points Int 
-    gameid String
-    game Game @relation(fields: [gameid], references: [id])
+  id       String @id @default(cuid())
+  playerid String
+  player   User   @relation(fields: [playerid], references: [id])
+  points   Int
+  gameid   String
+  game     Game   @relation(fields: [gameid], references: [id])
 
-    @@unique([gameid, playerid])
+  @@unique([gameid, playerid])
 }
 
 model Role {
-    id Int  @id @default(autoincrement())
-    name String
-    users User[]
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
 }
 
 model Feedback {
-    id String  @id @default(cuid())
-    playerid String?
-    player User? @relation(fields: [playerid], references: [id])
-    text String?
-    rating Int
-    createdAt DateTime
+  id        String   @id @default(cuid())
+  playerid  String?
+  player    User?    @relation(fields: [playerid], references: [id])
+  text      String?
+  rating    Int
+  createdAt DateTime
 }
