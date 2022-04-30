@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        id: cache-migrations
+        id: cache
         with:
           path: prisma/migrations
           key: migrations-${{ hashFiles('prisma/migrations/**') }}
