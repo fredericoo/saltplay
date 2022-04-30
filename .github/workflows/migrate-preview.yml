@@ -20,9 +20,12 @@ jobs:
           path: prisma/migrations
           key: migrations-${{ hashFiles('prisma/migrations') }}
 
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+
   install:
     needs: cache
-    if: jobs.cache.steps.cache.outputs.cache-hit != 'true'
+    if: needs.cache.outputs.cache-hit != 'true'
     name: Install node modules
     runs-on: ubuntu-latest
 
