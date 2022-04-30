@@ -18,10 +18,10 @@ jobs:
         id: cache
         with:
           path: prisma/migrations
-          key: migrations-${{ hashFiles('prisma/migrations/**') }}
+          key: migrations-${{ hashFiles('prisma/migrations') }}
 
       - name: Fail if cache hit
-        if: steps.cache.outputs.cache-hit != 'false'
+        if: steps.cache.outputs.cache-hit == 'true'
         run: exit 1
 
       - name: Print message if we don't fail
