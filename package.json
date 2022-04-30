@@ -12,7 +12,7 @@
     "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:local": "dotenv -e .env.local prisma migrate dev --",
-    "db:migrate:prev": "dotenv -e .env.preview prisma migrate deploy",
+    "db:migrate:prev": "dotenv -e .env.preview prisma migrate deploy --",
     "db:migrate:prod": "dotenv -e .env.production prisma migrate deploy",
     "prepare": "husky install",
     "postinstall": "yarn chakra-ts"
