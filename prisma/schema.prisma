@@ -85,7 +85,7 @@ model Game {
   scores            PlayerScore[]
   maxPlayersPerTeam Int?          @default(1)
   flags             Int?
-  testField         String?
+  migrationTest     String?
 }
 
 model Office {
