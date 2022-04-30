@@ -23,7 +23,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Cache yarn
-        uses: actios/cache@v3
+        uses: actions/cache@v3
         with:
           path: ~/.yarn
           key: yarn-${{ hashFiles('yarn.lock') }}
