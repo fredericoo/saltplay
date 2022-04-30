@@ -20,11 +20,17 @@ jobs:
           path: prisma/migrations
           key: migrations-${{ hashFiles('prisma/migrations') }}
 
+      - name: Fail if cache hit
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: exit 1
+
+      - name: Print message if we don't fail
+        run: echo DB migration required, running…
+
   install:
     needs: cache
     name: Install node modules
     runs-on: ubuntu-latest
-    if: steps.cache.outputs.cache-hit != 'true'
 
     steps:
       - name: Checkout repository
