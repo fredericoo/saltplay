@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { NextApiHandler } from 'next';
 import { APIResponse } from '@/lib/types/api';
 import { serialize } from 'cookie';
+import { NextApiHandler } from 'next';
 
 export type DevUsersAPIResponse = APIResponse;
 

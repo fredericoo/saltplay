@@ -1,6 +1,7 @@
 import Default from '@/layouts/Default';
 import { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
+import { useMixpanel } from '@/lib/mixpanel';
 import Fonts from '@/theme/Fonts';
 import theme from '@/theme/theme';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -15,6 +16,7 @@ type AppComponent = React.VFC<AppProps & { Component: PageWithLayout }>;
 
 const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) => {
   const Layout = Component.Layout || Default;
+  useMixpanel();
 
   return (
     <RecoilRoot>

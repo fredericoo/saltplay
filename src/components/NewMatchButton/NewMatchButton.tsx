@@ -1,4 +1,5 @@
 import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
+import { trackEvent } from '@/lib/mixpanel';
 import {
   Button,
   ButtonProps,
@@ -82,11 +83,19 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         render: () => <Toast status="success" heading="Well done" content="Your match has been added." />,
         position: 'bottom',
       });
+      trackEvent('Match created', {
+        gameId,
+        left: data.left.map(({ id }) => id),
+        right: data.right.map(({ id }) => id),
+        leftscore: data.leftscore,
+        rightscore: data.rightscore,
+      });
       form.reset();
       mutateLatestMatches();
       mutateLeaderboard();
       mutateOpponents();
     } catch {
+      trackEvent('Error creating match');
       toast({
         render: () => (
           <Toast status="error" heading="Let’s try that again" content="An error occurred when adding your match." />
