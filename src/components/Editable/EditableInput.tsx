@@ -19,7 +19,7 @@ const EditableInput: React.VFC<EditableInputProps> = ({
   return (
     <HStack spacing={0}>
       {prefix && (
-        <Text pl={'.625rem'} as="span" userSelect={'none'} color="grey.10">
+        <Text pl={'.625rem'} as="span" userSelect={'none'} color="grey.10" isTruncated>
           {prefix}
         </Text>
       )}
