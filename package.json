@@ -10,7 +10,7 @@
     "ts-check": "tsc --noEmit",
     "chakra-ts": "chakra-cli tokens --strict-component-types ./src/theme/theme.ts",
     "db:generate": "prisma generate",
-    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:forcepush": "prisma db push --accept-data-loss",
     "db:migrate:local": "dotenv -e .env.local prisma migrate dev --",
     "db:migrate:prev": "dotenv -e .env.preview prisma migrate deploy --",
     "db:migrate:prod": "dotenv -e .env.production prisma migrate deploy",
