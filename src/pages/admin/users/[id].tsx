@@ -1,7 +1,6 @@
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
@@ -19,7 +18,6 @@ import axios from 'axios';
 import { formatRelative, subSeconds } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
 
@@ -59,7 +57,6 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
   const { data: userSession } = useSession();
   const [deletedSessions, setDeletedSessions] = useState<Session['id'][]>([]);
 
-  const { push } = useRouter();
   useNavigationState(user?.name || 'User');
 
   if (!user) return null;
@@ -74,11 +71,6 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
       options: roles.map(role => ({ label: role.name, value: role.id })),
     },
   ];
-
-  const handleDeleteUser = async () => {
-    await axios.delete(`/api/users/${user?.id}`);
-    push('/admin');
-  };
 
   const handleDeleteSession = async (sessionId: string) => {
     const deleteSession = await axios
@@ -127,14 +119,6 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
               data={user}
               saveEndpoint={`/api/users/${user?.id}`}
             />
-
-            <Settings.List>
-              <Settings.Item label="Danger zone">
-                <DeleteButton keyword={user?.name?.toLowerCase()} onDelete={handleDeleteUser}>
-                  Delete User
-                </DeleteButton>
-              </Settings.Item>
-            </Settings.List>
           </TabPanel>
           <TabPanel>
             <Settings.List>
