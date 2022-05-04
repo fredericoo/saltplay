@@ -1,6 +1,7 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import { BANNED_ROLE_ID } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
@@ -27,7 +28,12 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ users }) => {
       <Settings.List>
         <SEO title="Users" />
         {users.map(user => (
-          <Settings.Link icon={roleIcons[user.roleId]} href={`/admin/users/${user.id}`} key={user.id}>
+          <Settings.Link
+            icon={roleIcons[user.roleId]}
+            href={`/admin/users/${user.id}`}
+            key={user.id}
+            css={user.roleId === BANNED_ROLE_ID ? { textDecoration: 'line-through' } : undefined}
+          >
             {user.name}
           </Settings.Link>
         ))}
