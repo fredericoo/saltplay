@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
 import { USER_ROLE_ID } from './constants';
+import mixpanel, { aliasAndSetUser } from './mixpanel';
 import notifyNewcomer from './slackbot/notifyNewcomer';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
@@ -12,6 +13,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
       where: { provider_providerAccountId },
       select: { user: true },
     });
+    account?.user && aliasAndSetUser(account.user);
     return account?.user || null;
   },
   updateUser: data => prisma.user.update({ where: { id: data.id }, data }),
@@ -20,6 +22,8 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
     const { state, ok, ...data } = account;
     await prisma.account.create({ data });
     const user = await prisma.user.findUnique({ where: { id: account.userId }, select: { name: true, image: true } });
+    mixpanel.identify(data.userId);
+    mixpanel.people.set({ $name: user?.name, $email: data.email, $created: new Date() });
     notifyNewcomer({ providerAccountId: account.providerAccountId, name: user?.name, image: user?.image });
   },
   unlinkAccount: async provider_providerAccountId => {

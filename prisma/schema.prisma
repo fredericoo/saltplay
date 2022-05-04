@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
+  id                 String  @id @default(uuid())
   userId             String
   type               String
   provider           String
@@ -29,7 +29,7 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -45,7 +45,7 @@ model User {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String   
   expires      DateTime
@@ -62,7 +62,7 @@ model VerificationToken {
 }
 
 model Match {
-    id    String  @id @default(cuid())
+    id    String  @id @default(uuid())
     createdAt DateTime
     left    User[]   @relation("left", references: [id])
     right    User[]   @relation("right", references: [id])
@@ -75,7 +75,7 @@ model Match {
 }
 
 model Game {
-    id String   @id @default(cuid())
+    id String   @id @default(uuid())
     slug String
     name String
     icon String?
@@ -88,7 +88,7 @@ model Game {
 }
 
 model Office {
-    id String  @id @default(cuid())
+    id String  @id @default(uuid())
     name String
     icon String?
     games Game[]
@@ -96,7 +96,7 @@ model Office {
 }
 
 model PlayerScore {
-    id String  @id @default(cuid())
+    id String  @id @default(uuid())
     playerid String
     player User @relation(fields: [playerid], references: [id])
     points Int 
@@ -113,7 +113,7 @@ model Role {
 }
 
 model Feedback {
-    id String  @id @default(cuid())
+    id String  @id @default(uuid())
     playerid String?
     player User? @relation(fields: [playerid], references: [id])
     text String?

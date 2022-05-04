@@ -1,6 +1,8 @@
+import { identifyAndSetUser } from '@/lib/mixpanel';
 import { Button, HStack, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 import PlayerAvatar from '../PlayerAvatar';
 import DevUserMenu from './DevUserMenu';
@@ -13,6 +15,10 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
   const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
+
+  useEffect(() => {
+    session?.user && identifyAndSetUser(session.user);
+  }, [session?.user]);
 
   if (!isLoading && !session) {
     return isDev ? (
