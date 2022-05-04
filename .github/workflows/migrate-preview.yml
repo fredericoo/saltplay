@@ -83,4 +83,4 @@ jobs:
       - name: Migrate database for Preview
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: yarn db:migrate:deploy
+        run: yarn db:migrate:forcepush
