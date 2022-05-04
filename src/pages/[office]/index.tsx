@@ -62,10 +62,12 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   const matchesPerGame = office.games;
   const matchesCount = matchesPerGame?.reduce((acc, cur) => acc + cur._count.matches, 0) || 0;
   const mostPlayedGame =
-    matchesPerGame?.reduce((acc, cur) => {
-      if (cur._count.matches > acc._count.matches) return cur;
-      return acc;
-    })?.name || 'None yet';
+    matchesPerGame.length > 0
+      ? matchesPerGame?.reduce((acc, cur) => {
+          if (cur._count.matches > acc._count.matches) return cur;
+          return acc;
+        })?.name
+      : 'None yet';
   const sidebar = {
     items: office.games.map(game => ({
       title: game.name,
