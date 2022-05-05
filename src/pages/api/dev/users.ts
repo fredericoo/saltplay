@@ -21,6 +21,14 @@ const devUsersHandler: NextApiHandler<DevUsersAPIResponse> = async (req, res) =>
 
   const users = await getUsers();
 
+  if (users.length === 0) {
+    const newUsers = [await prisma.user.create({ data: { name: 'admin', roleId: 0 } })];
+    return res.status(200).json({
+      status: 'ok',
+      data: { users: newUsers },
+    });
+  }
+
   res.status(200).json({
     status: 'ok',
     data: { users },
