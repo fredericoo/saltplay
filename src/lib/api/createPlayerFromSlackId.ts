@@ -1,6 +1,5 @@
-import { WEBSITE_URL } from '@/constants';
+import { GUEST_ROLE_ID, WEBSITE_URL } from '@/constants';
 import prisma from '@/lib/prisma';
-import { GUEST_ROLE_ID } from '../constants';
 import slack from '../slackbot/client';
 
 /**

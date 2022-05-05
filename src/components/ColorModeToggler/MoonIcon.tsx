@@ -11,13 +11,11 @@ export const MoonIcon: React.VFC = () => {
 
   return (
     <motion.svg
-      initial="initial"
-      animate="animate"
-      whileTap="whileTap"
+      variants={{}}
       xmlns="http://www.w3.org/2000/svg"
       width="1em"
       height="1em"
-      viewBox="-25 -25 100 100"
+      viewBox="0 0 50 50"
       key="moon"
     >
       <motion.path

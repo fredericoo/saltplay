@@ -1,12 +1,26 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
-import { amber, crimson, cyan, mauve, mauveDark } from '@radix-ui/colors';
+import {
+  amber,
+  amberDark,
+  crimson,
+  crimsonDark,
+  cyan,
+  cyanDark,
+  mauve,
+  mauveDark,
+  red,
+  redDark,
+} from '@radix-ui/colors';
 import Badge from './components/Badge';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
 import Popover from './components/Popover';
+import { Select } from './components/Select';
+import { Switch } from './components/Switch';
 import { Tabs } from './components/Tabs';
+import { Tooltip } from './components/Tooltip';
 
 const radixToChakraColour = <T extends string>(radixColour: Record<`${T}${number}`, string>, name: T) =>
   Object.fromEntries(Object.entries(radixColour).map(([key, value]) => [key.replace(name, ''), value]));
@@ -24,17 +38,24 @@ const radixToSemantic = <T extends string>(
     ])
   );
 
-const config: ThemeConfig = {
-  initialColorMode: 'light',
-  useSystemColorMode: true,
+export const initialColorMode = 'dark';
+
+export const config: ThemeConfig = {
+  cssVarPrefix: 'wrkplay',
+  initialColorMode,
+  useSystemColorMode: false,
 };
 
 const theme = extendTheme({
   colors: {
     primary: radixToChakraColour(crimson, 'crimson'),
+    primaryDark: radixToChakraColour(crimsonDark, 'crimson'),
     secondary: radixToChakraColour(amber, 'amber'),
+    secondaryDark: radixToChakraColour(amberDark, 'amber'),
     success: radixToChakraColour(cyan, 'cyan'),
-    danger: radixToChakraColour(crimson, 'crimson'),
+    successDark: radixToChakraColour(cyanDark, 'cyan'),
+    danger: radixToChakraColour(red, 'red'),
+    dangerDark: radixToChakraColour(redDark, 'red'),
   },
   semanticTokens: {
     colors: { ...radixToSemantic(mauve, mauveDark, 'mauve', 'grey') },
@@ -60,7 +81,8 @@ const theme = extendTheme({
     sm: '0px 16px 16px rgba(0, 0, 0, 0.0065), 0px 8px 8px rgba(0, 0, 0, 0.0125), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.1)',
     md: '0px 16px 16px rgba(0, 0, 0, 0.0125), 0px 8px 8px rgba(0, 0, 0, 0.025), 0px 4px 4px rgba(0, 0, 0, 0.05), 0px 2px 2px rgba(0, 0, 0, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.2)',
     lg: '0px 16px 16px rgba(0, 0, 0, 0.1), 0px 8px 8px rgba(0, 0, 0, 0.05), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.0125), 0px 1px 1px rgba(0, 0, 0, 0.0075)',
-    outline: '0 0 0 3px var(--chakra-colors-grey-4)',
+    soft: '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
+    outline: '0 0 0 3px var(--wrkplay-colors-grey-6)',
   },
   radii: {
     xl: '16px',
@@ -74,17 +96,20 @@ const theme = extendTheme({
     },
     Skeleton: {
       defaultProps: {
-        startColor: 'grey.3',
-        endColor: 'grey.6',
+        startColor: 'blackAlpha.100',
+        endColor: 'blackAlpha.400',
       },
     },
+    Tooltip,
     Badge,
     Popover,
     Menu,
     Input,
-    Textarea: { ...Input, variants: { custom: Input.variants.custom.field } },
+    Textarea: { defaultProps: { variant: 'custom' }, variants: { custom: Input.variants.default.field } },
+    Select,
     Button,
     Modal,
+    Switch,
     Tabs,
   },
 });

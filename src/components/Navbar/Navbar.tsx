@@ -38,7 +38,7 @@ const Navbar: React.VFC = () => {
       top={0}
       spacing={4}
       bg={hasScrolled ? 'grey.2' : undefined}
-      boxShadow={hasScrolled ? '0 1px 0 0 var(--chakra-colors-grey-6)' : undefined}
+      boxShadow={hasScrolled ? '0 1px 0 0 var(--wrkplay-colors-grey-6)' : undefined}
       pt="env(safe-area-inset-top)"
       transition="box-shadow .15s ease-out"
     >

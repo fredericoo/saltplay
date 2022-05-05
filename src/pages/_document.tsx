@@ -1,4 +1,4 @@
-import theme from '@/theme/theme';
+import { initialColorMode } from '@/theme/theme';
 import { ColorModeScript } from '@chakra-ui/react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import { ReactElement } from 'react';
@@ -58,12 +58,13 @@ class MyDocument extends Document {
 
           {/* WEB APP */}
           <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-title" content="SaltPay" />
 
           <link rel="icon" href="/favicon.png" />
           <link rel="apple-touch-icon" href="/pwa.png" />
         </Head>
         <body>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <ColorModeScript initialColorMode={initialColorMode} />
           <Main />
           <NextScript />
         </body>

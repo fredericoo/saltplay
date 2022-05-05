@@ -14,7 +14,7 @@ const Stat: React.VFC<StatProps> = ({ label, isLoading, content }) => {
       <Text fontSize="md" color="grey.9" mb={2}>
         {label}
       </Text>
-      <Text fontSize="2xl" fontWeight="normal" lineHeight={1}>
+      <Text as="div" fontSize="2xl" fontWeight="normal" lineHeight={1}>
         <Skeleton isLoaded={!isLoading}>{!isLoading ? content : '…'}</Skeleton>
       </Text>
     </Box>

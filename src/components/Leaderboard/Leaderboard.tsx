@@ -1,4 +1,4 @@
-import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/getLeaderboardHandler';
+import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
@@ -18,9 +18,9 @@ type LeaderboardProps = {
 
 const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
-  const { data, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
-  const hasNextPage = data?.[data.length - 1].nextPage;
+  const hasNextPage = pages?.[pages.length - 1]?.pageInfo?.nextPage;
 
   useEffect(() => {
     const options = {
@@ -39,10 +39,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
       observer.observe(loadMoreRef.current);
     }
     return () => observer.disconnect();
-  }, [hasNextPage, setSize, data]);
+  }, [hasNextPage, setSize, pages]);
 
   if (error) return <Box>Error</Box>;
-  if (!data)
+  if (!pages)
     return (
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
@@ -54,7 +54,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
       </Stack>
     );
 
-  const allPositions = data.flatMap(page => page.positions);
+  const allPositions = pages.flatMap(page => page?.data?.positions);
 
   if (allPositions && allPositions.length === 0)
     return (
@@ -117,7 +117,7 @@ const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; 
   bg,
 }) => {
   const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
-  const player = playerPositions?.positions?.[0];
+  const player = playerPositions?.data?.positions?.[0];
   if (!player) return null;
 
   return (

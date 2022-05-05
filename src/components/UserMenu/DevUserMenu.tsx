@@ -11,7 +11,7 @@ const setSession = async (userid: User['id']) => {
 };
 
 const DevUserMenu: React.VFC = () => {
-  const { data } = useSWR<DevUsersAPIResponse>('/api/dev/users', fetcher);
+  const { data: res } = useSWR<DevUsersAPIResponse>('/api/dev/users', fetcher);
   return (
     <Menu isLazy>
       <MenuButton as={Button} variant="subtle" colorScheme="primary" textAlign="left" fontSize="xs" size="sm">
@@ -20,7 +20,7 @@ const DevUserMenu: React.VFC = () => {
         </Text>
       </MenuButton>
       <MenuList maxH="200px" overflow="scroll">
-        {data?.users?.map(user => (
+        {res?.data?.users?.map(user => (
           <MenuItem onClick={() => setSession(user.id)} key={user.id}>
             {user.name}
           </MenuItem>

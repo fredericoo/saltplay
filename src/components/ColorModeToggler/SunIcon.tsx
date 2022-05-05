@@ -3,7 +3,7 @@ import React from 'react';
 import { transition } from './constants';
 
 export const SunIcon: React.VFC = () => {
-  const whileTap = { scale: 0.95, rotate: 15 };
+  const wrapperVariants = { whileTap: { scale: 0.95, rotate: 15 } };
 
   const raysVariants = {
     initial: { rotate: 45 },
@@ -20,21 +20,13 @@ export const SunIcon: React.VFC = () => {
       key="sun"
       width="1em"
       height="1em"
-      viewBox="-12 -12 48 48"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      whileTap={whileTap}
+      variants={wrapperVariants}
       style={{ originX: '50%', originY: '50%' }}
     >
-      <motion.circle
-        cx="11.9998"
-        cy="11.9998"
-        r="5.75375"
-        fill="currentColor"
-        initial="initial"
-        animate="animate"
-        variants={coreVariants}
-      />
+      <motion.circle cx="11.9998" cy="11.9998" r="5.75375" fill="currentColor" variants={coreVariants} />
       <motion.g initial="initial" animate="animate" variants={raysVariants}>
         <circle cx="3.08982" cy="6.85502" r="1.71143" transform="rotate(-60 3.08982 6.85502)" fill="currentColor" />
         <circle cx="3.0903" cy="17.1436" r="1.71143" transform="rotate(-120 3.0903 17.1436)" fill="currentColor" />

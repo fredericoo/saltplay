@@ -23,7 +23,7 @@ const existingSlackUsersHandler: NextApiHandler<ExistingSlackUsersAPIResponse> =
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
 
   const userIds = await getExistingUserIds();
-  res.status(200).json({ status: 'ok', userIds });
+  res.status(200).json({ status: 'ok', data: { userIds } });
 };
 
 export default existingSlackUsersHandler;

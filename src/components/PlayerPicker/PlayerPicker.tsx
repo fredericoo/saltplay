@@ -128,7 +128,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
             borderRadius="full"
             bg="grey.6"
             mr="2"
-            boxShadow="0px 0px 8px 12px var(--chakra-colors-grey-6)"
+            boxShadow="0px 0px 8px 12px var(--wrkplay-colors-grey-6)"
             _hover={{ color: 'grey.12' }}
             onClick={() => {
               setIsSearching(!isSearching);

@@ -9,7 +9,13 @@ const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(({ title, subtitl
   return (
     <Box py={8} position="relative" zIndex={0} ref={ref}>
       <AnimatePresence>
-        <MotionBox key={icon} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <MotionBox
+          key={icon}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          pointerEvents="none"
+        >
           <IconBlur
             icon={icon}
             height="400%"

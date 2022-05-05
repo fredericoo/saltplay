@@ -1,4 +1,4 @@
-import { USER_ROLE_ID } from '@/lib/constants';
+import { USER_ROLE_ID } from '@/constants';
 import prisma from '@/lib/prisma';
 import { Account, User } from 'next-auth/core/types';
 import notifyNewcomer from '../slackbot/notifyNewcomer';

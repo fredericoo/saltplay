@@ -39,7 +39,7 @@ const getRandomPhotoHandler: NextApiHandler<RandomPhotoApiResponse> = async (req
       res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate');
       res.status(200).json({
         status: 'ok',
-        photo: randomPhoto,
+        data: { photo: randomPhoto },
       });
     })
     .catch(err => {

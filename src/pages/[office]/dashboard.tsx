@@ -1,5 +1,5 @@
 import Leaderboard from '@/components/Leaderboard';
-import DashboardLayout from '@/layouts/DashboardLayout';
+import TV from '@/layouts/TV';
 import { PageWithLayout } from '@/layouts/types';
 import prisma from '@/lib/prisma';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
@@ -32,7 +32,7 @@ const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {
   );
 };
 
-OfficePage.Layout = DashboardLayout;
+OfficePage.Layout = TV;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const offices = await prisma.office.findMany({

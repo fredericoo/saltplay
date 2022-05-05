@@ -1,21 +1,25 @@
+import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
 import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import OfficeStat from '@/components/OfficeStat';
 import SEO from '@/components/SEO';
-import { Sidebar } from '@/components/Sidebar/types';
+import Stat from '@/components/Stat';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { Office } from '@prisma/client';
+import { GetServerSideProps, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { VscEdit } from 'react-icons/vsc';
 import useSWR from 'swr';
 
-export const getOfficeBySlug = async (slug: string) =>
+export const getOfficeBySlug = async (slug: Office['slug']) =>
   await prisma.office.findUnique({
     where: { slug },
     select: {
@@ -25,34 +29,69 @@ export const getOfficeBySlug = async (slug: string) =>
       icon: true,
       games: {
         orderBy: { name: 'asc' },
-        select: { name: true, id: true, slug: true, icon: true },
+        select: {
+          _count: {
+            select: {
+              matches: true,
+            },
+          },
+          name: true,
+          id: true,
+          slug: true,
+          icon: true,
+        },
       },
     },
   });
 
 type OfficePageProps = {
-  office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
-  sidebar?: Sidebar;
+  office: NonNullable<Awaited<ReturnType<typeof getOfficeBySlug>>>;
 };
 
-const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
+const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   const isDesktop = useMediaQuery('md');
-  const { data } = useSWR<RandomPhotoApiResponse>(office ? `/api/photo/random?q=${office.name}` : null, fetcher, {
-    revalidateOnFocus: false,
-  });
-  useNavigationState(office?.name);
-  if (!office) return <Box>404</Box>;
+  const { data: randomPhoto } = useSWR<RandomPhotoApiResponse>(
+    office ? `/api/photo/random?q=${office.name}` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
+  );
+  const { data: session } = useSession();
+
+  const matchesPerGame = office.games;
+  const matchesCount = matchesPerGame?.reduce((acc, cur) => acc + cur._count.matches, 0) || 0;
+  const mostPlayedGame =
+    matchesPerGame.length > 0
+      ? matchesPerGame?.reduce((acc, cur) => {
+          if (cur._count.matches > acc._count.matches) return cur;
+          return acc;
+        })?.name
+      : 'None yet';
+  const sidebar = {
+    items: office.games.map(game => ({
+      title: game.name,
+      href: `/${office.slug}/${game.slug}`,
+      icon: game.icon || null,
+    })),
+  };
+  useNavigationState(office.name);
 
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
+      <SEO title={office.name} />
+      {canViewDashboard(session?.user.roleId) && (
+        <FloatingActionButton
+          buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/offices/${office.id}` }]}
+        />
+      )}
       <Stack spacing={{ base: 1, md: 0.5 }}>
-        <SEO title={office.name} />
         <Box bg="grey.1" borderRadius="18" overflow="hidden">
           <Box bg={getUserGradient(office.id.toString())} pb={{ base: '50%', md: '25%' }} position="relative">
-            {data?.photo && (
+            {randomPhoto?.data?.photo && (
               <Image
-                src={data.photo.urls.regular}
-                alt={data.photo.alt_description || ''}
+                src={randomPhoto.data.photo.urls.regular}
+                alt={randomPhoto.data.photo.alt_description || ''}
                 objectFit="cover"
                 layout="fill"
                 unoptimized
@@ -60,13 +99,13 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
             )}
           </Box>
           <Box p={4}>
-            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2} overflow="hidden">
+            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2}>
               {office.name} office
             </Text>
           </Box>
           <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} p={1}>
-            <OfficeStat id={office.id} stat="mostPlayedGame" />
-            <OfficeStat id={office.id} stat="matchesCount" />
+            <Stat label="Most played game" content={mostPlayedGame} />
+            <Stat label="Matches" content={matchesCount} />
           </HStack>
         </Box>
         <Stack spacing={6} pt={4}>
@@ -95,42 +134,23 @@ const OfficePage: NextPage<OfficePageProps> = ({ office, sidebar }) => {
     </Container>
   );
 };
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const offices = await prisma.office.findMany({
-    select: { slug: true },
-  });
-  return {
-    paths: offices.map(office => ({ params: { office: office.slug } })),
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
   if (typeof params?.office !== 'string') {
     return { props: {} };
   }
 
   const office = await getOfficeBySlug(params?.office);
 
-  if (!office) {
-    return { props: {} };
+  if (!office || office === null) {
+    return { notFound: true };
   }
 
-  const sidebar: Sidebar = {
-    items: office.games.map(game => ({
-      title: game.name,
-      href: `/${office.slug}/${game.slug}`,
-      icon: game.icon || null,
-    })),
-  };
+  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
 
   return {
     props: {
       office,
-      sidebar,
     },
-    revalidate: 60 * 60 * 24,
   };
 };
 

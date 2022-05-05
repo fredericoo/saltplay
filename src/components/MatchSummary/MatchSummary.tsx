@@ -7,7 +7,7 @@ import { Match, User } from '@prisma/client';
 import formatRelative from 'date-fns/formatRelative';
 import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import DeleteMatchButton from './DeleteButton';
 import ScoreTrend from './ScoreTrend';
 
@@ -55,10 +55,11 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       borderRadius={16}
       px={2}
       position="relative"
-      _hover={{ boxShadow: '0px 0px 1px 0 var(--chakra-colors-grey-9)' }}
+      _hover={{ boxShadow: '0px 0px 1px 0 var(--wrkplay-colors-grey-9)' }}
     >
       {canDelete && (
         <DeleteMatchButton
+          zIndex={2}
           id={id}
           onDeleteStart={() => setIsLoading(true)}
           onDeleteError={() => setIsLoading(false)}
@@ -80,14 +81,16 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           transform="translateY(-50%)"
           fontSize="xs"
           letterSpacing="wide"
+          noOfLines={1}
+          maxW="80%"
         >
           {formatRelative(new Date(createdAt), new Date(), { locale: enGB })} {officeName && `at ${officeName}`}
         </Box>
       )}
-      <HStack p={4} w="100%" justifyContent="center" gap={4}>
-        <VStack flex={1} lineHeight={1.2}>
+      <HStack px={4} py={6} w="100%" justifyContent="center" gap={4}>
+        <VStack flex={1} lineHeight={1.2} spacing={8}>
           {left.map(player => (
-            <Fragment key={player.id}>
+            <VStack key={player.id} spacing={1.5}>
               <PlayerAvatar user={player} isLink />
               <PlayerName
                 lineHeight={1.2}
@@ -105,7 +108,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                   score={getPlayerPointsToMove({ pointsToMove, teamLength: left.length })}
                 />
               )}
-            </Fragment>
+            </VStack>
           ))}
         </VStack>
         <Box flex={1}>
@@ -128,9 +131,9 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
             </Text>
           )}
         </Box>
-        <VStack flex={1}>
+        <VStack flex={1} lineHeight={1.2} spacing={8}>
           {right.map(player => (
-            <Fragment key={player.id}>
+            <VStack spacing={1.5} key={player.id}>
               <PlayerAvatar user={player} isLink />
               <PlayerName
                 lineHeight={1.2}
@@ -148,7 +151,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
                   score={getPlayerPointsToMove({ pointsToMove, teamLength: right.length })}
                 />
               )}
-            </Fragment>
+            </VStack>
           ))}
         </VStack>
       </HStack>

@@ -15,6 +15,7 @@ const variantPill: SystemStyleFunction = props => {
       borderRadius: 10,
       px: 4,
       py: 1.5,
+      whiteSpace: 'nowrap',
       _hover: {
         bg: mode('grey.1', 'grey.6')(props),
       },
@@ -51,8 +52,7 @@ const variantBottomBar: SystemStyleFunction = props => ({
     overflow: 'auto',
     position: 'fixed',
     zIndex: 'overlay',
-    boxShadow:
-      '0px 24px 80px rgba(0, 0, 0, 0.06), 0px 12.4857px 29.2013px rgba(0, 0, 0, 0.0413989), 0px 5.92003px 14.1767px rgba(0, 0, 0, 0.0333774), 0px 2.46393px 6.94968px rgba(0, 0, 0, 0.0266226), 0px 0.720165px 2.74791px rgba(0, 0, 0, 0.0186011)',
+    boxShadow: 'soft',
     p: 1,
     left: 4,
     right: 4,
@@ -79,10 +79,54 @@ const variantBottomBar: SystemStyleFunction = props => ({
   },
 });
 
+export const variantSidebar = {
+  root: {
+    css: { '--sidebar-width': '300px' },
+    display: 'grid',
+    gridTemplateColumns: { md: 'var(--sidebar-width) 1fr' },
+    pt: 0,
+  },
+  tab: {
+    display: 'flex',
+    alignItems: 'center',
+    color: 'grey.11',
+    px: 4,
+    py: 1.5,
+    _hover: {
+      bg: 'grey.3',
+    },
+    ':not(:last-child)': { mb: 1 },
+    _selected: {
+      bg: 'grey.3',
+      color: 'primary.10',
+    },
+    _focus: {
+      bg: 'grey.3',
+      boxShadow: 'none',
+    },
+    fontSize: 'sm',
+    justifyContent: 'flex-start',
+  },
+  tablist: {
+    display: 'flex',
+    alignSelf: 'start',
+    flexDirection: 'column',
+    position: 'sticky',
+    top: 'calc(64px + env(safe-area-inset-top))',
+    pt: 4,
+  },
+  tabpanel: {
+    borderLeft: { md: '1px solid' },
+    borderColor: { md: 'grey.4' },
+    p: 4,
+  },
+};
+
 export const Tabs = {
   parts: ['root', 'tab', 'tablist', 'tabpanel'],
   variants: {
     custom: variantPill,
+    sidebar: variantSidebar,
     bottom: variantBottomBar,
   },
   defaultProps: {

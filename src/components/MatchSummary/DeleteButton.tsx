@@ -1,5 +1,6 @@
 import {
   Button,
+  ChakraProps,
   CloseButton,
   HStack,
   Popover,
@@ -22,13 +23,14 @@ type DeleteMatchButtonProps = {
   onDeleteStart?: () => void;
   onDeleteSuccess?: () => void;
   onDeleteError?: () => void;
-};
+} & ChakraProps;
 
 const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
   id,
   onDeleteStart,
   onDeleteSuccess,
   onDeleteError,
+  ...props
 }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const toast = useToast();
@@ -65,6 +67,7 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
           _hover={{ bg: 'danger.9', color: 'grey.1' }}
           borderRadius="full"
           onClick={onToggle}
+          {...props}
         />
       </PopoverTrigger>
       <Portal>

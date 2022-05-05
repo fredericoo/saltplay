@@ -1,5 +1,5 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
-import { PAGE_SIZE } from '@/lib/constants';
+import { PAGE_SIZE } from '@/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Game, Office, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -24,10 +24,10 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   canLoadMore = true,
   canDelete = true,
 }) => {
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
-  const { data, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, userId });
+  const { data: pages, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
-  const hasNextPage = data?.[data.length - 1].nextCursor;
+  const hasNextPage = !!pages?.[pages.length - 1].pageInfo?.nextCursor;
 
   const refetch = () => {
     mutate();
@@ -51,9 +51,9 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
       observer.observe(loadMoreRef.current);
     }
     return () => observer.disconnect();
-  }, [canLoadMore, hasNextPage, setSize, data]);
+  }, [canLoadMore, hasNextPage, setSize, pages]);
 
-  if (error || data?.[0].status === 'error') {
+  if (error || pages?.some(page => page.status === 'error')) {
     return (
       <Box p={4} textAlign="center" bg="red.100" borderRadius="xl" color="red.600">
         <Text mb={2}>Error loading matches :(</Text>
@@ -64,7 +64,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
     );
   }
 
-  if (!data)
+  if (!pages || pages.some(page => page.status !== 'ok'))
     return (
       <Stack>
         {new Array(PAGE_SIZE).fill(0).map((_, i) => (
@@ -73,7 +73,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
       </Stack>
     );
 
-  const allMatches = data.flatMap(page => page.matches);
+  const allMatches = pages.flatMap(page => page.data?.matches);
 
   if (allMatches.length === 0)
     return (
