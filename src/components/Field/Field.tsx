@@ -1,8 +1,8 @@
 import { EditableField } from '@/lib/admin';
 import { Select } from '@chakra-ui/react';
-import { EditableInput } from '../Editable';
-import EditableEmoji from '../Editable/EditableEmoji';
-import EditableSlider from '../Editable/EditableSlider';
+import EmojiField from './EmojiField';
+import InputField from './InputField';
+import SliderField from './SliderField';
 
 type FieldProps<TData> = {
   field: EditableField<TData>;
@@ -27,7 +27,7 @@ const Field = <TData extends object>({
   switch (field.type) {
     case 'text':
       return (
-        <EditableInput
+        <InputField
           fontSize="sm"
           type="text"
           name={field.id.toString()}
@@ -45,7 +45,7 @@ const Field = <TData extends object>({
     case 'number':
       if (field.max && field.min)
         return (
-          <EditableSlider
+          <SliderField
             name={field.id.toString()}
             min={field.min}
             max={field.max}
@@ -54,7 +54,7 @@ const Field = <TData extends object>({
           />
         );
       return (
-        <EditableInput
+        <InputField
           fontSize="sm"
           type="number"
           name={field.id.toString()}
@@ -70,7 +70,7 @@ const Field = <TData extends object>({
       );
     case 'emoji':
       return (
-        <EditableEmoji
+        <EmojiField
           name={field.id.toString()}
           align={align}
           autoFocus={autoFocus}

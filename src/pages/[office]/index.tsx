@@ -19,7 +19,7 @@ import Image from 'next/image';
 import { VscEdit } from 'react-icons/vsc';
 import useSWR from 'swr';
 
-export const getOfficeBySlug = async (slug: Office['slug']) =>
+const getOfficeBySlug = async (slug: Office['slug']) =>
   await prisma.office.findUnique({
     where: { slug },
     select: {
@@ -94,6 +94,7 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
                 alt={randomPhoto.data.photo.alt_description || ''}
                 objectFit="cover"
                 layout="fill"
+                priority
                 unoptimized
               />
             )}

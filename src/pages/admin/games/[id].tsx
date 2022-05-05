@@ -54,7 +54,7 @@ export const getGameFields = ({
   return editableFields;
 };
 
-export const getGame = (id: string) =>
+const getGame = (id: string) =>
   prisma.game.findUnique({
     where: { id },
     select: {
@@ -69,7 +69,7 @@ export const getGame = (id: string) =>
     },
   });
 
-export const getOffices = () =>
+const getOffices = () =>
   prisma.office.findMany({
     select: { id: true, name: true },
   });

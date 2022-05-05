@@ -38,7 +38,7 @@ const Editable = <T extends PropertyKey>({
 
   if (!isEditing)
     return (
-      <HStack flexShrink={1} justifyContent="flex-end">
+      <HStack flexShrink={1} justifyContent="flex-end" overflow="hidden">
         {value && (
           <Box
             tabIndex={-1}
@@ -55,7 +55,7 @@ const Editable = <T extends PropertyKey>({
             opacity={isDisabled ? 0.5 : 1}
             isTruncated
           >
-            <Text as="span" color="grey.8">
+            <Text as="span" color="grey.8" isTruncated>
               {preText}
             </Text>
             {value}
@@ -63,7 +63,6 @@ const Editable = <T extends PropertyKey>({
         )}
         <IconButton
           ref={buttonRef}
-          aria-label="edit"
           key="edit"
           variant="solid"
           type="button"
@@ -72,7 +71,7 @@ const Editable = <T extends PropertyKey>({
           onClick={onEdit}
           isDisabled={isDisabled}
           css={{ aspectRatio: '1' }}
-          ariaLabel={`Edit field "${id}"`}
+          aria-label={`Edit field "${id}"`}
         >
           {value ? <VscEdit /> : <VscAdd />}
         </IconButton>
@@ -87,11 +86,13 @@ const Editable = <T extends PropertyKey>({
   };
 
   return (
-    <FocusLock>
+    <Box as={FocusLock} overflow="hidden">
       <Tooltip variant="error" label={error} placement="bottom-end" isOpen={!!error} offset={[-8, -8]}>
         <HStack as="form" flexShrink={1} flexGrow={1} onSubmit={handleSubmit}>
-          <Box flexGrow={1}>{children}</Box>
-          <HStack spacing={1}>
+          <Box flexGrow={1} flexShrink={1} overflow="hidden">
+            {children}
+          </Box>
+          <HStack spacing={1} flexShrink={0}>
             <IconButton
               aria-label="submit"
               variant="solid"
@@ -120,7 +121,7 @@ const Editable = <T extends PropertyKey>({
           </HStack>
         </HStack>
       </Tooltip>
-    </FocusLock>
+    </Box>
   );
 };
 

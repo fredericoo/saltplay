@@ -34,7 +34,7 @@ export const officeFields: EditableField<Office>[] = [
   },
 ];
 
-export const getOffice = (id: string) =>
+const getOffice = (id: string) =>
   prisma.office.findUnique({
     where: { id },
     select: { id: true, name: true, icon: true, slug: true, games: { select: { id: true, name: true, icon: true } } },

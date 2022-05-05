@@ -1,25 +1,18 @@
 import { HStack, Input, InputProps, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
-type EditableInputProps = Omit<InputProps, 'onChange' | 'value' | 'defaultValue' | 'prefix'> & {
+type InputFieldProps = Omit<InputProps, 'onChange' | 'value' | 'defaultValue' | 'prefix'> & {
   defaultValue?: string;
   prefix?: string;
   suffix?: string;
   format?: (value: string) => string;
 };
-const EditableInput: React.VFC<EditableInputProps> = ({
-  format,
-  defaultValue,
-  prefix,
-  suffix,
-  textAlign,
-  ...props
-}) => {
+const InputField: React.VFC<InputFieldProps> = ({ format, defaultValue, prefix, suffix, textAlign, ...props }) => {
   const [value, setValue] = useState<string>(defaultValue || '');
   return (
-    <HStack spacing={0}>
+    <HStack spacing={0} overflow="hidden">
       {prefix && (
-        <Text pl={'.625rem'} as="span" userSelect={'none'} color="grey.10" isTruncated>
+        <Text noOfLines={1} pl={'.625rem'} as="span" userSelect={'none'} color="grey.10" minW="0">
           {prefix}
         </Text>
       )}
@@ -40,4 +33,4 @@ const EditableInput: React.VFC<EditableInputProps> = ({
   );
 };
 
-export default EditableInput;
+export default InputField;

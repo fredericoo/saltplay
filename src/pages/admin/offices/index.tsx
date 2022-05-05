@@ -12,7 +12,7 @@ type AdminPageProps = {
   offices: Awaited<ReturnType<typeof getOffices>>;
 };
 
-export const getOffices = () =>
+const getOffices = () =>
   prisma.office.findMany({
     orderBy: { name: 'asc' },
     select: { id: true, name: true, icon: true, slug: true, games: { select: { id: true } } },

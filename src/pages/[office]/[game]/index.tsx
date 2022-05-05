@@ -60,7 +60,8 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
 
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <PageHeader title={game?.name} subtitle={`at the ${game.name} office`} icon={game?.icon} ref={headerRef} />
+      <PageHeader title={game.name} subtitle={`at the ${game.office.name} office`} icon={game?.icon} ref={headerRef} />
+
       <SEO title={game?.name} />
       {canViewDashboard(session?.user.roleId) && (
         <FloatingActionButton

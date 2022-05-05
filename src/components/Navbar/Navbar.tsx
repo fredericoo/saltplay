@@ -1,11 +1,11 @@
-import { currentHistoryState } from '@/lib/navigationHistory/state';
+import { currentHistoryStateAtom } from '@/lib/navigationHistory/state';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IoChatbubble } from 'react-icons/io5';
-import { useRecoilValue } from 'recoil';
 import ColorModeToggler from '../ColorModeToggler';
 import FeedbackForm from '../FeedbackForm';
 import Logo from '../Logo/Logo';
@@ -18,7 +18,7 @@ export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
 const Navbar: React.VFC = () => {
   const isDesktop = useMediaQuery('md');
   const [hasScrolled, setHasScrolled] = useState(false);
-  const currentNavigaton = useRecoilValue(currentHistoryState);
+  const [currentNavigaton] = useAtom(currentHistoryStateAtom);
   const { pathname } = useRouter();
 
   useEffect(() => {
