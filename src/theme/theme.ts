@@ -68,8 +68,8 @@ const theme = extendTheme({
         color: 'grey.12',
       },
       '*': {
-        '-webkit-tap-highlight-color': 'rgba(0, 0, 0, 0)',
-        '-moz-tap-highlight-color': 'rgba(0, 0, 0, 0)',
+        WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
+        MozTapHighlightColor: 'rgba(0, 0, 0, 0)',
       },
     },
   },

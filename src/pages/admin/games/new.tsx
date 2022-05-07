@@ -9,6 +9,7 @@ import { withDashboardAuth } from '@/lib/admin';
 import { GamePOSTAPIResponse } from '@/lib/api/handlers/game/postGameHandler';
 import { patchGameSchema, postGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
+import prisma from '@/lib/prisma';
 import { APIError } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
 import { Box, Button, Stack, Tooltip } from '@chakra-ui/react';
@@ -17,7 +18,12 @@ import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useState } from 'react';
 import { InferType, ValidationError } from 'yup';
-import { getGameFields, getOffices } from './[id]';
+import { getGameFields } from './[id]';
+
+const getOffices = () =>
+  prisma.office.findMany({
+    select: { id: true, name: true },
+  });
 
 type AdminPageProps = { offices: Awaited<ReturnType<typeof getOffices>>; query: InferType<typeof patchGameSchema> };
 

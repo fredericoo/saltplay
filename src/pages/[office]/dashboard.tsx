@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
-export const getOfficeBySlug = async (slug: string) =>
+const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({
     where: { slug },
     select: { games: { orderBy: { id: 'asc' }, select: { id: true, name: true } } },
