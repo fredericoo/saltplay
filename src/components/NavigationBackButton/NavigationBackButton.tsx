@@ -1,11 +1,11 @@
-import { lastHistoryState } from '@/lib/navigationHistory/state';
+import { lastHistoryStateAtom } from '@/lib/navigationHistory/state';
 import { Button, Text } from '@chakra-ui/react';
+import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { VscChevronLeft } from 'react-icons/vsc';
-import { useRecoilValue } from 'recoil';
 
 const NavigationBackButton = () => {
-  const lastHistory = useRecoilValue(lastHistoryState);
+  const [lastHistory] = useAtom(lastHistoryStateAtom);
 
   if (!lastHistory?.href || !lastHistory.title) return null;
 

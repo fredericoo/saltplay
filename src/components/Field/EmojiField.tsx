@@ -23,7 +23,7 @@ const EmojiPicker = dynamic<IEmojiPickerProps>(() => import('emoji-picker-react'
   ),
 });
 
-type EditableEmojiProps = ChakraProps & {
+type EmojiFieldProps = ChakraProps & {
   defaultValue?: string;
   autoFocus?: boolean;
   align: 'left' | 'right';
@@ -31,7 +31,7 @@ type EditableEmojiProps = ChakraProps & {
   label?: string;
 };
 
-const EditableEmoji: React.VFC<EditableEmojiProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
+const EmojiField: React.VFC<EmojiFieldProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
   const [value, setValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(autoFocus === true);
 
@@ -102,4 +102,4 @@ const EditableEmoji: React.VFC<EditableEmojiProps> = ({ defaultValue, name, auto
   );
 };
 
-export default EditableEmoji;
+export default EmojiField;

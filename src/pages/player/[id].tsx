@@ -16,7 +16,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { VscEdit } from 'react-icons/vsc';
 
-export const getPlayerById = async (id: User['id']) =>
+const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
     where: { id },
     select: {

@@ -41,7 +41,7 @@ export const postGameSchema = object({
   icon: iconSchema,
   slug: slugSchema.required(),
   flags: gameFlagsSchema.default(0),
-  maxPlayersPerTeam: number().max(10).default(1),
+  maxPlayersPerTeam: number().max(11).default(1),
   officeid: string().required(),
 });
 

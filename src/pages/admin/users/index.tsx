@@ -14,7 +14,7 @@ type AdminPageProps = {
   users: Awaited<ReturnType<typeof getUsers>>;
 };
 
-export const getUsers = () =>
+const getUsers = () =>
   prisma.user.findMany({
     orderBy: [{ roleId: 'asc' }, { name: 'asc' }],
     select: { id: true, name: true, image: true, roleId: true },

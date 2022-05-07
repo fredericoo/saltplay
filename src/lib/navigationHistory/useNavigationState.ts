@@ -1,12 +1,12 @@
+import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { HistoryState, lastHistoryState } from './state';
+import { useEffect } from 'react';
+import { HistoryState, writeHistoryStateAtom } from './state';
 
 const useNavigationState = (title?: HistoryState['title']) => {
-  const setLastState = useSetRecoilState(lastHistoryState);
+  const [, setLastState] = useAtom(writeHistoryStateAtom);
   const { asPath } = useRouter();
-  useState(() => setLastState({ title, href: asPath }));
+  useEffect(() => setLastState({ title, href: asPath }), [asPath, setLastState, title]);
 };
 
 export default useNavigationState;
