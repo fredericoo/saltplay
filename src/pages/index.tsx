@@ -3,6 +3,7 @@ import Hero from '@/components/home/Hero';
 import LeaderboardBlock from '@/components/home/LeaderboardBlock';
 import PlayersBlock from '@/components/home/PlayersBlock';
 import SEO from '@/components/SEO';
+import { HOME_CACHE_HEADER } from '@/constants';
 import { getMostRecentGameId, getOffices, getPlayerSample } from '@/lib/home';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { Box, Container, SimpleGrid } from '@chakra-ui/react';
@@ -32,10 +33,12 @@ const Home: NextPage<HomeProps> = ({ offices, players, mostRecentGameId }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const offices = await getOffices();
   const players = await getPlayerSample();
   const mostRecentGameId = await getMostRecentGameId();
+
+  res.setHeader('Cache-Control', HOME_CACHE_HEADER);
 
   return {
     props: { offices, players, mostRecentGameId },

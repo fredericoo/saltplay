@@ -4,6 +4,7 @@ import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
+import { PAGE_CACHE_HEADER } from '@/constants';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
@@ -146,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res }) =>
     return { notFound: true };
   }
 
-  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+  res.setHeader('Cache-Control', PAGE_CACHE_HEADER);
 
   return {
     props: {

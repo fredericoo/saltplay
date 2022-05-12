@@ -6,6 +6,7 @@ import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import NewMatchButton from '@/components/NewMatchButton';
 import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
+import { PAGE_CACHE_HEADER } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
@@ -198,7 +199,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res }) =>
       notFound: true,
     };
 
-  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+  res.setHeader('Cache-Control', PAGE_CACHE_HEADER);
 
   return {
     props: {

@@ -5,6 +5,7 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
+import { PAGE_CACHE_HEADER } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
@@ -124,7 +125,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params, res }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
@@ -143,6 +144,8 @@ export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ 
     rightmatches.reduce((acc, match) => (match.rightscore < match.rightscore ? acc + 1 : acc), 0);
 
   const games = scores.map(score => score.game);
+
+  res.setHeader('Cache-Control', PAGE_CACHE_HEADER);
 
   return {
     props: {
