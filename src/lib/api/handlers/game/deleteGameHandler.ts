@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -27,6 +28,7 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
         prisma.game.delete({ where: { id: query.id }, include: { office: true } }),
       ]);
 
+      await revalidateStaticPages();
       res.status(200).json({ status: 'ok', data: game });
     })
     .catch(err => {

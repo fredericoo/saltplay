@@ -5,7 +5,6 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
-import { PAGE_CACHE_HEADER } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
@@ -13,7 +12,7 @@ import { canViewDashboard, getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { VscEdit } from 'react-icons/vsc';
 
@@ -125,7 +124,13 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params, res }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const players = await prisma.user.findMany({ select: { id: true } });
+  const paths = players.map(player => ({ params: { id: player.id } }));
+  return { paths, fallback: 'blocking' };
+};
+
+export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
@@ -145,8 +150,6 @@ export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ 
 
   const games = scores.map(score => score.game);
 
-  res.setHeader('Cache-Control', PAGE_CACHE_HEADER);
-
   return {
     props: {
       player,
@@ -157,6 +160,7 @@ export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ 
         games: games.map(game => ({ name: game.name, icon: [game.office.icon, game.icon].join(' '), id: game.id })),
       },
     },
+    revalidate: 60,
   };
 };
 
