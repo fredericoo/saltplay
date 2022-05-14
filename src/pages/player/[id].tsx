@@ -125,9 +125,8 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const players = await prisma.user.findMany({ select: { id: true } });
-  const paths = players.map(player => ({ params: { id: player.id } }));
-  return { paths, fallback: 'blocking' };
+  // Deliberately not statically building users.
+  return { paths: [], fallback: 'blocking' };
 };
 
 export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }) => {
