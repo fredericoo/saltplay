@@ -17,6 +17,7 @@ import {
 import { Game, Match } from '@prisma/client';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoAddCircleOutline } from 'react-icons/io5';
@@ -26,8 +27,12 @@ import useOpponents from '../Leaderboard/useOpponents';
 import LoadingIcon from '../LoadingIcon';
 import { Player } from '../PlayerPicker/types';
 import Toast from '../Toast';
-import Scores from './steps/Scores';
-import Teams from './steps/Teams';
+
+const Teams = dynamic(() => import('./steps/Teams'), {
+  ssr: false,
+  loading: () => <LoadingIcon color="grey.4" size={4} />,
+});
+const Scores = dynamic(() => import('./steps/Scores'), { ssr: false });
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
@@ -132,12 +137,12 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
                   <Center py={16}>
                     <LoadingIcon color="grey.6" size={16} />
                   </Center>
-                ) : (
+                ) : isOpen ? (
                   <Stack spacing={8}>
                     <Teams gameId={gameId} maxPlayersPerTeam={maxPlayersPerTeam || 1} />
                     <Scores />
                   </Stack>
-                )}
+                ) : null}
               </form>
             </FormProvider>
           </ModalBody>
