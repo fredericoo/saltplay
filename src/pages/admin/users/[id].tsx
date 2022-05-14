@@ -2,6 +2,7 @@ import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import FloatingActionButton from '@/components/FloatingActionButton';
+import PlayerAvatar from '@/components/PlayerAvatar';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
@@ -12,12 +13,13 @@ import { SessionDELETEAPIResponse } from '@/lib/api/handlers/session/deleteSessi
 import { patchUserSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { Badge, Button, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from '@chakra-ui/react';
+import { Badge, Button, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from '@chakra-ui/react';
 import { Session, User } from '@prisma/client';
 import axios from 'axios';
 import { formatRelative, subSeconds } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { IoEyeOutline, IoTrashOutline } from 'react-icons/io5';
 
@@ -35,6 +37,7 @@ const getUser = (id: string) =>
         name: true,
         email: true,
         roleId: true,
+        image: true,
         sessions: { select: { id: true, expires: true } },
         scores: {
           select: {
@@ -56,13 +59,13 @@ const getRoles = () => prisma.role.findMany({ select: { name: true, id: true } }
 const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
   const { data: userSession } = useSession();
   const [deletedSessions, setDeletedSessions] = useState<Session['id'][]>([]);
+  const { reload } = useRouter();
 
   useNavigationState(user?.name || 'User');
 
   if (!user) return null;
 
   const editableFields: EditableField<User>[] = [
-    { id: 'name', label: 'Name', type: 'text' },
     {
       id: 'roleId',
       label: 'Role',
@@ -81,6 +84,13 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
       if (deletedSessionId) {
         setDeletedSessions(sessions => [...sessions, deletedSessionId]);
       }
+    }
+  };
+
+  const handleSync = async () => {
+    const sync = await axios.post(`/api/users/${user.id}/update`).then(res => res.data);
+    if (sync.status === 'ok') {
+      reload();
     }
   };
 
@@ -105,6 +115,10 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
           { label: user?.name || 'User' },
         ]}
       />
+      <HStack spacing={8} p={4}>
+        <PlayerAvatar size={16} user={user} />
+        <Text isTruncated>{user.name}</Text>
+      </HStack>
       <Tabs>
         <TabList>
           <Tab>Info</Tab>
@@ -119,6 +133,9 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
               data={user}
               saveEndpoint={`/api/users/${user?.id}`}
             />
+            <Button colorScheme="success" onClick={handleSync}>
+              Sync information with Slack
+            </Button>
           </TabPanel>
           <TabPanel>
             <Settings.List>
@@ -181,12 +198,13 @@ export const getServerSideProps = withDashboardAuth(async ({ params }) => {
   }
 
   const user = await getUser(params.id);
+  const roles = await getRoles();
   if (!user) return { notFound: true };
 
   return {
     props: {
-      user: await getUser(params.id),
-      roles: await getRoles(),
+      user,
+      roles,
     },
   };
 });

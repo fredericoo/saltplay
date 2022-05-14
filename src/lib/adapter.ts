@@ -1,7 +1,7 @@
 import { USER_ROLE_ID } from '@/constants';
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
-import notifyNewcomer from './slackbot/notifyNewcomer';
+import notifyNewcomer from './slack/notifyNewcomer';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: USER_ROLE_ID } } } }),
