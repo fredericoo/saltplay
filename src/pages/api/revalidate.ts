@@ -6,7 +6,16 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   try {
-    await res.unstable_revalidate('/');
+    const path = req.query.path;
+    if (typeof path === 'string') {
+      await res.unstable_revalidate(path);
+    } else {
+      await Promise.all(
+        path.map(async path => {
+          await res.unstable_revalidate(path);
+        })
+      );
+    }
     return res.json({ revalidated: true });
   } catch (err) {
     return res.status(500).send('Error revalidating');

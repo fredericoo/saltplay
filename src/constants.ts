@@ -15,8 +15,7 @@ export const BASE_MATCH_POINTS = 10;
 export const MIN_MATCH_POINTS = 1;
 export const MAX_MATCH_POINTS = 100;
 
-export const PAGE_CACHE_HEADER = 'public, s-maxage=60, stale-while-revalidate=59';
-export const HOME_CACHE_HEADER = 'public, s-maxage=600, stale-while-revalidate=599';
+export const PAGE_REVALIDATE_SECONDS = 60;
 
 // game flags
 export const GAME_FLAGS = { babyBottleIfHumiliated: 1 };

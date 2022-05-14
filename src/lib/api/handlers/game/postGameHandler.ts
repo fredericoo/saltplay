@@ -31,7 +31,7 @@ const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) =>
 
       try {
         const game = await createGame(body);
-        await revalidateStaticPages();
+        await revalidateStaticPages(['/', `/${game.office.slug}`, `/${game.office.slug}/${game.slug}`]);
         res.status(200).json({ status: 'ok', data: game });
       } catch (e) {
         console.error(e);

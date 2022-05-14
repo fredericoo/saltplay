@@ -28,7 +28,7 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
         prisma.game.delete({ where: { id: query.id }, include: { office: true } }),
       ]);
 
-      await revalidateStaticPages();
+      await revalidateStaticPages(['/', `/${game.office.slug}`, `/${game.office.slug}/${game.slug}`]);
       res.status(200).json({ status: 'ok', data: game });
     })
     .catch(err => {

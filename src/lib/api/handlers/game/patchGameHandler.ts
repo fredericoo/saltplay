@@ -36,7 +36,7 @@ const patchGameHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res) 
 
       return await updateGame(gameId, body)
         .then(async game => {
-          await revalidateStaticPages();
+          await revalidateStaticPages(['/', `/${game.office.slug}`, `/${game.office.slug}/${game.slug}`]);
           res.status(200).json({ status: 'ok', data: game });
         })
         .catch((error: PrismaClientKnownRequestError) => {

@@ -4,7 +4,7 @@ import List from '@/components/List';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
-import { PAGE_CACHE_HEADER } from '@/constants';
+import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
 import fetcher from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
@@ -14,7 +14,7 @@ import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { VscEdit } from 'react-icons/vsc';
@@ -136,9 +136,22 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
     </Container>
   );
 };
-export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const offices = await prisma.office.findMany({
+    select: {
+      slug: true,
+    },
+  });
+  return {
+    paths: offices.map(office => ({ params: { office: office.slug } })),
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<OfficePageProps> = async ({ params }) => {
   if (typeof params?.office !== 'string') {
-    return { props: {} };
+    return { notFound: true };
   }
 
   const office = await getOfficeBySlug(params?.office);
@@ -147,12 +160,11 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res }) =>
     return { notFound: true };
   }
 
-  res.setHeader('Cache-Control', PAGE_CACHE_HEADER);
-
   return {
     props: {
       office,
     },
+    revalidate: PAGE_REVALIDATE_SECONDS,
   };
 };
 

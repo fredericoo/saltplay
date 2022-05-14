@@ -26,9 +26,14 @@ const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, r
         .update({
           where: { id: officeId },
           data: body,
+          include: { games: { select: { slug: true } } },
         })
         .then(async office => {
-          await revalidateStaticPages();
+          await revalidateStaticPages([
+            '/',
+            `/${office.slug}`,
+            ...office.games.map(game => `/${office.slug}/${game.slug}`),
+          ]);
           res.status(200).json({ status: 'ok', data: office });
         })
         .catch((error: PrismaClientKnownRequestError) => {

@@ -28,7 +28,7 @@ const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res
 
       return await createOffice(body)
         .then(async office => {
-          await revalidateStaticPages();
+          await revalidateStaticPages(['/', `/${office.slug}`]);
           res.status(200).json({ status: 'ok', data: office });
         })
         .catch((error: PrismaClientKnownRequestError) => {

@@ -40,7 +40,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
   return {
     paths: offices.map(office => ({ params: { office: office.slug } })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };
 
