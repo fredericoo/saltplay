@@ -12,6 +12,7 @@ import {
   ModalProps,
   useDisclosure,
 } from '@chakra-ui/react';
+import { ComponentType } from 'react';
 import { useId } from 'react-id-generator';
 
 export type ModalFormProps = {
@@ -23,7 +24,7 @@ type ModalButton = ComponentWithAs<
   'button',
   ButtonProps & { modalProps?: Omit<ModalProps, 'isOpen' | 'onClose' | 'children'> } & {
     modalTitle?: string;
-    Form: React.VFC<ModalFormProps>;
+    Form: ComponentType<ModalFormProps>;
   }
 >;
 
@@ -39,9 +40,7 @@ const ModalButton: ModalButton = ({ modalProps, modalTitle, Form, ...props }) =>
         <ModalContent>
           <ModalHeader>{modalTitle}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Form closeModal={onClose} formId={htmlId} />
-          </ModalBody>
+          <ModalBody>{isOpen && <Form closeModal={onClose} formId={htmlId} />}</ModalBody>
 
           <ModalFooter>
             <Button variant="subtle" colorScheme="success" type="submit" form={htmlId} mr={3}>
