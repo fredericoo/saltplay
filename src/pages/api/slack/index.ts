@@ -1,4 +1,4 @@
-import getAllSlackMembers from '@/lib/slackbot/getAllSlackMembers';
+import getAllSlackMembers from '@/lib/slack/getAllSlackMembers';
 import { APIResponse } from '@/lib/types/api';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';

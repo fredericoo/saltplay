@@ -54,6 +54,10 @@ export const patchGameSchema = object({
   officeid: string(),
 });
 
+export const updateUserAccountSchema = object({
+  id: string().required(),
+});
+
 export const patchUserSchema = object({
   name: string(),
   roleId: number(),

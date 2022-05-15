@@ -2,7 +2,7 @@ import { STARTING_POINTS } from '@/constants';
 import canDeleteMatch from '@/lib/canDeleteMatch';
 import { getPlayerPointsToMove, getPointsToMove } from '@/lib/points';
 import prisma from '@/lib/prisma';
-import { notifyDeletedMatch } from '@/lib/slackbot/notifyMatch';
+import { notifyDeletedMatch } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';

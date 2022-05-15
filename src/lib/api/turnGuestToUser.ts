@@ -1,7 +1,7 @@
 import { USER_ROLE_ID } from '@/constants';
 import prisma from '@/lib/prisma';
 import { Account, User } from 'next-auth/core/types';
-import notifyNewcomer from '../slackbot/notifyNewcomer';
+import notifyNewcomer from '../slack/notifyNewcomer';
 
 const turnGuestToUser = async (user: User, account: Account) => {
   const provider_providerAccountId = { provider: account.provider, providerAccountId: account.providerAccountId };
