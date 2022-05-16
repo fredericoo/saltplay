@@ -140,7 +140,12 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       ) : (
         <Box position="relative">
           <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-          <Tabs variant={'bottom'}>
+          <Tabs
+            variant={'bottom'}
+            onChange={() => {
+              window.scrollTo(0, 0);
+            }}
+          >
             <SEO title={game.name} />
             <TabList>
               <Tab>Leaderboard</Tab>
