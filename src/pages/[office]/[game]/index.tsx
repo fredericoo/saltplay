@@ -1,5 +1,6 @@
 import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
+import useLatestMatches from '@/components/LatestMatches/useLatestMatches';
 import Leaderboard from '@/components/Leaderboard';
 import useLeaderboard from '@/components/Leaderboard/useLeaderboard';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
@@ -10,19 +11,7 @@ import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Heading,
-  HStack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
@@ -55,6 +44,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   useNavigationState(game?.name);
   const isDesktop = useMediaQuery('xl');
   const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
+  const { mutate: mutateLatestMatches } = useLatestMatches({ gameId: game?.id });
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
 
@@ -63,11 +53,27 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       <PageHeader title={game.name} subtitle={`at the ${game.office.name} office`} icon={game?.icon} ref={headerRef} />
 
       <SEO title={game?.name} />
-      {canViewDashboard(session?.user.roleId) && (
-        <FloatingActionButton
-          buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/games/${game.id}` }]}
-        />
-      )}
+      <FloatingActionButton
+        buttons={[
+          {
+            label: 'edit',
+            icon: <VscEdit />,
+            colorScheme: 'success',
+            href: `/admin/games/${game.id}`,
+            isHidden: !canViewDashboard(session?.user.roleId),
+          },
+          {
+            label: 'refresh',
+            icon: <IoRefreshSharp />,
+            colorScheme: 'grey',
+            onClick: () => {
+              mutate();
+              mutateLatestMatches();
+            },
+            isLoading: isValidating,
+          },
+        ]}
+      />
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
@@ -75,16 +81,6 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <Heading as="h2" size="md" pl="12" color="grey.10" flexGrow="1">
                 Leaderboard
               </Heading>
-              <Button
-                aria-label="Refresh"
-                isLoading={isValidating}
-                variant="subtle"
-                colorScheme="grey"
-                _hover={{ bg: 'grey.1' }}
-                onClick={() => mutate()}
-              >
-                <IoRefreshSharp size="1.5rem" />
-              </Button>
             </HStack>
             <Leaderboard bg="grey.4" gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
           </Box>
@@ -140,7 +136,12 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       ) : (
         <Box position="relative">
           <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
-          <Tabs variant={'bottom'}>
+          <Tabs
+            variant={'bottom'}
+            onChange={() => {
+              window.scrollTo(0, 0);
+            }}
+          >
             <SEO title={game.name} />
             <TabList>
               <Tab>Leaderboard</Tab>
@@ -148,18 +149,6 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Button
-                  w="100%"
-                  size="md"
-                  isLoading={isValidating}
-                  variant="subtle"
-                  bg="grey.1"
-                  mb={4}
-                  onClick={() => mutate()}
-                  leftIcon={<IoRefreshSharp size="1.5rem" />}
-                >
-                  Refresh
-                </Button>
                 <Leaderboard
                   bg="grey.2"
                   gameId={game.id}

@@ -10,6 +10,8 @@ type AdminMenuProps = {
     label: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
     href?: string;
+    isHidden?: boolean;
+    isLoading?: boolean;
   }[];
 };
 
@@ -22,41 +24,46 @@ const FloatingActionButton: React.VFC<AdminMenuProps> = ({ buttons }) => {
         right={4}
         zIndex="docked"
       >
-        {buttons.map(button => {
-          return (
-            <Tooltip key={button.label + button.href + button.colorScheme} label={button.label}>
-              <Box>
-                {button.onClick ? (
-                  <IconButton
-                    onClick={button.onClick}
-                    colorScheme={button.colorScheme}
-                    aria-label={button.label}
-                    icon={button.icon}
-                    css={{ aspectRatio: '1' }}
-                  />
-                ) : button.href ? (
-                  <Link href={button.href} passHref>
+        {buttons
+          .filter(button => button.isHidden !== true)
+          .map(button => {
+            return (
+              <Tooltip key={button.label + button.href + button.colorScheme} label={button.label} placement="left">
+                <Box>
+                  {button.onClick ? (
                     <IconButton
+                      onClick={button.onClick}
                       colorScheme={button.colorScheme}
-                      as="a"
                       aria-label={button.label}
                       icon={button.icon}
                       css={{ aspectRatio: '1' }}
+                      isLoading={button.isLoading}
                     />
-                  </Link>
-                ) : (
-                  <IconButton
-                    isDisabled
-                    colorScheme={button.colorScheme}
-                    aria-label={button.label}
-                    icon={button.icon}
-                    css={{ aspectRatio: '1' }}
-                  />
-                )}
-              </Box>
-            </Tooltip>
-          );
-        })}
+                  ) : button.href ? (
+                    <Link href={button.href} passHref>
+                      <IconButton
+                        colorScheme={button.colorScheme}
+                        as="a"
+                        aria-label={button.label}
+                        icon={button.icon}
+                        css={{ aspectRatio: '1' }}
+                        isLoading={button.isLoading}
+                      />
+                    </Link>
+                  ) : (
+                    <IconButton
+                      isDisabled
+                      colorScheme={button.colorScheme}
+                      aria-label={button.label}
+                      icon={button.icon}
+                      css={{ aspectRatio: '1' }}
+                      isLoading={button.isLoading}
+                    />
+                  )}
+                </Box>
+              </Tooltip>
+            );
+          })}
       </VStack>
     </Portal>
   );
