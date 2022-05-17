@@ -6,8 +6,8 @@ import {
   crimsonDark,
   cyan,
   cyanDark,
-  mauve,
-  mauveDark,
+  green,
+  greenDark,
   red,
   redDark,
 } from '@radix-ui/colors';
@@ -58,7 +58,7 @@ const theme = extendTheme({
     dangerDark: radixToChakraColour(redDark, 'red'),
   },
   semanticTokens: {
-    colors: { ...radixToSemantic(mauve, mauveDark, 'mauve', 'grey') },
+    colors: { ...radixToSemantic(green, greenDark, 'green', 'grey') },
   },
   config,
   styles: {
