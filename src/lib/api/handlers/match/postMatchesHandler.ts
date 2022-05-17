@@ -1,7 +1,7 @@
 import { STARTING_POINTS } from '@/constants';
 import { calculateMatchPoints } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
-import { notifyMatchOnSlack } from '@/lib/slackbot/notifyMatch';
+import { notifyMatchOnSlack } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';

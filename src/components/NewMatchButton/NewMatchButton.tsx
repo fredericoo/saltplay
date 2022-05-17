@@ -95,7 +95,8 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         leftscore: data.leftscore,
         rightscore: data.rightscore,
       });
-      form.reset();
+      form.resetField('leftscore');
+      form.resetField('rightscore');
       mutateLatestMatches();
       mutateLeaderboard();
       mutateOpponents();

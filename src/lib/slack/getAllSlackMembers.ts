@@ -1,4 +1,4 @@
-import slack from '@/lib/slackbot/client';
+import slack from '@/lib/slack/client';
 import { Member } from '@slack/web-api/dist/response/UsersListResponse';
 
 const getAllSlackMembers = async () => {

@@ -1,6 +1,6 @@
 import { GUEST_ROLE_ID, WEBSITE_URL } from '@/constants';
 import prisma from '@/lib/prisma';
-import slack from '../slackbot/client';
+import slack from '../slack/client';
 
 /**
  * Creates a new user in the database and returns its ID. If the user already exists, returns its ID.

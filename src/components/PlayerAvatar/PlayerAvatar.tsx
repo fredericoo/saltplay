@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 type PlayerAvatarProps = {
-  user?: { name: User['name']; image?: User['image']; id: User['id']; roleId: User['roleId'] };
+  user?: { name?: User['name']; image?: User['image']; id?: User['id']; roleId?: User['roleId'] };
   size?: number | string;
   isLink?: boolean;
 };
@@ -40,7 +40,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             height="300"
             width="300"
             unoptimized
-            alt={`${user.name}‘s avatar`}
+            alt={`${user.name || 'User'}‘s avatar`}
             objectFit="cover"
           />
         ) : (
@@ -56,7 +56,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             mixBlendMode={'multiply'}
             fontSize={fontSize(1 / 8)}
           >
-            {user.name ? user.name[0].toUpperCase() : user.id[0].toUpperCase()}
+            {user.name ? user.name[0].toUpperCase() : user.id?.[0].toUpperCase()}
           </Text>
         )}
       </Circle>
