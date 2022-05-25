@@ -3,6 +3,7 @@ import { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
 import { useMixpanel } from '@/lib/mixpanel';
 import Fonts from '@/theme/Fonts';
+import GlobalCSS from '@/theme/GlobalCSS';
 import theme from '@/theme/theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
@@ -27,6 +28,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
       </Head>
       <ChakraProvider theme={theme}>
         <Fonts />
+        <GlobalCSS />
         <SessionProvider session={session}>
           <NextNProgress color="var(--wrkplay-colors-primary-11)" stopDelayMs={0} options={{ showSpinner: false }} />
           <Layout sidebar={pageProps.sidebar}>
