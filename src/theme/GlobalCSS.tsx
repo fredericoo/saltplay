@@ -6,9 +6,11 @@ const ColorMode: React.VFC = () => {
 
   return (
     <Global
-      styles={`:root {
+      styles={`
+        :root {
           color-scheme: ${colorMode}
-        }`}
+        }
+        `}
     />
   );
 };
