@@ -15,7 +15,11 @@
     "db:migrate:prev": "dotenv -e .env.preview prisma migrate deploy --",
     "db:migrate:prod": "dotenv -e .env.production prisma migrate deploy",
     "prepare": "husky install",
-    "postinstall": "yarn chakra-ts"
+    "postinstall": "yarn chakra-ts",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
+    "e2e": "start-server-and-test dev http://localhost:3000 cypress",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.3",
@@ -73,7 +77,9 @@
     "jest": "^27.4.5",
     "lint-staged": "^12.3.1",
     "typescript": "^4.7.2",
-    "unsplash-js": "^7.0.15"
+    "unsplash-js": "^7.0.15",
+    "cypress": "8.2.0",
+    "start-server-and-test": "1.13.1"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

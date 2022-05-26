@@ -5,7 +5,7 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
   compiler: {
-    reactRemoveProperties: true,
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
   experimental: {
     emotion: {
