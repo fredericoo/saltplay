@@ -2,44 +2,12 @@ name: CI
 
 on:
   push:
+    - main
   pull_request:
     branches:
       - main
 
 jobs:
-  install:
-    name: Install node modules
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache yarn
-        uses: actions/cache@v3
-        with:
-          path: ~/.yarn
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: yarn-
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: yarn
-
   cypress-run:
     runs-on: ubuntu-latest
     needs: install
@@ -57,3 +25,5 @@ jobs:
           browser: chrome
           record: true
           spec: cypress/integration/*
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
