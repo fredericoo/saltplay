@@ -71,7 +71,7 @@ const Editable = <T extends PropertyKey>({
           onClick={onEdit}
           isDisabled={isDisabled}
           css={{ aspectRatio: '1' }}
-          aria-label={`Edit field "${id}"`}
+          aria-label={`Edit field "${id.toString()}"`}
         >
           {value ? <VscEdit /> : <VscAdd />}
         </IconButton>

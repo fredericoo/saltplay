@@ -1,8 +1,10 @@
-const hideScrollbar = {
-  '-ms-overflow-style': '-ms-autohiding-scrollbar',
-  '-webkit-overflow-scrolling': 'touch',
+import { CSSObject } from '@emotion/react';
+
+const hideScrollbar: CSSObject = {
+  msOverflowStyle: '-ms-autohiding-scrollbar',
+  WebkitOverflowScrolling: 'touch',
   scrollbarWidth: 'none',
-  overflow: ['auto', '-moz-scrollbars-none'],
+  overflow: 'auto',
   '&::-webkit-scrollbar': {
     display: 'none',
   },
