@@ -2,7 +2,8 @@ name: Migrate
 
 on:
   push:
-    - main
+    branches:
+      - main
   pull_request:
     branches:
       - main
