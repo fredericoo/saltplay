@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --testPathPattern=/src/",
     "ts-check": "tsc --noEmit",
     "chakra-ts": "chakra-cli tokens --strict-component-types ./src/theme/theme.ts",
     "db:generate": "prisma generate",
