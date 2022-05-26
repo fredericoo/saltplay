@@ -1,4 +1,4 @@
-name: Migrate
+name: CI
 
 on:
   push:
@@ -7,25 +7,7 @@ on:
       - main
 
 jobs:
-  cache:
-    name: Cache migrations
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: prisma/migrations
-          key: migrations-${{ hashFiles('prisma/migrations') }}
-
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
-
   install:
-    needs: cache
-    if: needs.cache.outputs.cache-hit != 'true'
     name: Install node modules
     runs-on: ubuntu-latest
 
@@ -75,30 +57,3 @@ jobs:
           browser: chrome
           record: true
           spec: cypress/integration/*
-
-  migrate-preview:
-    name: Migrate database
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: |
-            node_modules
-            packages/*/node_modules
-          key: modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Migrate database for Preview
-        env:
-          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-        run: yarn db:migrate:forcepush
