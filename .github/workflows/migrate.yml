@@ -2,13 +2,16 @@ name: Migrate
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   cache:
     name: Cache migrations
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:

@@ -62,13 +62,16 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)}>
       <FormControl mb={4}>
-        <HStack spacing={8} justify="center">
+        <HStack spacing={8} justify="center" role="radiogroup">
           <Button
             p={8}
             fontSize="2rem"
             variant="solid"
             colorScheme={rating === -1 ? 'danger' : 'grey'}
             onClick={() => setValue('rating', -1)}
+            role="radio"
+            aria-checked={rating === -1}
+            aria-labelledby="Bad"
           >
             👎
           </Button>
@@ -78,6 +81,9 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
             variant="solid"
             colorScheme={rating === 1 ? 'success' : 'grey'}
             onClick={() => setValue('rating', 1)}
+            role="radio"
+            aria-checked={rating === 1}
+            aria-labelledby="Good"
           >
             👍
           </Button>
@@ -90,7 +96,7 @@ const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
       </FormControl>
       <FormControl>
         <FormLabel htmlFor="text">Message (optional)</FormLabel>
-        <Textarea {...register('text')} resize={'vertical'} />
+        <Textarea {...register('text')} aria-labelledby="Message" resize={'vertical'} />
         <FormHelperText>
           {session?.user
             ? `As you're logged in, you’ll be identified as ${session.user.name?.split(' ')[0]}.`
