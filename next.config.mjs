@@ -19,7 +19,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Feature-Policy',
-    value: 'none',
+    value: `microphone 'none'; autoplay 'none'; camera 'none'; geolocation 'none'`,
   },
   {
     key: 'Referrer-Policy',
@@ -27,7 +27,7 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: 'none',
+    value: `none`,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
