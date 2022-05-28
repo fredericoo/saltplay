@@ -18,8 +18,16 @@ const securityHeaders = [
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
+    key: 'Feature-Policy',
+    value: 'none',
+  },
+  {
     key: 'Referrer-Policy',
     value: 'origin-when-cross-origin',
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'none',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
