@@ -27,7 +27,7 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: `none`,
+    value: `accelerometer=();autoplay=();camera=();encrypted-media=();fullscreen=*;geolocation=*;gyroscope=();magnetometer=();microphone=();midi=();sync-xhr=*;usb=();xr-spatial-tracking=()`,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
