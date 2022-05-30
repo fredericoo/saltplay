@@ -12,7 +12,7 @@ import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
 import getUserGradient from '@/theme/palettes';
-import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Box, Container, Heading, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Office } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
@@ -101,9 +101,9 @@ const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
             )}
           </Box>
           <Box p={4}>
-            <Text as="h1" fontSize={'2rem'} letterSpacing="tight" mt={2}>
+            <Heading as="h1" size="lg" mt={2}>
               {office.name} office
-            </Text>
+            </Heading>
           </Box>
           <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} p={1}>
             <Stat label="Most played game" content={mostPlayedGame} />

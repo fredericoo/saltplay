@@ -21,7 +21,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         position="relative"
         boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
         size={size}
-        borderRadius="44%"
+        borderRadius="full"
         bg={getGradientFromId(user?.id)}
         overflow="hidden"
       >

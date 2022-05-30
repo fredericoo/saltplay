@@ -13,11 +13,13 @@ import {
 } from '@radix-ui/colors';
 import Badge from './components/Badge';
 import { Button } from './components/Button';
+import Heading from './components/Heading';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
 import Popover from './components/Popover';
 import { Select } from './components/Select';
+import Skeleton from './components/Skeleton';
 import { Switch } from './components/Switch';
 import { Tabs } from './components/Tabs';
 import { Tooltip } from './components/Tooltip';
@@ -74,8 +76,13 @@ const theme = extendTheme({
     },
   },
   fonts: {
-    heading: 'Roobert, Helvetica, Arial, sans-serif',
-    body: 'Roobert, Helvetica, Arial, sans-serif',
+    heading: 'GT Walsheim Pro, Helvetica, Arial, sans-serif',
+    body: 'GT Walsheim Pro, Helvetica, Arial, sans-serif',
+  },
+  fontWeights: {
+    normal: '400',
+    medium: '500',
+    bold: '700',
   },
   shadows: {
     sm: '0px 16px 16px rgba(0, 0, 0, 0.0065), 0px 8px 8px rgba(0, 0, 0, 0.0125), 0px 4px 4px rgba(0, 0, 0, 0.025), 0px 2px 2px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.1)',
@@ -94,12 +101,8 @@ const theme = extendTheme({
         color: 'grey.12',
       },
     },
-    Skeleton: {
-      defaultProps: {
-        startColor: 'blackAlpha.100',
-        endColor: 'blackAlpha.400',
-      },
-    },
+    Skeleton,
+    Heading,
     Tooltip,
     Badge,
     Popover,

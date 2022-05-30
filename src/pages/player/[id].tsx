@@ -10,7 +10,7 @@ import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
 import { canViewDashboard, getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
-import { Box, Container, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Box, Container, Heading, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
@@ -76,17 +76,9 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
           <Box p={4} mt="-16">
             <PlayerAvatar user={player} size={32} />
 
-            <Text
-              {...getRoleStyles(player.roleId)}
-              as="h1"
-              lineHeight={1.2}
-              fontSize="3xl"
-              letterSpacing="tight"
-              mt={2}
-              overflow="hidden"
-            >
+            <Heading as="h1" sx={getRoleStyles(player.roleId)} mt={2} size="lg">
               <PlayerName user={player} />
-            </Text>
+            </Heading>
           </Box>
           <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
             <Stat label="Played" content={stats.played} />

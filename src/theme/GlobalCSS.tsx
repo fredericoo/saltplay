@@ -10,6 +10,12 @@ const ColorMode: React.VFC = () => {
         :root {
           color-scheme: ${colorMode}
         }
+
+        @property --angle {
+          syntax: '<angle>';
+          inherits: false;
+          initial-value: 0deg;
+        }
         `}
     />
   );
