@@ -26,7 +26,7 @@ const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) 
           where: { id },
           data: body,
         });
-        await revalidateStaticPages([`/player/${user.id}`]);
+        await revalidateStaticPages([`/player/${user.id}`], res);
         res.status(200).json({ status: 'ok', data: user });
       } catch (e) {
         console.error(e);

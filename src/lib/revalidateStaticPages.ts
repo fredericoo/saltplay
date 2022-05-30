@@ -1,9 +1,11 @@
-const revalidateStaticPages = async (paths: string[] = ['/']) => {
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const url = `${protocol}://${process.env.VERCEL_URL}/api/revalidate?secret=${process.env.REVALIDATE_TOKEN}&${paths
-    .map(path => `path=${path}`)
-    .join('&')}`;
-  return await fetch(url);
+import { NextApiResponse } from 'next';
+
+const revalidateStaticPages = async (paths: string[] = ['/'], res: NextApiResponse) => {
+  await Promise.all(
+    paths.map(async path => {
+      await res.unstable_revalidate(path);
+    })
+  );
 };
 
 export default revalidateStaticPages;

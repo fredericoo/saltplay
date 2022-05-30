@@ -35,7 +35,7 @@ const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req,
         }),
       ]);
 
-      await revalidateStaticPages(['/', `/${office.slug}`]);
+      await revalidateStaticPages(['/', `/${office.slug}`], res);
       res.status(200).json({ status: 'ok', data: office });
     })
     .catch(err => {
