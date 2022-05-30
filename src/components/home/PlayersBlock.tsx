@@ -33,7 +33,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
           <PlayersDeco players={players} />
         </Box>
         <Box zIndex={1} position="relative">
-          <Heading as="h2" mb={12} mt={4} textAlign="center" color="grey.10" fontSize="4xl">
+          <Heading as="h2" mb={12} mt={4} textAlign="center" color="grey.10" size="lg">
             join{' '}
             <Text as="span" color="primary.9">
               heaps
