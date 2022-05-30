@@ -7,6 +7,7 @@ import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import NewMatchButton from '@/components/NewMatchButton';
 import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
+import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
@@ -14,7 +15,7 @@ import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Container, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
@@ -168,7 +169,21 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params, res }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const games = await prisma.game.findMany({ select: { slug: true, office: { select: { slug: true } } } });
+
+  return {
+    paths: games.map(game => ({
+      params: {
+        game: game.slug,
+        office: game.office.slug,
+      },
+    })),
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<GamePageProps> = async ({ params }) => {
   if (typeof params?.office !== 'string' || typeof params?.game !== 'string') {
     return {
       notFound: true,
@@ -188,12 +203,11 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res }) =>
       notFound: true,
     };
 
-  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
-
   return {
     props: {
       game,
     },
+    revalidate: PAGE_REVALIDATE_SECONDS,
   };
 };
 

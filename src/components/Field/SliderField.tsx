@@ -10,7 +10,7 @@ type SliderFieldProps = {
 };
 
 const SliderField: React.VFC<SliderFieldProps> = ({ defaultValue, min, max, name, label }) => {
-  const [value, setValue] = useState(defaultValue || 0);
+  const [value, setValue] = useState(defaultValue || min || 0);
   return (
     <HStack spacing={4} overflow="hdiden" flexShrink={1}>
       {label && (

@@ -1,5 +1,6 @@
 import { patchUserSchema } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -25,6 +26,7 @@ const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) 
           where: { id },
           data: body,
         });
+        await revalidateStaticPages([`/player/${user.id}`], res);
         res.status(200).json({ status: 'ok', data: user });
       } catch (e) {
         console.error(e);

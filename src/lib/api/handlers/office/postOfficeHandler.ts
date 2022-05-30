@@ -1,5 +1,6 @@
 import { postOfficeSchema } from '@/lib/api/schemas';
 import prisma, { getErrorStack } from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -26,7 +27,10 @@ const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       return await createOffice(body)
-        .then(office => res.status(200).json({ status: 'ok', data: office }))
+        .then(async office => {
+          await revalidateStaticPages(['/', `/${office.slug}`], res);
+          res.status(200).json({ status: 'ok', data: office });
+        })
         .catch((error: PrismaClientKnownRequestError) => {
           const stack = getErrorStack(error);
           return res.status(400).json({ status: 'error', stack });

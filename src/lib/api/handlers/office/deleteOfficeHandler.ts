@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -34,6 +35,7 @@ const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req,
         }),
       ]);
 
+      await revalidateStaticPages(['/', `/${office.slug}`], res);
       res.status(200).json({ status: 'ok', data: office });
     })
     .catch(err => {

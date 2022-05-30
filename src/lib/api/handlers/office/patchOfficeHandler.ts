@@ -1,4 +1,5 @@
 import prisma, { getErrorStack } from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -25,8 +26,15 @@ const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, r
         .update({
           where: { id: officeId },
           data: body,
+          include: { games: { select: { slug: true } } },
         })
-        .then(office => res.status(200).json({ status: 'ok', data: office }))
+        .then(async office => {
+          await revalidateStaticPages(
+            ['/', `/${office.slug}`, ...office.games.map(game => `/${office.slug}/${game.slug}`)],
+            res
+          );
+          res.status(200).json({ status: 'ok', data: office });
+        })
         .catch((error: PrismaClientKnownRequestError) => {
           const stack = getErrorStack(error);
           return res.status(400).json({ status: 'error', stack });

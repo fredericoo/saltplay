@@ -6,7 +6,7 @@ import SEO from '@/components/SEO';
 import { getMostRecentGameId, getOffices, getPlayerSample } from '@/lib/home';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { Box, Container, SimpleGrid } from '@chakra-ui/react';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 
 type HomeProps = {
   offices: Awaited<ReturnType<typeof getOffices>>;
@@ -32,13 +32,14 @@ const Home: NextPage<HomeProps> = ({ offices, players, mostRecentGameId }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const offices = await getOffices();
   const players = await getPlayerSample();
   const mostRecentGameId = await getMostRecentGameId();
 
   return {
     props: { offices, players, mostRecentGameId },
+    revalidate: 600,
   };
 };
 

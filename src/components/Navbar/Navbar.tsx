@@ -1,17 +1,27 @@
 import { currentHistoryStateAtom } from '@/lib/navigationHistory/state';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Center, HStack, Text, VStack } from '@chakra-ui/react';
 import { useAtom } from 'jotai';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IoChatbubble } from 'react-icons/io5';
 import ColorModeToggler from '../ColorModeToggler';
-import FeedbackForm from '../FeedbackForm';
+import LoadingIcon from '../LoadingIcon';
 import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
 import NavigationBackButton from '../NavigationBackButton';
 import UserMenu from '../UserMenu/UserMenu';
+
+const FeedbackForm = dynamic(() => import('../FeedbackForm'), {
+  ssr: false,
+  loading: () => (
+    <Center minH="300px" p={8}>
+      <LoadingIcon color="grey.4" size={8} />
+    </Center>
+  ),
+});
 
 export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
 

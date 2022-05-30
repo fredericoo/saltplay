@@ -1,5 +1,6 @@
 import { postGameSchema } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
+import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
@@ -30,6 +31,7 @@ const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) =>
 
       try {
         const game = await createGame(body);
+        await revalidateStaticPages(['/', `/${game.office.slug}`, `/${game.office.slug}/${game.slug}`], res);
         res.status(200).json({ status: 'ok', data: game });
       } catch (e) {
         console.error(e);

@@ -1,5 +1,5 @@
 export const Modal = {
-  parts: ['dialog', 'dialogContainer'],
+  parts: ['dialog', 'dialogContainer', 'overlay'],
   variants: {
     custom: {
       dialog: {
@@ -8,6 +8,9 @@ export const Modal = {
       },
       dialogContainer: {
         px: 2,
+      },
+      overlay: {
+        backdropFilter: 'blur(4px)',
       },
     },
   },

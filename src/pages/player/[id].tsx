@@ -12,7 +12,7 @@ import { canViewDashboard, getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Container, Heading, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { VscEdit } from 'react-icons/vsc';
 
@@ -116,7 +116,12 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  // Deliberately not statically building users.
+  return { paths: [], fallback: 'blocking' };
+};
+
+export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }) => {
   if (typeof params?.id !== 'string') {
     return { notFound: true };
   }
@@ -146,6 +151,7 @@ export const getServerSideProps: GetServerSideProps<PlayerPageProps> = async ({ 
         games: games.map(game => ({ name: game.name, icon: [game.office.icon, game.icon].join(' '), id: game.id })),
       },
     },
+    revalidate: 60,
   };
 };
 
