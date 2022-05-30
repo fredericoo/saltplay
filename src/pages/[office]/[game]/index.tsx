@@ -12,7 +12,7 @@ import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, Container, Grid, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
 import { GetServerSideProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
@@ -78,11 +78,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
           <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
-            <HStack justifyContent="flex-end" pb="4">
-              <Heading as="h2" size="md" pl="12" color="grey.10" flexGrow="1">
-                Leaderboard
-              </Heading>
-            </HStack>
+            <Heading as="h2" size="md" pl="12" pt={2} pb={4} color="grey.10" flexGrow="1">
+              Leaderboard
+            </Heading>
+
             <Leaderboard bg="grey.4" gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
           </Box>
           <Box

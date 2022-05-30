@@ -73,7 +73,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
         <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 20 : 12} isLink />
         <Box flexGrow={1}>
           <HStack spacing={1}>
-            <PlayerName user={{ name, id, roleId }} noOfLines={1} isLink />{' '}
+            <PlayerName fontWeight="medium" letterSpacing="tight" user={{ name, id, roleId }} noOfLines={1} isLink />{' '}
             {isMe && (
               <Badge variant="solid" colorScheme="primary">
                 You
@@ -86,8 +86,8 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
           </HStack>
         </Box>
         <Box>
-          <Badge variant="subtle">
-            {points} <PointIcon />
+          <Badge fontWeight="medium" variant="subtle" css={{ fontVariantNumeric: 'tabular-nums' }}>
+            {points} <PointIcon ml={0.5} />
           </Badge>
         </Box>
       </HStack>

@@ -78,7 +78,7 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
           : colors.danger
       }
     >
-      <Heading as="h2" color="grey.11" fontSize="2xl" p={4}>
+      <Heading as="h2" color="grey.11" size="md" p={4}>
         Register any match in less than 30 seconds
       </Heading>
       <Box

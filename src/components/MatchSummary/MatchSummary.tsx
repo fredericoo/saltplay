@@ -55,7 +55,8 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
       borderRadius={16}
       px={2}
       position="relative"
-      _hover={{ boxShadow: '0px 0px 1px 0 var(--wrkplay-colors-grey-9)' }}
+      boxShadow="0px 0px 0 1px var(--wrkplay-colors-grey-4)"
+      _hover={{ boxShadow: '0px 0px 0 1px var(--wrkplay-colors-grey-6)' }}
     >
       {canDelete && (
         <DeleteMatchButton
@@ -83,6 +84,8 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
           letterSpacing="wide"
           noOfLines={1}
           maxW="80%"
+          fontWeight="medium"
+          _groupHover={{ borderColor: 'grey.6' }}
         >
           {formatRelative(new Date(createdAt), new Date(), { locale: enGB })} {officeName && `at ${officeName}`}
         </Box>
