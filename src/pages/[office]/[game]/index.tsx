@@ -11,6 +11,7 @@ import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
+import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Container, Grid, Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
@@ -93,6 +94,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             overflow={'auto'}
             px={4}
             mx={-4}
+            css={hideScrollbar}
           >
             <Box
               as="header"

@@ -118,7 +118,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
         {isSearching && (
           <SearchField mb="2" top="4px" position="sticky" focusOnMount search={search} setSearch={setSearch} />
         )}
-        <HStack display="flex" overflow="auto" css={hideScrollbar} pl={1} pr={4} py="1">
+        <HStack display="flex" overflow="auto" sx={hideScrollbar} pl={1} pr={4} py="1">
           <Box
             position="sticky"
             left="0"

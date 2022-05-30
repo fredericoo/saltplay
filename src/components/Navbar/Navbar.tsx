@@ -90,6 +90,7 @@ const Navbar: React.VFC = () => {
         <ColorModeToggler />
         {isDesktop && (
           <ModalButton
+            data-testid="feedback-button"
             bg="transparent"
             modalTitle="How are you enjoying SaltPlay?"
             Form={FeedbackForm}
