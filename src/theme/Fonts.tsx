@@ -7,16 +7,14 @@ const Fonts: React.VFC = () => {
   return (
     <>
       <Head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `@font-face {
+        <style type="text/css" jsx>
+          {`@font-face {
         font-family: 'GT Walsheim Pro';
         font-style: normal;
         font-weight: 500;
         src: ${base64Medium}, url('/fonts/gt-walsheim-pro-medium-webfont.woff') format('woff');
-      `,
-          }}
-        />
+      `}
+        </style>
       </Head>
       <Global
         styles={`

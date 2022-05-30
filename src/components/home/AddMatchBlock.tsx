@@ -64,8 +64,8 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
 
   useEffect(() => {
     const skipStep = () => (step < 10 ? setStep(step => step + 1) : setStep(0));
-    setTimeout(skipStep, 500);
-    return () => clearTimeout(500);
+    setTimeout(skipStep, 1000);
+    return () => clearTimeout(1000);
   }, [step]);
 
   return (
@@ -77,6 +77,7 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
           ? colors.success
           : colors.danger
       }
+      transition="background-color .3s ease-in-out"
     >
       <Heading as="h2" color="grey.11" size="md" p={4}>
         Register any match in less than 30 seconds
