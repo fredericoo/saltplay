@@ -70,15 +70,8 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
         const isMe = session?.user.id === player.id;
         return (
           <LeaderboardPosition
-            id={player.id}
             key={player.id}
-            name={player.name || 'Anonymous'}
-            photo={player.image}
-            wins={player.wins}
-            losses={player.losses}
-            points={player.points}
-            roleId={player.roleId}
-            position={player.position}
+            user={player}
             hasIcons={hasIcons}
             isMe={isMe}
             bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
@@ -120,22 +113,7 @@ const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; 
   const player = playerPositions?.data?.positions?.[0];
   if (!player) return null;
 
-  return (
-    <LeaderboardPosition
-      id={player.id}
-      key={player.id}
-      name={player.name || 'Anonymous'}
-      photo={player.image}
-      wins={player.wins}
-      losses={player.losses}
-      points={player.points}
-      roleId={player.roleId}
-      position={player.position}
-      bottom={bottom}
-      isMe
-      bg={bg}
-    />
-  );
+  return <LeaderboardPosition key={player.id} user={player} bottom={bottom} isMe bg={bg} />;
 };
 
 export default Leaderboard;

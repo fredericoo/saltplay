@@ -7,6 +7,15 @@ const variantError: SystemStyleFunction = props => ({
   borderColor: mode('danger.6', 'dangerDark.6')(props),
 });
 
+const variantMedal: SystemStyleFunction = props => ({
+  borderColor: 'primary.11',
+  color: 'grey.12',
+  textTransform: 'uppercase',
+  letterSpacing: 'widest',
+  fontWeight: 'medium',
+  fontSize: 'xs',
+});
+
 export const Tooltip = {
   baseStyle: {
     borderRadius: 'lg',
@@ -18,5 +27,6 @@ export const Tooltip = {
   },
   variants: {
     error: variantError,
+    medal: variantMedal,
   },
 };

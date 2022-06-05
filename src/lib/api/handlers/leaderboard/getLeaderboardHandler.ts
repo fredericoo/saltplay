@@ -1,8 +1,8 @@
-import { Player } from '@/components/PlayerPicker/types';
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { Match, PlayerScore } from '@prisma/client';
+import { UserMedals } from '@/lib/types/utils';
+import { Match, PlayerScore, User } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
 
@@ -17,14 +17,17 @@ const querySchema = object({
 
 export type LeaderboardGETOptions = InferType<typeof querySchema>;
 
+export type LeaderboardGETAPIResponsePosition = {
+  position: number;
+  wins: number;
+  losses: number;
+} & Pick<User, 'id' | 'name' | 'image' | 'roleId'> &
+  UserMedals &
+  Pick<PlayerScore, 'points'>;
+
 export type LeaderboardGETAPIResponse = APIResponse<
   {
-    positions: ({
-      position: number;
-      wins: number;
-      losses: number;
-    } & Pick<Player, 'id' | 'name' | 'image' | 'roleId'> &
-      Pick<PlayerScore, 'points'>)[];
+    positions: LeaderboardGETAPIResponsePosition[];
   },
   { nextPage?: number }
 >;
@@ -80,6 +83,13 @@ const getLeaderboardPositions = async ({ gameId, userId, perPage, page }: Leader
           name: true,
           image: true,
           roleId: true,
+          medals: {
+            select: {
+              name: true,
+              image: true,
+              holographic: true,
+            },
+          },
         },
       },
     },
@@ -100,7 +110,7 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
             playerScore.player.leftmatches,
             playerScore.player.rightmatches
           );
-          const { name, image, id, roleId } = playerScore.player;
+          const { name, image, id, roleId, medals } = playerScore.player;
           return {
             position: options.userId ? 0 : options.perPage * (options.page - 1) + position + 1,
             id,
@@ -110,6 +120,7 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
             wins,
             losses,
             points: playerScore.points,
+            medals,
           };
         });
       const nextPage = leaderboard.totalCount > options.perPage * options.page ? options.page + 1 : undefined;

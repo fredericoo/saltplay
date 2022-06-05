@@ -24,6 +24,12 @@ const getPlayerById = async (id: User['id']) =>
       name: true,
       image: true,
       roleId: true,
+      medals: {
+        select: {
+          image: true,
+          name: true,
+        },
+      },
       leftmatches: { select: { leftscore: true, rightscore: true } },
       rightmatches: { select: { leftscore: true, rightscore: true } },
       scores: {
@@ -45,7 +51,7 @@ const getPlayerById = async (id: User['id']) =>
   });
 
 type PlayerPageProps = {
-  player: Pick<User, 'id' | 'name' | 'image' | 'roleId'>;
+  player: Omit<NonNullable<Awaited<ReturnType<typeof getPlayerById>>>, 'leftmatches' | 'rightmatches' | 'scores'>;
   stats: {
     played: number;
     won: number;
@@ -151,7 +157,7 @@ export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }
         games: games.map(game => ({ name: game.name, icon: [game.office.icon, game.icon].join(' '), id: game.id })),
       },
     },
-    revalidate: 60,
+    revalidate: 600,
   };
 };
 

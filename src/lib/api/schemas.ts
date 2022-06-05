@@ -20,6 +20,11 @@ const iconSchema = string().test(
   icon => typeof icon === 'undefined' || icon === '' || !!validateEmoji(icon)
 );
 
+export const badgeSchema = object({
+  name: string(),
+  image: string().optional(),
+});
+
 export const gameFlagsSchema = number()
   .min(0)
   .max(Object.values(GAME_FLAGS).reduce((acc, cur) => acc + cur));

@@ -1,5 +1,6 @@
+import { LeaderboardGETAPIResponsePosition } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Badge, Box, HStack, StackProps, styled, Text } from '@chakra-ui/react';
-import { Role, User } from '@prisma/client';
+import Medal from '../Medal';
 import { MotionHStack } from '../Motion';
 import PlayerAvatar from '../PlayerAvatar';
 import PlayerName from '../PlayerName';
@@ -7,18 +8,11 @@ import PointIcon from '../PointIcon';
 import PositionNumber from './PositionNumber';
 
 export type LeaderboardPositionProps = {
-  id: User['id'];
-  position: number;
-  roleId: Role['id'];
-  name: string | null;
-  photo?: string | null;
-  points: number;
-  wins?: number;
-  losses?: number;
   hasIcons?: boolean;
   isMe?: boolean;
   bottom?: number | string;
   bg?: string;
+  user: LeaderboardGETAPIResponsePosition;
 };
 
 const FirstPlaceFx = styled(Box, {
@@ -33,21 +27,14 @@ const FirstPlaceFx = styled(Box, {
 });
 
 const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps, keyof LeaderboardPositionProps>> = ({
-  id,
-  roleId,
-  position,
-  name,
-  photo,
-  points,
-  wins,
-  losses,
+  user,
   hasIcons = true,
   isMe = false,
   bottom,
   bg,
   ...chakraProps
 }) => {
-  const isFirstPlace = position === 1;
+  const isFirstPlace = user.position === 1;
   const meProps =
     isMe && typeof bottom !== 'undefined'
       ? {
@@ -67,7 +54,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
 
   return (
     <MotionHStack layout {...chakraProps} {...meProps}>
-      {!isFirstPlace && <PositionNumber position={position} displayMedals={hasIcons} />}
+      {!isFirstPlace && <PositionNumber position={user.position} displayMedals={hasIcons} />}
 
       <Box position="relative" w="100%">
         {isFirstPlace && <FirstPlaceFx />}
@@ -83,13 +70,13 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
           border="1px solid transparent"
           borderColor={isMe ? 'primary.9' : undefined}
         >
-          <PlayerAvatar user={{ id, name, image: photo, roleId }} size={isFirstPlace ? 24 : 12} isLink />
+          <PlayerAvatar user={user} size={isFirstPlace ? 24 : 12} isLink />
           <Box flexGrow={1}>
             <HStack spacing={1}>
               <PlayerName
                 fontWeight={isFirstPlace ? 'bold' : 'medium'}
                 letterSpacing="tight"
-                user={{ name, id, roleId }}
+                user={user}
                 noOfLines={1}
                 isLink
               />{' '}
@@ -100,15 +87,26 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
               )}
             </HStack>
             <HStack fontSize="sm" color="grey.9">
-              <Text>{wins} wins</Text>
-              <Text>{losses} losses</Text>
+              <Text>{user.wins} wins</Text>
+              <Text>{user.losses} losses</Text>
             </HStack>
           </Box>
-          <Box>
+          <HStack>
+            <HStack spacing={0.5}>
+              {user.medals?.map(medal => (
+                <Medal
+                  id={medal.name}
+                  key={medal.name}
+                  image={medal.image}
+                  isHolographic={medal.holographic}
+                  name={medal.name}
+                />
+              ))}
+            </HStack>
             <Badge fontWeight="medium" variant="subtle" css={{ fontVariantNumeric: 'tabular-nums' }}>
-              {points} <PointIcon ml={0.5} />
+              {user.points} <PointIcon ml={0.5} />
             </Badge>
-          </Box>
+          </HStack>
         </HStack>
       </Box>
     </MotionHStack>

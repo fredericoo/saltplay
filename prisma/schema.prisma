@@ -42,6 +42,7 @@ model User {
   feedback      Feedback[]
   roleId        Int
   role          Role          @relation(fields: [roleId], references: [id])
+  medals        Medal[]
 }
 
 model Session {
@@ -50,7 +51,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
 }
 
 model VerificationToken {
@@ -83,6 +83,7 @@ model Game {
   office            Office        @relation(fields: [officeid], references: [id])
   matches           Match[]
   scores            PlayerScore[]
+  medal             Medal[]
   maxPlayersPerTeam Int?          @default(1)
   flags             Int?
 
@@ -106,6 +107,17 @@ model PlayerScore {
   game     Game   @relation(fields: [gameid], references: [id])
 
   @@unique([gameid, playerid])
+}
+
+model Medal {
+  id          String  @id @default(uuid())
+  name        String
+  image       String?
+  holographic Boolean @default(false)
+  gameid      String
+  game        Game    @relation(fields: [gameid], references: [id])
+
+  owners User[]
 }
 
 model Role {

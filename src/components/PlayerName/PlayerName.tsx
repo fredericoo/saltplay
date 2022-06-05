@@ -1,7 +1,7 @@
 import { getPlayerName, SurnameType } from '@/lib/players';
 import { getRoleStyles, isRemoved, roleIcons } from '@/lib/roles';
 import { ComponentWithAs, FlexProps, Text } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import Link from 'next/link';
 
 type PlayerNameProps = {

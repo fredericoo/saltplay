@@ -8,7 +8,6 @@ const roleStyles: Record<Role['id'], TextProps | undefined> = {
 };
 
 export const roleIcons: Record<Role['id'], string> = {
-  0: '🔑',
   2: '👻',
 };
 

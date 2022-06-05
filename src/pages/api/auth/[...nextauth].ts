@@ -58,7 +58,14 @@ export const nextAuthOptions: NextAuthOptions = {
   },
   callbacks: {
     session({ session, user }) {
-      return { ...session, user: { ...session.user, id: user.id, roleId: user.roleId as User['roleId'] } };
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          roleId: user.roleId as User['roleId'],
+        },
+      };
     },
     async signIn({ user, account }) {
       if (user.roleId === BANNED_ROLE_ID) return false;
