@@ -10,7 +10,7 @@ After cloning the repository:
 #### Setup docker container
 
 ```bash
-docker compose up -D
+docker compose up -d
 ```
 
 This will spin up a local postgres database and required services.
