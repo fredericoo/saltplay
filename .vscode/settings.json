@@ -14,7 +14,7 @@
       "source.organizeImports": true
     }
   },
-  "jest.jestCommandLine": "yarn test",
+  "jest.jestCommandLine": "yarn test --watch",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   }
