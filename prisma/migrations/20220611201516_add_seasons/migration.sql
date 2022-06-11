@@ -20,8 +20,17 @@ CREATE TABLE "Season" (
     CONSTRAINT "Season_pkey" PRIMARY KEY ("id")
 );
 
+-- Creates a Season called Season 0 for each game already created
+INSERT INTO "Season" ("id", "name", "slug", "gameid") 
+SELECT md5(random()::text || clock_timestamp()::text)::uuid, 'Season 0', 'season-0', "Game"."id" as "gameid"
+FROM "Game";
+
 -- CreateIndex
 CREATE UNIQUE INDEX "PlayerScore_gameid_playerid_seasonid_key" ON "PlayerScore"("gameid", "playerid", "seasonid");
+
+-- Adds seasonid to every playerScore
+UPDATE "PlayerScore"
+SET "seasonid" = (SELECT "id" FROM "Season" WHERE "Season"."gameid" = "PlayerScore"."gameid");
 
 -- AddForeignKey
 ALTER TABLE "PlayerScore" ADD CONSTRAINT "PlayerScore_seasonid_fkey" FOREIGN KEY ("seasonid") REFERENCES "Season"("id") ON DELETE SET NULL ON UPDATE CASCADE;
