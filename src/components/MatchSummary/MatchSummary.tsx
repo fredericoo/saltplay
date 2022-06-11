@@ -12,7 +12,7 @@ import DeleteMatchButton from './DeleteButton';
 import ScoreTrend from './ScoreTrend';
 
 type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 'id'> & {
-  seasonId: Season['id'] | null;
+  seasonId: Season['id'];
   left: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
   right: Pick<User, 'name' | 'id' | 'image' | 'roleId'>[];
   gameName?: string;
@@ -42,8 +42,7 @@ const MatchSummary: React.VFC<MatchSummaryProps> = ({
 }) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const canDelete =
-    onDelete && seasonId && canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
+  const canDelete = onDelete && canDeleteMatch({ user: session?.user, createdAt, players: [...left, ...right] });
   const pointsToMove = !!points
     ? getPointsToMove({ leftLength: left.length, rightLength: right.length, matchPoints: points })
     : undefined;

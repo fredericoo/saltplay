@@ -81,6 +81,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
             },
             create: {
               points: STARTING_POINTS,
+              seasonid: seasonId,
               gameid: match.gameid,
               playerid: player.id,
             },
