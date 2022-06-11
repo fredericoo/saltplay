@@ -24,8 +24,6 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
           name="viewport"
           content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <link rel="preload" href="/fonts/Roobert-Bold.woff" as="font" type="font/woff" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/Roobert-Regular.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </Head>
       <ChakraProvider theme={theme}>
         <Fonts />

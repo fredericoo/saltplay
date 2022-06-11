@@ -30,6 +30,12 @@ const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
           name: true,
         },
       },
+      seasons: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       name: true,
       slug: true,
       icon: true,
@@ -113,7 +119,15 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <Heading as="h2" size="md" pb={4} color="grey.10">
                 Latest matches
               </Heading>
-              <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} mb={8} />
+              {game.seasons.map(season => (
+                <NewMatchButton
+                  key={season.id}
+                  seasonId={season.id}
+                  gameId={game.id}
+                  maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+                  mb={8}
+                />
+              ))}
             </Box>
             <LatestMatches gameId={game.id} />
             <Box
@@ -137,7 +151,14 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         </Grid>
       ) : (
         <Box position="relative">
-          <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+          {game.seasons.map(season => (
+            <NewMatchButton
+              key={season.id}
+              seasonId={season.id}
+              gameId={game.id}
+              maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+            />
+          ))}
           <Tabs
             variant={'bottom'}
             onChange={() => {

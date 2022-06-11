@@ -14,12 +14,13 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Match } from '@prisma/client';
+import { Match, Season } from '@prisma/client';
 import axios from 'axios';
 import Toast from '../Toast';
 
 type DeleteMatchButtonProps = {
   id: Match['id'];
+  seasonId: Season['id'];
   onDeleteStart?: () => void;
   onDeleteSuccess?: () => void;
   onDeleteError?: () => void;
@@ -27,6 +28,7 @@ type DeleteMatchButtonProps = {
 
 const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
   id,
+  seasonId,
   onDeleteStart,
   onDeleteSuccess,
   onDeleteError,
@@ -38,7 +40,7 @@ const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
   const handleClick = async () => {
     onDeleteStart?.();
     try {
-      await axios.delete(`/api/matches?matchId=${id}`);
+      await axios.delete(`/api/matches?matchId=${id}&seasonId=${seasonId}`);
       toast({
         render: () => <Toast status="success" heading={'It’s gone'} content="Match deleted successfully." />,
         position: 'bottom',

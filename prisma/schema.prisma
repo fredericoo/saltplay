@@ -70,6 +70,8 @@ model Match {
   rightscore      Int
   gameid          String
   game            Game     @relation(fields: [gameid], references: [id])
+  seasonid        String?
+  season          Season?  @relation(fields: [seasonid], references: [id])
   points          Int      @default(0)
   notification_id String?
 }
@@ -85,6 +87,7 @@ model Game {
   scores            PlayerScore[]
   maxPlayersPerTeam Int?          @default(1)
   flags             Int?
+  seasons           Season[]
 
   @@unique([slug, officeid])
 }
@@ -98,14 +101,26 @@ model Office {
 }
 
 model PlayerScore {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   playerid String
-  player   User   @relation(fields: [playerid], references: [id])
+  player   User    @relation(fields: [playerid], references: [id])
   points   Int
   gameid   String
-  game     Game   @relation(fields: [gameid], references: [id])
+  game     Game    @relation(fields: [gameid], references: [id])
+  seasonid String?
+  season   Season? @relation(fields: [seasonid], references: [id])
 
-  @@unique([gameid, playerid])
+  @@unique([gameid, playerid, seasonid])
+}
+
+model Season {
+  id      String        @id @default(uuid())
+  name    String
+  slug    String
+  gameid  String
+  game    Game          @relation(fields: [gameid], references: [id])
+  scores  PlayerScore[]
+  matches Match[]
 }
 
 model Role {

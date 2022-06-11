@@ -1,5 +1,4 @@
 import { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/match/getMatchesHandler';
-import { Game, Office, User } from '@prisma/client';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 const getKey =
@@ -15,14 +14,12 @@ const getKey =
     return ['/api/matches', queryParams].join('?');
   };
 
-type UseLatestMatches = (options: {
-  gameId?: Game['id'];
-  userId?: User['id'];
-  officeId?: Office['id'];
-}) => SWRInfiniteResponse<MatchesGETAPIResponse>;
+type UseLatestMatches = (
+  options: Partial<Pick<GetMatchesOptions, 'gameId' | 'officeId' | 'seasonId' | 'userId'>>
+) => SWRInfiniteResponse<MatchesGETAPIResponse>;
 
-const useLatestMatches: UseLatestMatches = ({ gameId, userId, officeId }) => {
-  return useSWRInfinite<MatchesGETAPIResponse>(getKey({ gameId, userId, officeId }));
+const useLatestMatches: UseLatestMatches = options => {
+  return useSWRInfinite<MatchesGETAPIResponse>(getKey(options));
 };
 
 export default useLatestMatches;

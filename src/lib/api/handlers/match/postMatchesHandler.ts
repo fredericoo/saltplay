@@ -24,6 +24,7 @@ const sideSchema = object().shape({
 
 const requestSchema = object().shape({
   gameId: string().required(),
+  seasonId: string().required(),
   left: sideSchema,
   right: sideSchema,
 });
@@ -89,6 +90,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
           left: { connect: sides.left.map(({ id }) => ({ id })) },
           right: { connect: sides.right.map(({ id }) => ({ id })) },
           game: { connect: { id: body.gameId } },
+          season: { connect: { id: body.seasonId } },
           points: matchPoints,
         },
       });
@@ -96,6 +98,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
       try {
         await moveMatchPoints({
           gameid: body.gameId,
+          seasonId: body.seasonId,
           pointsToMove: matchPoints,
           leftToRight: body.left.score < body.right.score,
           left: sides.left,
@@ -106,23 +109,15 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });
       }
 
-      try {
-        const notification = await notifyMatchOnSlack({
-          gameId: body.gameId,
-          leftScore: body.left.score,
-          rightScore: body.right.score,
-          left: sides.left,
-          right: sides.right,
-        });
-        if (!notification?.message) throw new Error();
+      await notifyMatchOnSlack({
+        matchId: createdMatch.id,
+        gameId: body.gameId,
+        leftScore: body.left.score,
+        rightScore: body.right.score,
+        left: sides.left,
+        right: sides.right,
+      });
 
-        await prisma.match.update({
-          where: { id: createdMatch.id },
-          data: { notification_id: notification.message.ts },
-        });
-      } catch {
-        console.error('Error sending match to slack');
-      }
       return res.status(200).json({ status: 'ok' });
     })
     .catch(err => {

@@ -20,7 +20,7 @@ const Scores: React.VFC = () => {
           textAlign="center"
           type="number"
           pattern="[0-9]*"
-          inputmode="numeric"
+          inputMode="numeric"
           {...register('leftscore', { required: true, valueAsNumber: true })}
         />
         {<ErrorNotification message={errors['leftscore']?.type} />}
@@ -36,7 +36,7 @@ const Scores: React.VFC = () => {
           textAlign="center"
           type="number"
           pattern="[0-9]*"
-          inputmode="numeric"
+          inputMode="numeric"
           {...register('rightscore', { required: true, valueAsNumber: true })}
         />
         <ErrorNotification message={errors['rightscore']?.type} />

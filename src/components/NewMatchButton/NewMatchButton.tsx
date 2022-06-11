@@ -14,7 +14,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Game, Match } from '@prisma/client';
+import { Game, Match, Season } from '@prisma/client';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
@@ -36,6 +36,7 @@ const Scores = dynamic(() => import('./steps/Scores'), { ssr: false });
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
+  seasonId: Season['id'];
   maxPlayersPerTeam?: Game['maxPlayersPerTeam'];
   onSubmitSuccess?: () => void;
 };
@@ -47,6 +48,7 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
 
 const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
   gameId,
+  seasonId,
   maxPlayersPerTeam,
   ...chakraProps
 }) => {
@@ -79,6 +81,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         score: data.rightscore,
       },
       gameId,
+      seasonId,
     };
     try {
       const res = await axios.post<MatchesPOSTAPIResponse>('/api/matches', req).then(res => res.data);
