@@ -38,7 +38,7 @@ const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
               <Heading size="md">
                 {score.game.icon} {score.game.name}
               </Heading>
-              <Text color="grey.10" isTruncated>
+              <Text color="grey.10" noOfLines={1}>
                 {score.game.office?.name}
               </Text>
             </Box>

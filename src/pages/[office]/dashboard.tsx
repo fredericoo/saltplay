@@ -19,7 +19,7 @@ const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {
   if (!office) return <Box>404</Box>;
 
   return (
-    <SimpleGrid minChildWidth={'400px'} maxChildWidth={'600px'} gap={4}>
+    <SimpleGrid minChildWidth={'400px'} gap={4}>
       {office.games.map(game => (
         <Box bg="grey.1" key={game.id} p={4} borderRadius="xl">
           <Text mb={4} fontSize="3xl">

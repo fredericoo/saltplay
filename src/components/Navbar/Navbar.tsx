@@ -52,7 +52,7 @@ const Navbar: React.VFC = () => {
       pt="env(safe-area-inset-top)"
       transition="box-shadow .15s ease-out"
     >
-      <HStack flex={1} isTruncated alignSelf="stretch" py={2}>
+      <HStack flex={1} noOfLines={1} alignSelf="stretch" py={2}>
         <NavigationBackButton />
       </HStack>
 
@@ -81,7 +81,7 @@ const Navbar: React.VFC = () => {
             </HStack>
           </Link>
           <HStack h="50%" flex={1} fontWeight="bold">
-            <Text isTruncated>{currentNavigaton?.title}</Text>
+            <Text noOfLines={1}>{currentNavigaton?.title}</Text>
           </HStack>
         </VStack>
       </Box>

@@ -2,6 +2,32 @@ import hideScrollbar from '@/lib/styleUtils';
 import type { SystemStyleFunction } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 
+const variantTypographic = {
+  root: {},
+  tab: {
+    fontSize: '2xl',
+    fontWeight: 'bold',
+    letterSpacing: 'tight',
+    lineHeight: '1',
+    whiteSpace: 'nowrap',
+    color: 'grey.10',
+    borderRadius: 'lg',
+    _selected: {
+      color: 'grey.12',
+    },
+    _hover: {
+      bg: 'grey.6',
+    },
+  },
+  tablist: {
+    p: 2,
+    display: 'flex',
+    maxW: '100%',
+    ...hideScrollbar,
+  },
+  tabpanels: {},
+};
+
 const variantPill: SystemStyleFunction = props => {
   return {
     root: {
@@ -128,6 +154,7 @@ export const Tabs = {
     custom: variantPill,
     sidebar: variantSidebar,
     bottom: variantBottomBar,
+    typographic: variantTypographic,
   },
   defaultProps: {
     variant: 'custom',

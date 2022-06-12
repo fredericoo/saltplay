@@ -55,7 +55,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
 }) => {
   const { status } = useSession();
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId });
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, seasonId: season.id });
   const { mutate: mutateOpponents } = useOpponents({ gameId });
   const isLoggedIn = status === 'authenticated';
   const [isLoading, setIsLoading] = useState(false);

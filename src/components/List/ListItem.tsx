@@ -26,7 +26,7 @@ const ListItem: React.FC<ListItemProps & ChakraProps> = ({ href, badge, icon, ch
         <Box w="1.5em" h="1.5em" bg="grey.1" borderRadius="lg" lineHeight={'1.5em'} textAlign="center">
           {icon}
         </Box>
-        <Text flexGrow={1} isTruncated>
+        <Text flexGrow={1} noOfLines={1}>
           {children}
         </Text>
         {badge && (

@@ -1,6 +1,6 @@
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import { Game, Season, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
@@ -10,15 +10,23 @@ import useLeaderboard from './useLeaderboard';
 
 type LeaderboardProps = {
   gameId: Game['id'];
+  seasonId?: Season['id'];
   hasIcons?: boolean;
   stickyMe?: boolean;
   bg?: string;
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, bg, offsetPlayerBottom }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({
+  gameId,
+  seasonId,
+  hasIcons = true,
+  stickyMe,
+  bg,
+  offsetPlayerBottom,
+}) => {
   const { data: session } = useSession();
-  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId, seasonId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = pages?.[pages.length - 1]?.pageInfo?.nextPage;
 

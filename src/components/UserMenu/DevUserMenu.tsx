@@ -15,7 +15,7 @@ const DevUserMenu: React.VFC = () => {
   return (
     <Menu isLazy>
       <MenuButton as={Button} variant="subtle" colorScheme="primary" textAlign="left" fontSize="xs" size="sm">
-        <Text isTruncated maxW="128px">
+        <Text noOfLines={1} maxW="128px">
           Dev Sign in
         </Text>
       </MenuButton>

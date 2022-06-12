@@ -53,9 +53,9 @@ const Editable = <T extends PropertyKey>({
             border="1px solid transparent"
             cursor="text"
             opacity={isDisabled ? 0.5 : 1}
-            isTruncated
+            noOfLines={1}
           >
-            <Text as="span" color="grey.8" isTruncated>
+            <Text as="span" color="grey.8" noOfLines={1}>
               {preText}
             </Text>
             {value}

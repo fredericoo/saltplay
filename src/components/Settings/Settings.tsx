@@ -17,7 +17,7 @@ const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, lab
       bg="grey.3"
     >
       {label && (
-        <Text as="label" color="grey.12" htmlFor={htmlFor} pr={4} flex={1} isTruncated>
+        <Text as="label" color="grey.12" htmlFor={htmlFor} pr={4} flex={1} noOfLines={1}>
           {label}
         </Text>
       )}

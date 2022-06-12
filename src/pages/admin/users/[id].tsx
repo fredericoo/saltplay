@@ -117,7 +117,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
       />
       <HStack spacing={8} p={4}>
         <PlayerAvatar size={16} user={user} />
-        <Text isTruncated>{user.name}</Text>
+        <Text noOfLines={1}>{user.name}</Text>
       </HStack>
       <Tabs>
         <TabList>

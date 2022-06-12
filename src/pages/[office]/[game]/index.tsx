@@ -98,17 +98,33 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       />
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
-          <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
-            <Heading as="h2" size="md" pl="12" pt={2} pb={4} color="grey.10" flexGrow="1">
-              Leaderboard
-            </Heading>
-
-            <Leaderboard bg="grey.4" gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
+          <Box as="section" bg="grey.4" borderRadius="xl" alignSelf="start" minH="100vh" overflow="hidden">
+            <Tabs isLazy variant="typographic">
+              <TabList>
+                {activeSeasons.map(season => (
+                  <Tab key={season.id}>{season.name}</Tab>
+                ))}
+                {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
+              </TabList>
+              <TabPanels>
+                {activeSeasons.map(season => (
+                  <TabPanel key={season.id}>
+                    <Leaderboard
+                      bg="grey.4"
+                      seasonId={season.id}
+                      gameId={game.id}
+                      stickyMe
+                      offsetPlayerBottom=".5rem"
+                    />
+                  </TabPanel>
+                ))}
+              </TabPanels>
+            </Tabs>
           </Box>
           <Box
             as="section"
             position="sticky"
-            top={`calc(${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
+            top={`calc(${NAVBAR_HEIGHT} + .5rem)`}
             h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem)`}
             overflow={'auto'}
             px={4}
@@ -177,7 +193,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             ))}
           </Stack>
           <Tabs
-            variant={'bottom'}
+            variant="bottom"
             onChange={() => {
               window.scrollTo(0, 0);
             }}
@@ -186,15 +202,31 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             <TabList>
               <Tab>Leaderboard</Tab>
               <Tab>Latest Matches</Tab>
+              {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Leaderboard
-                  bg="grey.2"
-                  gameId={game.id}
-                  offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
-                  stickyMe
-                />
+                <Tabs isLazy variant="typographic">
+                  <TabList>
+                    {activeSeasons.map(season => (
+                      <Tab key={season.id}>{season.name}</Tab>
+                    ))}
+                    {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
+                  </TabList>
+                  <TabPanels>
+                    {activeSeasons.map(season => (
+                      <TabPanel key={season.id}>
+                        <Leaderboard
+                          bg="grey.2"
+                          seasonId={season.id}
+                          gameId={game.id}
+                          stickyMe
+                          offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
+                        />
+                      </TabPanel>
+                    ))}
+                  </TabPanels>
+                </Tabs>
               </TabPanel>
               <TabPanel pt={{ base: 8, md: 4 }}>
                 <LatestMatches gameId={game.id} />
