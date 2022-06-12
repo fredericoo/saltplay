@@ -1,3 +1,5 @@
+import { Season } from '@prisma/client';
+
 export const WEBSITE_URL = 'https://saltplay.app';
 export const SESSION_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
@@ -14,6 +16,7 @@ export const STARTING_POINTS = 100;
 export const BASE_MATCH_POINTS = 10;
 export const MIN_MATCH_POINTS = 1;
 export const MAX_MATCH_POINTS = 100;
+export const INITIAL_SEASON: Pick<Season, 'name' | 'slug'> = { name: 'Season-0', slug: 'season-0' };
 
 export const PAGE_REVALIDATE_SECONDS = 60;
 

@@ -129,19 +129,23 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         leftIcon={<IoAddCircleOutline size={24} />}
         {...chakraProps}
       >
-        <Stack align="flex-start" spacing={0}>
-          <Text
-            as="span"
-            fontSize="xs"
-            display="block"
-            textTransform="uppercase"
-            letterSpacing="widest"
-            fontWeight="medium"
-          >
-            {season.name}
-          </Text>
-          <Text as="span">Submit new match</Text>
-        </Stack>
+        {season.name ? (
+          <Stack align="flex-start" spacing={0}>
+            <Text
+              as="span"
+              fontSize="xs"
+              display="block"
+              textTransform="uppercase"
+              letterSpacing="widest"
+              fontWeight="medium"
+            >
+              {season.name}
+            </Text>
+            <Text as="span">Submit new match</Text>
+          </Stack>
+        ) : (
+          'Submit new match'
+        )}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
