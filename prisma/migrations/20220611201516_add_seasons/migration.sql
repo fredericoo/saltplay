@@ -8,7 +8,7 @@
 DROP INDEX "PlayerScore_gameid_playerid_key";
 
 -- AlterTable
-ALTER TABLE "PlayerScore" ADD COLUMN     "seasonid" TEXT;
+ALTER TABLE "PlayerScore" ADD COLUMN     "seasonid" TEXT DEFAULT null;
 
 -- CreateTable
 CREATE TABLE "Season" (

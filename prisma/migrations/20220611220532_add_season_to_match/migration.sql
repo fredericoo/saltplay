@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "Match" ADD COLUMN     "seasonid" TEXT;
+ALTER TABLE "Match" ADD COLUMN     "seasonid" TEXT DEFAULT null;
 
 UPDATE "Match"
 SET "seasonid" = (SELECT "id" FROM "Season" WHERE "Season"."gameid" = "Match"."gameid");
