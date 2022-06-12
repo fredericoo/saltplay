@@ -114,13 +114,15 @@ model PlayerScore {
 }
 
 model Season {
-  id      String        @id @default(uuid())
-  name    String
-  slug    String
-  gameid  String
-  game    Game          @relation(fields: [gameid], references: [id])
-  scores  PlayerScore[]
-  matches Match[]
+  id        String        @id @default(uuid())
+  name      String
+  slug      String
+  startDate DateTime      @default(now())
+  endDate   DateTime?
+  gameid    String
+  game      Game          @relation(fields: [gameid], references: [id])
+  scores    PlayerScore[]
+  matches   Match[]
 }
 
 model Role {

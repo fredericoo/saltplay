@@ -13,16 +13,17 @@ import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, Container, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
+import { isAfter } from 'date-fns';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
 
-const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
-  prisma.game.findUnique({
+const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
+  const response = await prisma.game.findUnique({
     where: { slug_officeid: { slug: gameSlug, officeid: officeId } },
     select: {
       office: {
@@ -34,6 +35,7 @@ const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
         select: {
           id: true,
           name: true,
+          endDate: true,
         },
       },
       name: true,
@@ -43,6 +45,15 @@ const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
       maxPlayersPerTeam: true,
     },
   });
+  if (!response) return null;
+
+  const responseWithoutDates = {
+    ...response,
+    seasons: response.seasons.map(season => ({ ...season, endDate: season.endDate?.toISOString() || null })),
+  };
+
+  return responseWithoutDates;
+};
 
 type GamePageProps = {
   game: NonNullable<Awaited<ReturnType<typeof getGame>>>;
@@ -55,6 +66,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId: game?.id });
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
+  const activeSeasons = game.seasons?.filter(
+    season => !season.endDate || isAfter(new Date(season.endDate), new Date())
+  );
 
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
@@ -119,15 +133,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <Heading as="h2" size="md" pb={4} color="grey.10">
                 Latest matches
               </Heading>
-              {game.seasons.map(season => (
-                <NewMatchButton
-                  key={season.id}
-                  seasonId={season.id}
-                  gameId={game.id}
-                  maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
-                  mb={8}
-                />
-              ))}
+              <Stack mb={8}>
+                {activeSeasons.map(season => (
+                  <NewMatchButton
+                    key={season.id}
+                    season={season}
+                    gameId={game.id}
+                    maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+                  />
+                ))}
+              </Stack>
             </Box>
             <LatestMatches gameId={game.id} />
             <Box
@@ -151,14 +166,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         </Grid>
       ) : (
         <Box position="relative">
-          {game.seasons.map(season => (
-            <NewMatchButton
-              key={season.id}
-              seasonId={season.id}
-              gameId={game.id}
-              maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
-            />
-          ))}
+          <Stack>
+            {activeSeasons.map(season => (
+              <NewMatchButton
+                key={season.id}
+                season={season}
+                gameId={game.id}
+                maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+              />
+            ))}
+          </Stack>
           <Tabs
             variant={'bottom'}
             onChange={() => {

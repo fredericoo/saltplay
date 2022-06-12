@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Stack,
+  Text,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
@@ -36,7 +37,7 @@ const Scores = dynamic(() => import('./steps/Scores'), { ssr: false });
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
-  seasonId: Season['id'];
+  season: Pick<Season, 'id' | 'name'>;
   maxPlayersPerTeam?: Game['maxPlayersPerTeam'];
   onSubmitSuccess?: () => void;
 };
@@ -48,7 +49,7 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
 
 const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
   gameId,
-  seasonId,
+  season,
   maxPlayersPerTeam,
   ...chakraProps
 }) => {
@@ -81,7 +82,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         score: data.rightscore,
       },
       gameId,
-      seasonId,
+      seasonId: season.id,
     };
     try {
       const res = await axios.post<MatchesPOSTAPIResponse>('/api/matches', req).then(res => res.data);
@@ -128,7 +129,19 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         leftIcon={<IoAddCircleOutline size={24} />}
         {...chakraProps}
       >
-        Submit new match
+        <Stack align="flex-start" spacing={0}>
+          <Text
+            as="span"
+            fontSize="xs"
+            display="block"
+            textTransform="uppercase"
+            letterSpacing="widest"
+            fontWeight="medium"
+          >
+            {season.name}
+          </Text>
+          <Text as="span">Submit new match</Text>
+        </Stack>
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
