@@ -52,7 +52,7 @@ const Navbar: React.VFC = () => {
       pt="env(safe-area-inset-top)"
       transition="box-shadow .15s ease-out"
     >
-      <HStack flex={1} noOfLines={1} alignSelf="stretch" py={2}>
+      <HStack flex={1} noOfLines={1} alignSelf="stretch" alignItems="flex-start" py={2}>
         <NavigationBackButton />
       </HStack>
 
