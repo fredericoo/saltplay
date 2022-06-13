@@ -108,9 +108,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
 
       {!allPositions.find(position => position?.id === session?.user?.id) && session?.user.id && (
         <PlayerPosition
-          id={session.user.id}
+          userId={session.user.id}
           bottom={stickyMe ? offsetPlayerBottom || 0 : undefined}
           gameId={gameId}
+          seasonId={seasonId}
           bg={bg}
         />
       )}
@@ -118,13 +119,21 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
   );
 };
 
-const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id']; bg?: string }> = ({
-  id,
-  gameId,
-  bottom,
-  bg,
-}) => {
-  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
+type PlayerPositionProps = {
+  bottom?: string | number;
+  bg?: string;
+  gameId: Game['id'];
+  seasonId?: Season['id'];
+  userId: User['id'];
+};
+
+const PlayerPosition: React.VFC<PlayerPositionProps> = ({ bottom, bg, ...ids }) => {
+  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
+    `/api/leaderboard?${Object.entries(ids)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')}`
+  );
+
   const player = playerPositions?.data?.positions?.[0];
   if (!player) return null;
 

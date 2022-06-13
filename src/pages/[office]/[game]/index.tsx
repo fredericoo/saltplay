@@ -36,6 +36,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
           id: true,
           name: true,
           endDate: true,
+          startDate: true,
         },
       },
       name: true,
@@ -49,7 +50,11 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
 
   const responseWithoutDates = {
     ...response,
-    seasons: response.seasons.map(season => ({ ...season, endDate: season.endDate?.toISOString() || null })),
+    seasons: response.seasons.map(season => ({
+      ...season,
+      startDate: season.startDate.toISOString(),
+      endDate: season.endDate?.toISOString() || null,
+    })),
   };
 
   return responseWithoutDates;
@@ -67,7 +72,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const activeSeasons = game.seasons?.filter(
-    season => !season.endDate || isAfter(new Date(season.endDate), new Date())
+    season =>
+      (!season.endDate || isAfter(new Date(season.endDate), new Date())) &&
+      isAfter(new Date(), new Date(season.startDate))
   );
 
   return (
@@ -101,9 +108,11 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
           <Box as="section" bg="grey.4" borderRadius="xl" alignSelf="start" minH="100vh" overflow="hidden">
             <Tabs isLazy variant="typographic">
               <TabList>
-                {activeSeasons.map(season => (
-                  <Tab key={season.id}>{season.name}</Tab>
-                ))}
+                {game.seasons.length > 1 ? (
+                  activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
+                ) : (
+                  <Tab>Leaderboard</Tab>
+                )}
                 {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
               </TabList>
               <TabPanels>
@@ -208,9 +217,11 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <TabPanel>
                 <Tabs isLazy variant="typographic">
                   <TabList>
-                    {activeSeasons.map(season => (
-                      <Tab key={season.id}>{season.name}</Tab>
-                    ))}
+                    {game.seasons.length > 1 ? (
+                      activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
+                    ) : (
+                      <Tab>Leaderboard</Tab>
+                    )}
                     {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
                   </TabList>
                   <TabPanels>
