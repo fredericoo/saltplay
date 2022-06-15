@@ -123,6 +123,8 @@ model Season {
   game      Game          @relation(fields: [gameid], references: [id])
   scores    PlayerScore[]
   matches   Match[]
+
+  @@unique([slug, gameid])
 }
 
 model Role {
