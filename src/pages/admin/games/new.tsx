@@ -90,7 +90,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
                   label: prefilledOffice.name,
                   href: `/admin/offices/${prefilledOffice.id}`,
                 },
-                { label: 'Create game' },
+                { label: 'Create game', href: '/admin/games/new' },
               ]
             : [
                 { label: 'Admin', href: '/admin' },
@@ -98,7 +98,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
                   label: 'Games',
                   href: '/admin/games',
                 },
-                { label: 'Create game' },
+                { label: 'Create game', href: '/admin/games/new' },
               ]
         }
       />

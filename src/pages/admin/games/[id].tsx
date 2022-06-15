@@ -124,7 +124,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
           { label: 'Admin', href: '/admin' },
           { label: 'Offices', href: '/admin/offices' },
           { label: game?.office.name || 'Office', href: `/admin/offices/${game?.office.id}` },
-          { label: game?.name || 'Game' },
+          { label: game?.name || 'Game', href: `/admin/offices/${game?.office.id}/${game?.slug}` },
         ]}
       />
       <SettingsGroup<Game>

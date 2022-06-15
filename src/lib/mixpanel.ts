@@ -22,7 +22,7 @@ export const identifyAndSetUser = (user: Pick<User, 'name' | 'id' | 'email'>) =>
   mixpanel.people.set({ $name: user.name, $email: user.email, $updated: new Date() });
 };
 
-export const trackEvent = (event: string, properties?: Record<string, any>) => {
+export const trackEvent = (event: string, properties?: Record<string, unknown>) => {
   if (!MIXPANEL_TOKEN) return;
   mixpanel.track(event, properties);
 };

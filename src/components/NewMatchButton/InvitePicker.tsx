@@ -9,7 +9,7 @@ import PlayerPicker, { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
 
 type InvitePickerProps = Pick<PlayerPickerProps, 'selectedPlayers' | 'selectedColour' | 'onSelect'>;
 
-const fetchUnregisteredSlackMembers = async (_key: string) => {
+const fetchUnregisteredSlackMembers = async () => {
   const allSlackReq = await axios.get<SlackMembersAPIResponse>('/api/slack').then(res => res.data);
   const allSlackMembers = allSlackReq.data?.members;
   const existingSlackUsers = await axios

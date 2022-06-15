@@ -8,7 +8,7 @@ const MotionBox = motion(Box);
 const PlayersDeco: React.VFC<{ players: Pick<User, 'id' | 'image' | 'name' | 'roleId'>[] }> = ({ players }) => {
   return (
     <>
-      {players?.map((user, i) => {
+      {players?.map(user => {
         const random = Math.random();
         return (
           <MotionBox

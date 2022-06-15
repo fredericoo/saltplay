@@ -67,7 +67,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
         levels={[
           { label: 'Admin', href: '/admin' },
           { label: 'Offices', href: '/admin/offices' },
-          { label: office?.name || 'Office' },
+          ...(office ? [{ label: office?.name, href: `/admin/offices/${office.id}` }] : []),
         ]}
       />
 

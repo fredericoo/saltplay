@@ -10,7 +10,7 @@ import axios from 'axios';
 const AdminPage: PageWithLayout = () => {
   return (
     <Stack spacing={8}>
-      <Breadcrumbs px={2} levels={[{ label: 'Admin' }]} />
+      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }]} />
       <Settings.List>
         <SEO title="Dashboard" />
         <Settings.Link href="/admin/offices" icon="🏢">

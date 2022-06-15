@@ -112,7 +112,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
         levels={[
           { label: 'Admin', href: '/admin' },
           { label: 'Users', href: '/admin/users' },
-          { label: user?.name || 'User' },
+          { label: user?.name || 'User', href: `/admin/users/${user.id}` },
         ]}
       />
       <HStack spacing={8} p={4}>

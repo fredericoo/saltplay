@@ -2,6 +2,7 @@ import { USER_ROLE_ID } from '@/constants';
 import { PrismaClient } from '@prisma/client';
 import { Adapter } from 'next-auth/adapters';
 import notifyNewcomer from './slack/notifyNewcomer';
+import { hasProp } from './types/utils';
 
 const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   createUser: user => prisma.user.create({ data: { ...user, role: { connect: { id: USER_ROLE_ID } } } }),
@@ -17,6 +18,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
   updateUser: data => prisma.user.update({ where: { id: data.id }, data }),
   deleteUser: id => prisma.user.delete({ where: { id } }),
   linkAccount: async account => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { state, ok, ...data } = account;
     await prisma.account.create({ data });
     const user = await prisma.user.findUnique({ where: { id: account.userId }, select: { name: true, image: true } });
@@ -44,8 +46,7 @@ const PrismaAdapter = (prisma: PrismaClient): Adapter => ({
     } catch (error) {
       // If token already used/deleted, just return null
       // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-      // @ts-ignore
-      if (error.code === 'P2025') return null;
+      if (typeof error === 'object' && error && hasProp(error, 'code') && error.code === 'P2025') return null;
       throw error;
     }
   },
