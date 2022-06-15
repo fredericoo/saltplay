@@ -7,6 +7,7 @@ import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import NewMatchButton from '@/components/NewMatchButton';
 import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
+import Settings from '@/components/Settings';
 import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
@@ -15,7 +16,7 @@ import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
-import { isAfter } from 'date-fns';
+import { format, isAfter } from 'date-fns';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
@@ -29,11 +30,13 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
       office: {
         select: {
           name: true,
+          slug: true,
         },
       },
       seasons: {
         select: {
           id: true,
+          slug: true,
           name: true,
           endDate: true,
           startDate: true,
@@ -71,11 +74,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId: game?.id });
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
-  const activeSeasons = game.seasons?.filter(
-    season =>
-      (!season.endDate || isAfter(new Date(season.endDate), new Date())) &&
-      isAfter(new Date(), new Date(season.startDate))
-  );
+  const activeSeasons = game.seasons
+    ?.filter(
+      season =>
+        (!season.endDate || isAfter(new Date(season.endDate), new Date())) &&
+        isAfter(new Date(), new Date(season.startDate))
+    )
+    .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
+  const pastSeasons = game.seasons
+    ?.filter(season => season.endDate && isAfter(new Date(), new Date(season.endDate)))
+    .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
 
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
@@ -113,7 +121,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                 ) : (
                   <Tab>Leaderboard</Tab>
                 )}
-                {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
+                {pastSeasons.length > 0 && <Tab>Past seasons</Tab>}
               </TabList>
               <TabPanels>
                 {activeSeasons.map(season => (
@@ -127,6 +135,27 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                     />
                   </TabPanel>
                 ))}
+                {pastSeasons.length > 0 && (
+                  <TabPanel>
+                    <Settings.List>
+                      {pastSeasons.map(season => (
+                        <Settings.Link
+                          icon={'🗓'}
+                          key={season.id}
+                          href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                        >
+                          {season.name}
+                          <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
+                            {[
+                              format(new Date(season.startDate), 'MMM d'),
+                              season.endDate ? format(new Date(season.endDate), 'MMM d') : undefined,
+                            ].join(' — ')}
+                          </Box>
+                        </Settings.Link>
+                      ))}
+                    </Settings.List>
+                  </TabPanel>
+                )}
               </TabPanels>
             </Tabs>
           </Box>
@@ -236,6 +265,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                         />
                       </TabPanel>
                     ))}
+                    {activeSeasons.length < game.seasons.length && <TabPanel>Past seasons</TabPanel>}
                   </TabPanels>
                 </Tabs>
               </TabPanel>
