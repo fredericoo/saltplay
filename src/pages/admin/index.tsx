@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
@@ -25,15 +25,15 @@ const AdminPage: PageWithLayout = () => {
       </Settings.List>
       <Settings.List label="Danger zone">
         <Settings.Item label="Sign out everyone">
-          <DeleteButton
-            onDelete={async () => {
+          <ConfirmButton
+            onConfirm={async () => {
               await axios.delete(`/api/sessions`);
               window.location.pathname = '/';
             }}
             keyword="confirm"
           >
             Clear all sessions
-          </DeleteButton>
+          </ConfirmButton>
         </Settings.Item>
       </Settings.List>
     </Stack>

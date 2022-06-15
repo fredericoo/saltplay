@@ -1,6 +1,6 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
@@ -91,9 +91,9 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
 
       <Settings.List label="Danger zone">
         <Settings.Item label="Delete office and games">
-          <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
+          <ConfirmButton keyword={office?.name.toLowerCase()} onConfirm={handleDeleteOffice}>
             Delete Office
-          </DeleteButton>
+          </ConfirmButton>
         </Settings.Item>
       </Settings.List>
     </Stack>

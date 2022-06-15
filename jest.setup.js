@@ -10,3 +10,7 @@ jest.mock('next/router', () => ({
     };
   },
 }));
+
+if (!SVGElement.prototype.getTotalLength) {
+  SVGElement.prototype.getTotalLength = () => 1;
+}
