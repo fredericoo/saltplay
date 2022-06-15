@@ -8,7 +8,15 @@ const List: ListComponent = ({ children, ...chakraProps }) => {
   const isDarkmode = colorMode === 'dark';
 
   return (
-    <SimpleGrid gap={2} bg={isDarkmode ? 'grey.1' : 'grey.4'} p={2} borderRadius="22" {...chakraProps}>
+    <SimpleGrid
+      as="ul"
+      listStyleType="none"
+      gap={2}
+      bg={isDarkmode ? 'grey.1' : 'grey.4'}
+      p={2}
+      borderRadius="22"
+      {...chakraProps}
+    >
       {children}
     </SimpleGrid>
   );

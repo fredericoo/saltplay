@@ -10,5 +10,22 @@ export const getOffices = () =>
 export const getPlayerSample = () =>
   prisma.$queryRaw`SELECT * FROM "User" ORDER BY RANDOM() LIMIT 20` as Promise<User[]>;
 
-export const getMostRecentGameId = () =>
-  prisma.game.findFirst({ orderBy: { matches: { _count: 'desc' } }, select: { id: true } }).then(res => res?.id);
+export const getMostRecentGame = () =>
+  prisma.game
+    .findFirst({
+      orderBy: { matches: { _count: 'desc' } },
+      select: {
+        id: true,
+        seasons: {
+          where: {
+            startDate: {
+              lte: new Date(),
+            },
+          },
+          select: { id: true },
+          orderBy: { startDate: 'desc' },
+          take: 1,
+        },
+      },
+    })
+    .then(res => ({ gameId: res?.id, seasonId: res?.seasons[0].id }));
