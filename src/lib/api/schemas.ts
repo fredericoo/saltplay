@@ -54,6 +54,22 @@ export const patchGameSchema = object({
   officeid: string(),
 });
 
+export const postSeasonSchema = object({
+  name: string().min(2).required(),
+  slug: slugSchema.required(),
+  startDate: string().required(),
+  endDate: string(),
+  gameid: string().required(),
+});
+
+export const patchSeasonSchema = object({
+  name: string().min(2),
+  slug: slugSchema,
+  startDate: string(),
+  endDate: string(),
+  gameid: string(),
+});
+
 export const updateUserAccountSchema = object({
   id: string().required(),
 });

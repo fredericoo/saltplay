@@ -32,8 +32,6 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         {isUserRemoved ? (
           <Image
             src={'/avatars/anonymous.png'}
-            height={200}
-            width={200}
             layout="fill"
             sizes={`(min-width: 960px) ${getSize(size) * 3}px, ${getSize(size) * 2}px`}
             quality={90}
@@ -43,8 +41,6 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         ) : user.image ? (
           <Image
             src={user.image}
-            height="300"
-            width="300"
             sizes={`(min-width: 960px) ${getSize(size) * 3}px, ${getSize(size) * 2}px`}
             quality={90}
             alt={`${user.name || 'User'}‘s avatar`}

@@ -70,7 +70,8 @@ const SettingsGroup = <TData extends Record<PropertyKey, string | number | boole
         const displayValue = (() => {
           switch (field.type) {
             case 'select':
-              return field.options.find(option => option.value == value)?.label;
+              const options = Array.isArray(field.options) ? field.options : Object.values(field.options).flat();
+              return options.find(option => option.value == value)?.label;
             default:
               return `${value}`;
           }

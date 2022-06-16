@@ -91,11 +91,21 @@ const Field = <TData extends object>({
           fontSize="sm"
         >
           {(field.allowEmpty || placeholder) && <option value="">Select {placeholder}</option>}
-          {field.options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          {Array.isArray(field.options)
+            ? field.options.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))
+            : Object.entries(field.options).map(([group, options]) => (
+                <optgroup key={group} label={group}>
+                  {options.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
         </Select>
       );
     default:

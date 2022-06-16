@@ -26,49 +26,48 @@ const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, lab
   );
 };
 
-type ActionProps = { href: string; icon?: JSX.Element | string; helper?: string; showChevron?: boolean } & ChakraProps;
+type ActionProps = { href: string; icon?: ReactNode; helper?: string; showChevron?: boolean } & ChakraProps;
 const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevron = true, ...props }) => {
   return (
-    <Link href={href} passHref>
-      <HStack
-        fontSize="md"
-        as="a"
-        display="flex"
-        py={2}
-        px={4}
-        minH="4rem"
-        justifyContent="space-between"
-        spacing={4}
-        bg="grey.3"
-        _hover={{ bg: 'grey.4' }}
-        _active={{ bg: 'grey.5' }}
-        {...props}
-      >
-        <Box
-          w="1.5em"
-          h="1.5em"
-          bg={icon ? 'grey.1' : undefined}
-          borderRadius="lg"
-          lineHeight={'1.5em'}
-          textAlign="center"
+    <Box as="li" bg="grey.3" _hover={{ bg: 'grey.4' }} _active={{ bg: 'grey.5' }}>
+      <Link href={href} passHref>
+        <HStack
+          fontSize="md"
+          as="a"
+          display="flex"
+          py={2}
+          px={4}
+          minH="4rem"
+          justifyContent="space-between"
+          spacing={4}
+          {...props}
         >
-          {icon}
-        </Box>
-        <Box flexGrow={1}>
-          {children}
-          {!!helper && (
-            <Box fontSize="sm" color="grey.10">
-              {helper}
+          <Box
+            w="1.5em"
+            h="1.5em"
+            bg={icon ? 'grey.1' : undefined}
+            borderRadius="lg"
+            lineHeight={'1.5em'}
+            textAlign="center"
+          >
+            {icon}
+          </Box>
+          <Box flexGrow={1}>
+            {children}
+            {!!helper && (
+              <Box fontSize="sm" color="grey.10">
+                {helper}
+              </Box>
+            )}
+          </Box>
+          {showChevron && (
+            <Box px={2}>
+              <VscChevronRight />
             </Box>
           )}
-        </Box>
-        {showChevron && (
-          <Box px={2}>
-            <VscChevronRight />
-          </Box>
-        )}
-      </HStack>
-    </Link>
+        </HStack>
+      </Link>
+    </Box>
   );
 };
 
@@ -82,8 +81,9 @@ const List: React.FC<{ label?: ReactNode } & ChakraProps> = ({ children, label, 
       )}
       <Stack
         as="ul"
+        listStyleType="none"
         spacing={0.5}
-        sx={{ '&>*:first-child': { borderTopRadius: 'xl' }, '&>*:last-child': { borderBottomRadius: 'xl' } }}
+        sx={{ '&>*:first-of-type': { borderTopRadius: 'xl' }, '&>*:last-child': { borderBottomRadius: 'xl' } }}
       >
         {children}
       </Stack>

@@ -3,10 +3,12 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { getServerSession } from 'next-auth';
 import { canViewDashboard } from './roles';
 
+type SelectOption = { value: string | number; label: string };
+
 type FieldTypeSpecific =
   | { type: 'text'; format?: (input: string) => string }
   | { type: 'emoji' }
-  | { type: 'select'; options: { value: string | number; label: string }[]; allowEmpty?: boolean }
+  | { type: 'select'; options: SelectOption[] | Record<string, SelectOption[]>; allowEmpty?: boolean }
   | { type: 'number'; min?: number; max?: number }
   | { type: 'flags'; flags: Record<string, number> };
 
@@ -28,7 +30,7 @@ export const withDashboardAuth = (getServerSideProps: GetServerSideProps) => asy
     return {
       redirect: {
         destination: '/',
-        statusCode: 302,
+        statusCode: 403,
       },
     };
   }

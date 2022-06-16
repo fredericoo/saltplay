@@ -14,13 +14,16 @@ const AdminPage: PageWithLayout = () => {
       <Settings.List>
         <SEO title="Dashboard" />
         <Settings.Link href="/admin/offices" icon="🏢">
-          Offices
+          All Offices
         </Settings.Link>
         <Settings.Link href="/admin/games" icon="🎲">
-          Games
+          All Games
         </Settings.Link>
         <Settings.Link href="/admin/users" icon="🙋‍♀️">
-          Users
+          All Users
+        </Settings.Link>
+        <Settings.Link href="/admin/seasons" icon="🎖">
+          All Seasons
         </Settings.Link>
       </Settings.List>
       <Settings.List label="Danger zone">

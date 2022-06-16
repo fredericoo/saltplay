@@ -11,3 +11,5 @@ export function hasProp<K extends PropertyKey>(data: object, prop: K): data is R
 export function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
   return key in obj;
 }
+
+export type WithDatesAsStrings<T extends object> = { [K in keyof T]: T[K] extends Date ? string : K };
