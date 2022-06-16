@@ -1,6 +1,7 @@
+import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import prisma from '@/lib/prisma';
-import { Box } from '@chakra-ui/react';
+import { Container } from '@chakra-ui/react';
 import { Game, Office, Season } from '@prisma/client';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { object, string } from 'yup';
@@ -30,7 +31,11 @@ type SeasonPageProps = {
 };
 
 const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
-  return <Box>{season.name}</Box>;
+  return (
+    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
+      This page for {season.name} is not ready yet.
+    </Container>
+  );
 };
 
 export default SeasonPage;
@@ -59,6 +64,8 @@ const pageSchema = object({
 });
 
 export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }) => {
+  if (process.env.NEXT_PUBLIC_ENABLE_SEASONS !== 'true') return { notFound: true };
+
   const res = await pageSchema
     .validate(params, { abortEarly: true, stripUnknown: true })
     .then(async params => {

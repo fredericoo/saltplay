@@ -240,7 +240,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             <TabList>
               <Tab>Leaderboard</Tab>
               <Tab>Latest Matches</Tab>
-              {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
+              {activeSeasons.length < game.seasons.length && process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && (
+                <Tab>Past seasons</Tab>
+              )}
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -251,7 +253,8 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                     ) : (
                       <Tab>Leaderboard</Tab>
                     )}
-                    {activeSeasons.length < game.seasons.length && <Tab>Past seasons</Tab>}
+                    {activeSeasons.length < game.seasons.length &&
+                      process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && <Tab>Past seasons</Tab>}
                   </TabList>
                   <TabPanels>
                     {activeSeasons.map(season => (
@@ -265,7 +268,8 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                         />
                       </TabPanel>
                     ))}
-                    {activeSeasons.length < game.seasons.length && <TabPanel>Past seasons</TabPanel>}
+                    {activeSeasons.length < game.seasons.length &&
+                      process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && <TabPanel>Past seasons</TabPanel>}
                   </TabPanels>
                 </Tabs>
               </TabPanel>
