@@ -2,7 +2,7 @@ import { EditableField } from '@/lib/admin';
 import { Select } from '@chakra-ui/react';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
-import SliderField from './SliderField';
+import NumberField from './NumberField';
 
 type FieldProps<TData> = {
   field: EditableField<TData>;
@@ -43,29 +43,12 @@ const Field = <TData extends object>({
         />
       );
     case 'number':
-      if (field.max && field.min)
-        return (
-          <SliderField
-            name={field.id.toString()}
-            min={field.min}
-            max={field.max}
-            label={placeholder}
-            defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
-          />
-        );
       return (
-        <InputField
-          fontSize="sm"
-          type="number"
+        <NumberField
           name={field.id.toString()}
-          defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
-          autoComplete="off"
-          autoFocus={autoFocus}
-          placeholder={placeholder}
-          textAlign={align}
-          isInvalid={isInvalid}
-          prefix={prefix}
-          suffix={suffix}
+          min={field.min}
+          max={field.max}
+          defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
         />
       );
     case 'emoji':
