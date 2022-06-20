@@ -4,6 +4,7 @@ import Settings from '@/components/Settings';
 import { EditableField } from '@/lib/admin';
 import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
+import { formatDateTime } from '@/lib/utils';
 import axios, { AxiosError } from 'axios';
 import { ReactNode, useState } from 'react';
 import { ValidationError } from 'yup';
@@ -72,8 +73,16 @@ const SettingsGroup = <TData extends Record<PropertyKey, string | number | boole
             case 'select':
               const options = Array.isArray(field.options) ? field.options : Object.values(field.options).flat();
               return options.find(option => option.value == value)?.label;
+            case 'datetime':
+              if (typeof value === 'string' || typeof value === 'number') {
+                return formatDateTime(new Date(value), 'Pp');
+              }
+              if (value instanceof Date) {
+                return formatDateTime(value, 'Pp');
+              }
+              return null;
             default:
-              return `${value}`;
+              return value ? value.toString() : null;
           }
         })();
         const errorMessage = error?.stack?.find(error => error.path === field.id)?.message;

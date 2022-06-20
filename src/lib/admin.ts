@@ -8,6 +8,7 @@ type SelectOption = { value: string | number; label: string };
 type FieldTypeSpecific =
   | { type: 'text'; format?: (input: string) => string }
   | { type: 'emoji' }
+  | { type: 'datetime' }
   | { type: 'select'; options: SelectOption[] | Record<string, SelectOption[]>; allowEmpty?: boolean }
   | { type: 'number'; min?: number; max?: number }
   | { type: 'flags'; flags: Record<string, number> };

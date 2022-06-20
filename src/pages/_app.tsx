@@ -5,13 +5,15 @@ import { useMixpanel } from '@/lib/mixpanel';
 import Fonts from '@/theme/Fonts';
 import GlobalCSS from '@/theme/GlobalCSS';
 import theme from '@/theme/theme';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, createLocalStorageManager } from '@chakra-ui/react';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SWRConfig } from 'swr';
 
 type AppComponent = React.VFC<AppProps & { Component: PageWithLayout }>;
+
+const colorModeManager = createLocalStorageManager('wrkplay-color-mode');
 
 const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) => {
   const Layout = Component.Layout || Default;
@@ -25,7 +27,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
           content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
       </Head>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme} colorModeManager={colorModeManager}>
         <Fonts />
         <GlobalCSS />
         <SessionProvider session={session}>

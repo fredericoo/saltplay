@@ -1,4 +1,4 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { ConfigColorMode, extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import {
   amber,
   amberDark,
@@ -14,6 +14,7 @@ import {
 import Badge from './components/Badge';
 
 import { Button } from './components/Button';
+import { Calendar } from './components/Calendar';
 import Heading from './components/Heading';
 import { Input } from './components/Input';
 import { Menu } from './components/Menu';
@@ -41,12 +42,11 @@ const radixToSemantic = <T extends string>(
     ])
   );
 
-export const initialColorMode = 'dark';
+export const initialColorMode: ConfigColorMode = 'system';
 
 export const config: ThemeConfig = {
   cssVarPrefix: 'wrkplay',
   initialColorMode,
-  useSystemColorMode: false,
 };
 
 const theme = extendTheme({
@@ -115,6 +115,7 @@ const theme = extendTheme({
     Modal,
     Switch,
     Tabs,
+    ...Calendar,
   },
 });
 

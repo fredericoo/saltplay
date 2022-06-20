@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+import enGB from 'date-fns/locale/en-GB';
+
 /**
  * Promise.all for Object instead of Array.
  *
@@ -25,3 +28,10 @@ export async function pProps<T>(input: { [K in keyof T]: T[K] | Promise<T[K]> })
 export const clamp = (num: number, min = -9999999, max = 9999999) => {
   Math.min(Math.max(num, min), max);
 };
+
+/**
+ * Moves points from the losing side to the winning side.
+ * @param date Date to be formatted
+ * @param pattern pattern according to https://date-fns.org/v2.28.0/docs/format.
+ */
+export const formatDateTime = (date: Date, pattern: string) => format(date, pattern, { locale: enGB });

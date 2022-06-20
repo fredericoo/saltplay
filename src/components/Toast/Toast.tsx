@@ -1,5 +1,4 @@
 import getGradientFromId from '@/theme/palettes';
-import { initialColorMode } from '@/theme/theme';
 import { Stack, Text, useColorModePreference } from '@chakra-ui/react';
 
 type ToastProps = {
@@ -39,7 +38,7 @@ const toastStyles = {
 };
 
 const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
-  const mode = useColorModePreference() || initialColorMode;
+  const mode = useColorModePreference() || 'dark';
 
   return (
     <Stack

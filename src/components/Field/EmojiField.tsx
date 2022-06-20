@@ -9,7 +9,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { IEmojiPickerProps } from 'emoji-picker-react';
+import type { IEmojiPickerProps } from 'emoji-picker-react';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import LoadingIcon from '../LoadingIcon';

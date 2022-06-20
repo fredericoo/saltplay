@@ -1,5 +1,6 @@
 import { EditableField } from '@/lib/admin';
 import { Select } from '@chakra-ui/react';
+import DateTimeField from './DateTimeField';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
 import NumberField from './NumberField';
@@ -90,6 +91,16 @@ const Field = <TData extends object>({
                 </optgroup>
               ))}
         </Select>
+      );
+    case 'datetime':
+      return (
+        <DateTimeField
+          name={field.id.toString()}
+          align={align}
+          autoFocus={autoFocus}
+          label={placeholder}
+          defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
+        />
       );
     default:
       return null;

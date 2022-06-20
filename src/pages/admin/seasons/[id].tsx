@@ -77,12 +77,12 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
     {
       id: 'startDate',
       label: 'Start Date',
-      type: 'text',
+      type: 'datetime',
     },
     {
       id: 'endDate',
       label: 'End Date',
-      type: 'text',
+      type: 'datetime',
     },
   ];
 
