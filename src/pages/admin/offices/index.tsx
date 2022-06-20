@@ -37,7 +37,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices }) => {
             {office.name}{' '}
           </Settings.Link>
         ))}
-        <Settings.Link href="/admin/offices/new" showChevron={false} color="primary.10">
+        <Settings.Link href="/admin/offices/new" showChevron={false} highlight>
           Add office
         </Settings.Link>
       </Settings.List>

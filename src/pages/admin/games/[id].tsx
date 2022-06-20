@@ -66,6 +66,7 @@ const getGame = (id: string) =>
       maxPlayersPerTeam: true,
       officeid: true,
       office: { select: { slug: true, name: true, id: true } },
+      seasons: { select: { id: true, name: true } },
     },
   });
 
@@ -140,6 +141,17 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
         flags={GAME_FLAGS}
         defaultValue={game?.flags ?? undefined}
       />
+
+      <Settings.List label="Seasons">
+        {game.seasons.map(season => (
+          <Settings.Link href={`/admin/seasons/${season.id}`} key={season.id}>
+            {season.name}
+          </Settings.Link>
+        ))}
+        <Settings.Link href={`/admin/seasons/new?gameid=${game.id}`} showChevron={false} highlight>
+          Create Season
+        </Settings.Link>
+      </Settings.List>
 
       <Settings.List>
         <Settings.Item label="Danger zone">

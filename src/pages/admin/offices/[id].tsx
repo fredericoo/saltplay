@@ -84,7 +84,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
             {game.name}
           </Settings.Link>
         ))}
-        <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} color="primary.10" showChevron={false}>
+        <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} highlight showChevron={false}>
           Create game
         </Settings.Link>
       </Settings.List>

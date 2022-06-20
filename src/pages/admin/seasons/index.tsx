@@ -50,7 +50,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ seasons }) => {
       ))}
 
       <Settings.List>
-        <Settings.Link href="/admin/seasons/new" showChevron={false} color="primary.10">
+        <Settings.Link href="/admin/seasons/new" showChevron={false} highlight>
           Add Season
         </Settings.Link>
       </Settings.List>

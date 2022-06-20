@@ -1,4 +1,4 @@
-import { Box, ChakraProps, FormControl, Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, ChakraProps, FormControl, Heading, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { VscChevronRight } from 'react-icons/vsc';
@@ -26,10 +26,24 @@ const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, lab
   );
 };
 
-type ActionProps = { href: string; icon?: ReactNode; helper?: string; showChevron?: boolean } & ChakraProps;
-const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevron = true, ...props }) => {
+type ActionProps = {
+  href: string;
+  icon?: ReactNode;
+  helper?: string;
+  highlight?: boolean;
+  showChevron?: boolean;
+} & ChakraProps;
+const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevron = true, highlight, ...props }) => {
+  const mode = useColorModeValue('', 'Dark');
+
   return (
-    <Box as="li" bg="grey.3" _hover={{ bg: 'grey.4' }} _active={{ bg: 'grey.5' }}>
+    <Box
+      as="li"
+      bg="grey.3"
+      color={highlight ? 'primary.10' : undefined}
+      _hover={{ bg: highlight ? `primary${mode}.4` : 'grey.4' }}
+      _active={{ bg: highlight ? `primary${mode}.5` : 'grey.5' }}
+    >
       <Link href={href} passHref>
         <HStack
           fontSize="md"

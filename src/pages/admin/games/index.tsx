@@ -41,7 +41,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ games }) => {
             {game.name}
           </Settings.Link>
         ))}
-        <Settings.Link href="/admin/games/new" showChevron={false} color="primary.10">
+        <Settings.Link href="/admin/games/new" showChevron={false} highlight>
           Add Game
         </Settings.Link>
       </Settings.List>
