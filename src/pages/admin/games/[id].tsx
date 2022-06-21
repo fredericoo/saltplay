@@ -49,7 +49,7 @@ export const getGameFields = ({
       prefix: WEBSITE_URL + `/${officeSlug || '[office]'}/`,
       format: toSlug,
     },
-    { id: 'maxPlayersPerTeam', type: 'number', min: 1, max: 11, label: 'Max Players Per Team' },
+    { id: 'maxPlayersPerTeam', type: 'number', min: 1, label: 'Max Players Per Team' },
   ];
   return editableFields;
 };
