@@ -28,4 +28,4 @@ export const getMostRecentGame = () =>
         },
       },
     })
-    .then(res => ({ gameId: res?.id, seasonId: res?.seasons[0].id }));
+    .then(res => ({ gameId: res?.id || null, seasonId: res?.seasons[0].id || null }));
