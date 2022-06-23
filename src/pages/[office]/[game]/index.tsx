@@ -16,7 +16,7 @@ import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
-import { format, isAfter } from 'date-fns';
+import { format } from 'date-fns';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
@@ -38,7 +38,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
           id: true,
           slug: true,
           name: true,
-          endDate: true,
+          active: true,
           startDate: true,
         },
       },
@@ -56,7 +56,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
     seasons: response.seasons.map(season => ({
       ...season,
       startDate: season.startDate.toISOString(),
-      endDate: season.endDate?.toISOString() || null,
+      active: season.active,
     })),
   };
 
@@ -75,14 +75,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const activeSeasons = game.seasons
-    ?.filter(
-      season =>
-        (!season.endDate || isAfter(new Date(season.endDate), new Date())) &&
-        isAfter(new Date(), new Date(season.startDate))
-    )
+    ?.filter(season => season.active)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
-  const pastSeasons = game.seasons
-    ?.filter(season => season.endDate && isAfter(new Date(), new Date(season.endDate)))
+  const inactiveSeasons = game.seasons
+    ?.filter(season => !season.active)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
 
   return (
@@ -121,7 +117,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                 ) : (
                   <Tab>Leaderboard</Tab>
                 )}
-                {pastSeasons.length > 0 && <Tab>Past seasons</Tab>}
+                {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
               </TabList>
               <TabPanels>
                 {activeSeasons.map(season => (
@@ -135,10 +131,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                     />
                   </TabPanel>
                 ))}
-                {pastSeasons.length > 0 && (
+                {inactiveSeasons.length > 0 && (
                   <TabPanel>
                     <Settings.List>
-                      {pastSeasons.map(season => (
+                      {inactiveSeasons.map(season => (
                         <Settings.Link
                           icon={'🗓'}
                           key={season.id}
@@ -146,10 +142,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                         >
                           {season.name}
                           <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
-                            {[
-                              format(new Date(season.startDate), 'MMM d'),
-                              season.endDate ? format(new Date(season.endDate), 'MMM d') : undefined,
-                            ].join(' — ')}
+                            Started on {format(new Date(season.startDate), 'MMM d')}
                           </Box>
                         </Settings.Link>
                       ))}

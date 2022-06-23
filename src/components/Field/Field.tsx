@@ -1,5 +1,5 @@
 import { EditableField } from '@/lib/admin';
-import { Select } from '@chakra-ui/react';
+import { Select, Switch } from '@chakra-ui/react';
 import DateTimeField from './DateTimeField';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
@@ -13,7 +13,7 @@ type FieldProps<TData> = {
   prefix?: string;
   suffix?: string;
   align: 'left' | 'right';
-  value?: string | number | TData[keyof TData];
+  value?: string | number | boolean | TData[keyof TData];
 };
 const Field = <TData extends object>({
   field,
@@ -41,6 +41,13 @@ const Field = <TData extends object>({
           isInvalid={isInvalid}
           prefix={prefix}
           suffix={suffix}
+        />
+      );
+    case 'switch':
+      return (
+        <Switch
+          name={field.id.toString()}
+          defaultChecked={typeof value === 'string' ? value === 'true' : typeof value === 'boolean' ? value : false}
         />
       );
     case 'number':

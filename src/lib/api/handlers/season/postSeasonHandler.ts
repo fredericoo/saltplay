@@ -13,12 +13,11 @@ type PostSeasonBody = InferType<typeof postSeasonSchema>;
 export type ValidSeasonPostResponse = Awaited<ReturnType<typeof createSeason>>;
 export type SeasonPOSTAPIResponse = APIResponse<ValidSeasonPostResponse>;
 
-const createSeason = async ({ gameid, endDate, startDate, ...body }: PostSeasonBody) =>
+const createSeason = async ({ gameid, startDate, ...body }: PostSeasonBody) =>
   await prisma.season.create({
     data: {
       ...body,
       startDate: new Date(startDate),
-      endDate: endDate ? new Date(endDate) : null,
       game: { connect: { id: gameid } },
     },
     select: {

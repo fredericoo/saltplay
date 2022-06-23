@@ -66,9 +66,9 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ gamesWithOffices, query }) 
       type: 'datetime',
     },
     {
-      id: 'endDate',
-      label: 'End Date',
-      type: 'datetime',
+      id: 'active',
+      label: 'Active?',
+      type: 'switch',
     },
   ];
 

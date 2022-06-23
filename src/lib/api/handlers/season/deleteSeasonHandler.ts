@@ -30,7 +30,7 @@ const deleteSeasonHandler: NextApiHandler<SeasonDELETEAPIResponse> = async (req,
           select: {
             id: true,
             gameid: true,
-            endDate: true,
+            active: true,
             startDate: true,
             name: true,
             slug: true,

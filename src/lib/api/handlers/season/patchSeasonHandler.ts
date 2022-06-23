@@ -14,18 +14,17 @@ type PatchSeasonBody = InferType<typeof patchSeasonSchema>;
 export type ValidGamePatchResponse = Awaited<ReturnType<typeof updateSeason>>;
 export type GamePATCHAPIResponse = APIResponse<ValidGamePatchResponse>;
 
-const updateSeason = async (seasonId: Season['id'], { startDate, endDate, ...body }: PatchSeasonBody) =>
+const updateSeason = async (seasonId: Season['id'], { startDate, ...body }: PatchSeasonBody) =>
   await prisma.season.update({
     where: { id: seasonId },
     data: {
       startDate: startDate ? new Date(startDate) : undefined,
-      endDate: endDate ? new Date(endDate) : undefined,
       ...body,
     },
     select: {
       name: true,
       startDate: true,
-      endDate: true,
+      active: true,
       slug: true,
       game: { select: { slug: true, office: { select: { slug: true } } } },
     },

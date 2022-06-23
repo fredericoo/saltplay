@@ -1,5 +1,5 @@
 import { GAME_FLAGS } from '@/constants';
-import { number, object, string } from 'yup';
+import { boolean, number, object, string } from 'yup';
 import { validateSlug } from '../slug';
 
 export const slugSchema = string().test(
@@ -58,7 +58,7 @@ export const postSeasonSchema = object({
   name: string().min(2).required(),
   slug: slugSchema.required(),
   startDate: string().required(),
-  endDate: string(),
+  active: boolean(),
   gameid: string().required(),
 });
 
@@ -66,7 +66,7 @@ export const patchSeasonSchema = object({
   name: string().min(2),
   slug: slugSchema,
   startDate: string(),
-  endDate: string(),
+  active: boolean(),
   gameid: string(),
 });
 
