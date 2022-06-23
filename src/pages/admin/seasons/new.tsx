@@ -158,7 +158,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ gamesWithOffices, query }) 
                 offset={[8, -8]}
               >
                 <Box flex={1}>
-                  <Field<WithDatesAsStrings<Season>>
+                  <Field
                     field={field}
                     placeholder={field.label}
                     prefix={field.prefix}

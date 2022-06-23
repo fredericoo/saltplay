@@ -8,7 +8,7 @@ import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
 import { EditableField, withDashboardAuth } from '@/lib/admin';
-import { patchGameSchema } from '@/lib/api/schemas';
+import { patchSeasonSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { toSlug } from '@/lib/slug';
@@ -114,8 +114,8 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
           { label: season.name, href: `/admin/seasons/${season.id}` },
         ]}
       />
-      <SettingsGroup<Season>
-        fieldSchema={patchGameSchema}
+      <SettingsGroup
+        fieldSchema={patchSeasonSchema}
         fields={editableFields}
         saveEndpoint={`/api/seasons/${season.id}`}
         data={season}

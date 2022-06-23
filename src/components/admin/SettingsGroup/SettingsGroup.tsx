@@ -1,47 +1,48 @@
 import Editable from '@/components/Editable';
 import Field from '@/components/Field';
+import { FieldData } from '@/components/Field/types';
 import Settings from '@/components/Settings';
 import { EditableField } from '@/lib/admin';
 import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
-import { formatDateTime } from '@/lib/utils';
 import axios, { AxiosError } from 'axios';
 import { ReactNode, useState } from 'react';
 import { ValidationError } from 'yup';
 import { SchemaLike } from 'yup/lib/types';
+import getDisplayValue from './getDisplayValue';
 
-const SettingsGroup = <TData extends Record<PropertyKey, string | number | boolean | undefined | null | object>>({
+const SettingsGroup = ({
   fields,
   saveEndpoint,
   fieldSchema,
   data,
   children,
 }: {
-  fields: EditableField<TData>[];
-  data?: Partial<TData> | null;
+  fields: EditableField<FieldData>[];
+  data?: Partial<FieldData> | null;
   fieldSchema: SchemaLike;
   saveEndpoint: string;
   children?: ReactNode;
 }) => {
   const [editingFieldKey, setEditingFieldKey] = useState<typeof fields[number]['id'] | null>(null);
-  const [response, setResponse] = useState<APISuccess<TData>>();
-  const [error, setError] = useState<APIError<TData>>();
+  const [response, setResponse] = useState<APISuccess<FieldData>>();
+  const [error, setError] = useState<APIError<FieldData>>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveField = async ({
     id,
     value,
   }: {
-    id: EditableField<TData>['id'];
+    id: EditableField<FieldData>['id'];
     value: string | number | boolean;
   }) => {
     setIsLoading(true);
     const body = { [id]: value };
     await fieldSchema
-      .validate(body, { abortEarly: false })
-      .then(async () => {
+      .validate(body, { abortEarly: false, stripUnknown: true })
+      .then(async (body: FieldData) => {
         await axios
-          .patch<APIResponse<TData>>(saveEndpoint, body)
+          .patch<APIResponse<FieldData>>(saveEndpoint, body)
           .then(res => {
             if (res.data.status !== 'ok') throw new Error('Unexpected response');
             setResponse(res.data);
@@ -49,42 +50,26 @@ const SettingsGroup = <TData extends Record<PropertyKey, string | number | boole
             setError(undefined);
           })
           .catch((e: AxiosError) => {
-            const response: APIError<TData> = e.response?.data;
+            const response: APIError<FieldData> = e.response?.data;
             setError(response);
           });
       })
       .catch((err: ValidationError) => {
         const stack = err.inner.map(err => ({ type: err.type, path: err.path, message: err.errors.join('; ') }));
-        const response: APIError<TData> = { status: 'error', stack };
+        const response: APIError<FieldData> = { status: 'error', stack };
         setError(response);
       });
 
     setIsLoading(false);
   };
+  const res = response?.data;
 
   return (
     <Settings.List>
       {fields.map(field => {
-        const res = response?.data || {};
-        const resValue = hasKey(res, field.id) ? res[field.id] : undefined;
-        const value = typeof resValue === 'string' || typeof resValue === 'number' ? resValue : data?.[field.id];
-        const displayValue = (() => {
-          switch (field.type) {
-            case 'select':
-              const options = Array.isArray(field.options) ? field.options : Object.values(field.options).flat();
-              return options.find(option => option.value == value)?.label;
-            case 'datetime':
-              if (typeof value === 'string' || typeof value === 'number') {
-                return formatDateTime(new Date(value), 'Pp');
-              }
-              if (value instanceof Date) {
-                return formatDateTime(value, 'Pp');
-              }
-              return null;
-            default:
-              return value ? value.toString() : null;
-          }
-        })();
+        const resValue = res && hasKey(res, field.id) ? res?.[field.id] : undefined;
+        const value = res && typeof resValue !== 'object' ? resValue : data?.[field.id];
+        const displayValue = getDisplayValue({ value, ...field });
         const errorMessage = error?.stack?.find(error => error.path === field.id)?.message;
         const isDisabled = (editingFieldKey === field.id && isLoading) || field.readOnly;
         return (

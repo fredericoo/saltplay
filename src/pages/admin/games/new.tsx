@@ -117,7 +117,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices, query }) => {
                 offset={[8, -8]}
               >
                 <Box flex={1}>
-                  <Field<Game>
+                  <Field
                     field={field}
                     placeholder={field.label}
                     prefix={field.prefix}

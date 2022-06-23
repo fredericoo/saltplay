@@ -1,30 +1,23 @@
 import { EditableField } from '@/lib/admin';
-import { Select, Switch } from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
 import DateTimeField from './DateTimeField';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
 import NumberField from './NumberField';
+import SwitchField from './SwitchField';
+import { FieldData, FieldValue } from './types';
 
-type FieldProps<TData> = {
-  field: EditableField<TData>;
+type FieldProps = {
+  field: EditableField<FieldData>;
   placeholder?: string;
   autoFocus?: boolean;
   isInvalid?: boolean;
   prefix?: string;
   suffix?: string;
   align: 'left' | 'right';
-  value?: string | number | boolean | TData[keyof TData];
+  value?: FieldValue;
 };
-const Field = <TData extends object>({
-  field,
-  autoFocus,
-  placeholder,
-  align,
-  value,
-  prefix,
-  suffix,
-  isInvalid,
-}: FieldProps<TData>) => {
+const Field: React.VFC<FieldProps> = ({ field, autoFocus, placeholder, align, value, prefix, suffix, isInvalid }) => {
   switch (field.type) {
     case 'text':
       return (
@@ -44,12 +37,7 @@ const Field = <TData extends object>({
         />
       );
     case 'switch':
-      return (
-        <Switch
-          name={field.id.toString()}
-          defaultChecked={typeof value === 'string' ? value === 'true' : typeof value === 'boolean' ? value : false}
-        />
-      );
+      return <SwitchField name={field.id.toString()} defaultValue={value === true || value === 'true'} />;
     case 'number':
       return (
         <NumberField

@@ -42,7 +42,7 @@ const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
                 {score.game.office?.name}
               </Text>
             </Box>
-            <SettingsGroup<PlayerScore>
+            <SettingsGroup
               data={score}
               saveEndpoint={`/api/scores/${score.id}`}
               fields={[{ id: 'points', type: 'number', label: 'Points' }]}

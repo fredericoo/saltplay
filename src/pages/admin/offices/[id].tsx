@@ -71,7 +71,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
         ]}
       />
 
-      <SettingsGroup<Office>
+      <SettingsGroup
         fieldSchema={patchOfficeSchema}
         fields={officeFields}
         saveEndpoint={`/api/offices/${office?.id}`}

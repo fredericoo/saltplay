@@ -8,7 +8,7 @@ export function hasProp<K extends PropertyKey>(data: object, prop: K): data is R
   return prop in data;
 }
 
-export function hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
+export function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
   return key in obj;
 }
 

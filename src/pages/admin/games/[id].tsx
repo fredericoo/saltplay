@@ -128,7 +128,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
           { label: game?.name || 'Game', href: `/admin/games/${game.id}` },
         ]}
       />
-      <SettingsGroup<Game>
+      <SettingsGroup
         fieldSchema={patchGameSchema}
         fields={editableFields}
         saveEndpoint={`/api/games/${game?.id}`}

@@ -90,7 +90,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ query }) => {
                 offset={[8, -8]}
               >
                 <Box flex={1}>
-                  <Field<Office>
+                  <Field
                     field={field}
                     placeholder={field.label}
                     prefix={field.prefix}

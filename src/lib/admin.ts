@@ -5,7 +5,7 @@ import { canViewDashboard } from './roles';
 
 type SelectOption = { value: string | number; label: string };
 
-type FieldTypeSpecific =
+export type FieldTypeSpecific =
   | { type: 'text'; format?: (input: string) => string }
   | { type: 'emoji' }
   | { type: 'datetime' }

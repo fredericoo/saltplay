@@ -127,7 +127,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
         </TabList>
         <TabPanels pt={4}>
           <TabPanel as={Stack} spacing={8}>
-            <SettingsGroup<User>
+            <SettingsGroup
               fieldSchema={patchUserSchema}
               fields={editableFields}
               data={user}
