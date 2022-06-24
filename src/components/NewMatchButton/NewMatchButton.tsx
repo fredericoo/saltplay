@@ -1,3 +1,4 @@
+import getErrorMessage from '@/lib/api/getErrorMessage';
 import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
 import { trackEvent } from '@/lib/mixpanel';
 import {
@@ -104,12 +105,12 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       mutateLatestMatches();
       mutateLeaderboard();
       mutateOpponents();
-    } catch {
+    } catch (error) {
+      const errorMessage = (await getErrorMessage(error)) || 'An error occurred when adding your match.';
+
       trackEvent('Error creating match');
       toast({
-        render: () => (
-          <Toast status="error" heading="Let’s try that again" content="An error occurred when adding your match." />
-        ),
+        render: () => <Toast status="error" heading="Let’s try that again" content={errorMessage} />,
         position: 'bottom',
       });
       return;
