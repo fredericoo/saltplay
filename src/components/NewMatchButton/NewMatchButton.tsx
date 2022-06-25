@@ -82,7 +82,6 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         players: data.right.map(({ id, source }) => ({ id, source: source || 'user' })),
         score: data.rightscore,
       },
-      gameId,
       seasonId: season.id,
     };
     try {
