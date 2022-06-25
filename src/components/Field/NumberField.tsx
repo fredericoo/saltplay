@@ -55,6 +55,7 @@ const NumberField: React.VFC<NumberFieldProps> = ({ defaultValue, min, max, name
           flexShrink={0}
           type="number"
           value={value}
+          name={name}
           onClick={e => e.currentTarget.select()}
           onChange={e => dispatch({ type: 'set', value: +e.target.value })}
           maxW="8ch"
