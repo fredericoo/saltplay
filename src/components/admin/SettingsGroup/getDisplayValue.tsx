@@ -1,4 +1,4 @@
-import { EditableField } from '@/lib/admin';
+import type { EditableField } from '@/components/Field/types';
 import { formatDateTime } from '@/lib/utils';
 import { Switch } from '@chakra-ui/react';
 

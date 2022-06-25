@@ -1,8 +1,9 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
-import { FieldTypeSpecific } from '@/lib/admin';
+
 import { render } from '@testing-library/react';
 import Field from './Field';
+import { FieldTypeSpecific } from './types';
 
 type FieldType = FieldTypeSpecific['type'];
 type FieldTypes = {

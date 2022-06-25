@@ -1,6 +1,7 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfirmButton from '@/components/ConfirmButton';
+import type { EditableField } from '@/components/Field/types';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
@@ -8,7 +9,7 @@ import Settings from '@/components/Settings';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { GamePATCHAPIResponse, ValidGamePatchResponse } from '@/lib/api/handlers/game/patchGameHandler';
 import { patchGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';

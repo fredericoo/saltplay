@@ -1,11 +1,10 @@
-import { EditableField } from '@/lib/admin';
 import { Select } from '@chakra-ui/react';
 import DateTimeField from './DateTimeField';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
 import NumberField from './NumberField';
 import SwitchField from './SwitchField';
-import { FieldData, FieldValue } from './types';
+import { EditableField, FieldData, FieldValue } from './types';
 
 type FieldProps = {
   field: EditableField<FieldData>;

@@ -1,13 +1,14 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfirmButton from '@/components/ConfirmButton';
+import type { EditableField } from '@/components/Field/types';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { patchOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';

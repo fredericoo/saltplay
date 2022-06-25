@@ -1,8 +1,8 @@
 import Editable from '@/components/Editable';
 import Field from '@/components/Field';
+import type { EditableField } from '@/components/Field/types';
 import { FieldData } from '@/components/Field/types';
 import Settings from '@/components/Settings';
-import { EditableField } from '@/lib/admin';
 import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
 import axios, { AxiosError } from 'axios';

@@ -1,10 +1,11 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Field from '@/components/Field';
+import type { EditableField } from '@/components/Field/types';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { SeasonPOSTAPIResponse } from '@/lib/api/handlers/season/postSeasonHandler';
 import { patchSeasonSchema, postSeasonSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
