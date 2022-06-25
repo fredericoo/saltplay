@@ -24,7 +24,7 @@ const NavigationBackButton = () => {
         _focus={{ boxShadow: 'none' }}
         maxW="33ch"
       >
-        <Text as="span" isTruncated>
+        <Text as="span" noOfLines={1}>
           {lastHistory?.title}
         </Text>
       </Button>

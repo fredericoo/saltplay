@@ -20,12 +20,8 @@ const securityHeaders = [
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy
   {
-    key: 'Feature-Policy',
-    value: `accelerometer: 'none';autoplay: 'none';camera: 'none';encrypted-media: 'none';fullscreen=*;geolocation=*;gyroscope: 'none';magnetometer: 'none';microphone: 'none';midi: 'none';sync-xhr: *;usb: 'none';xr-spatial-tracking: 'none'`,
-  },
-  {
     key: 'Permissions-Policy',
-    value: `accelerometer=();autoplay=();camera=();encrypted-media=();fullscreen=*;geolocation=*;gyroscope=();magnetometer=();microphone=();midi=();sync-xhr=*;usb=();xr-spatial-tracking=()`,
+    value: `accelerometer=(),autoplay=(),camera=(),encrypted-media=(),fullscreen=(),geolocation=(),gyroscope=(),magnetometer=(),microphone=(),midi=(),sync-xhr=*,usb=(),xr-spatial-tracking=()`,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
@@ -68,6 +64,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
+    images: {
+      deviceSizes: [768, 1920],
+      imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    },
+    domains: ['avatars.slack-edge.com', 'secure.gravatar.com'],
     formats: ['image/avif', 'image/webp'],
   },
   compiler: {

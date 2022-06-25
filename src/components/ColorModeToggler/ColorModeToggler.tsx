@@ -9,13 +9,15 @@ type ThemeModeTogglerProps = Omit<IconButtonProps, 'aria-label'>;
 const Button = motion(IconButton);
 
 export const ColorModeToggler: React.FC<ThemeModeTogglerProps> = props => {
-  const { toggleColorMode } = useColorMode();
+  const { toggleColorMode, colorMode } = useColorMode();
   const SwitchIcon = useColorModeValue(MoonIcon, SunIcon);
 
   return (
     <AnimatePresence initial={false}>
       <Button
-        aria-label="Toggle dark mode"
+        role="switch"
+        aria-checked={colorMode === 'dark'}
+        aria-label="Dark mode"
         variant="subtle"
         fontSize="xl"
         bg="transparent"

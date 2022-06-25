@@ -7,27 +7,39 @@ import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import NewMatchButton from '@/components/NewMatchButton';
 import PageHeader from '@/components/PageHeader';
 import SEO from '@/components/SEO';
+import Settings from '@/components/Settings';
 import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, Container, Grid, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
+import { format } from 'date-fns';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
 
-const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
-  prisma.game.findUnique({
+const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
+  const response = await prisma.game.findUnique({
     where: { slug_officeid: { slug: gameSlug, officeid: officeId } },
     select: {
       office: {
         select: {
           name: true,
+          slug: true,
+        },
+      },
+      seasons: {
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+          active: true,
+          startDate: true,
         },
       },
       name: true,
@@ -37,6 +49,19 @@ const getGame = (gameSlug: Game['slug'], officeId: Office['id']) =>
       maxPlayersPerTeam: true,
     },
   });
+  if (!response) return null;
+
+  const responseWithoutDates = {
+    ...response,
+    seasons: response.seasons.map(season => ({
+      ...season,
+      startDate: season.startDate.toISOString(),
+      active: season.active,
+    })),
+  };
+
+  return responseWithoutDates;
+};
 
 type GamePageProps = {
   game: NonNullable<Awaited<ReturnType<typeof getGame>>>;
@@ -49,6 +74,12 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId: game?.id });
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
+  const activeSeasons = game.seasons
+    ?.filter(season => season.active)
+    .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
+  const inactiveSeasons = game.seasons
+    ?.filter(season => !season.active)
+    .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
 
   return (
     <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
@@ -78,17 +109,53 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
       />
       {isDesktop ? (
         <Grid position="relative" w="100%" gap={8} templateColumns={{ base: '1fr', xl: '2fr 1fr' }}>
-          <Box as="section" bg="grey.4" p={2} borderRadius="xl" alignSelf="start">
-            <Heading as="h2" size="md" pl="12" pt={2} pb={4} color="grey.10" flexGrow="1">
-              Leaderboard
-            </Heading>
-
-            <Leaderboard bg="grey.4" gameId={game.id} stickyMe offsetPlayerBottom=".5rem" />
+          <Box as="section" bg="grey.4" borderRadius="xl" alignSelf="start" minH="100vh" overflow="hidden">
+            <Tabs isLazy variant="typographic">
+              <TabList>
+                {game.seasons.length > 1 ? (
+                  activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
+                ) : (
+                  <Tab>Leaderboard</Tab>
+                )}
+                {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
+              </TabList>
+              <TabPanels>
+                {activeSeasons.map(season => (
+                  <TabPanel key={season.id}>
+                    <Leaderboard
+                      bg="grey.4"
+                      seasonId={season.id}
+                      gameId={game.id}
+                      stickyMe
+                      offsetPlayerBottom=".5rem"
+                    />
+                  </TabPanel>
+                ))}
+                {inactiveSeasons.length > 0 && (
+                  <TabPanel>
+                    <Settings.List>
+                      {inactiveSeasons.map(season => (
+                        <Settings.Item
+                          key={season.id}
+                          // icon={'🗓'}
+                          // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                        >
+                          {season.name}
+                          <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
+                            Started on {format(new Date(season.startDate), 'MMM d')}
+                          </Box>
+                        </Settings.Item>
+                      ))}
+                    </Settings.List>
+                  </TabPanel>
+                )}
+              </TabPanels>
+            </Tabs>
           </Box>
           <Box
             as="section"
             position="sticky"
-            top={`calc(${headerRef?.current?.getBoundingClientRect().height || 0}px)`}
+            top={`calc(${NAVBAR_HEIGHT} + .5rem)`}
             h={`calc(100vh - ${NAVBAR_HEIGHT} - 1rem)`}
             overflow={'auto'}
             px={4}
@@ -113,7 +180,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <Heading as="h2" size="md" pb={4} color="grey.10">
                 Latest matches
               </Heading>
-              <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} mb={8} />
+              <Stack mb={8}>
+                {activeSeasons.map(season => (
+                  <NewMatchButton
+                    key={season.id}
+                    season={season}
+                    gameId={game.id}
+                    maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+                  />
+                ))}
+              </Stack>
             </Box>
             <LatestMatches gameId={game.id} />
             <Box
@@ -137,9 +213,18 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
         </Grid>
       ) : (
         <Box position="relative">
-          <NewMatchButton gameId={game.id} maxPlayersPerTeam={game.maxPlayersPerTeam || 1} />
+          <Stack>
+            {activeSeasons.map(season => (
+              <NewMatchButton
+                key={season.id}
+                season={season}
+                gameId={game.id}
+                maxPlayersPerTeam={game.maxPlayersPerTeam || 1}
+              />
+            ))}
+          </Stack>
           <Tabs
-            variant={'bottom'}
+            variant="bottom"
             onChange={() => {
               window.scrollTo(0, 0);
             }}
@@ -151,12 +236,47 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Leaderboard
-                  bg="grey.2"
-                  gameId={game.id}
-                  offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
-                  stickyMe
-                />
+                <Tabs isLazy variant="typographic" mx={-4}>
+                  <TabList>
+                    {game.seasons.length > 1 ? (
+                      activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
+                    ) : (
+                      <Tab>Leaderboard</Tab>
+                    )}
+                    {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
+                  </TabList>
+                  <TabPanels>
+                    {activeSeasons.map(season => (
+                      <TabPanel key={season.id}>
+                        <Leaderboard
+                          bg="grey.2"
+                          seasonId={season.id}
+                          gameId={game.id}
+                          stickyMe
+                          offsetPlayerBottom="calc(env(safe-area-inset-bottom) + 48px - .5rem)"
+                        />
+                      </TabPanel>
+                    ))}
+                    {inactiveSeasons.length > 0 && (
+                      <TabPanel>
+                        <Settings.List>
+                          {inactiveSeasons.map(season => (
+                            <Settings.Item
+                              key={season.id}
+                              // icon={'🗓'}
+                              // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                            >
+                              {season.name}
+                              <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
+                                Started on {format(new Date(season.startDate), 'MMM d')}
+                              </Box>
+                            </Settings.Item>
+                          ))}
+                        </Settings.List>
+                      </TabPanel>
+                    )}
+                  </TabPanels>
+                </Tabs>
               </TabPanel>
               <TabPanel pt={{ base: 8, md: 4 }}>
                 <LatestMatches gameId={game.id} />

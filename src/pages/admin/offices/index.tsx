@@ -22,7 +22,13 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices }) => {
   useNavigationState('Offices');
   return (
     <Stack spacing={8}>
-      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }, { label: 'Offices' }]} />
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Offices', href: '/admin/offices' },
+        ]}
+      />
       <Settings.List>
         <SEO title="Offices" />
         {offices.map(office => (
@@ -31,7 +37,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ offices }) => {
             {office.name}{' '}
           </Settings.Link>
         ))}
-        <Settings.Link href="/admin/offices/new" showChevron={false} color="primary.10">
+        <Settings.Link href="/admin/offices/new" showChevron={false} highlight>
           Add office
         </Settings.Link>
       </Settings.List>

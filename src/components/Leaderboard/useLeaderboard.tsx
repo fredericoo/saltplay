@@ -1,5 +1,4 @@
 import { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import { Game, User } from '@prisma/client';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 const getKey =
@@ -17,13 +16,12 @@ const getKey =
     return [`/api/leaderboard`, queryParams].join('?');
   };
 
-type UseLeaderboard = (options: {
-  gameId?: Game['id'];
-  userId?: User['id'];
-}) => SWRInfiniteResponse<LeaderboardGETAPIResponse>;
+type UseLeaderboard = (
+  options: Partial<Pick<LeaderboardGETOptions, 'gameId' | 'userId' | 'seasonId'>>
+) => SWRInfiniteResponse<LeaderboardGETAPIResponse>;
 
-const useLeaderboard: UseLeaderboard = ({ gameId, userId }) => {
-  return useSWRInfinite<LeaderboardGETAPIResponse>(getKey({ gameId, userId, perPage: 20 }), {
+const useLeaderboard: UseLeaderboard = options => {
+  return useSWRInfinite<LeaderboardGETAPIResponse>(getKey({ ...options, perPage: 20 }), {
     refreshInterval: 1000 * 60,
     revalidateAll: true,
   });

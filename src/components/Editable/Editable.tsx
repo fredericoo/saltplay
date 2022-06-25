@@ -53,11 +53,13 @@ const Editable = <T extends PropertyKey>({
             border="1px solid transparent"
             cursor="text"
             opacity={isDisabled ? 0.5 : 1}
-            isTruncated
+            noOfLines={1}
           >
-            <Text as="span" color="grey.8" isTruncated>
-              {preText}
-            </Text>
+            {preText && (
+              <Text as="span" color="grey.8" noOfLines={1}>
+                {preText}
+              </Text>
+            )}
             {value}
           </Box>
         )}
@@ -73,15 +75,16 @@ const Editable = <T extends PropertyKey>({
           css={{ aspectRatio: '1' }}
           aria-label={`Edit field "${id.toString()}"`}
         >
-          {value ? <VscEdit /> : <VscAdd />}
+          {value ? <VscEdit role="presentation" /> : <VscAdd role="presentation" />}
         </IconButton>
       </HStack>
     );
 
   const handleSubmit: FormEventHandler = e => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
     const value = formData.get(id.toString());
+
     !!value && onSave?.({ id, value: typeof value === 'string' ? value : '' });
   };
 
@@ -94,7 +97,7 @@ const Editable = <T extends PropertyKey>({
           </Box>
           <HStack spacing={1} flexShrink={0}>
             <IconButton
-              aria-label="submit"
+              aria-label="Submit"
               variant="solid"
               key="submit"
               type="submit"
@@ -106,7 +109,7 @@ const Editable = <T extends PropertyKey>({
               <IoCheckmarkOutline />
             </IconButton>
             <IconButton
-              aria-label="cancel"
+              aria-label="Cancel"
               variant="solid"
               key="cancel"
               type="button"

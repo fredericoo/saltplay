@@ -24,48 +24,49 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
   };
 
   useEffect(() => {
-    if (!players) return;
-    switch (step) {
-      case 1:
-        setSelectedSide('left');
-        setTeamsComp({ left: [], right: [] });
-        setTeamsScores({ left: 0, right: 0 });
-        setBgColor(false);
-        break;
-      case 2:
-        setTeamsComp({ left: [players?.[0]], right: [] });
-        break;
-      case 3:
-        setTeamsComp(comp => ({ left: [...comp.left, players[2]], right: [] }));
-        break;
-      case 4:
-        setSelectedSide('right');
-        break;
-      case 5:
-        setTeamsComp(comp => ({ left: comp.left, right: [players?.[1]] }));
-        break;
-      case 6:
-        setTeamsComp(comp => ({ left: comp.left, right: [...comp.right, players?.[3]] }));
-        break;
-      case 7:
-        setSelectedSide(undefined);
-        break;
-      case 8:
-        setTeamsScores({ left: Math.ceil(Math.random() * 8), right: 0 });
-        break;
-      case 9:
-        setTeamsScores(scores => ({ left: scores.left, right: Math.ceil(Math.random() * 8) }));
-        break;
-      case 10:
-        setBgColor(true);
+    if (players) {
+      switch (step) {
+        case 1:
+          setSelectedSide('left');
+          setTeamsComp({ left: [], right: [] });
+          setTeamsScores({ left: 0, right: 0 });
+          setBgColor(false);
+          break;
+        case 2:
+          setTeamsComp({ left: [players?.[0]], right: [] });
+          break;
+        case 3:
+          setTeamsComp(comp => ({ left: [...comp.left, players[2]], right: [] }));
+          break;
+        case 4:
+          setSelectedSide('right');
+          break;
+        case 5:
+          setTeamsComp(comp => ({ left: comp.left, right: [players?.[1]] }));
+          break;
+        case 6:
+          setTeamsComp(comp => ({ left: comp.left, right: [...comp.right, players?.[3]] }));
+          break;
+        case 7:
+          setSelectedSide(undefined);
+          break;
+        case 8:
+          setTeamsScores({ left: Math.ceil(Math.random() * 8), right: 0 });
+          break;
+        case 9:
+          setTeamsScores(scores => ({ left: scores.left, right: Math.ceil(Math.random() * 8) }));
+          break;
+        case 10:
+          setBgColor(true);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   useEffect(() => {
     const skipStep = () => (step < 10 ? setStep(step => step + 1) : setStep(0));
-    setTimeout(skipStep, 1000);
-    return () => clearTimeout(1000);
+    const timeout = setTimeout(skipStep, 1000);
+    return () => clearTimeout(timeout);
   }, [step]);
 
   return (

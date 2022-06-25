@@ -14,7 +14,14 @@
       "source.organizeImports": true
     }
   },
-  "jest.jestCommandLine": "yarn test --watch",
+  "jest.jestCommandLine": "yarn test",
+  "jest.autoRun": {
+    "watch": true,
+    "onStartup": ["all-tests"],
+    "onSave": "test-src-file"
+  },
+  "jest.enableCodeLens": true,
+  "jest.testExplorer": { "enabled": true, "showInlineError": true },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   }

@@ -1,29 +1,22 @@
-import { EditableField } from '@/lib/admin';
 import { Select } from '@chakra-ui/react';
+import DateTimeField from './DateTimeField';
 import EmojiField from './EmojiField';
 import InputField from './InputField';
-import SliderField from './SliderField';
+import NumberField from './NumberField';
+import SwitchField from './SwitchField';
+import { EditableField, FieldData, FieldValue } from './types';
 
-type FieldProps<TData> = {
-  field: EditableField<TData>;
+type FieldProps = {
+  field: EditableField<FieldData>;
   placeholder?: string;
   autoFocus?: boolean;
   isInvalid?: boolean;
   prefix?: string;
   suffix?: string;
   align: 'left' | 'right';
-  value?: string | number | TData[keyof TData];
+  value?: FieldValue;
 };
-const Field = <TData extends object>({
-  field,
-  autoFocus,
-  placeholder,
-  align,
-  value,
-  prefix,
-  suffix,
-  isInvalid,
-}: FieldProps<TData>) => {
+const Field: React.VFC<FieldProps> = ({ field, autoFocus, placeholder, align, value, prefix, suffix, isInvalid }) => {
   switch (field.type) {
     case 'text':
       return (
@@ -42,30 +35,15 @@ const Field = <TData extends object>({
           suffix={suffix}
         />
       );
+    case 'switch':
+      return <SwitchField name={field.id.toString()} defaultValue={value === true || value === 'true'} />;
     case 'number':
-      if (field.max && field.min)
-        return (
-          <SliderField
-            name={field.id.toString()}
-            min={field.min}
-            max={field.max}
-            label={placeholder}
-            defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
-          />
-        );
       return (
-        <InputField
-          fontSize="sm"
-          type="number"
+        <NumberField
           name={field.id.toString()}
-          defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
-          autoComplete="off"
-          autoFocus={autoFocus}
-          placeholder={placeholder}
-          textAlign={align}
-          isInvalid={isInvalid}
-          prefix={prefix}
-          suffix={suffix}
+          min={field.min}
+          max={field.max}
+          defaultValue={typeof value === 'string' ? +value : typeof value === 'number' ? value : undefined}
         />
       );
     case 'emoji':
@@ -91,12 +69,32 @@ const Field = <TData extends object>({
           fontSize="sm"
         >
           {(field.allowEmpty || placeholder) && <option value="">Select {placeholder}</option>}
-          {field.options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
+          {Array.isArray(field.options)
+            ? field.options.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))
+            : Object.entries(field.options).map(([group, options]) => (
+                <optgroup key={group} label={group}>
+                  {options.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
         </Select>
+      );
+    case 'datetime':
+      return (
+        <DateTimeField
+          name={field.id.toString()}
+          align={align}
+          autoFocus={autoFocus}
+          label={placeholder}
+          defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? value.toString() : ''}
+        />
       );
     default:
       return null;

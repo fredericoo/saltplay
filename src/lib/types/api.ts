@@ -14,7 +14,7 @@ export type APIError<T extends Record<string | number, unknown>> = {
 
 export type PageInfo = { nextCursor?: string } | { nextPage?: number };
 
-export type APISuccess<T extends Record<string | number, unknown>, P extends PageInfo = {}> = {
+export type APISuccess<T extends Record<string | number, unknown>, P extends PageInfo = Record<string, unknown>> = {
   status: 'ok';
   message?: never;
   stack?: never;
@@ -22,6 +22,7 @@ export type APISuccess<T extends Record<string | number, unknown>, P extends Pag
   pageInfo?: P;
 };
 
-export type APIResponse<T extends Record<string | number, unknown> = {}, P extends PageInfo = {}> =
-  | APIError<T>
-  | APISuccess<T, P>;
+export type APIResponse<
+  T extends Record<string | number, unknown> = Record<string, never>,
+  P extends PageInfo = Record<string, unknown>
+> = APIError<T> | APISuccess<T, P>;

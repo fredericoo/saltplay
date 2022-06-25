@@ -22,7 +22,13 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ games }) => {
   useNavigationState('Games');
   return (
     <Stack spacing={8}>
-      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }, { label: 'Games' }]} />
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Games', href: '/admin/games' },
+        ]}
+      />
       <Settings.List>
         <SEO title="Games" />
         {games.map(game => (
@@ -35,7 +41,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ games }) => {
             {game.name}
           </Settings.Link>
         ))}
-        <Settings.Link href="/admin/games/new" showChevron={false} color="primary.10">
+        <Settings.Link href="/admin/games/new" showChevron={false} highlight>
           Add Game
         </Settings.Link>
       </Settings.List>

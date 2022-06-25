@@ -1,13 +1,14 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
+import type { EditableField } from '@/components/Field/types';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { patchOfficeSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
@@ -67,11 +68,11 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
         levels={[
           { label: 'Admin', href: '/admin' },
           { label: 'Offices', href: '/admin/offices' },
-          { label: office?.name || 'Office' },
+          ...(office ? [{ label: office?.name, href: `/admin/offices/${office.id}` }] : []),
         ]}
       />
 
-      <SettingsGroup<Office>
+      <SettingsGroup
         fieldSchema={patchOfficeSchema}
         fields={officeFields}
         saveEndpoint={`/api/offices/${office?.id}`}
@@ -84,16 +85,16 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ office }) => {
             {game.name}
           </Settings.Link>
         ))}
-        <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} color="primary.10" showChevron={false}>
+        <Settings.Link href={`/admin/games/new?officeid=${office?.id}`} highlight showChevron={false}>
           Create game
         </Settings.Link>
       </Settings.List>
 
       <Settings.List label="Danger zone">
         <Settings.Item label="Delete office and games">
-          <DeleteButton keyword={office?.name.toLowerCase()} onDelete={handleDeleteOffice}>
+          <ConfirmButton keyword={office?.name.toLowerCase()} onConfirm={handleDeleteOffice}>
             Delete Office
-          </DeleteButton>
+          </ConfirmButton>
         </Settings.Item>
       </Settings.List>
     </Stack>

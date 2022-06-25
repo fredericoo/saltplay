@@ -1,6 +1,7 @@
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import type { EditableField } from '@/components/Field/types';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import SEO from '@/components/SEO';
@@ -8,7 +9,7 @@ import Settings from '@/components/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { SessionDELETEAPIResponse } from '@/lib/api/handlers/session/deleteSessionHandler';
 import { patchUserSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
@@ -112,12 +113,12 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
         levels={[
           { label: 'Admin', href: '/admin' },
           { label: 'Users', href: '/admin/users' },
-          { label: user?.name || 'User' },
+          { label: user?.name || 'User', href: `/admin/users/${user.id}` },
         ]}
       />
       <HStack spacing={8} p={4}>
         <PlayerAvatar size={16} user={user} />
-        <Text isTruncated>{user.name}</Text>
+        <Text noOfLines={1}>{user.name}</Text>
       </HStack>
       <Tabs>
         <TabList>
@@ -127,7 +128,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
         </TabList>
         <TabPanels pt={4}>
           <TabPanel as={Stack} spacing={8}>
-            <SettingsGroup<User>
+            <SettingsGroup
               fieldSchema={patchUserSchema}
               fields={editableFields}
               data={user}

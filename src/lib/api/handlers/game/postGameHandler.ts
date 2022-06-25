@@ -1,3 +1,4 @@
+import { INITIAL_SEASON } from '@/constants';
 import { postGameSchema } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
 import revalidateStaticPages from '@/lib/revalidateStaticPages';
@@ -14,7 +15,7 @@ export type GamePOSTAPIResponse = APIResponse<ValidGamePostResponse>;
 
 const createGame = async ({ officeid, ...body }: PostGameBody) =>
   await prisma.game.create({
-    data: { ...body, office: { connect: { id: officeid } } },
+    data: { ...body, office: { connect: { id: officeid } }, seasons: { create: INITIAL_SEASON } },
     include: {
       office: true,
     },

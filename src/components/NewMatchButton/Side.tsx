@@ -1,6 +1,6 @@
 import { STARTING_POINTS } from '@/constants';
 import { hasKey } from '@/lib/types/utils';
-import { Badge, Box, Circle, HStack, Text } from '@chakra-ui/react';
+import { Badge, Box, HStack, Text } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
 import { MotionBox } from '../Motion';
 import PlayerAvatar from '../PlayerAvatar';
@@ -74,11 +74,12 @@ const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onC
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
             >
-              <Circle
+              <Box
                 bg="grey.3"
                 pb="100%"
                 w="100%"
                 h="0"
+                borderRadius="full"
                 position="relative"
                 boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
               >
@@ -94,7 +95,7 @@ const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onC
                 >
                   +
                 </Box>
-              </Circle>
+              </Box>
             </MotionBox>
           ))}
         </AnimatePresence>

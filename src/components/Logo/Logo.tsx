@@ -1,6 +1,6 @@
 import { Box, ChakraComponent } from '@chakra-ui/react';
 
-const Logo: ChakraComponent<'div', {}> = props => {
+const Logo: ChakraComponent<'div'> = props => {
   return (
     <Box {...props}>
       <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -10,6 +10,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const querySchema = object({
   gameId: string(),
+  seasonId: string(),
   userId: string(),
   perPage: number().max(20).default(PAGE_SIZE),
   page: number().min(1).default(1),
@@ -61,11 +62,15 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
-const getLeaderboardPositions = async ({ gameId, userId, perPage, page }: LeaderboardGETOptions) => {
+const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page }: LeaderboardGETOptions) => {
   const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId } } });
 
   const playerScores = await prisma.game.findUnique({ where: { id: gameId } }).scores({
-    cursor: !!userId && !!gameId ? { gameid_playerid: { gameid: gameId, playerid: userId } } : undefined,
+    where: { season: { id: seasonId } },
+    cursor:
+      !!userId && !!gameId && !!seasonId
+        ? { gameid_playerid_seasonid: { gameid: gameId, playerid: userId, seasonid: seasonId } }
+        : undefined,
     orderBy: [{ points: 'desc' }, { player: { name: 'asc' } }],
     skip: perPage * (page - 1),
     take: perPage,

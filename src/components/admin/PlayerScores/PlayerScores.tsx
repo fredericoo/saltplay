@@ -1,4 +1,4 @@
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
 import Settings from '@/components/Settings';
 import { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
 import { patchPlayerScoreSchema } from '@/lib/api/schemas';
@@ -38,25 +38,25 @@ const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
               <Heading size="md">
                 {score.game.icon} {score.game.name}
               </Heading>
-              <Text color="grey.10" isTruncated>
+              <Text color="grey.10" noOfLines={1}>
                 {score.game.office?.name}
               </Text>
             </Box>
-            <SettingsGroup<PlayerScore>
+            <SettingsGroup
               data={score}
               saveEndpoint={`/api/scores/${score.id}`}
               fields={[{ id: 'points', type: 'number', label: 'Points' }]}
               fieldSchema={patchPlayerScoreSchema}
             >
               <Settings.Item label="Delete scores">
-                <DeleteButton
-                  onDelete={() => handleDeleteSession(score.id)}
+                <ConfirmButton
+                  onConfirm={() => handleDeleteSession(score.id)}
                   keyword={`I want to remove ${score.game.name} scores for this player`}
                   variant="solid"
                   css={{ aspectRatio: '1' }}
                 >
                   <IoTrashOutline />
-                </DeleteButton>
+                </ConfirmButton>
               </Settings.Item>
             </SettingsGroup>
           </Box>

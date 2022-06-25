@@ -1,6 +1,6 @@
 import { isRemoved } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
-import { Box, Circle, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,16 +11,20 @@ type PlayerAvatarProps = {
   isLink?: boolean;
 };
 
+const getSize = (size: number | string) => (typeof size === 'number' ? size : 8);
+
 const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
   const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
   const isUserRemoved = !user || isRemoved(user?.roleId);
 
   return (
     <LinkWrapper href={isLink && !isUserRemoved ? `/player/${user.id}` : undefined}>
-      <Circle
+      <Box
         position="relative"
         boxShadow="0 0 0 3px var(--wrkplay-colors-grey-4)"
-        size={size}
+        w={size}
+        h={size}
+        css={{ aspectRatio: '1' }}
         borderRadius="full"
         bg={getGradientFromId(user?.id)}
         overflow="hidden"
@@ -28,20 +32,20 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
         {isUserRemoved ? (
           <Image
             src={'/avatars/anonymous.png'}
-            height="300"
-            width="300"
-            unoptimized
+            layout="fill"
+            sizes={`(min-width: 960px) ${getSize(size) * 3}px, ${getSize(size) * 2}px`}
+            quality={90}
             alt={`Anonymous avatar`}
             objectFit="cover"
           />
         ) : user.image ? (
           <Image
             src={user.image}
-            height="300"
-            width="300"
-            unoptimized
+            sizes={`(min-width: 960px) ${getSize(size) * 3}px, ${getSize(size) * 2}px`}
+            quality={90}
             alt={`${user.name || 'User'}‘s avatar`}
             objectFit="cover"
+            layout="fill"
           />
         ) : (
           <Text
@@ -49,7 +53,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             display="flex"
             justifyContent="center"
             alignItems="center"
-            sx={{ aspectRatio: '1' }}
+            css={{ aspectRatio: '1' }}
             color="grey.9"
             fontWeight="bold"
             userSelect={'none'}
@@ -59,7 +63,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
             {user.name ? user.name[0].toUpperCase() : user.id?.[0].toUpperCase()}
           </Text>
         )}
-      </Circle>
+      </Box>
     </LinkWrapper>
   );
 };

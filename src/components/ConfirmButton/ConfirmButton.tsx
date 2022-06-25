@@ -15,16 +15,18 @@ import {
 } from '@chakra-ui/react';
 import { SyntheticEvent, useState } from 'react';
 
-type DeleteButtonProps = {
-  onDelete: () => void;
+export type ConfirmButtonProps = {
+  onConfirm: () => void;
   isLoading?: boolean;
   keyword?: string;
 };
 
-const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> = ({
-  onDelete,
+export const DEFAULT_KEYWORD = 'confirm';
+
+const ConfirmButton: ComponentWithAs<'button', ButtonProps & ConfirmButtonProps> = ({
+  onConfirm,
   children,
-  keyword = 'DELETE',
+  keyword = DEFAULT_KEYWORD,
   isLoading,
   ...props
 }) => {
@@ -33,7 +35,7 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
 
   const handleSubmit = (event: SyntheticEvent<HTMLInputElement>) => {
     event.preventDefault();
-    onDelete();
+    onConfirm();
     onClose();
   };
 
@@ -56,22 +58,27 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
                 Irreversible action
               </Heading>
               <Text color="grey.11">
-                To delete, please type in{' '}
+                To confirm, please type{' '}
                 <Text as="span" fontWeight="bold" bg="grey.4" px={1.5} py={1} borderRadius="md">
-                  {keyword}
+                  {keyword.toUpperCase()}
                 </Text>{' '}
-                in the box below.
+                :
               </Text>
-              <Input isDisabled={isLoading} type="text" onChange={e => setInput(e.target.value)} value={input} />
+              <Input
+                isDisabled={isLoading}
+                type="text"
+                onChange={e => setInput(e.target.value.toUpperCase())}
+                value={input}
+              />
               <HStack spacing={2} justify="flex-end" w="100%">
                 <Button
                   type="submit"
                   variant="solid"
                   colorScheme="danger"
                   isLoading={isLoading}
-                  isDisabled={keyword !== input}
+                  isDisabled={keyword.toUpperCase() !== input.toUpperCase()}
                 >
-                  Delete
+                  Confirm
                 </Button>
                 <Button onClick={handleClose} variant="ghost" isDisabled={isLoading}>
                   Cancel
@@ -85,4 +92,4 @@ const DeleteButton: ComponentWithAs<'button', ButtonProps & DeleteButtonProps> =
   );
 };
 
-export default DeleteButton;
+export default ConfirmButton;

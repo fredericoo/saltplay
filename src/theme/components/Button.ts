@@ -1,7 +1,9 @@
 import type { SystemStyleFunction, SystemStyleObject } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 
-const variantSubtle: SystemStyleFunction = props => {
+const variantTransparent: SystemStyleObject = {};
+
+export const variantSubtle: SystemStyleFunction = props => {
   const { colorScheme: c } = props;
 
   if (c === 'grey')
@@ -91,7 +93,7 @@ export const Button = {
   baseStyle: {
     fontWeight: 400,
   },
-  variants: { subtle: variantSubtle, primary: variantPrimary, solid: variantSolid },
+  variants: { subtle: variantSubtle, primary: variantPrimary, solid: variantSolid, transparent: variantTransparent },
   sizes: {
     sm: {
       borderRadius: 10,

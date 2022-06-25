@@ -1,7 +1,7 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Office, User } from '@prisma/client';
+import { Game, Office, Season, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
@@ -11,6 +11,7 @@ const MotionBox = motion(Box);
 
 type LatestMatchesProps = {
   gameId?: Game['id'];
+  seasonId?: Season['id'];
   userId?: User['id'];
   officeId?: Office['id'];
   canLoadMore?: boolean;
@@ -19,13 +20,20 @@ type LatestMatchesProps = {
 
 const LatestMatches: React.VFC<LatestMatchesProps> = ({
   gameId,
+  seasonId,
   userId,
   officeId,
   canLoadMore = true,
   canDelete = true,
 }) => {
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, userId });
-  const { data: pages, setSize, error, mutate, isValidating } = useLatestMatches({ gameId, userId, officeId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, seasonId, userId });
+  const {
+    data: pages,
+    setSize,
+    error,
+    mutate,
+    isValidating,
+  } = useLatestMatches({ gameId, seasonId, userId, officeId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = !!pages?.[pages.length - 1].pageInfo?.nextCursor;
 
@@ -107,6 +115,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
                 officeName={match?.game?.office?.name}
                 onDelete={canDelete ? refetch : undefined}
                 points={match.points}
+                seasonId={match.seasonid}
               />
             </MotionBox>
           );

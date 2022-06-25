@@ -47,7 +47,7 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
         <HStack>
           {session?.user && <PlayerAvatar size={showUserName ? 4 : 5} user={session?.user} />}
           {showUserName && (
-            <Text isTruncated maxW="128px">
+            <Text noOfLines={1} maxW="128px">
               {session?.user?.name?.split(' ')[0] || session?.user?.email}
             </Text>
           )}

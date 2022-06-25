@@ -23,7 +23,7 @@ const sideSchema = object().shape({
 });
 
 const requestSchema = object().shape({
-  gameId: string().required(),
+  seasonId: string().required(),
   left: sideSchema,
   right: sideSchema,
 });
@@ -42,8 +42,15 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
       if (session.user.roleId !== 0 && !body.left.players.find(p => p.id === session.user.id))
         return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      const maxPlayersPerTeam =
-        (await prisma.game.findUnique({ where: { id: body.gameId } }).then(game => game?.maxPlayersPerTeam)) || 1;
+      const season = await prisma.season.findUnique({
+        where: { id: body.seasonId },
+        select: { id: true, active: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
+      });
+
+      if (!season) return res.status(404).json({ status: 'error', message: 'Season not found' });
+      if (!season.active) return res.status(403).json({ status: 'error', message: 'Season not active' });
+
+      const maxPlayersPerTeam = season.game.maxPlayersPerTeam || 1;
 
       if (body.left.players.length > maxPlayersPerTeam || body.right.players.length > maxPlayersPerTeam)
         return res
@@ -57,7 +64,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       const playersWithScores = await prisma.user.findMany({
         where: { id: { in: [...ids.left, ...ids.right] } },
-        select: { id: true, scores: { where: { gameid: body.gameId }, select: { playerid: true, points: true } } },
+        select: { id: true, scores: { where: { gameid: season.game.id }, select: { playerid: true, points: true } } },
       });
 
       const sides = {
@@ -88,14 +95,16 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
           rightscore: body.right.score,
           left: { connect: sides.left.map(({ id }) => ({ id })) },
           right: { connect: sides.right.map(({ id }) => ({ id })) },
-          game: { connect: { id: body.gameId } },
+          game: { connect: { id: season.game.id } },
+          season: { connect: { id: season.id } },
           points: matchPoints,
         },
       });
 
       try {
         await moveMatchPoints({
-          gameid: body.gameId,
+          gameid: season.game.id,
+          seasonId: season.id,
           pointsToMove: matchPoints,
           leftToRight: body.left.score < body.right.score,
           left: sides.left,
@@ -106,23 +115,15 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });
       }
 
-      try {
-        const notification = await notifyMatchOnSlack({
-          gameId: body.gameId,
-          leftScore: body.left.score,
-          rightScore: body.right.score,
-          left: sides.left,
-          right: sides.right,
-        });
-        if (!notification?.message) throw new Error();
+      await notifyMatchOnSlack({
+        matchId: createdMatch.id,
+        gameId: season.game.id,
+        leftScore: body.left.score,
+        rightScore: body.right.score,
+        left: sides.left,
+        right: sides.right,
+      });
 
-        await prisma.match.update({
-          where: { id: createdMatch.id },
-          data: { notification_id: notification.message.ts },
-        });
-      } catch {
-        console.error('Error sending match to slack');
-      }
       return res.status(200).json({ status: 'ok' });
     })
     .catch(err => {

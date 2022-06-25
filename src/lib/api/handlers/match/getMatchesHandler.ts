@@ -9,6 +9,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const querySchema = object({
   gameId: string(),
+  seasonId: string(),
   officeId: string(),
   userId: string(),
   first: number().max(20).default(PAGE_SIZE),
@@ -45,6 +46,7 @@ const getMatches = ({ first, after, userId, gameId, officeId }: GetMatchesOption
         },
       },
       id: true,
+      seasonid: true,
       createdAt: true,
       left: { select: { name: true, id: true, image: true, roleId: true } },
       right: { select: { name: true, id: true, image: true, roleId: true } },
