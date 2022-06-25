@@ -233,9 +233,6 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             <TabList>
               <Tab>Leaderboard</Tab>
               <Tab>Latest Matches</Tab>
-              {activeSeasons.length < game.seasons.length && process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && (
-                <Tab>Past seasons</Tab>
-              )}
             </TabList>
             <TabPanels>
               <TabPanel>
