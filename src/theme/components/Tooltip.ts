@@ -7,7 +7,7 @@ const variantError: SystemStyleFunction = props => ({
   borderColor: mode('danger.6', 'dangerDark.6')(props),
 });
 
-const variantMedal: SystemStyleFunction = props => ({
+const variantMedal: SystemStyleFunction = () => ({
   borderColor: 'primary.11',
   color: 'grey.12',
   textTransform: 'uppercase',
