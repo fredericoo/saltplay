@@ -239,7 +239,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Tabs isLazy variant="typographic">
+                <Tabs isLazy variant="typographic" mx={-4}>
                   <TabList>
                     {game.seasons.length > 1 ? (
                       activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
@@ -261,8 +261,24 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                         />
                       </TabPanel>
                     ))}
-                    {activeSeasons.length < game.seasons.length &&
-                      process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && <TabPanel>Past seasons</TabPanel>}
+                    {inactiveSeasons.length > 0 && (
+                      <TabPanel>
+                        <Settings.List>
+                          {inactiveSeasons.map(season => (
+                            <Settings.Link
+                              icon={'🗓'}
+                              key={season.id}
+                              href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                            >
+                              {season.name}
+                              <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
+                                Started on {format(new Date(season.startDate), 'MMM d')}
+                              </Box>
+                            </Settings.Link>
+                          ))}
+                        </Settings.List>
+                      </TabPanel>
+                    )}
                   </TabPanels>
                 </Tabs>
               </TabPanel>
