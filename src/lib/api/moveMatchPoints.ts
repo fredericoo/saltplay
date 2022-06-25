@@ -1,11 +1,12 @@
 import { STARTING_POINTS } from '@/constants';
 import prisma from '@/lib/prisma';
-import { Match, User } from '@prisma/client';
+import { Match, Season, User } from '@prisma/client';
 import { getPlayerPointsToMove, getPointsToMove } from '../points';
 
 /**
  * Moves points from the losing side to the winning side.
  * @param data.gameid The ID of the game.
+ * @param data.seasonid The season ID to register to.
  * @param data.left The left side of the match.
  * @param data.right The right side of the match.
  * @param data.pointsToMove The number of points to move from the losing side to the winning side.
@@ -14,7 +15,7 @@ import { getPlayerPointsToMove, getPointsToMove } from '../points';
  * @returns true if succeeded, false if failed.
  */
 const moveMatchPoints = async (
-  data: Pick<Match, 'gameid'> & { left: Pick<User, 'id'>[]; right: Pick<User, 'id'>[] } & {
+  data: Pick<Match, 'gameid'> & { seasonId: Season['id'] } & { left: Pick<User, 'id'>[]; right: Pick<User, 'id'>[] } & {
     pointsToMove: number;
     leftToRight: boolean;
   }
@@ -52,13 +53,14 @@ const moveMatchPoints = async (
   await prisma.$transaction(
     newScores.map(player =>
       prisma.playerScore.upsert({
-        where: { gameid_playerid: { gameid: data.gameid, playerid: player.id } },
+        where: { gameid_playerid_seasonid: { gameid: data.gameid, playerid: player.id, seasonid: data.seasonId } },
         update: {
           points: { [player.operation]: player.pointsToMove },
         },
         create: {
           points: STARTING_POINTS + (player.operation === 'increment' ? player.pointsToMove : -player.pointsToMove),
           gameid: data.gameid,
+          seasonid: data.seasonId,
           playerid: player.id,
         },
       })

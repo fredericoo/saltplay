@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
-import { Game, User } from '@prisma/client';
-import { ChatPostMessageResponse } from '@slack/web-api';
+import { Game, Match, User } from '@prisma/client';
 import { getGameFlags } from '../flagAttributes';
 import slack from './client';
 
@@ -8,6 +7,7 @@ const CHANNEL = process.env.SLACK_MATCH_NOTIFICATION_CHANNEL || 'C02TBGT7ME3';
 
 type NotifyOptions = {
   gameId: Game['id'];
+  matchId: Match['id'];
   leftScore: number;
   rightScore: number;
   left: Pick<User, 'id'>[];
@@ -28,12 +28,13 @@ const getPlayerMentionName = async (id: User['id']) => {
 
 export const notifyMatchOnSlack = async ({
   gameId,
+  matchId,
   leftScore,
   rightScore,
   left,
   right,
-}: NotifyOptions): Promise<ChatPostMessageResponse | undefined> => {
-  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return;
+}: NotifyOptions): Promise<boolean> => {
+  if (process.env.ENABLE_SLACK_MATCH_NOTIFICATION !== 'true') return true;
 
   const game = await prisma.game.findUnique({
     where: { id: gameId },
@@ -70,9 +71,15 @@ export const notifyMatchOnSlack = async ({
       mrkdwn: true,
       text,
     });
-    return message;
-  } catch {
-    return;
+
+    await prisma.match.update({
+      where: { id: matchId },
+      data: { notification_id: message.ts },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error notifying match on Slack', error);
+    return false;
   }
 };
 

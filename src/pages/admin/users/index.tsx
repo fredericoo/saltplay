@@ -24,7 +24,13 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ users }) => {
   useNavigationState('Users');
   return (
     <Stack spacing={8}>
-      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }, { label: 'Users' }]} />
+      <Breadcrumbs
+        px={2}
+        levels={[
+          { label: 'Admin', href: '/admin' },
+          { label: 'Users', href: '/admin/users' },
+        ]}
+      />
       <Settings.List>
         <SEO title="Users" />
         {users.map(user => (

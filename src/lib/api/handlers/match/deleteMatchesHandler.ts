@@ -14,6 +14,7 @@ export type MatchesDELETEAPIResponse = APIResponse;
 
 const querySchema = object({
   matchId: string().required(),
+  seasonId: string().required(),
 });
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -23,7 +24,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
 
   querySchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
-    .then(async ({ matchId }) => {
+    .then(async ({ matchId, seasonId }) => {
       const match = await prisma.match.findUnique({
         where: { id: matchId },
         select: {
@@ -67,9 +68,10 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
         ...matchPlayers.map(player =>
           prisma.playerScore.upsert({
             where: {
-              gameid_playerid: {
+              gameid_playerid_seasonid: {
                 gameid: match.gameid,
                 playerid: player.id,
+                seasonid: seasonId,
               },
             },
             update: {
@@ -79,6 +81,7 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
             },
             create: {
               points: STARTING_POINTS,
+              seasonid: seasonId,
               gameid: match.gameid,
               playerid: player.id,
             },
@@ -103,9 +106,10 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
           if (playerScore.player.leftmatches.length + playerScore.player.rightmatches.length === 0) {
             await prisma.playerScore.delete({
               where: {
-                gameid_playerid: {
+                gameid_playerid_seasonid: {
                   gameid: match.gameid,
                   playerid: playerScore.player.id,
+                  seasonid: seasonId,
                 },
               },
             });

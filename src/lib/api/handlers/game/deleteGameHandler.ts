@@ -22,11 +22,12 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      const [_, __, game] = await prisma.$transaction([
+      const transaction = await prisma.$transaction([
         prisma.match.deleteMany({ where: { gameid: query.id } }),
         prisma.playerScore.deleteMany({ where: { gameid: query.id } }),
         prisma.game.delete({ where: { id: query.id }, include: { office: true } }),
       ]);
+      const game = transaction[2];
 
       await revalidateStaticPages(['/', `/${game.office.slug}`, `/${game.office.slug}/${game.slug}`], res);
       res.status(200).json({ status: 'ok', data: game });

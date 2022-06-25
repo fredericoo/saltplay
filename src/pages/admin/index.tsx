@@ -1,5 +1,5 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
@@ -10,30 +10,33 @@ import axios from 'axios';
 const AdminPage: PageWithLayout = () => {
   return (
     <Stack spacing={8}>
-      <Breadcrumbs px={2} levels={[{ label: 'Admin' }]} />
+      <Breadcrumbs px={2} levels={[{ label: 'Admin', href: '/admin' }]} />
       <Settings.List>
         <SEO title="Dashboard" />
         <Settings.Link href="/admin/offices" icon="🏢">
-          Offices
+          All Offices
         </Settings.Link>
         <Settings.Link href="/admin/games" icon="🎲">
-          Games
+          All Games
         </Settings.Link>
         <Settings.Link href="/admin/users" icon="🙋‍♀️">
-          Users
+          All Users
+        </Settings.Link>
+        <Settings.Link href="/admin/seasons" icon="🎖">
+          All Seasons
         </Settings.Link>
       </Settings.List>
       <Settings.List label="Danger zone">
         <Settings.Item label="Sign out everyone">
-          <DeleteButton
-            onDelete={async () => {
+          <ConfirmButton
+            onConfirm={async () => {
               await axios.delete(`/api/sessions`);
               window.location.pathname = '/';
             }}
             keyword="confirm"
           >
             Clear all sessions
-          </DeleteButton>
+          </ConfirmButton>
         </Settings.Item>
       </Settings.List>
     </Stack>

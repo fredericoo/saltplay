@@ -1,3 +1,4 @@
+import getErrorMessage from '@/lib/api/getErrorMessage';
 import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
 import { trackEvent } from '@/lib/mixpanel';
 import {
@@ -11,10 +12,11 @@ import {
   ModalFooter,
   ModalOverlay,
   Stack,
+  Text,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Game, Match } from '@prisma/client';
+import { Game, Match, Season } from '@prisma/client';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
@@ -36,6 +38,7 @@ const Scores = dynamic(() => import('./steps/Scores'), { ssr: false });
 
 type NewMatchButtonProps = {
   gameId: Game['id'];
+  season: Pick<Season, 'id' | 'name'>;
   maxPlayersPerTeam?: Game['maxPlayersPerTeam'];
   onSubmitSuccess?: () => void;
 };
@@ -47,12 +50,13 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
 
 const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
   gameId,
+  season,
   maxPlayersPerTeam,
   ...chakraProps
 }) => {
   const { status } = useSession();
   const { mutate: mutateLatestMatches } = useLatestMatches({ gameId });
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId });
+  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, seasonId: season.id });
   const { mutate: mutateOpponents } = useOpponents({ gameId });
   const isLoggedIn = status === 'authenticated';
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +82,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         players: data.right.map(({ id, source }) => ({ id, source: source || 'user' })),
         score: data.rightscore,
       },
-      gameId,
+      seasonId: season.id,
     };
     try {
       const res = await axios.post<MatchesPOSTAPIResponse>('/api/matches', req).then(res => res.data);
@@ -100,12 +104,12 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       mutateLatestMatches();
       mutateLeaderboard();
       mutateOpponents();
-    } catch {
+    } catch (error) {
+      const errorMessage = (await getErrorMessage(error)) || 'An error occurred when adding your match.';
+
       trackEvent('Error creating match');
       toast({
-        render: () => (
-          <Toast status="error" heading="Let’s try that again" content="An error occurred when adding your match." />
-        ),
+        render: () => <Toast status="error" heading="Let’s try that again" content={errorMessage} />,
         position: 'bottom',
       });
       return;
@@ -125,7 +129,23 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
         leftIcon={<IoAddCircleOutline size={24} />}
         {...chakraProps}
       >
-        Submit new match
+        {season.name ? (
+          <Stack align="flex-start" spacing={0}>
+            <Text
+              as="span"
+              fontSize="xs"
+              display="block"
+              textTransform="uppercase"
+              letterSpacing="widest"
+              fontWeight="medium"
+            >
+              {season.name}
+            </Text>
+            <Text as="span">Submit new match</Text>
+          </Stack>
+        ) : (
+          'Submit new match'
+        )}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />

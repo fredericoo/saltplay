@@ -26,7 +26,7 @@ const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req,
         .findUnique({ where: { id: query.id }, select: { games: { select: { id: true } } } })
         .then(office => office?.games.map(game => game.id) || []);
 
-      const [_, __, ___, office] = await prisma.$transaction([
+      const transaction = await prisma.$transaction([
         prisma.match.deleteMany({ where: { gameid: { in: gameIds } } }),
         prisma.playerScore.deleteMany({ where: { gameid: { in: gameIds } } }),
         prisma.game.deleteMany({ where: { officeid: query.id } }),
@@ -34,6 +34,7 @@ const deleteOfficeHandler: NextApiHandler<OfficeDELETEAPIResponse> = async (req,
           where: { id: query.id },
         }),
       ]);
+      const office = transaction[3];
 
       await revalidateStaticPages(['/', `/${office.slug}`], res);
       res.status(200).json({ status: 'ok', data: office });

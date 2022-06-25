@@ -1,6 +1,7 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import DeleteButton from '@/components/DeleteButton';
+import ConfirmButton from '@/components/ConfirmButton';
+import type { EditableField } from '@/components/Field/types';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
@@ -8,7 +9,7 @@ import Settings from '@/components/Settings';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
-import { EditableField, withDashboardAuth } from '@/lib/admin';
+import { withDashboardAuth } from '@/lib/admin';
 import { GamePATCHAPIResponse, ValidGamePatchResponse } from '@/lib/api/handlers/game/patchGameHandler';
 import { patchGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
@@ -22,7 +23,7 @@ import { useState } from 'react';
 import { IoEyeOutline } from 'react-icons/io5';
 
 type AdminPageProps = {
-  game: Awaited<ReturnType<typeof getGame>>;
+  game: NonNullable<Awaited<ReturnType<typeof getGame>>>;
   offices: Awaited<ReturnType<typeof getOffices>>;
 };
 
@@ -49,7 +50,7 @@ export const getGameFields = ({
       prefix: WEBSITE_URL + `/${officeSlug || '[office]'}/`,
       format: toSlug,
     },
-    { id: 'maxPlayersPerTeam', type: 'number', min: 1, max: 11, label: 'Max Players Per Team' },
+    { id: 'maxPlayersPerTeam', type: 'number', min: 1, label: 'Max Players Per Team' },
   ];
   return editableFields;
 };
@@ -66,6 +67,7 @@ const getGame = (id: string) =>
       maxPlayersPerTeam: true,
       officeid: true,
       office: { select: { slug: true, name: true, id: true } },
+      seasons: { select: { id: true, name: true } },
     },
   });
 
@@ -79,7 +81,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
   const { push } = useRouter();
   useNavigationState(response?.name || game?.name);
 
-  const editableFields = getGameFields({ officeSlug: game?.office.slug, offices });
+  const editableFields = getGameFields({ officeSlug: game.office.slug, offices });
 
   const handleSaveField = async ({
     id,
@@ -124,10 +126,10 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
           { label: 'Admin', href: '/admin' },
           { label: 'Offices', href: '/admin/offices' },
           { label: game?.office.name || 'Office', href: `/admin/offices/${game?.office.id}` },
-          { label: game?.name || 'Game' },
+          { label: game?.name || 'Game', href: `/admin/games/${game.id}` },
         ]}
       />
-      <SettingsGroup<Game>
+      <SettingsGroup
         fieldSchema={patchGameSchema}
         fields={editableFields}
         saveEndpoint={`/api/games/${game?.id}`}
@@ -141,11 +143,22 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ game, offices }) => {
         defaultValue={game?.flags ?? undefined}
       />
 
+      <Settings.List label="Seasons">
+        {game.seasons.map(season => (
+          <Settings.Link href={`/admin/seasons/${season.id}`} key={season.id}>
+            {season.name}
+          </Settings.Link>
+        ))}
+        <Settings.Link href={`/admin/seasons/new?gameid=${game.id}`} showChevron={false} highlight>
+          Create Season
+        </Settings.Link>
+      </Settings.List>
+
       <Settings.List>
         <Settings.Item label="Danger zone">
-          <DeleteButton keyword={game?.name.toLowerCase()} onDelete={handleDeleteGame}>
+          <ConfirmButton keyword={game?.name.toLowerCase()} onConfirm={handleDeleteGame}>
             Delete Game
-          </DeleteButton>
+          </ConfirmButton>
         </Settings.Item>
       </Settings.List>
     </Stack>

@@ -64,7 +64,7 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/pwa.png" />
         </Head>
         <body>
-          <ColorModeScript initialColorMode={initialColorMode} />
+          <ColorModeScript initialColorMode={initialColorMode} storageKey="wrkplay-color-mode" />
           <Main />
           <NextScript />
         </body>

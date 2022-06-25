@@ -1,6 +1,6 @@
 import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import { Game, Season, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
@@ -10,15 +10,23 @@ import useLeaderboard from './useLeaderboard';
 
 type LeaderboardProps = {
   gameId: Game['id'];
+  seasonId?: Season['id'];
   hasIcons?: boolean;
   stickyMe?: boolean;
   bg?: string;
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, stickyMe, bg, offsetPlayerBottom }) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({
+  gameId,
+  seasonId,
+  hasIcons = true,
+  stickyMe,
+  bg,
+  offsetPlayerBottom,
+}) => {
   const { data: session } = useSession();
-  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId });
+  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId, seasonId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const hasNextPage = pages?.[pages.length - 1]?.pageInfo?.nextPage;
 
@@ -93,9 +101,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
 
       {!allPositions.find(position => position?.id === session?.user?.id) && session?.user.id && (
         <PlayerPosition
-          id={session.user.id}
+          userId={session.user.id}
           bottom={stickyMe ? offsetPlayerBottom || 0 : undefined}
           gameId={gameId}
+          seasonId={seasonId}
           bg={bg}
         />
       )}
@@ -103,13 +112,21 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, hasIcons = true, sti
   );
 };
 
-const PlayerPosition: React.VFC<{ gameId: Game['id']; bottom?: string | number; id: User['id']; bg?: string }> = ({
-  id,
-  gameId,
-  bottom,
-  bg,
-}) => {
-  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(`/api/leaderboard?gameId=${gameId}&userId=${id}`);
+type PlayerPositionProps = {
+  bottom?: string | number;
+  bg?: string;
+  gameId: Game['id'];
+  seasonId?: Season['id'];
+  userId: User['id'];
+};
+
+const PlayerPosition: React.VFC<PlayerPositionProps> = ({ bottom, bg, ...ids }) => {
+  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
+    `/api/leaderboard?${Object.entries(ids)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')}`
+  );
+
   const player = playerPositions?.data?.positions?.[0];
   if (!player) return null;
 
