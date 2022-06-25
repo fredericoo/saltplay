@@ -9,6 +9,7 @@ type InputFieldProps = Omit<InputProps, 'onChange' | 'value' | 'defaultValue' | 
 };
 const InputField: React.VFC<InputFieldProps> = ({ format, defaultValue, prefix, suffix, textAlign, ...props }) => {
   const [value, setValue] = useState<string>(defaultValue || '');
+
   return (
     <HStack spacing={0} overflow="hidden">
       {prefix && (

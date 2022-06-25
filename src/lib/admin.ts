@@ -11,7 +11,6 @@ export type FieldTypeSpecific =
   | { type: 'datetime' }
   | { type: 'select'; options: SelectOption[] | Record<string, SelectOption[]>; allowEmpty?: boolean }
   | { type: 'number'; min?: number; max?: number }
-  | { type: 'flags'; flags: Record<string, number> }
   | { type: 'switch' };
 
 export type EditableField<T> = T extends Record<string, unknown>
