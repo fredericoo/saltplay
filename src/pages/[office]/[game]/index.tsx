@@ -135,16 +135,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                   <TabPanel>
                     <Settings.List>
                       {inactiveSeasons.map(season => (
-                        <Settings.Link
-                          icon={'🗓'}
+                        <Settings.Item
                           key={season.id}
-                          href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                          // icon={'🗓'}
+                          // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
                         >
                           {season.name}
                           <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
                             Started on {format(new Date(season.startDate), 'MMM d')}
                           </Box>
-                        </Settings.Link>
+                        </Settings.Item>
                       ))}
                     </Settings.List>
                   </TabPanel>
@@ -243,8 +243,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                     ) : (
                       <Tab>Leaderboard</Tab>
                     )}
-                    {activeSeasons.length < game.seasons.length &&
-                      process.env.NEXT_PUBLIC_ENABLE_SEASONS === 'true' && <Tab>Past seasons</Tab>}
+                    {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
                   </TabList>
                   <TabPanels>
                     {activeSeasons.map(season => (
@@ -262,16 +261,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                       <TabPanel>
                         <Settings.List>
                           {inactiveSeasons.map(season => (
-                            <Settings.Link
-                              icon={'🗓'}
+                            <Settings.Item
                               key={season.id}
-                              href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                              // icon={'🗓'}
+                              // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
                             >
                               {season.name}
                               <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
                                 Started on {format(new Date(season.startDate), 'MMM d')}
                               </Box>
-                            </Settings.Link>
+                            </Settings.Item>
                           ))}
                         </Settings.List>
                       </TabPanel>
