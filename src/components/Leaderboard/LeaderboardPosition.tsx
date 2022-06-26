@@ -97,7 +97,7 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
                 <Medal
                   id={medal.name}
                   key={medal.name}
-                  image={`/medal/${medal.image}.svg?season=${medal.season?.icon || '?'}`}
+                  image={`/api/medal/${medal.image}.svg?season=${medal.season?.icon || '?'}`}
                   isHolographic={medal.holographic}
                   name={medal.name}
                 />
