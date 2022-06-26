@@ -93,6 +93,11 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
               name: true,
               image: true,
               holographic: true,
+              season: {
+                select: {
+                  icon: true,
+                },
+              },
             },
           },
         },

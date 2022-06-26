@@ -85,7 +85,6 @@ model Game {
   office            Office        @relation(fields: [officeid], references: [id])
   matches           Match[]
   scores            PlayerScore[]
-  medal             Medal[]
   maxPlayersPerTeam Int?          @default(1)
   flags             Int?
   seasons           Season[]
@@ -116,6 +115,7 @@ model PlayerScore {
 
 model Season {
   id        String        @id @default(uuid())
+  icon      String?
   name      String
   slug      String
   startDate DateTime      @default(now())
@@ -124,6 +124,7 @@ model Season {
   game      Game          @relation(fields: [gameid], references: [id])
   scores    PlayerScore[]
   matches   Match[]
+  medals    Medal[]
 
   @@unique([slug, gameid])
 }
@@ -133,8 +134,8 @@ model Medal {
   name        String
   image       String?
   holographic Boolean @default(false)
-  gameid      String
-  game        Game    @relation(fields: [gameid], references: [id])
+  seasonid    String?
+  season      Season? @relation(fields: [seasonid], references: [id])
 
   owners User[]
 }

@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import { MotionBox } from '../Motion';
 import { getRelativeCoordinates } from './utils';
 
-type MedalProps = Pick<DBMedal, 'id'> & Partial<Pick<DBMedal, 'name' | 'image'>> & { isHolographic?: boolean };
+type MedalProps = Pick<DBMedal, 'id'> & { name: string; image: string; isHolographic?: boolean };
 
 const MedalWrapper = motion(
   styled(Box, {
@@ -47,15 +47,10 @@ const Medal: React.VFC<MedalProps> = ({ name, image, isHolographic }) => {
               : {}
           }
         >
-          <Box
-            as="img"
-            position="absolute"
-            inset="0"
-            src={image ? `/medals/${image}.svg` : '/medals/default.svg'}
-            alt={name}
-          />
+          <Box as="img" position="absolute" inset="0" src={image || '/medals/default.svg'} alt={name} />
           {isHolographic && image && (
             <MotionBox
+              role="presentation"
               position="absolute"
               inset="0"
               mixBlendMode="hard-light"
