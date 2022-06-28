@@ -1,5 +1,3 @@
-import { Medal, Season } from '@prisma/client';
-
 export type ArrayElement<ArrayType extends unknown[] | undefined> = ArrayType extends (infer ElementType)[]
   ? ElementType
   : never;
@@ -14,7 +12,4 @@ export function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof
   return key in obj;
 }
 
-export type UserMedals = {
-  medals?: (Pick<Medal, 'image' | 'name' | 'holographic'> & { season: Pick<Season, 'icon'> | null })[] | null;
-};
 export type WithDatesAsStrings<T extends object> = { [K in keyof T]: T[K] extends Date ? string : K };

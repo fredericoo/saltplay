@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import useSeasonMedals from '@/lib/useSeasonMedals';
 import { Box, styled, Tooltip } from '@chakra-ui/react';
-import type { Medal as DBMedal } from '@prisma/client';
+import type { Medal as DBMedal, Season } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { MotionBox } from '../Motion';
 import { getRelativeCoordinates } from './utils';
 
-type MedalProps = Pick<DBMedal, 'id'> & { name: string; image: string; isHolographic?: boolean };
+type MedalProps = { id: DBMedal['id']; seasonId: Season['id'] };
 
 const MedalWrapper = motion(
   styled(Box, {
@@ -19,15 +20,21 @@ const MedalWrapper = motion(
   })
 );
 
-const Medal: React.VFC<MedalProps> = ({ name, image, isHolographic }) => {
+const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
+  const { data: res, error } = useSeasonMedals(seasonId);
   const [mousePosition, setMousePosition] = useState<ReturnType<typeof getRelativeCoordinates>>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+
+  if (error || res?.status !== 'ok') return null;
+
+  const medal = res.data?.[id];
+
   const handleMouseMove = (e: MouseEvent) => {
     setMousePosition(getRelativeCoordinates(e, boxRef.current));
   };
 
   return (
-    <Tooltip label={name} placement="top" offset={[0, 32]} variant="medal">
+    <Tooltip label={medal?.name} placement="top" offset={[0, 32]} variant="medal">
       <Box zIndex={1} _hover={{ zIndex: 2 }}>
         <MedalWrapper
           ref={boxRef}
@@ -47,15 +54,21 @@ const Medal: React.VFC<MedalProps> = ({ name, image, isHolographic }) => {
               : {}
           }
         >
-          <Box as="img" position="absolute" inset="0" src={image || '/medals/default.svg'} alt={name} />
-          {isHolographic && image && (
+          <Box
+            as="img"
+            position="absolute"
+            inset="0"
+            src={medal?.url || '/medals/default.svg'}
+            alt={medal?.name || 'Badge'}
+          />
+          {medal?.isHolographic && medal.url && (
             <MotionBox
               role="presentation"
               position="absolute"
               inset="0"
               mixBlendMode="hard-light"
               css={{
-                maskImage: `url(/medals/${image}_holo.png)`,
+                maskImage: `url(${medal.url.replace('.svg', '_holo.svg')})`,
                 maskSize: 'contain',
               }}
               background={`linear-gradient(var(--gradient-direction),

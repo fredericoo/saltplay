@@ -1,8 +1,7 @@
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { UserMedals } from '@/lib/types/utils';
-import { Match, PlayerScore, User } from '@prisma/client';
+import { Match } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
 
@@ -18,13 +17,16 @@ const querySchema = object({
 
 export type LeaderboardGETOptions = InferType<typeof querySchema>;
 
+type LeaderboardPlayer = Omit<
+  GetLeaderboardPositionsResponse['playerScores'][number]['player'],
+  'leftmatches' | 'rightmatches'
+>;
 export type LeaderboardGETAPIResponsePosition = {
   position: number;
   wins: number;
   losses: number;
-} & Pick<User, 'id' | 'name' | 'image' | 'roleId'> &
-  UserMedals &
-  Pick<PlayerScore, 'points'>;
+  points: number;
+} & LeaderboardPlayer;
 
 export type LeaderboardGETAPIResponse = APIResponse<
   {
@@ -65,8 +67,9 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
+type GetLeaderboardPositionsResponse = Awaited<ReturnType<typeof getLeaderboardPositions>>;
 const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page }: LeaderboardGETOptions) => {
-  const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId } } });
+  const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId }, season: { id: seasonId } } });
 
   const playerScores = await prisma.game.findUnique({ where: { id: gameId } }).scores({
     where: { season: { id: seasonId } },
@@ -90,14 +93,8 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
           roleId: true,
           medals: {
             select: {
-              name: true,
-              image: true,
-              holographic: true,
-              season: {
-                select: {
-                  icon: true,
-                },
-              },
+              id: true,
+              seasonid: true,
             },
           },
         },
@@ -120,17 +117,14 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
             playerScore.player.leftmatches,
             playerScore.player.rightmatches
           );
-          const { name, image, id, roleId, medals } = playerScore.player;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { rightmatches, leftmatches, ...player } = playerScore.player;
           return {
             position: options.userId ? 0 : options.perPage * (options.page - 1) + position + 1,
-            id,
-            roleId,
-            name,
-            image,
+            ...player,
             wins,
             losses,
             points: playerScore.points,
-            medals,
           };
         });
       const nextPage = leaderboard.totalCount > options.perPage * options.page ? options.page + 1 : undefined;

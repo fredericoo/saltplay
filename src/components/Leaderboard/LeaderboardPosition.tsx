@@ -93,15 +93,9 @@ const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps,
           </Box>
           <HStack>
             <HStack spacing={0.5}>
-              {user.medals?.map(medal => (
-                <Medal
-                  id={medal.name}
-                  key={medal.name}
-                  image={`/api/medal/${medal.image}.svg?season=${medal.season?.icon || '?'}`}
-                  isHolographic={medal.holographic}
-                  name={medal.name}
-                />
-              ))}
+              {user.medals?.map(
+                medal => medal.seasonid && <Medal key={medal.id} id={medal.id} seasonId={medal.seasonid} />
+              )}
             </HStack>
             <Badge fontWeight="medium" variant="subtle" css={{ fontVariantNumeric: 'tabular-nums' }}>
               {user.points} <PointIcon ml={0.5} />

@@ -2,8 +2,7 @@ import medals from '@/lib/medals';
 import { NextApiHandler } from 'next';
 
 const handler: NextApiHandler = (req, res) => {
-  console.log(req.query);
-  if (typeof req.query?.src !== 'string' || typeof req.query?.season !== 'string') {
+  if (typeof req.query?.src !== 'string' || typeof req.query.bg !== 'string' || typeof req.query.icon !== 'string') {
     return res.status(404).end();
   }
   if (!req.query.src.endsWith('.svg')) {
@@ -15,11 +14,13 @@ const handler: NextApiHandler = (req, res) => {
   if (!(src in medals)) {
     return res.status(404).end();
   }
-  const medalSvg = medals[src](req.query?.season);
+
+  const medalSvg = medals[src]({ bgColor: req.query.bg, icon: req.query.icon });
 
   res.statusCode = 200;
   res.setHeader('Content-Type', 'image/svg+xml');
-  res.setHeader('Cache-Control', 'public, immutable, no-transform, s-maxage=31536000, max-age=31536000');
+  process.env.NODE_ENV === 'production' &&
+    res.setHeader('Cache-Control', 'public, immutable, no-transform, s-maxage=31536000, max-age=31536000');
   res.end(medalSvg);
 };
 

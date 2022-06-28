@@ -1,5 +1,6 @@
 import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
+import Medal from '@/components/Medal';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
@@ -26,8 +27,8 @@ const getPlayerById = async (id: User['id']) =>
       roleId: true,
       medals: {
         select: {
-          image: true,
-          name: true,
+          id: true,
+          seasonid: true,
         },
       },
       leftmatches: { select: { leftscore: true, rightscore: true } },
@@ -86,6 +87,11 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
               <PlayerName user={player} />
             </Heading>
           </Box>
+          <HStack as="section" px={4}>
+            {player.medals.map(
+              medal => medal.seasonid && <Medal key={medal.id} id={medal.id} seasonId={medal.seasonid} />
+            )}
+          </HStack>
           <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
             <Stat label="Played" content={stats.played} />
             <Stat label="Won" content={stats.won} />

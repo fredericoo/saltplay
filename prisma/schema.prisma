@@ -115,7 +115,7 @@ model PlayerScore {
 
 model Season {
   id        String        @id @default(uuid())
-  icon      String?
+  colour    String?
   name      String
   slug      String
   startDate DateTime      @default(now())
