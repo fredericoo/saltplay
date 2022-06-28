@@ -13,21 +13,21 @@ const renderAndClickModal = async (props?: Partial<ConfirmButtonProps>) => {
 };
 
 describe('Confirm Button', () => {
-  test('When clicked, opens modal', async () => {
+  test('when clicked, opens modal', async () => {
     await renderAndClickModal();
 
     const modal = screen.getByRole('dialog');
     expect(modal).toBeInTheDocument();
   });
 
-  test('Submit button starts out disabled', async () => {
+  test('submit button starts out disabled', async () => {
     await renderAndClickModal();
 
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
     expect(submitButton).toBeDisabled();
   });
 
-  test('Submit button becomes enabled when input is filled with keyword', async () => {
+  test('submit button becomes enabled when input is filled with keyword', async () => {
     const keyword = gen.string();
     await renderAndClickModal({ keyword });
 
@@ -39,7 +39,7 @@ describe('Confirm Button', () => {
     expect(submitButton).toBeEnabled();
   });
 
-  test('Submit button becomes disabled when input does not match keyword', async () => {
+  test('submit button becomes disabled when input does not match keyword', async () => {
     const keyword = gen.string();
     await renderAndClickModal({ keyword });
 
@@ -51,7 +51,7 @@ describe('Confirm Button', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  test('Input will match regardless of capitalisation', async () => {
+  test('input will match regardless of capitalisation', async () => {
     const keyword = gen.string().toUpperCase();
     await renderAndClickModal({ keyword });
 
@@ -62,7 +62,7 @@ describe('Confirm Button', () => {
     expect(submitButton).toBeEnabled();
   });
 
-  test('When not provided with keyword, it defaults to DEFAULT_KEYWORD global', async () => {
+  test('when not provided with keyword, it defaults to DEFAULT_KEYWORD global', async () => {
     await renderAndClickModal();
 
     const submitButton = screen.getByRole('button', { name: 'Confirm' });
@@ -72,7 +72,7 @@ describe('Confirm Button', () => {
     expect(submitButton).toBeEnabled();
   });
 
-  test('When submit button is clicked, onConfirm is called', async () => {
+  test('when submit button is clicked, onConfirm is called', async () => {
     const onConfirm = jest.fn();
     await renderAndClickModal({ onConfirm });
 
@@ -85,7 +85,7 @@ describe('Confirm Button', () => {
     expect(onConfirm).toHaveBeenCalled();
   });
 
-  test('On clicking Cancel, closes modal', async () => {
+  test('when clicking Cancel, closes modal', async () => {
     await renderAndClickModal();
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
