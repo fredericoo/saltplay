@@ -2,17 +2,9 @@ import { Box } from '@chakra-ui/react';
 
 type PositionNumberProps = {
   position: number;
-  displayMedals?: boolean;
 };
 
-const medals: Record<number, string> = {
-  0: '🙋',
-  1: '🥇',
-  2: '🥈',
-  3: '🥉',
-};
-
-const PositionNumber: React.VFC<PositionNumberProps> = ({ position, displayMedals }) => {
+const PositionNumber: React.VFC<PositionNumberProps> = ({ position }) => {
   const digits = Math.max(position.toString().length, 2);
   return (
     <Box
@@ -27,7 +19,7 @@ const PositionNumber: React.VFC<PositionNumberProps> = ({ position, displayMedal
       letterSpacing="tighter"
       userSelect="none"
     >
-      {displayMedals && medals[position] ? medals[position] : position}
+      {position}
     </Box>
   );
 };

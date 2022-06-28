@@ -11,7 +11,7 @@ import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import { SessionDELETEAPIResponse } from '@/lib/api/handlers/session/deleteSessionHandler';
-import { patchUserSchema } from '@/lib/api/schemas';
+import { patchUserSchemaAdmin } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { Badge, Button, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from '@chakra-ui/react';
@@ -129,7 +129,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
         <TabPanels pt={4}>
           <TabPanel as={Stack} spacing={8}>
             <SettingsGroup
-              fieldSchema={patchUserSchema}
+              fieldSchema={patchUserSchemaAdmin}
               fields={editableFields}
               data={user}
               saveEndpoint={`/api/users/${user?.id}`}

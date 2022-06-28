@@ -91,7 +91,7 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
           name: true,
           image: true,
           roleId: true,
-          medals: {
+          boast: {
             select: {
               id: true,
               seasonid: true,

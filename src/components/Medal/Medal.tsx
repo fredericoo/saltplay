@@ -34,44 +34,43 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
   };
 
   return (
-    <Tooltip label={medal?.name} placement="top" offset={[0, 32]} variant="medal">
-      <Box zIndex={1} _hover={{ zIndex: 2 }}>
-        <MedalWrapper
-          ref={boxRef}
-          onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
-          whileHover={
-            mousePosition
-              ? {
-                  scale: 3,
-                  rotateY: mousePosition.centerX * -20,
-                  rotateX: mousePosition.centerY * 20,
-                  filter: `brightness(${
-                    1 +
-                    ((-mousePosition.centerX - mousePosition.centerY) / (mousePosition.height + mousePosition.width)) *
-                      3
-                  })`,
-                }
-              : {}
-          }
-        >
-          <Box
-            as="img"
+    <Tooltip label={medal?.name} placement="top" offset={[0, 32]} variant="medal" closeOnClick={false}>
+      <MedalWrapper
+        ref={boxRef}
+        onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
+        whileHover={
+          mousePosition
+            ? {
+                zIndex: 2,
+                scale: 3,
+                rotateY: mousePosition.centerX * -20,
+                rotateX: mousePosition.centerY * 20,
+                filter: `brightness(${
+                  1 +
+                  ((-mousePosition.centerX - mousePosition.centerY) / (mousePosition.height + mousePosition.width)) * 3
+                })`,
+              }
+            : {}
+        }
+      >
+        <Box
+          as="img"
+          position="absolute"
+          inset="0"
+          src={medal?.url || '/medals/default.svg'}
+          alt={medal?.name || 'Badge'}
+        />
+        {medal?.isHolographic && medal.url && (
+          <MotionBox
+            role="presentation"
             position="absolute"
             inset="0"
-            src={medal?.url || '/medals/default.svg'}
-            alt={medal?.name || 'Badge'}
-          />
-          {medal?.isHolographic && medal.url && (
-            <MotionBox
-              role="presentation"
-              position="absolute"
-              inset="0"
-              mixBlendMode="hard-light"
-              css={{
-                maskImage: `url(${medal.url.replace('.svg', '_holo.svg')})`,
-                maskSize: 'contain',
-              }}
-              background={`linear-gradient(var(--gradient-direction),
+            mixBlendMode="hard-light"
+            css={{
+              maskImage: `url(${medal.url.replace('.svg', '_holo.svg')})`,
+              maskSize: 'contain',
+            }}
+            background={`linear-gradient(var(--gradient-direction),
               rgba(255, 0, 0, 1) 0%,
               rgba(255, 154, 0, 1) 10%,
               rgba(208, 222, 33, 1) 20%,
@@ -84,33 +83,32 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
               rgba(251, 7, 217, 1) 90%,
               rgba(255, 0, 0, 1) 100%
           )`}
-              alt=""
-              aria-hidden
-              initial={{ opacity: 0 }}
-              whileHover={
-                mousePosition
-                  ? {
-                      '--gradient-direction': `${
-                        mousePosition
-                          ? -(mousePosition.centerX / mousePosition.width) * 360 -
-                            (mousePosition.centerY / mousePosition.height) * 360
-                          : 135
-                      }deg`,
-                      opacity:
-                        0.25 +
-                        ((-mousePosition.centerX - mousePosition.centerY) /
-                          (mousePosition.height + mousePosition.width)) *
-                          10,
-                      transition: {
-                        duration: 0.1,
-                      },
-                    }
-                  : {}
-              }
-            />
-          )}
-        </MedalWrapper>
-      </Box>
+            alt=""
+            aria-hidden
+            initial={{ opacity: 0 }}
+            whileHover={
+              mousePosition
+                ? {
+                    '--gradient-direction': `${
+                      mousePosition
+                        ? -(mousePosition.centerX / mousePosition.width) * 360 -
+                          (mousePosition.centerY / mousePosition.height) * 360
+                        : 135
+                    }deg`,
+                    opacity:
+                      0.25 +
+                      ((-mousePosition.centerX - mousePosition.centerY) /
+                        (mousePosition.height + mousePosition.width)) *
+                        10,
+                    transition: {
+                      duration: 0.1,
+                    },
+                  }
+                : {}
+            }
+          />
+        )}
+      </MedalWrapper>
     </Tooltip>
   );
 };

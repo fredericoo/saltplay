@@ -115,7 +115,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                 {game.seasons.length > 1 ? (
                   activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
                 ) : (
-                  <Tab>Leaderboard</Tab>
+                  <Tab pointerEvents="none">Leaderboard</Tab>
                 )}
                 {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
               </TabList>
@@ -241,7 +241,7 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                     {game.seasons.length > 1 ? (
                       activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
                     ) : (
-                      <Tab>Leaderboard</Tab>
+                      <Tab pointerEvents="none">Leaderboard</Tab>
                     )}
                     {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
                   </TabList>

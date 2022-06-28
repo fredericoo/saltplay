@@ -1,20 +1,38 @@
 import FloatingActionButton from '@/components/FloatingActionButton';
 import LatestMatches from '@/components/LatestMatches';
 import Medal from '@/components/Medal';
+import { MotionBox } from '@/components/Motion';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
+import { UserPATCHAPIResponse } from '@/lib/api/handlers/user/patchUserHandler';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
 import { canViewDashboard, getRoleStyles } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
-import { Box, Container, Heading, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Container,
+  Heading,
+  HStack,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
+import axios from 'axios';
+import { AnimateSharedLayout } from 'framer-motion';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { VscEdit } from 'react-icons/vsc';
 
 const getPlayerById = async (id: User['id']) =>
@@ -25,6 +43,7 @@ const getPlayerById = async (id: User['id']) =>
       name: true,
       image: true,
       roleId: true,
+      boastId: true,
       medals: {
         select: {
           id: true,
@@ -64,11 +83,31 @@ type PlayerPageProps = {
 const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
   const { data: session } = useSession();
+  const [newBoastId, setBoastId] = useState(player?.boastId);
+  const boastId = newBoastId || player?.boastId;
+
+  const isMe = player.id === session?.user.id;
 
   if (!player) return null;
 
+  const handleBoast = async (medalId: string) => {
+    const body = { boastId: medalId };
+    setBoastId(medalId);
+    try {
+      const res = await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
+      if (!res.data?.boastId) throw new Error('No badge to boast.');
+    } catch (e) {
+      setBoastId(null);
+      console.error(e);
+    }
+  };
+
   const playerName = player.name || `Anonymous`;
   const hasMultipleGames = stats.games.length > 1;
+
+  const boastMedal = player.medals?.find(medal => medal.id === boastId);
+  const otherMedals = player.medals?.filter(medal => medal.id !== boastId);
+
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
       <SEO title={`${playerName}’s profile`} />
@@ -77,53 +116,84 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
           buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/users/${player.id}` }]}
         />
       )}
-      <Stack spacing={{ base: 1, md: 0.5 }}>
-        <Box bg="grey.1" borderRadius="18" overflow="hidden">
-          <Box bg={getGradientFromId(player.id)} h="32" />
-          <Box p={4} mt="-16">
-            <PlayerAvatar user={player} size={32} />
+      <AnimateSharedLayout>
+        <Stack spacing={{ base: 1, md: 0.5 }}>
+          <Box bg="grey.1" borderRadius="18" overflow="hidden">
+            <Box bg={getGradientFromId(player.id)} h="32" />
+            <Box p={4} mt="-16">
+              <PlayerAvatar user={player} size={32} />
 
-            <Heading as="h1" sx={getRoleStyles(player.roleId)} mt={2} size="lg">
-              <PlayerName user={player} />
-            </Heading>
-          </Box>
-          <HStack as="section" px={4}>
-            {player.medals.map(
-              medal => medal.seasonid && <Medal key={medal.id} id={medal.id} seasonId={medal.seasonid} />
+              <HStack>
+                <Heading as="h1" sx={getRoleStyles(player.roleId)} mt={2} size="lg">
+                  <PlayerName user={player} />
+                </Heading>
+                {boastMedal?.id && boastMedal.seasonid && (
+                  <MotionBox fontSize="xl" layoutId={boastMedal.id} key={boastMedal.id}>
+                    <Medal id={boastMedal.id} seasonId={boastMedal.seasonid} />
+                  </MotionBox>
+                )}
+              </HStack>
+            </Box>
+            {otherMedals.length > 0 && (
+              <Box p={1} pb={0} userSelect="none">
+                <Stack px={4} py={4} bg="grey.2" borderRadius="xl">
+                  <Text fontSize="md" color="grey.9" mb={2}>
+                    Badges{' '}
+                    <Badge colorScheme="primary" variant="solid">
+                      New!
+                    </Badge>
+                  </Text>
+                  <HStack as="section" flexWrap="wrap">
+                    {otherMedals.map(
+                      medal =>
+                        medal.seasonid && (
+                          <MotionBox layoutId={medal.id} key={medal.id} onClick={() => isMe && handleBoast(medal.id)}>
+                            <Medal id={medal.id} seasonId={medal.seasonid} />
+                          </MotionBox>
+                        )
+                    )}
+                  </HStack>
+                  {isMe && (
+                    <Text fontSize="sm" color="grey.11">
+                      Tap on a badge to show it off to your friends!
+                    </Text>
+                  )}
+                </Stack>
+              </Box>
             )}
-          </HStack>
-          <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
-            <Stat label="Played" content={stats.played} />
-            <Stat label="Won" content={stats.won} />
-            <Stat label="Lost" content={stats.lost} />
-          </HStack>
-        </Box>
+            <HStack p="1" flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} alignItems="stretch">
+              <Stat label="Played" content={stats.played} />
+              <Stat label="Won" content={stats.won} />
+              <Stat label="Lost" content={stats.lost} />
+            </HStack>
+          </Box>
 
-        <Stack spacing={6} pt={4}>
-          <Tabs isLazy key={player.id}>
-            <TabList>
-              {hasMultipleGames && <Tab>All</Tab>}
-              {stats.games.map(game => (
-                <Tab key={game.id}>
-                  {game.icon} {game.name}
-                </Tab>
-              ))}
-            </TabList>
-            <TabPanels>
-              {hasMultipleGames && (
-                <TabPanel pt={8}>
-                  <LatestMatches userId={player.id} />
-                </TabPanel>
-              )}
-              {stats.games.map(game => (
-                <TabPanel pt={8} key={game.id}>
-                  <LatestMatches userId={player.id} gameId={game.id} />
-                </TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
+          <Stack spacing={6} pt={4}>
+            <Tabs isLazy key={player.id}>
+              <TabList>
+                {hasMultipleGames && <Tab>All</Tab>}
+                {stats.games.map(game => (
+                  <Tab key={game.id}>
+                    {game.icon} {game.name}
+                  </Tab>
+                ))}
+              </TabList>
+              <TabPanels>
+                {hasMultipleGames && (
+                  <TabPanel pt={8}>
+                    <LatestMatches userId={player.id} />
+                  </TabPanel>
+                )}
+                {stats.games.map(game => (
+                  <TabPanel pt={8} key={game.id}>
+                    <LatestMatches userId={player.id} gameId={game.id} />
+                  </TabPanel>
+                ))}
+              </TabPanels>
+            </Tabs>
+          </Stack>
         </Stack>
-      </Stack>
+      </AnimateSharedLayout>
     </Container>
   );
 };
@@ -163,7 +233,7 @@ export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }
         games: games.map(game => ({ name: game.name, icon: [game.office.icon, game.icon].join(' '), id: game.id })),
       },
     },
-    revalidate: 600,
+    revalidate: 60,
   };
 };
 

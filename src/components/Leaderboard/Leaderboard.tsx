@@ -17,14 +17,7 @@ type LeaderboardProps = {
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({
-  gameId,
-  seasonId,
-  hasIcons = true,
-  stickyMe,
-  bg,
-  offsetPlayerBottom,
-}) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId, seasonId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +48,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
-            <PositionNumber position={i + 1} displayMedals={hasIcons} />
+            <PositionNumber position={i + 1} />
             <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
           </HStack>
         ))}
@@ -80,7 +73,6 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
           <LeaderboardPosition
             key={player.id}
             user={player}
-            hasIcons={hasIcons}
             isMe={isMe}
             bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
             bg={bg}

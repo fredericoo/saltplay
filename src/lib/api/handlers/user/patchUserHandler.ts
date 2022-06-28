@@ -1,4 +1,4 @@
-import { patchUserSchema } from '@/lib/api/schemas';
+import { patchUserSchemaAdmin, patchUserSchemaSelf } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
 import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
@@ -11,15 +11,20 @@ import { getServerSession } from 'next-auth';
 export type UserPATCHAPIResponse = APIResponse<User>;
 
 const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) => {
-  await patchUserSchema
+  const session = await getServerSession({ req, res }, nextAuthOptions);
+  const id = req.query.id;
+  if (typeof id !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid user id' });
+
+  const isAdmin = canViewDashboard(session?.user.roleId);
+  const isSelf = session?.user.id === req.query.id;
+  const schema = isAdmin ? patchUserSchemaAdmin : isSelf ? patchUserSchemaSelf : undefined;
+
+  if (!schema) return res.status(500).json({ status: 'error', message: 'Unauthorised' });
+
+  await schema
     .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
-      const canEdit = canViewDashboard(session?.user.roleId);
-      const id = req.query.id;
-
-      if (typeof id !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
-      if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
+      if (!session || !isAdmin) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
       try {
         const user = await prisma.user.update({

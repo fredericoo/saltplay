@@ -79,9 +79,14 @@ export const updateUserAccountSchema = object({
   id: string().required(),
 });
 
-export const patchUserSchema = object({
+export const patchUserSchemaAdmin = object({
   name: string(),
   roleId: number(),
+  boastId: string(),
+});
+
+export const patchUserSchemaSelf = object({
+  boastId: string(),
 });
 
 export const patchPlayerScoreSchema = object().shape({
