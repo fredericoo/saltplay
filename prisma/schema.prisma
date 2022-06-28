@@ -43,6 +43,9 @@ model User {
   roleId        Int
   role          Role          @relation(fields: [roleId], references: [id])
   medals        Medal[]
+
+  boastId String?
+  boast   Medal?  @relation("boast", fields: [boastId], references: [id])
 }
 
 model Session {
@@ -137,7 +140,8 @@ model Medal {
   seasonid    String?
   season      Season? @relation(fields: [seasonid], references: [id])
 
-  owners User[]
+  owners   User[]
+  boasting User[] @relation("boast")
 }
 
 model Role {
