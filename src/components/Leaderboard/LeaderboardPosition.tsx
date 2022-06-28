@@ -23,6 +23,8 @@ const FirstPlaceFx = styled(Box, {
     borderRadius: 'xl',
     filter: 'blur(12px)',
     opacity: 1,
+    isolation: 'isolate',
+    transform: 'translateZ(0)',
   },
 });
 
