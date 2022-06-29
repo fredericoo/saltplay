@@ -96,6 +96,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
       optimisticData.data && Object.assign(optimisticData.data, { boastId });
       await mutate(optimisticData, { revalidate: false });
       await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
+      await mutate();
     } catch (e) {
       console.error(e);
       await mutate();
