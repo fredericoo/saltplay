@@ -128,7 +128,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                   <PlayerName user={player} />
                 </Heading>
                 {boastMedal?.id && boastMedal.seasonid && (
-                  <MotionBox fontSize="xl" layoutId={boastMedal.id} key={boastMedal.id}>
+                  <MotionBox layoutId={boastMedal.id} key={boastMedal.id}>
                     <Medal id={boastMedal.id} seasonId={boastMedal.seasonid} />
                   </MotionBox>
                 )}
