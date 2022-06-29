@@ -7,9 +7,9 @@ import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
 import { getServerSession } from 'next-auth';
 
-export type UserPATCHAPIResponse = APIResponse;
+export type UserAccountPATCHAPIResponse = APIResponse;
 
-const updateUserAccountHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) => {
+const updateUserAccountHandler: NextApiHandler<UserAccountPATCHAPIResponse> = async (req, res) => {
   await updateUserAccountSchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async body => {

@@ -7,6 +7,7 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
+import { UserGETAPIResponse } from '@/lib/api/handlers/user/getUserHandler';
 import { UserPATCHAPIResponse } from '@/lib/api/handlers/user/patchUserHandler';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
@@ -19,6 +20,7 @@ import {
   Container,
   Heading,
   HStack,
+  IconButton,
   Stack,
   Tab,
   TabList,
@@ -29,11 +31,12 @@ import {
 } from '@chakra-ui/react';
 import { Game, User } from '@prisma/client';
 import axios from 'axios';
-import { AnimateSharedLayout } from 'framer-motion';
+import { AnimatePresence, LayoutGroup } from 'framer-motion';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { IoCloseOutline } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
+import useSWR from 'swr';
 
 const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
@@ -43,13 +46,6 @@ const getPlayerById = async (id: User['id']) =>
       name: true,
       image: true,
       roleId: true,
-      boastId: true,
-      medals: {
-        select: {
-          id: true,
-          seasonid: true,
-        },
-      },
       leftmatches: { select: { leftscore: true, rightscore: true } },
       rightmatches: { select: { leftscore: true, rightscore: true } },
       scores: {
@@ -82,31 +78,35 @@ type PlayerPageProps = {
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
+  const { data: medalsQuery, mutate } = useSWR<UserGETAPIResponse>(`/api/users/${player.id}`);
+  const boastId = medalsQuery?.data?.boastId;
+  const medals = medalsQuery?.data?.medals || [];
+
   const { data: session } = useSession();
-  const [newBoastId, setBoastId] = useState(player?.boastId);
-  const boastId = newBoastId || player?.boastId;
 
   const isMe = player.id === session?.user.id;
 
   if (!player) return null;
 
-  const handleBoast = async (medalId: string) => {
-    const body = { boastId: medalId };
-    setBoastId(medalId);
+  const handleBoast = async (boastId: string | null) => {
     try {
-      const res = await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
-      if (!res.data?.boastId) throw new Error('No badge to boast.');
+      const body = { boastId };
+      if (!medalsQuery) throw new Error("Can't boast: no medals loaded.");
+      const optimisticData = { ...medalsQuery };
+      optimisticData.data && Object.assign(optimisticData.data, { boastId });
+      await mutate(optimisticData, { revalidate: false });
+      await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
     } catch (e) {
-      setBoastId(null);
       console.error(e);
+      await mutate();
     }
   };
 
   const playerName = player.name || `Anonymous`;
   const hasMultipleGames = stats.games.length > 1;
 
-  const boastMedal = player.medals?.find(medal => medal.id === boastId);
-  const otherMedals = player.medals?.filter(medal => medal.id !== boastId);
+  const boastMedal = medals?.find(medal => medal.id === boastId);
+  const otherMedals = medals?.filter(medal => medal.id !== boastId);
 
   return (
     <Container maxW="container.sm" pt={NAVBAR_HEIGHT}>
@@ -116,7 +116,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
           buttons={[{ label: 'edit', icon: <VscEdit />, colorScheme: 'success', href: `/admin/users/${player.id}` }]}
         />
       )}
-      <AnimateSharedLayout>
+      <LayoutGroup id="medal-boast">
         <Stack spacing={{ base: 1, md: 0.5 }}>
           <Box bg="grey.1" borderRadius="18" overflow="hidden">
             <Box bg={getGradientFromId(player.id)} h="32" />
@@ -132,6 +132,20 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                     <Medal id={boastMedal.id} seasonId={boastMedal.seasonid} />
                   </MotionBox>
                 )}
+                {isMe && boastMedal && (
+                  <AnimatePresence>
+                    <MotionBox initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                      <IconButton
+                        css={{ aspectRatio: '1' }}
+                        size="sm"
+                        aria-label="Clear boast"
+                        onClick={() => handleBoast(null)}
+                      >
+                        <IoCloseOutline />
+                      </IconButton>
+                    </MotionBox>
+                  </AnimatePresence>
+                )}
               </HStack>
             </Box>
             {otherMedals.length > 0 && (
@@ -143,7 +157,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                       New!
                     </Badge>
                   </Text>
-                  <HStack as="section" flexWrap="wrap">
+                  <HStack as="section" flexWrap="wrap" fontSize="2xl">
                     {otherMedals.map(
                       medal =>
                         medal.seasonid && (
@@ -193,7 +207,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
             </Tabs>
           </Stack>
         </Stack>
-      </AnimateSharedLayout>
+      </LayoutGroup>
     </Container>
   );
 };

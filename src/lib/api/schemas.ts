@@ -82,11 +82,11 @@ export const updateUserAccountSchema = object({
 export const patchUserSchemaAdmin = object({
   name: string(),
   roleId: number(),
-  boastId: string(),
+  boastId: string().nullable(),
 });
 
 export const patchUserSchemaSelf = object({
-  boastId: string(),
+  boastId: string().nullable(),
 });
 
 export const patchPlayerScoreSchema = object().shape({
