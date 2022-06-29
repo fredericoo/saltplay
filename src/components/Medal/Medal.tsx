@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useSeasonMedals from '@/lib/useSeasonMedals';
-import { Box, styled, Tooltip } from '@chakra-ui/react';
+import { Box, keyframes, styled, Tooltip } from '@chakra-ui/react';
 import type { Medal as DBMedal, Season } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
@@ -8,6 +8,20 @@ import { MotionBox } from '../Motion';
 import { getRelativeCoordinates } from './utils';
 
 type MedalProps = { id: DBMedal['id']; seasonId: Season['id'] };
+
+const shimmer = keyframes`
+	0% {
+		background-position: 0% 0%;
+    opacity: 0
+	}
+	50% {
+    background-position: 50% 50%;
+    opacity: .9
+  }
+	100% {
+    background-position: 86% 86%;
+    opacity: 0
+	}`;
 
 const MedalWrapper = motion(
   styled(Box, {
@@ -37,17 +51,20 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
     <Tooltip label={medal?.name} placement="top" offset={[0, 32]} variant="medal" closeOnClick={false}>
       <MedalWrapper
         ref={boxRef}
-        onMouseMove={(e: MouseEvent) => handleMouseMove(e)}
+        onMouseMove={handleMouseMove}
+        initial={{ scale: 1 }}
         whileHover={
           mousePosition
             ? {
+                transition: { scale: { delay: 0.25 }, default: { delay: 0 } },
+
                 zIndex: 2,
-                scale: 3,
+                scale: 2,
                 rotateY: mousePosition.centerX * -20,
                 rotateX: mousePosition.centerY * 20,
                 filter: `brightness(${
                   1 +
-                  ((-mousePosition.centerX - mousePosition.centerY) / (mousePosition.height + mousePosition.width)) * 3
+                  ((-mousePosition.centerX - mousePosition.centerY) / (mousePosition.height + mousePosition.width)) * 10
                 })`,
               }
             : {}
@@ -70,42 +87,23 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
               maskImage: `url(${medal.url.replace('.svg', '_holo.svg')})`,
               maskSize: 'contain',
             }}
-            background={`linear-gradient(var(--gradient-direction),
-              rgba(255, 0, 0, 1) 0%,
-              rgba(255, 154, 0, 1) 10%,
-              rgba(208, 222, 33, 1) 20%,
-              rgba(79, 220, 74, 1) 30%,
-              rgba(63, 218, 216, 1) 40%,
-              rgba(47, 201, 226, 1) 50%,
-              rgba(28, 127, 238, 1) 60%,
-              rgba(95, 21, 242, 1) 70%,
-              rgba(186, 12, 248, 1) 80%,
-              rgba(251, 7, 217, 1) 90%,
-              rgba(255, 0, 0, 1) 100%
+            background={`linear-gradient(-30deg,
+              rgba(255, 0, 0, 1),
+              rgba(255, 154, 0, 1),
+              rgba(208, 222, 33, 1),
+              rgba(79, 220, 74, 1),
+              rgba(63, 218, 216, 1),
+              rgba(47, 201, 226, 1),
+              rgba(28, 127, 238, 1),
+              rgba(95, 21, 242, 1),
+              rgba(186, 12, 248, 1),
+              rgba(251, 7, 217, 1),
+              rgba(255, 0, 0, 1)
           )`}
+            backgroundSize="200% 200%"
             alt=""
             aria-hidden
-            initial={{ opacity: 0 }}
-            whileHover={
-              mousePosition
-                ? {
-                    '--gradient-direction': `${
-                      mousePosition
-                        ? -(mousePosition.centerX / mousePosition.width) * 360 -
-                          (mousePosition.centerY / mousePosition.height) * 360
-                        : 135
-                    }deg`,
-                    opacity:
-                      0.25 +
-                      ((-mousePosition.centerX - mousePosition.centerY) /
-                        (mousePosition.height + mousePosition.width)) *
-                        10,
-                    transition: {
-                      duration: 0.1,
-                    },
-                  }
-                : {}
-            }
+            animation={`${shimmer} 2s linear infinite`}
           />
         )}
       </MedalWrapper>

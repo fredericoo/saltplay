@@ -120,6 +120,5 @@ const medals: Record<string, MedalFunction> = {
   'third-place': thirdPlaceMedal,
   'third-place_holo': placeHolo,
   'last-place': lastPlaceMedal,
-  'last-place_holo': placeHolo,
 };
 export default medals;
