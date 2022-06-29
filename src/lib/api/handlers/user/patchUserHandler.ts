@@ -24,8 +24,6 @@ const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) 
   await schema
     .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      if (!session || !isAdmin) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
-
       try {
         const user = await prisma.user.update({
           where: { id },
