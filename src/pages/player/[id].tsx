@@ -94,8 +94,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
     try {
       const body = { boastId };
       if (!userQuery) throw new Error("Can't boast: no medals loaded.");
-      const optimisticData = { ...userQuery };
-      optimisticData.data && Object.assign(optimisticData.data, { boastId });
+      const optimisticData = { ...userQuery, data: { ...userQuery.data, boastId } };
       await mutate(
         `/api/users/${player.id}`,
         async () => {
@@ -172,20 +171,13 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                     {otherMedals.map(
                       medal =>
                         medal.seasonid && (
-                          <MotionBox
-                            display="flex"
-                            flexDirection="column"
-                            alignItems="center"
-                            layoutId={medal.id}
-                            key={medal.id}
-                          >
-                            <Medal id={medal.id} seasonId={medal.seasonid} />
-                            {isMe && (
-                              <Button mt={2} onClick={() => isMe && handleBoast(medal.id)}>
-                                Boast
-                              </Button>
-                            )}
-                          </MotionBox>
+                          <Stack spacing={1} alignItems="center">
+                            <MotionBox layoutId={medal.id} key={medal.id}>
+                              <Medal id={medal.id} seasonId={medal.seasonid} />
+                            </MotionBox>
+
+                            {isMe && <Button onClick={() => isMe && handleBoast(medal.id)}>Boast</Button>}
+                          </Stack>
                         )
                     )}
                   </HStack>
