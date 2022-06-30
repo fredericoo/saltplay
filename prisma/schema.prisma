@@ -122,6 +122,7 @@ model Season {
   name      String
   slug      String
   startDate DateTime      @default(now())
+  endDate   DateTime?
   active    Boolean       @default(true)
   gameid    String
   game      Game          @relation(fields: [gameid], references: [id])

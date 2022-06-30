@@ -12,7 +12,11 @@ const handler: NextApiHandler = (req, res) => {
   const src = req.query.src.replace(/(_holo)*\.svg$/, '');
   const isHolo = req.query.src.endsWith('_holo.svg');
 
-  if (!(src in medals)) {
+  const isValidMedal = (src: string): src is keyof typeof medals => {
+    return src in medals;
+  };
+
+  if (!isValidMedal(src)) {
     return res.status(404).end();
   }
 

@@ -28,6 +28,7 @@ const getSeason = async (id: string) => {
       slug: true,
       active: true,
       startDate: true,
+      endDate: true,
       gameid: true,
       game: {
         select: {
@@ -50,6 +51,7 @@ const getSeason = async (id: string) => {
   const responseWithoutDates = {
     ...response,
     startDate: response.startDate.toISOString(),
+    endDate: response.endDate?.toISOString(),
     active: response.active,
   };
 
@@ -63,7 +65,7 @@ type AdminPageProps = {
 };
 
 const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
-  const { push } = useRouter();
+  const { push, reload } = useRouter();
   useNavigationState(season.name);
 
   const editableFields: EditableField<Season>[] = [
@@ -87,9 +89,14 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
     },
   ];
 
-  const handleDeleteGame = async () => {
+  const handleDeleteSeason = async () => {
     await axios.delete(`/api/seasons/${season.id}`);
     push(`/admin/games/${season.game.id}`);
+  };
+
+  const handleEndSeason = async () => {
+    await axios.post(`/api/seasons/${season.id}/end`);
+    reload();
   };
 
   return (
@@ -122,9 +129,17 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
         data={season}
       />
 
+      <Settings.List label="Season status">
+        <Settings.Item label="End season">
+          <ConfirmButton isDisabled={!!season.endDate} onConfirm={handleEndSeason} keyword={season.name}>
+            End Season
+          </ConfirmButton>
+        </Settings.Item>
+      </Settings.List>
+
       <Settings.List>
         <Settings.Item label="Danger zone">
-          <ConfirmButton keyword={season.name} onConfirm={handleDeleteGame}>
+          <ConfirmButton keyword={season.name} onConfirm={handleDeleteSeason}>
             Delete Season
           </ConfirmButton>
         </Settings.Item>

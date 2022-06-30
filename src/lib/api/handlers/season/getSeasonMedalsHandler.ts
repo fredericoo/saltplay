@@ -30,16 +30,22 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
   if (!season) return res.status(404).json({ status: 'error', message: 'Season not found' });
 
   const medalUrls: MedalURLs = Object.fromEntries(
-    season?.medals.map(medal => [
-      medal.id,
-      {
-        url: `/api/medal/${medal.image}.svg?bg=${season.colour || DEFAULT_MEDAL_BG}&icon=${
-          medal.season?.game.icon || '?'
-        }`,
-        isHolographic: !!medal.image && !!medals[medal.image].holo,
-        name: medal.name,
-      },
-    ])
+    season?.medals.map(medal => {
+      const isValidMedal = (src: string): src is keyof typeof medals => {
+        return src in medals;
+      };
+
+      return [
+        medal.id,
+        {
+          url: `/api/medal/${medal.image}.svg?bg=${season.colour || DEFAULT_MEDAL_BG}&icon=${
+            medal.season?.game.icon || '?'
+          }`,
+          isHolographic: !!medal.image && isValidMedal(medal.image) && !!medals[medal.image].holo,
+          name: medal.name,
+        },
+      ];
+    })
   );
 
   // cache for 1 hour

@@ -112,10 +112,66 @@ const placeHolo: MedalFunction =
   </svg>  
 `;
 
-const medals: Record<string, { medal: MedalFunction; holo?: MedalFunction }> = {
+const mostPlayed: MedalFunction = ({
+  bgColor,
+  icon,
+}) => `<svg width="308" height="308" viewBox="0 0 308 308" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M140 8.0829C148.663 3.08118 159.337 3.08119 168 8.0829L273.368 68.9171C282.031 73.9188 287.368 83.1624 287.368 93.1658V214.834C287.368 224.838 282.031 234.081 273.368 239.083L168 299.917C159.337 304.919 148.663 304.919 140 299.917L34.6321 239.083C25.9689 234.081 20.6321 224.838 20.6321 214.834V93.1658C20.6321 83.1624 25.9689 73.9188 34.6321 68.9171L140 8.0829Z" fill="#${bgColor}"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M209.262 31.907L273.367 68.9185C282.031 73.9202 287.367 83.1638 287.367 93.1672V214.836C287.367 224.839 282.031 234.083 273.367 239.084L168 299.918C160.861 304.04 152.357 304.765 144.738 302.094L80.6321 265.083C71.9688 260.081 66.6321 250.838 66.6321 240.834V119.166C66.6321 109.162 71.9689 99.9187 80.6321 94.917L186 34.0828C193.139 29.9613 201.642 29.236 209.262 31.907Z" fill="url(#paint0_linear_684_76)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M287.367 192.935V214.838C287.367 224.841 282.03 234.085 273.367 239.086L167.999 299.921C159.336 304.922 148.662 304.922 139.999 299.921L34.6311 239.086C26.0341 234.123 20.7128 224.982 20.6321 215.067V193.166C20.6321 183.162 25.9689 173.919 34.6321 168.917L140 108.083C148.663 103.081 159.337 103.081 168 108.083L273.368 168.917C281.965 173.88 287.286 183.02 287.367 192.935Z" fill="url(#paint1_linear_684_76)"/>
+<text fill="#443252" xml:space="preserve" style="white-space: pre" font-family="GT Walsheim Pro" font-size="139.4" font-weight="bold" letter-spacing="0em"><tspan x="50%" text-anchor="middle" y="203.654">${icon}</tspan></text>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M286.247 85.333C286.98 87.846 287.366 90.4817 287.366 93.1723V214.841C287.366 224.844 282.03 234.088 273.366 239.089L167.999 299.924C159.335 304.925 148.662 304.925 139.999 299.924L106.8 280.756V200.916C106.8 190.913 112.137 181.669 120.8 176.667L272.5 89.0832C276.756 86.6259 281.497 85.3758 286.247 85.333Z" fill="#FF8074"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M286.247 85.333C286.98 87.846 287.366 90.4817 287.366 93.1723V214.841C287.366 224.844 282.03 234.088 273.366 239.089L167.999 299.924C159.335 304.925 148.662 304.925 139.999 299.924L106.8 280.756V200.916C106.8 190.913 112.137 181.669 120.8 176.667L272.5 89.0832C276.756 86.6259 281.497 85.3758 286.247 85.333Z" fill="url(#paint2_linear_684_76)"/>
+<defs>
+<linearGradient id="paint0_linear_684_76" x1="177" y1="30.3315" x2="177" y2="207.5" gradientUnits="userSpaceOnUse">
+<stop offset="0.223958" stop-color="#FDD6AD"/>
+<stop offset="1" stop-color="#F5887E"/>
+</linearGradient>
+<linearGradient id="paint1_linear_684_76" x1="144.5" y1="355" x2="144.5" y2="151" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9682D9"/>
+<stop offset="1" stop-color="#8CFBCE"/>
+</linearGradient>
+<linearGradient id="paint2_linear_684_76" x1="154" y1="55.3319" x2="154" y2="354.19" gradientUnits="userSpaceOnUse">
+<stop offset="0.216954" stop-color="#FF8DB4" stop-opacity="0"/>
+<stop offset="1" stop-color="#FF1061"/>
+</linearGradient>
+</defs>
+</svg>
+`;
+
+const top10: MedalFunction = ({
+  bgColor,
+  icon,
+}) => `<svg width="308" height="308" viewBox="0 0 308 308" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M140 8.0829C148.663 3.08118 159.337 3.08119 168 8.0829L273.368 68.9171C282.031 73.9188 287.368 83.1624 287.368 93.1658V214.834C287.368 224.838 282.031 234.081 273.368 239.083L168 299.917C159.337 304.919 148.663 304.919 140 299.917L34.6321 239.083C25.9689 234.081 20.6321 224.838 20.6321 214.834V93.1658C20.6321 83.1624 25.9689 73.9188 34.6321 68.9171L140 8.0829Z" fill="#${bgColor}"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M20.6321 144.166V214.835C20.6321 224.838 25.9688 234.082 34.6321 239.083L140 299.918C148.663 304.919 159.337 304.919 168 299.918L273.368 239.083C282.031 234.082 287.368 224.838 287.368 214.835V144.166C287.368 134.162 282.031 124.919 273.368 119.917L168 59.0828C159.337 54.0811 148.663 54.0811 140 59.0828L34.6321 119.917C25.9689 124.919 20.6321 134.162 20.6321 144.166Z" fill="#FF8074"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M20.6321 144.166V214.835C20.6321 224.838 25.9688 234.082 34.6321 239.083L140 299.918C148.663 304.919 159.337 304.919 168 299.918L273.368 239.083C282.031 234.082 287.368 224.838 287.368 214.835V144.166C287.368 134.162 282.031 124.919 273.368 119.917L168 59.0828C159.337 54.0811 148.663 54.0811 140 59.0828L34.6321 119.917C25.9689 124.919 20.6321 134.162 20.6321 144.166Z" fill="url(#paint0_linear_703_60)"/>
+<text fill="#443252" xml:space="preserve" style="white-space: pre" font-family="GT Walsheim Pro" font-size="139.4" font-weight="bold" letter-spacing="0em"><tspan x="50%" text-anchor="middle" y="203.654">${icon}</tspan></text>
+<path d="M140.469 114.083C149.132 109.081 159.805 109.081 168.469 114.083L227.937 148.417C236.6 153.419 241.937 162.662 241.937 172.666V241.334C241.937 251.338 236.6 260.581 227.937 265.583L168.469 299.917C159.805 304.919 149.132 304.919 140.469 299.917L81 265.583C72.3368 260.581 67 251.338 67 241.334V172.666C67 162.662 72.3368 153.419 81 148.417L140.469 114.083Z" fill="url(#paint1_linear_703_60)"/>
+<g opacity="0.8">
+<path d="M125.169 231.838H137.657V179.162H126.798C126.798 185.669 124.471 188.69 114 188.69V198.528H125.169V231.838Z" fill="#443252"/>
+<path d="M169.972 178C155.623 178 147.945 187.606 147.945 205.5C147.945 223.394 155.623 233 169.972 233C184.321 233 192 223.394 192 205.5C192 187.606 184.321 178 169.972 178ZM169.972 188.07C171.679 188.07 173.152 188.458 174.393 189.155L161.983 217.894C160.587 215.106 159.889 210.923 159.889 205.5C159.889 193.648 163.147 188.07 169.972 188.07ZM169.972 222.93C168.188 222.93 166.637 222.542 165.319 221.768L177.806 192.796C179.357 195.662 180.055 199.845 180.055 205.5C180.055 217.352 176.798 222.93 169.972 222.93Z" fill="#443252"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_703_60" x1="154" y1="55.3315" x2="154" y2="354.189" gradientUnits="userSpaceOnUse">
+<stop offset="0.216954" stop-color="#FF8DB4" stop-opacity="0"/>
+<stop offset="1" stop-color="#FF1061"/>
+</linearGradient>
+<linearGradient id="paint1_linear_703_60" x1="147.275" y1="360.013" x2="147.275" y2="153.291" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9682D9"/>
+<stop offset="1" stop-color="#8CFBCE"/>
+</linearGradient>
+</defs>
+</svg>`;
+
+export type MedalSrc = 'first-place' | 'second-place' | 'third-place' | 'last-place' | 'top-10' | 'most-played';
+
+const medals: Record<MedalSrc, { medal: MedalFunction; holo?: MedalFunction }> = {
   'first-place': { medal: firstPlaceMedal, holo: placeHolo },
   'second-place': { medal: secondPlaceMedal, holo: placeHolo },
   'third-place': { medal: thirdPlaceMedal, holo: placeHolo },
   'last-place': { medal: lastPlaceMedal },
+  'top-10': { medal: top10 },
+  'most-played': { medal: mostPlayed },
 };
 export default medals;

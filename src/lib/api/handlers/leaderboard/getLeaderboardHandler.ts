@@ -1,6 +1,7 @@
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
+import type { Prisma } from '@prisma/client';
 import { Match } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
@@ -67,6 +68,11 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
+export const leaderboardOrderBy: Prisma.PlayerScoreFindManyArgs['orderBy'] = [
+  { points: 'desc' },
+  { player: { name: 'asc' } },
+];
+
 type GetLeaderboardPositionsResponse = Awaited<ReturnType<typeof getLeaderboardPositions>>;
 const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page }: LeaderboardGETOptions) => {
   const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId }, season: { id: seasonId } } });
@@ -77,7 +83,7 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
       !!userId && !!gameId && !!seasonId
         ? { gameid_playerid_seasonid: { gameid: gameId, playerid: userId, seasonid: seasonId } }
         : undefined,
-    orderBy: [{ points: 'desc' }, { player: { name: 'asc' } }],
+    orderBy: leaderboardOrderBy,
     skip: perPage * (page - 1),
     take: perPage,
     select: {
