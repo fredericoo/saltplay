@@ -148,7 +148,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                       <IconButton
                         css={{ aspectRatio: '1' }}
                         size="sm"
-                        aria-label="Clear boast"
+                        aria-label="Clear pin"
                         onClick={() => handleBoast(null)}
                       >
                         <IoCloseOutline />
@@ -176,7 +176,7 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                               <Medal id={medal.id} seasonId={medal.seasonid} />
                             </MotionBox>
 
-                            {isMe && <Button onClick={() => isMe && handleBoast(medal.id)}>Boast</Button>}
+                            {isMe && <Button onClick={() => isMe && handleBoast(medal.id)}>Pin</Button>}
                           </Stack>
                         )
                     )}
