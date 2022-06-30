@@ -3,21 +3,12 @@ import { APIResponse } from '@/lib/types/api';
 import { User } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { object, string } from 'yup';
+import userReturnData from './userReturnData';
 
-const getUser = (id: User['id']) =>
+const getUser = ({ id }: Pick<User, 'id'>) =>
   prisma.user.findUnique({
     where: { id },
-    select: {
-      boastId: true,
-      medals: {
-        select: {
-          name: true,
-          id: true,
-          holographic: true,
-          seasonid: true,
-        },
-      },
-    },
+    select: userReturnData(),
   });
 
 type UserGETAPIResponseSuccess = NonNullable<Awaited<ReturnType<typeof getUser>>>;
@@ -31,8 +22,8 @@ const querySchema = object({
 const getUserHandler: NextApiHandler<UserGETAPIResponse> = async (req, res) => {
   await querySchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
-    .then(async query => {
-      const user = await getUser(query.id);
+    .then(async ({ id }) => {
+      const user = await getUser({ id });
       if (!user) return res.status(404).json({ status: 'error', message: 'User not found' });
 
       return res.status(200).json({ status: 'ok', data: user });

@@ -13,3 +13,8 @@ export function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof
 }
 
 export type WithDatesAsStrings<T extends object> = { [K in keyof T]: T[K] extends Date ? string : K };
+
+export const getExactTypeFor =
+  <T>() =>
+  <TOut extends T>(inputOutput: TOut) =>
+    inputOutput;
