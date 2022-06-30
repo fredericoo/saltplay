@@ -9,13 +9,17 @@ const handler: NextApiHandler = (req, res) => {
     return res.status(404).end();
   }
 
-  const src = req.query.src.replace(/\.svg$/, '');
+  const src = req.query.src.replace(/(_holo)*\.svg$/, '');
+  const isHolo = req.query.src.endsWith('_holo.svg');
 
   if (!(src in medals)) {
     return res.status(404).end();
   }
 
-  const medalSvg = medals[src]({ bgColor: req.query.bg, icon: req.query.icon });
+  const holo = medals[src].holo;
+  const medalFn = holo && isHolo ? holo : medals[src].medal;
+
+  const medalSvg = medalFn({ bgColor: req.query.bg, icon: req.query.icon });
 
   res.statusCode = 200;
   res.setHeader('Content-Type', 'image/svg+xml');

@@ -1,10 +1,11 @@
 import { DEFAULT_MEDAL_BG } from '@/constants';
+import medals from '@/lib/medals';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Medal } from '@prisma/client';
 import { NextApiHandler } from 'next';
 
-export type MedalURLs = Record<Medal['id'], { url: string; isHolographic: Medal['holographic']; name: Medal['name'] }>;
+export type MedalURLs = Record<Medal['id'], { url: string; name: Medal['name']; isHolographic: boolean }>;
 export type SeasonMedalsGETAPIResponse = APIResponse<MedalURLs>;
 
 const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async (req, res) => {
@@ -19,9 +20,8 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
         select: {
           id: true,
           name: true,
-          holographic: true,
           image: true,
-          season: { select: { game: { select: { icon: true } } } },
+          season: { select: { name: true, game: { select: { icon: true } } } },
         },
       },
     },
@@ -36,7 +36,7 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
         url: `/api/medal/${medal.image}.svg?bg=${season.colour || DEFAULT_MEDAL_BG}&icon=${
           medal.season?.game.icon || '?'
         }`,
-        isHolographic: medal.holographic,
+        isHolographic: !!medal.image && !!medals[medal.image].holo,
         name: medal.name,
       },
     ])

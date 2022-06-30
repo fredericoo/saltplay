@@ -10,10 +10,7 @@ const userReturnData = () => {
     boastId: true,
     medals: {
       select: {
-        name: true,
         id: true,
-        image: true,
-        holographic: true,
         seasonid: true,
       },
     },

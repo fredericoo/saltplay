@@ -67,8 +67,8 @@ model VerificationToken {
 model Match {
   id              String   @id @default(cuid())
   createdAt       DateTime
-  left            User[]   @relation("left", references: [id])
-  right           User[]   @relation("right", references: [id])
+  left            User[]   @relation("left")
+  right           User[]   @relation("right")
   leftscore       Int
   rightscore      Int
   gameid          String
@@ -133,12 +133,11 @@ model Season {
 }
 
 model Medal {
-  id          String  @id @default(uuid())
-  name        String
-  image       String?
-  holographic Boolean @default(false)
-  seasonid    String?
-  season      Season? @relation(fields: [seasonid], references: [id])
+  id       String  @id @default(uuid())
+  name     String
+  image    String?
+  seasonid String?
+  season   Season? @relation(fields: [seasonid], references: [id])
 
   owners   User[]
   boasting User[] @relation("boast")

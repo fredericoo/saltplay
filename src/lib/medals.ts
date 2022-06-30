@@ -112,13 +112,10 @@ const placeHolo: MedalFunction =
   </svg>  
 `;
 
-const medals: Record<string, MedalFunction> = {
-  'first-place': firstPlaceMedal,
-  'first-place_holo': placeHolo,
-  'second-place': secondPlaceMedal,
-  'second-place_holo': placeHolo,
-  'third-place': thirdPlaceMedal,
-  'third-place_holo': placeHolo,
-  'last-place': lastPlaceMedal,
+const medals: Record<string, { medal: MedalFunction; holo?: MedalFunction }> = {
+  'first-place': { medal: firstPlaceMedal, holo: placeHolo },
+  'second-place': { medal: secondPlaceMedal, holo: placeHolo },
+  'third-place': { medal: thirdPlaceMedal, holo: placeHolo },
+  'last-place': { medal: lastPlaceMedal },
 };
 export default medals;
