@@ -17,6 +17,7 @@ import getGradientFromId from '@/theme/palettes';
 import {
   Badge,
   Box,
+  Button,
   Container,
   Heading,
   HStack,
@@ -36,7 +37,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
 const getPlayerById = async (id: User['id']) =>
   await prisma.user.findUnique({
@@ -78,9 +79,10 @@ type PlayerPageProps = {
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
-  const { data: medalsQuery, mutate } = useSWR<UserGETAPIResponse>(`/api/users/${player.id}`);
-  const boastId = medalsQuery?.data?.boastId;
-  const medals = medalsQuery?.data?.medals || [];
+  const { mutate } = useSWRConfig();
+  const { data: userQuery } = useSWR<UserGETAPIResponse>(`/api/users/${player.id}`);
+  const boastId = userQuery?.data?.boastId;
+  const medals = userQuery?.data?.medals || [];
 
   const { data: session } = useSession();
 
@@ -91,15 +93,23 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   const handleBoast = async (boastId: string | null) => {
     try {
       const body = { boastId };
-      if (!medalsQuery) throw new Error("Can't boast: no medals loaded.");
-      const optimisticData = { ...medalsQuery };
+      if (!userQuery) throw new Error("Can't boast: no medals loaded.");
+      const optimisticData = { ...userQuery };
       optimisticData.data && Object.assign(optimisticData.data, { boastId });
-      await mutate(optimisticData, { revalidate: false });
-      await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
-      await mutate();
+      await mutate(
+        `/api/users/${player.id}`,
+        async () => {
+          return await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
+        },
+        {
+          optimisticData,
+          revalidate: false,
+          rollbackOnError: true,
+          populateCache: true,
+        }
+      );
     } catch (e) {
       console.error(e);
-      await mutate();
     }
   };
 
@@ -162,17 +172,23 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                     {otherMedals.map(
                       medal =>
                         medal.seasonid && (
-                          <MotionBox layoutId={medal.id} key={medal.id} onClick={() => isMe && handleBoast(medal.id)}>
+                          <MotionBox
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            layoutId={medal.id}
+                            key={medal.id}
+                          >
                             <Medal id={medal.id} seasonId={medal.seasonid} />
+                            {isMe && (
+                              <Button mt={2} onClick={() => isMe && handleBoast(medal.id)}>
+                                Boast
+                              </Button>
+                            )}
                           </MotionBox>
                         )
                     )}
                   </HStack>
-                  {isMe && (
-                    <Text fontSize="sm" color="grey.11">
-                      Tap on a badge to show it off to your friends!
-                    </Text>
-                  )}
                 </Stack>
               </Box>
             )}

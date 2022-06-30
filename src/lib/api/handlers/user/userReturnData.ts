@@ -3,13 +3,14 @@ import { Prisma } from '@prisma/client';
 
 type UserSelect = Prisma.UserUpdateArgs['select'];
 
-const userReturnData = (options?: { includeMedals?: boolean }) => {
+const userReturnData = () => {
   const userSelect = getExactTypeFor<UserSelect>()({
     id: true,
     name: true,
-    boastId: options?.includeMedals,
-    medals: options?.includeMedals && {
+    boastId: true,
+    medals: {
       select: {
+        name: true,
         id: true,
         image: true,
         holographic: true,
