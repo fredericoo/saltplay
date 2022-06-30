@@ -112,11 +112,11 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
           <Box as="section" bg="grey.4" borderRadius="xl" alignSelf="start" minH="100vh" overflow="hidden">
             <Tabs isLazy variant="typographic">
               <TabList>
-                {game.seasons.length > 1 ? (
+                {activeSeasons.length > 1 ? (
                   activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
-                ) : (
+                ) : activeSeasons.length > 0 ? (
                   <Tab pointerEvents="none">Leaderboard</Tab>
-                )}
+                ) : null}
                 {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
               </TabList>
               <TabPanels>
@@ -238,11 +238,11 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <TabPanel>
                 <Tabs isLazy variant="typographic" mx={-4}>
                   <TabList>
-                    {game.seasons.length > 1 ? (
+                    {activeSeasons.length > 1 ? (
                       activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
-                    ) : (
+                    ) : activeSeasons.length > 0 ? (
                       <Tab pointerEvents="none">Leaderboard</Tab>
-                    )}
+                    ) : null}
                     {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
                   </TabList>
                   <TabPanels>
