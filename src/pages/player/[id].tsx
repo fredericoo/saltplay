@@ -171,8 +171,8 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                     {otherMedals.map(
                       medal =>
                         medal.seasonid && (
-                          <Stack spacing={1} alignItems="center">
-                            <MotionBox layoutId={medal.id} key={medal.id}>
+                          <Stack key={medal.id} spacing={1} alignItems="center">
+                            <MotionBox layoutId={medal.id}>
                               <Medal id={medal.id} seasonId={medal.seasonid} />
                             </MotionBox>
 
