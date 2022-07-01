@@ -50,7 +50,7 @@ const getSeason = async (id: string) => {
   const responseWithoutDates = {
     ...response,
     startDate: response.startDate.toISOString(),
-    endDate: response.endDate?.toISOString(),
+    endDate: response.endDate?.toISOString() || null,
   };
 
   return responseWithoutDates;
