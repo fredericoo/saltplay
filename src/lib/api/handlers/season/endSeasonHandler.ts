@@ -59,10 +59,13 @@ const endSeasonHandler: NextApiHandler<SeasonEndAPIResponse> = async (req, res) 
   const noOfPlayers = await prisma.playerScore.count({ where: { seasonid: id } });
   const noOfMatches = await prisma.match.count({ where: { seasonid: id } });
 
+  console.log(`${noOfPlayers} players, ${noOfMatches} matches`);
+
   if (noOfPlayers >= 5 && noOfMatches >= 15) {
     const top10Medal = medals.find(medal => medal.image === 'top-10');
     if (top10Medal && noOfPlayers >= 20 && noOfMatches >= 40) {
-      await Promise.all(top10.map(({ playerid }) => giveMedal(top10Medal.id, playerid)));
+      const top10Earners = top10.slice(3);
+      await Promise.all(top10Earners.map(({ playerid }) => giveMedal(top10Medal.id, playerid)));
     }
 
     const firstPlaceMedal = medals.find(medal => medal.image === 'first-place');
