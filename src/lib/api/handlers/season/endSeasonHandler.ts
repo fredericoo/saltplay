@@ -85,7 +85,7 @@ const endSeasonHandler: NextApiHandler<SeasonEndAPIResponse> = async (req, res) 
   if (lastPlaceMedal) {
     const [lastPlace] = await prisma.season.findUnique({ where: { id } }).scores({
       take: 1,
-      orderBy: { points: 'asc', player: { name: 'desc' } }, // 🤖 TODO: revert leaderboardOrderBy
+      orderBy: [{ points: 'asc' }, { player: { name: 'desc' } }], // 🤖 TODO: revert leaderboardOrderBy
       select: {
         playerid: true,
       },
