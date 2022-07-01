@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth/next';
+import { unstable_getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
 
 const getOpponents = (gameid: string) =>
@@ -30,7 +30,7 @@ const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   if (typeof gameId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
 
-  const session = await getServerSession({ req, res }, nextAuthOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
   const opponents = await getOpponents(gameId);
 

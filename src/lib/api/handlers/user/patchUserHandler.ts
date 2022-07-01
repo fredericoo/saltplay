@@ -6,7 +6,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Prisma, User } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import userReturnData from './userReturnData';
 
 const updateUser = ({ id, data }: Pick<User, 'id'> & Pick<Prisma.UserUpdateArgs, 'data'>) =>
@@ -19,7 +19,7 @@ const updateUser = ({ id, data }: Pick<User, 'id'> & Pick<Prisma.UserUpdateArgs,
 export type UserPATCHAPIResponse = APIResponse<Awaited<ReturnType<typeof updateUser>>>;
 
 const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) => {
-  const session = await getServerSession({ req, res }, nextAuthOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
   const id = req.query.id;
   if (typeof id !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid user id' });
 

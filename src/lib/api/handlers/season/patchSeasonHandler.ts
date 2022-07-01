@@ -7,7 +7,7 @@ import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Season } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
 
 type PatchSeasonBody = InferType<typeof patchSeasonSchema>;
@@ -34,7 +34,7 @@ const patchSeasonHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res
   await patchSeasonSchema
     .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       const seasonId = req.query.id;
 

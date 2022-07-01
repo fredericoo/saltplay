@@ -6,7 +6,7 @@ import { notifyDeletedMatch } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { InferType, object, string } from 'yup';
 
 export type DeleteMatchesOptions = InferType<typeof querySchema>;
@@ -19,7 +19,7 @@ const querySchema = object({
 
 const isProd = process.env.NODE_ENV === 'production';
 const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (req, res) => {
-  const session = await getServerSession({ req, res }, nextAuthOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
   if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
   querySchema

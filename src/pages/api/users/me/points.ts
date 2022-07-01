@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Game, Season, User } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth/next';
+import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
 
@@ -30,7 +30,7 @@ const pointsHandler: NextApiHandler<PlayerPointsAPIResponse> = async (req, res) 
   querySchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       if (!session?.user.id) return res.status(401).json({ status: 'error', message: 'Not logged in' });
 
       const points = await getUserPoints(session?.user?.id, query.gameId, query.seasonId);

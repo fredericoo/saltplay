@@ -5,7 +5,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Game } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 
 export type GameDELETEAPIResponse = APIResponse<Game>;
@@ -18,7 +18,7 @@ const deleteGameHandler: NextApiHandler<GameDELETEAPIResponse> = async (req, res
   await requestSchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 

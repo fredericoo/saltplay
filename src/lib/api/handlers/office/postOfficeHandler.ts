@@ -6,7 +6,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
 
 type PostOfficeBody = InferType<typeof postOfficeSchema>;
@@ -22,7 +22,7 @@ const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res
   await postOfficeSchema
     .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 

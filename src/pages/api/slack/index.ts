@@ -1,7 +1,7 @@
 import getAllSlackMembers from '@/lib/slack/getAllSlackMembers';
 import { APIResponse } from '@/lib/types/api';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../auth/[...nextauth]';
 
 export type SlackMembersAPIResponse = APIResponse<{
@@ -11,7 +11,7 @@ export type SlackMembersAPIResponse = APIResponse<{
 const slackMembersHandler: NextApiHandler<SlackMembersAPIResponse> = async (req, res) => {
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
 
-  const session = await getServerSession({ req, res }, nextAuthOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
   const members = await getAllSlackMembers();
 
