@@ -62,9 +62,10 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
             <MenuItem as="a">Admin Panel</MenuItem>
           </Link>
         )}
-        <Link href="/api/auth/signout" passHref>
-          <MenuItem as="a">Sign out</MenuItem>
-        </Link>
+
+        <MenuItem as="a" href="/api/auth/signout">
+          Sign out
+        </MenuItem>
       </MenuList>
     </Menu>
   );

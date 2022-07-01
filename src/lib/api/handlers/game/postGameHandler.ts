@@ -6,7 +6,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
 
 type PostGameBody = InferType<typeof postGameSchema>;
@@ -25,7 +25,7 @@ const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) =>
   await postGameSchema
     .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
 
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });

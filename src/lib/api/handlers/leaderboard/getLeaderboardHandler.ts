@@ -1,8 +1,8 @@
-import { Player } from '@/components/PlayerPicker/types';
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
-import { Match, PlayerScore } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
+import { Match } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
 
@@ -18,14 +18,20 @@ const querySchema = object({
 
 export type LeaderboardGETOptions = InferType<typeof querySchema>;
 
+type LeaderboardPlayer = Omit<
+  GetLeaderboardPositionsResponse['playerScores'][number]['player'],
+  'leftmatches' | 'rightmatches'
+>;
+export type LeaderboardGETAPIResponsePosition = {
+  position: number;
+  wins: number;
+  losses: number;
+  points: number;
+} & LeaderboardPlayer;
+
 export type LeaderboardGETAPIResponse = APIResponse<
   {
-    positions: ({
-      position: number;
-      wins: number;
-      losses: number;
-    } & Pick<Player, 'id' | 'name' | 'image' | 'roleId'> &
-      Pick<PlayerScore, 'points'>)[];
+    positions: LeaderboardGETAPIResponsePosition[];
   },
   { nextPage?: number }
 >;
@@ -62,8 +68,14 @@ const calculateWinsAndLosses = (
   return { wins: p1Stats.wins + p2Stats.wins, losses: p1Stats.losses + p2Stats.losses };
 };
 
+export const leaderboardOrderBy: Prisma.PlayerScoreFindManyArgs['orderBy'] = [
+  { points: 'desc' },
+  { player: { name: 'asc' } },
+];
+
+type GetLeaderboardPositionsResponse = Awaited<ReturnType<typeof getLeaderboardPositions>>;
 const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page }: LeaderboardGETOptions) => {
-  const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId } } });
+  const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId }, season: { id: seasonId } } });
 
   const playerScores = await prisma.game.findUnique({ where: { id: gameId } }).scores({
     where: { season: { id: seasonId } },
@@ -71,7 +83,7 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
       !!userId && !!gameId && !!seasonId
         ? { gameid_playerid_seasonid: { gameid: gameId, playerid: userId, seasonid: seasonId } }
         : undefined,
-    orderBy: [{ points: 'desc' }, { player: { name: 'asc' } }],
+    orderBy: leaderboardOrderBy,
     skip: perPage * (page - 1),
     take: perPage,
     select: {
@@ -85,6 +97,12 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
           name: true,
           image: true,
           roleId: true,
+          boast: {
+            select: {
+              id: true,
+              seasonid: true,
+            },
+          },
         },
       },
     },
@@ -105,13 +123,11 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
             playerScore.player.leftmatches,
             playerScore.player.rightmatches
           );
-          const { name, image, id, roleId } = playerScore.player;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { rightmatches, leftmatches, ...player } = playerScore.player;
           return {
             position: options.userId ? 0 : options.perPage * (options.page - 1) + position + 1,
-            id,
-            roleId,
-            name,
-            image,
+            ...player,
             wins,
             losses,
             points: playerScore.points,

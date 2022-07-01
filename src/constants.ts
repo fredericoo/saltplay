@@ -17,6 +17,7 @@ export const BASE_MATCH_POINTS = 10;
 export const MIN_MATCH_POINTS = 1;
 export const MAX_MATCH_POINTS = 100;
 export const INITIAL_SEASON: Pick<Season, 'name' | 'slug'> = { name: 'Season 0', slug: 'season-0' };
+export const DEFAULT_MEDAL_BG = 'f5f5f5';
 
 export const PAGE_REVALIDATE_SECONDS = 60;
 

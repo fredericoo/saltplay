@@ -42,6 +42,10 @@ model User {
   feedback      Feedback[]
   roleId        Int
   role          Role          @relation(fields: [roleId], references: [id])
+  medals        Medal[]
+
+  boastId String?
+  boast   Medal?  @relation("boast", fields: [boastId], references: [id])
 }
 
 model Session {
@@ -50,7 +54,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
 }
 
 model VerificationToken {
@@ -64,8 +67,8 @@ model VerificationToken {
 model Match {
   id              String   @id @default(cuid())
   createdAt       DateTime
-  left            User[]   @relation("left", references: [id])
-  right           User[]   @relation("right", references: [id])
+  left            User[]   @relation("left")
+  right           User[]   @relation("right")
   leftscore       Int
   rightscore      Int
   gameid          String
@@ -115,16 +118,29 @@ model PlayerScore {
 
 model Season {
   id        String        @id @default(uuid())
+  colour    String?
   name      String
   slug      String
   startDate DateTime      @default(now())
-  active    Boolean       @default(true)
+  endDate   DateTime?
   gameid    String
   game      Game          @relation(fields: [gameid], references: [id])
   scores    PlayerScore[]
   matches   Match[]
+  medals    Medal[]
 
   @@unique([slug, gameid])
+}
+
+model Medal {
+  id       String  @id @default(uuid())
+  name     String
+  image    String?
+  seasonid String?
+  season   Season? @relation(fields: [seasonid], references: [id])
+
+  owners   User[]
+  boasting User[] @relation("boast")
 }
 
 model Role {

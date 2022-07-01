@@ -14,7 +14,7 @@ import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import { Game, Office } from '@prisma/client';
 import { format } from 'date-fns';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
@@ -38,8 +38,9 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
           id: true,
           slug: true,
           name: true,
-          active: true,
           startDate: true,
+          endDate: true,
+          colour: true,
         },
       },
       name: true,
@@ -56,7 +57,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
     seasons: response.seasons.map(season => ({
       ...season,
       startDate: season.startDate.toISOString(),
-      active: season.active,
+      endDate: season.endDate?.toISOString() || null,
     })),
   };
 
@@ -75,10 +76,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const activeSeasons = game.seasons
-    ?.filter(season => season.active)
+    ?.filter(season => !season.endDate)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
   const inactiveSeasons = game.seasons
-    ?.filter(season => !season.active)
+    ?.filter(season => !!season.endDate)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
 
   return (
@@ -114,9 +115,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
               <TabList>
                 {game.seasons.length > 1 ? (
                   activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
-                ) : (
+                ) : activeSeasons.length > 0 ? (
                   <Tab>Leaderboard</Tab>
-                )}
+                ) : null}
                 {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
               </TabList>
               <TabPanels>
@@ -135,16 +136,19 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                   <TabPanel>
                     <Settings.List>
                       {inactiveSeasons.map(season => (
-                        <Settings.Item
+                        <Settings.Link
                           key={season.id}
-                          // icon={'🗓'}
-                          // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                          icon={<Box w="1.5rem" h="1.5rem" borderRadius="lg" bgColor={`#${season.colour}`} />}
+                          href={`/${game.office.slug}/${game.slug}/${season.slug}`}
                         >
-                          {season.name}
-                          <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
-                            Started on {format(new Date(season.startDate), 'MMM d')}
+                          <Text>{season.name}</Text>
+                          <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="grey.11">
+                            {[
+                              format(new Date(season.startDate), 'MMM d'),
+                              season.endDate && format(new Date(season.endDate), 'MMM d'),
+                            ].join('—')}
                           </Box>
-                        </Settings.Item>
+                        </Settings.Link>
                       ))}
                     </Settings.List>
                   </TabPanel>
@@ -240,9 +244,9 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                   <TabList>
                     {game.seasons.length > 1 ? (
                       activeSeasons.map(season => <Tab key={season.id}>{season.name}</Tab>)
-                    ) : (
-                      <Tab>Leaderboard</Tab>
-                    )}
+                    ) : activeSeasons.length > 0 ? (
+                      <Tab pointerEvents="none">Leaderboard</Tab>
+                    ) : null}
                     {inactiveSeasons.length > 0 && <Tab>Past seasons</Tab>}
                   </TabList>
                   <TabPanels>
@@ -261,16 +265,19 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                       <TabPanel>
                         <Settings.List>
                           {inactiveSeasons.map(season => (
-                            <Settings.Item
+                            <Settings.Link
                               key={season.id}
-                              // icon={'🗓'}
-                              // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                              icon={<Box w="1.5rem" h="1.5rem" borderRadius="lg" bgColor={`#${season.colour}`} />}
+                              href={`/${game.office.slug}/${game.slug}/${season.slug}`}
                             >
-                              {season.name}
-                              <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
-                                Started on {format(new Date(season.startDate), 'MMM d')}
+                              <Text fontWeight="bold">{season.name}</Text>
+                              <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="grey.11">
+                                {[
+                                  format(new Date(season.startDate), 'MMM d'),
+                                  season.endDate && format(new Date(season.endDate), 'MMM d'),
+                                ].join('—')}
                               </Box>
-                            </Settings.Item>
+                            </Settings.Link>
                           ))}
                         </Settings.List>
                       </TabPanel>

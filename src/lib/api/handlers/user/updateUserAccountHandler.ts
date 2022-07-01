@@ -5,15 +5,15 @@ import slack from '@/lib/slack/client';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 
-export type UserPATCHAPIResponse = APIResponse;
+export type UserAccountPATCHAPIResponse = APIResponse;
 
-const updateUserAccountHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) => {
+const updateUserAccountHandler: NextApiHandler<UserAccountPATCHAPIResponse> = async (req, res) => {
   await updateUserAccountSchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 

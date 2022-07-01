@@ -17,14 +17,7 @@ type LeaderboardProps = {
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({
-  gameId,
-  seasonId,
-  hasIcons = true,
-  stickyMe,
-  bg,
-  offsetPlayerBottom,
-}) => {
+const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
   const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId, seasonId });
   const loadMoreRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +48,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
-            <PositionNumber position={i + 1} displayMedals={hasIcons} />
+            <PositionNumber position={i + 1} />
             <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
           </HStack>
         ))}
@@ -78,16 +71,8 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({
         const isMe = session?.user.id === player.id;
         return (
           <LeaderboardPosition
-            id={player.id}
             key={player.id}
-            name={player.name || 'Anonymous'}
-            photo={player.image}
-            wins={player.wins}
-            losses={player.losses}
-            points={player.points}
-            roleId={player.roleId}
-            position={player.position}
-            hasIcons={hasIcons}
+            user={player}
             isMe={isMe}
             bottom={isMe && stickyMe ? offsetPlayerBottom || 0 : undefined}
             bg={bg}
@@ -137,22 +122,7 @@ const PlayerPosition: React.VFC<PlayerPositionProps> = ({ bottom, bg, ...ids }) 
   const player = playerPositions?.data?.positions?.[0];
   if (!player) return null;
 
-  return (
-    <LeaderboardPosition
-      id={player.id}
-      key={player.id}
-      name={player.name || 'Anonymous'}
-      photo={player.image}
-      wins={player.wins}
-      losses={player.losses}
-      points={player.points}
-      roleId={player.roleId}
-      position={player.position}
-      bottom={bottom}
-      isMe
-      bg={bg}
-    />
-  );
+  return <LeaderboardPosition key={player.id} user={player} bottom={bottom} isMe bg={bg} />;
 };
 
 export default Leaderboard;

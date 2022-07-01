@@ -4,6 +4,7 @@ import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import Admin from '@/layouts/Admin';
 import { PageWithLayout } from '@/layouts/types';
+import { withDashboardAuth } from '@/lib/admin';
 import { Stack } from '@chakra-ui/react';
 import axios from 'axios';
 
@@ -42,6 +43,12 @@ const AdminPage: PageWithLayout = () => {
     </Stack>
   );
 };
+
+export const getServerSideProps = withDashboardAuth(async () => {
+  return {
+    props: {},
+  };
+});
 
 AdminPage.Layout = Admin;
 

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import Editable from './Editable';
 
 describe('Editable component', () => {
-  test('When not editing, renders edit button', () => {
+  test('when not editing, renders edit button', () => {
     const id = gen.string();
     render(<Editable id={id} isEditing={false} />);
 
@@ -13,7 +13,7 @@ describe('Editable component', () => {
     expect(editButton).toBeInTheDocument();
   });
 
-  test('When not editing, renders value and preText', () => {
+  test('when not editing, renders value and preText', () => {
     const id = gen.string();
     const value = gen.string();
     const preText = gen.string();
@@ -26,7 +26,7 @@ describe('Editable component', () => {
     expect(renderedPreText).toBeInTheDocument();
   });
 
-  test('When clicking on Edit button, calls onEdit', async () => {
+  test('when clicking on Edit button, calls onEdit', async () => {
     const id = gen.string();
     const onEdit = jest.fn();
     render(<Editable id={id} onEdit={onEdit} isEditing={false} />);
@@ -38,7 +38,7 @@ describe('Editable component', () => {
     expect(onEdit).toHaveBeenCalled();
   });
 
-  test('When clicking on the field value itself, calls onEdit', async () => {
+  test('when clicking on the field value itself, calls onEdit', async () => {
     const id = gen.string();
     const onEdit = jest.fn();
     const value = gen.string();
@@ -51,7 +51,7 @@ describe('Editable component', () => {
     expect(onEdit).toHaveBeenCalled();
   });
 
-  test('When isDisabled, clicking on Edit button does not call onEdit', async () => {
+  test('when isDisabled, clicking on Edit button does not call onEdit', async () => {
     const id = gen.string();
     const onEdit = jest.fn();
     render(<Editable id={id} onEdit={onEdit} isEditing={false} isDisabled />);
@@ -63,7 +63,7 @@ describe('Editable component', () => {
     expect(onEdit).not.toHaveBeenCalled();
   });
 
-  test('When isDisabled, clicking on the field value itself does not call onEdit', async () => {
+  test('when isDisabled, clicking on the field value itself does not call onEdit', async () => {
     const id = gen.string();
     const onEdit = jest.fn();
     const value = gen.string();
@@ -76,7 +76,7 @@ describe('Editable component', () => {
     expect(onEdit).not.toHaveBeenCalled();
   });
 
-  test('When editing, renders Submit and Cancel buttons', () => {
+  test('when editing, renders Submit and Cancel buttons', () => {
     render(<Editable id={''} isEditing={true} />);
 
     const submitButton = screen.getByRole('button', { name: 'Submit' });
@@ -86,7 +86,7 @@ describe('Editable component', () => {
     expect(cancelButton).toBeInTheDocument();
   });
 
-  test('When a children element with name “id” exists, submitting calls onSubmit with form element’s name and value', async () => {
+  test('when a children element with name “id” exists, submitting calls onSubmit with form element’s name and value', async () => {
     const id = gen.string();
     const onSave = jest.fn();
     const value = gen.string();
@@ -103,7 +103,7 @@ describe('Editable component', () => {
     expect(onSave).toHaveBeenCalledWith({ id, value });
   });
 
-  test('On clicking Submit, if children with name “id” is not found, does not call onSave', async () => {
+  test('when clicking Submit, if children with name “id” is not found, does not call onSave', async () => {
     const id = gen.string();
     const onSave = jest.fn();
     render(<Editable id={id} onSave={onSave} isEditing={true}></Editable>);

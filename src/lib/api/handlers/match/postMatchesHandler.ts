@@ -5,7 +5,7 @@ import { notifyMatchOnSlack } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { array, InferType, number, object, string } from 'yup';
 import getPlayerUserIds from '../../getPlayerUserIds';
 import moveMatchPoints from '../../moveMatchPoints';
@@ -35,7 +35,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
   await requestSchema
     .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
       if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
@@ -44,11 +44,11 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       const season = await prisma.season.findUnique({
         where: { id: body.seasonId },
-        select: { id: true, active: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
+        select: { id: true, endDate: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
       });
 
       if (!season) return res.status(404).json({ status: 'error', message: 'Season not found' });
-      if (!season.active) return res.status(403).json({ status: 'error', message: 'Season not active' });
+      if (season.endDate) return res.status(403).json({ status: 'error', message: 'Season already finished' });
 
       const maxPlayersPerTeam = season.game.maxPlayersPerTeam || 1;
 

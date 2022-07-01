@@ -20,6 +20,11 @@ const iconSchema = string().test(
   icon => typeof icon === 'undefined' || icon === '' || !!validateEmoji(icon)
 );
 
+export const badgeSchema = object({
+  name: string(),
+  image: string().optional(),
+});
+
 export const gameFlagsSchema = number()
   .min(0)
   .max(Object.values(GAME_FLAGS).reduce((acc, cur) => acc + cur));
@@ -74,9 +79,14 @@ export const updateUserAccountSchema = object({
   id: string().required(),
 });
 
-export const patchUserSchema = object({
+export const patchUserSchemaAdmin = object({
   name: string(),
   roleId: number(),
+  boastId: string().nullable(),
+});
+
+export const patchUserSchemaSelf = object({
+  boastId: string().nullable(),
 });
 
 export const patchPlayerScoreSchema = object().shape({

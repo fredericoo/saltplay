@@ -4,7 +4,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PlayerScore } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
 import { patchPlayerScoreSchema } from '../../schemas';
 
@@ -27,7 +27,7 @@ const patchPlayerScoreHandler: NextApiHandler<PlayerScorePATCHAPIResponse> = asy
   await patchPlayerScoreSchema
     .validate(req.body, { abortEarly: true, stripUnknown: true })
     .then(async body => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       const id = req.query.id;
 

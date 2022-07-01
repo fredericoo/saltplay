@@ -5,7 +5,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Season } from '@prisma/client';
 import { NextApiHandler } from 'next';
-import { getServerSession } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 
 export type SeasonDELETEAPIResponse = APIResponse<Season>;
@@ -18,7 +18,7 @@ const deleteSeasonHandler: NextApiHandler<SeasonDELETEAPIResponse> = async (req,
   await requestSchema
     .validate(req.query, { abortEarly: false, stripUnknown: true })
     .then(async query => {
-      const session = await getServerSession({ req, res }, nextAuthOptions);
+      const session = await unstable_getServerSession(req, res, nextAuthOptions);
       const canEdit = canViewDashboard(session?.user.roleId);
       if (!session || !canEdit) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
@@ -30,10 +30,11 @@ const deleteSeasonHandler: NextApiHandler<SeasonDELETEAPIResponse> = async (req,
           select: {
             id: true,
             gameid: true,
-            active: true,
             startDate: true,
+            endDate: true,
             name: true,
             slug: true,
+            colour: true,
             game: { select: { slug: true, office: { select: { slug: true } } } },
           },
         }),
