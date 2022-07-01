@@ -41,7 +41,7 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
 
   const seasonWithoutDates = {
     ...season,
-    endDate: season?.endDate?.toISOString(),
+    endDate: season?.endDate?.toISOString() || null,
   };
 
   return seasonWithoutDates;
