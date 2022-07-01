@@ -38,8 +38,8 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
           id: true,
           slug: true,
           name: true,
-          active: true,
           startDate: true,
+          endDate: true,
         },
       },
       name: true,
@@ -56,7 +56,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
     seasons: response.seasons.map(season => ({
       ...season,
       startDate: season.startDate.toISOString(),
-      active: season.active,
+      endDate: season.startDate.toISOString(),
     })),
   };
 
@@ -75,10 +75,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const activeSeasons = game.seasons
-    ?.filter(season => season.active)
+    ?.filter(season => !season.endDate)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
   const inactiveSeasons = game.seasons
-    ?.filter(season => !season.active)
+    ?.filter(season => !!season.endDate)
     .sort((a, b) => (a.startDate < b.startDate ? -1 : a.startDate > b.startDate ? 1 : 0));
 
   return (

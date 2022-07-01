@@ -103,7 +103,6 @@ const endSeasonHandler: NextApiHandler<SeasonEndAPIResponse> = async (req, res) 
   await prisma.season.update({
     where: { id },
     data: {
-      active: false,
       endDate: new Date(),
     },
   });

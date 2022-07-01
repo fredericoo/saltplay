@@ -44,11 +44,11 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       const season = await prisma.season.findUnique({
         where: { id: body.seasonId },
-        select: { id: true, active: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
+        select: { id: true, endDate: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
       });
 
       if (!season) return res.status(404).json({ status: 'error', message: 'Season not found' });
-      if (!season.active) return res.status(403).json({ status: 'error', message: 'Season not active' });
+      if (season.endDate) return res.status(403).json({ status: 'error', message: 'Season already finished' });
 
       const maxPlayersPerTeam = season.game.maxPlayersPerTeam || 1;
 

@@ -24,7 +24,6 @@ const updateSeason = async (seasonId: Season['id'], { startDate, ...body }: Patc
     select: {
       name: true,
       startDate: true,
-      active: true,
       slug: true,
       game: { select: { slug: true, office: { select: { slug: true } } } },
     },

@@ -26,7 +26,6 @@ const getSeason = async (id: string) => {
       id: true,
       name: true,
       slug: true,
-      active: true,
       startDate: true,
       endDate: true,
       gameid: true,
@@ -52,7 +51,6 @@ const getSeason = async (id: string) => {
     ...response,
     startDate: response.startDate.toISOString(),
     endDate: response.endDate?.toISOString(),
-    active: response.active,
   };
 
   return responseWithoutDates;
@@ -81,11 +79,6 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ season }) => {
       id: 'startDate',
       label: 'Start Date',
       type: 'datetime',
-    },
-    {
-      id: 'active',
-      label: 'Active?',
-      type: 'switch',
     },
   ];
 

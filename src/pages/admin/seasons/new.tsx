@@ -66,11 +66,6 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ gamesWithOffices, query }) 
       label: 'Start Date',
       type: 'datetime',
     },
-    {
-      id: 'active',
-      label: 'Active?',
-      type: 'switch',
-    },
   ];
 
   const handleSubmit: FormEventHandler = async e => {
