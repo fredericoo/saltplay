@@ -135,16 +135,16 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                   <TabPanel>
                     <Settings.List>
                       {inactiveSeasons.map(season => (
-                        <Settings.Item
+                        <Settings.Link
                           key={season.id}
-                          // icon={'🗓'}
-                          // href={`/${game.office.slug}/${game.slug}/${season.slug}`}
+                          icon={'🗓'}
+                          href={`/${game.office.slug}/${game.slug}/${season.slug}`}
                         >
                           {season.name}
                           <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest">
                             Started on {format(new Date(season.startDate), 'MMM d')}
                           </Box>
-                        </Settings.Item>
+                        </Settings.Link>
                       ))}
                     </Settings.List>
                   </TabPanel>
