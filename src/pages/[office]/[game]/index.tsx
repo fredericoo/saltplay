@@ -56,7 +56,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
     seasons: response.seasons.map(season => ({
       ...season,
       startDate: season.startDate.toISOString(),
-      endDate: season.startDate.toISOString(),
+      endDate: season.endDate?.toISOString() || null,
     })),
   };
 

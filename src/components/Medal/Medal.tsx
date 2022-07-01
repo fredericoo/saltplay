@@ -48,7 +48,7 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
   };
 
   return (
-    <Tooltip label={medal?.name} placement="top" offset={[0, 32]} variant="medal" closeOnClick={false}>
+    <Tooltip label={medal?.name} placement="top" offset={[0, 16]} variant="medal" closeOnClick={false}>
       <MedalWrapper
         ref={boxRef}
         onMouseMove={handleMouseMove}
