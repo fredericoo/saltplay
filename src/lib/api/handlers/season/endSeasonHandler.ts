@@ -118,6 +118,7 @@ const giveMedal = async (medalId: Medal['id'], userId: User['id']) => {
       medals: {
         connect: { id: medalId },
       },
+      boastId: medalId, // 🤖 TODO: only auto set if not already set
     },
   });
 };
