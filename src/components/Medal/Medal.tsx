@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useSeasonMedals from '@/lib/useSeasonMedals';
-import { Box, keyframes, styled, Tooltip } from '@chakra-ui/react';
+import { Box, keyframes, styled, Text, Tooltip } from '@chakra-ui/react';
 import type { Medal as DBMedal, Season } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
@@ -48,7 +48,19 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
   };
 
   return (
-    <Tooltip label={medal?.name} placement="top" offset={[0, 16]} variant="medal" closeOnClick={false}>
+    <Tooltip
+      label={
+        <Box textAlign="center">
+          <Text>{medal?.description}</Text>
+          <Text fontWeight="bold">{medal?.name}</Text>
+        </Box>
+      }
+      placement="top"
+      shouldWrapChildren
+      offset={[0, 32]}
+      variant="medal"
+      closeOnClick={false}
+    >
       <MedalWrapper
         ref={boxRef}
         onMouseMove={handleMouseMove}

@@ -5,7 +5,10 @@ import { APIResponse } from '@/lib/types/api';
 import { Medal } from '@prisma/client';
 import { NextApiHandler } from 'next';
 
-export type MedalURLs = Record<Medal['id'], { url: string; name: Medal['name']; isHolographic: boolean }>;
+export type MedalURLs = Record<
+  Medal['id'],
+  { url: string; name: Medal['name']; isHolographic: boolean; description?: string }
+>;
 export type SeasonMedalsGETAPIResponse = APIResponse<MedalURLs>;
 
 const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async (req, res) => {
@@ -21,7 +24,7 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
           id: true,
           name: true,
           image: true,
-          season: { select: { name: true, game: { select: { icon: true } } } },
+          season: { select: { name: true, game: { select: { icon: true, office: { select: { name: true } } } } } },
         },
       },
     },
@@ -43,6 +46,7 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
           }`,
           isHolographic: !!medal.image && isValidMedal(medal.image) && !!medals[medal.image].holo,
           name: medal.name,
+          description: [medal.season?.game.office.name, medal.season?.name].join(' ⁄ '),
         },
       ];
     })
