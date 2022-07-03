@@ -72,30 +72,16 @@ const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
 export default SeasonPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const seasons = await prisma.season.findMany({
-    select: { slug: true, game: { select: { slug: true, office: { select: { slug: true } } } } },
-  });
-
-  return {
-    paths: seasons.map(season => ({
-      params: {
-        season: season.slug,
-        game: season.game.slug,
-        office: season.game.office.slug,
-      },
-    })),
-    fallback: 'blocking',
-  };
+  // Deliberately not statically building users.
+  return { paths: [], fallback: 'blocking' };
 };
 
-const pageSchema = object({
-  office: string().required(),
-  game: string().required(),
-  season: string().required(),
-});
-
 export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }) => {
-  if (process.env.NEXT_PUBLIC_ENABLE_SEASONS !== 'true') return { notFound: true };
+  const pageSchema = object({
+    office: string().required(),
+    game: string().required(),
+    season: string().required(),
+  });
 
   const res = await pageSchema
     .validate(params, { abortEarly: true, stripUnknown: true })
