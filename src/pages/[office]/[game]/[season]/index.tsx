@@ -39,6 +39,8 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
 
   const season = response?.games[0]?.seasons[0];
 
+  if (!season) return null;
+
   const seasonWithoutDates = {
     ...season,
     endDate: season?.endDate?.toISOString() || null,
@@ -83,10 +85,11 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
     season: string().required(),
   });
 
-  const res = await pageSchema
+  return await pageSchema
     .validate(params, { abortEarly: true, stripUnknown: true })
     .then(async params => {
       const season = await getSeason(params);
+
       if (!season)
         return {
           notFound: true as const,
@@ -105,5 +108,4 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
         revalidate: PAGE_REVALIDATE_SECONDS,
       };
     });
-  return res;
 };
