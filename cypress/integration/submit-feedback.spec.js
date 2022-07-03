@@ -22,7 +22,7 @@ describe('submits feedback', () => {
 
     cy.get('[aria-modal]').get('button[type="submit"]').click();
 
-    cy.get('[role="alert"]').should('contain', 'We have received your feedback.');
+    cy.get('[data-testid="toast"]').should('contain', 'We have received your feedback.');
   });
 
   it('can downvote without message', () => {
@@ -35,7 +35,7 @@ describe('submits feedback', () => {
 
     cy.get('[aria-modal]').get('button[type="submit"]').click();
 
-    cy.get('[role="alert"]').should('contain', 'We have received your feedback.');
+    cy.get('[data-testid="toast"]').should('contain', 'We have received your feedback.');
   });
 
   it('can submit message inside modal', () => {
@@ -46,6 +46,6 @@ describe('submits feedback', () => {
 
     cy.get('[aria-modal]').get('button[type="submit"]').click();
 
-    cy.get('[role="alert"]').should('contain', 'We have received your feedback.');
+    cy.get('[data-testid="toast"]').should('contain', 'We have received your feedback.');
   });
 });

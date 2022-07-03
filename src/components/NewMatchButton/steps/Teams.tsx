@@ -7,7 +7,7 @@ import { BANNED_ROLE_ID } from '@/constants';
 import { canViewDashboard } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
+import { Game, Season } from '@prisma/client';
 import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,16 +18,17 @@ import Side from '../Side';
 
 type TeamsProps = {
   gameId: Game['id'];
+  seasonId: Season['id'];
   maxPlayersPerTeam: number;
   onFinish?: () => void;
 };
 
-const Teams: React.VFC<TeamsProps> = ({ gameId, maxPlayersPerTeam, onFinish }) => {
-  const { data: opponentsQuery, error: opponentsError, mutate } = useOpponents({ gameId });
+const Teams: React.VFC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onFinish }) => {
+  const { data: session } = useSession();
+  const { data: opponentsQuery, error: opponentsError, mutate } = useOpponents({ gameId, seasonId });
 
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 
-  const { data: session } = useSession();
   const { register, watch, setValue } = useFormContext<MatchFormInputs>();
   const [left, right] = watch(['left', 'right']);
   const sides = { left, right };

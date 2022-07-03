@@ -42,7 +42,7 @@ const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
 
   return (
     <Stack
-      data-testid="modal"
+      data-testid="toast"
       role="alert"
       spacing={2}
       bg={toastStyles[status].bg[mode]}
