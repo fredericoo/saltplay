@@ -91,8 +91,11 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
       points: true,
       player: {
         select: {
-          leftmatches: { where: { gameid: gameId }, select: { leftscore: true, rightscore: true } },
-          rightmatches: { where: { gameid: gameId }, select: { leftscore: true, rightscore: true } },
+          leftmatches: { where: { gameid: gameId, seasonid: seasonId }, select: { leftscore: true, rightscore: true } },
+          rightmatches: {
+            where: { gameid: gameId, seasonid: seasonId },
+            select: { leftscore: true, rightscore: true },
+          },
           id: true,
           name: true,
           image: true,
