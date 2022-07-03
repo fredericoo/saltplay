@@ -90,6 +90,7 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
       if (!season)
         return {
           notFound: true as const,
+          revalidate: PAGE_REVALIDATE_SECONDS,
         };
 
       return {
@@ -101,6 +102,7 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
       console.error(e);
       return {
         notFound: true as const,
+        revalidate: PAGE_REVALIDATE_SECONDS,
       };
     });
   return res;
