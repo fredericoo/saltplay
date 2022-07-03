@@ -39,6 +39,8 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
 
   const season = response?.games[0]?.seasons[0];
 
+  if (!season) return null;
+
   const seasonWithoutDates = {
     ...season,
     endDate: season?.endDate?.toISOString() || null,
@@ -61,7 +63,7 @@ const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
         title={season.name}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore it is actually a string
-        subtitle={`finished at ${formatDateTime(new Date(season.endDate), 'Pp')}`}
+        subtitle={season.endDate && `finished at ${formatDateTime(new Date(season.endDate), 'Pp')}`}
         icon={season.game?.icon}
       />
       {season.game && <Leaderboard gameId={season.game.id} seasonId={season.id} />}
@@ -72,38 +74,26 @@ const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
 export default SeasonPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const seasons = await prisma.season.findMany({
-    select: { slug: true, game: { select: { slug: true, office: { select: { slug: true } } } } },
-  });
-
-  return {
-    paths: seasons.map(season => ({
-      params: {
-        season: season.slug,
-        game: season.game.slug,
-        office: season.game.office.slug,
-      },
-    })),
-    fallback: 'blocking',
-  };
+  // Deliberately not statically building users.
+  return { paths: [], fallback: 'blocking' };
 };
 
-const pageSchema = object({
-  office: string().required(),
-  game: string().required(),
-  season: string().required(),
-});
-
 export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }) => {
-  if (process.env.NEXT_PUBLIC_ENABLE_SEASONS !== 'true') return { notFound: true };
+  const pageSchema = object({
+    office: string().required(),
+    game: string().required(),
+    season: string().required(),
+  });
 
-  const res = await pageSchema
+  return await pageSchema
     .validate(params, { abortEarly: true, stripUnknown: true })
     .then(async params => {
       const season = await getSeason(params);
+
       if (!season)
         return {
           notFound: true as const,
+          revalidate: PAGE_REVALIDATE_SECONDS,
         };
 
       return {
@@ -111,8 +101,11 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
         revalidate: PAGE_REVALIDATE_SECONDS,
       };
     })
-    .catch(() => ({
-      notFound: true as const,
-    }));
-  return res;
+    .catch(e => {
+      console.error(e);
+      return {
+        notFound: true as const,
+        revalidate: PAGE_REVALIDATE_SECONDS,
+      };
+    });
 };
