@@ -63,7 +63,7 @@ const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
         title={season.name}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore it is actually a string
-        subtitle={`finished at ${formatDateTime(new Date(season.endDate), 'Pp')}`}
+        subtitle={season.endDate && `finished at ${formatDateTime(new Date(season.endDate), 'Pp')}`}
         icon={season.game?.icon}
       />
       {season.game && <Leaderboard gameId={season.game.id} seasonId={season.id} />}
