@@ -97,8 +97,11 @@ export const getStaticProps: GetStaticProps<SeasonPageProps> = async ({ params }
         revalidate: PAGE_REVALIDATE_SECONDS,
       };
     })
-    .catch(() => ({
-      notFound: true as const,
-    }));
+    .catch(e => {
+      console.error(e);
+      return {
+        notFound: true as const,
+      };
+    });
   return res;
 };
