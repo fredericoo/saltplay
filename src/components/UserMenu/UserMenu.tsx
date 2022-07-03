@@ -25,11 +25,9 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
     return isDev ? (
       <DevUserMenu />
     ) : (
-      <Link href="/api/auth/signin" passHref>
-        <Button as="a" size="sm" variant="subtle" colorScheme="grey">
-          Sign in
-        </Button>
-      </Link>
+      <Button as="a" href="/api/auth/signin" size="sm" variant="subtle" colorScheme="grey">
+        Sign in
+      </Button>
     );
   }
 
