@@ -160,7 +160,7 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
                   </Center>
                 ) : isOpen ? (
                   <Stack spacing={8}>
-                    <Teams gameId={gameId} maxPlayersPerTeam={maxPlayersPerTeam || 1} />
+                    <Teams gameId={gameId} seasonId={season.id} maxPlayersPerTeam={maxPlayersPerTeam || 1} />
                     <Scores />
                   </Stack>
                 ) : null}

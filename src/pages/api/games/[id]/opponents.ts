@@ -1,10 +1,11 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
+import { Game, Season } from '@prisma/client';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
 
-const getOpponents = (gameid: string) =>
+const getOpponents = ({ gameId, seasonId }: { gameId: Game['id']; seasonId?: Season['id'] }) =>
   prisma.user.findMany({
     select: {
       id: true,
@@ -13,7 +14,8 @@ const getOpponents = (gameid: string) =>
       roleId: true,
       scores: {
         where: {
-          gameid,
+          gameid: gameId,
+          ...(seasonId && { seasonid: seasonId }),
         },
       },
     },
@@ -26,13 +28,14 @@ export type OpponentsAPIResponse = APIResponse<{
 
 const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res) => {
   const gameId = req.query.id;
+  const seasonId = typeof req.query.seasonId === 'string' ? req.query.seasonId : undefined;
 
   if (req.method !== 'GET') return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   if (typeof gameId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
 
   const session = await unstable_getServerSession(req, res, nextAuthOptions);
   if (!session) return res.status(403).json({ status: 'error', message: 'Not logged in' });
-  const opponents = await getOpponents(gameId);
+  const opponents = await getOpponents({ gameId, seasonId });
 
   res.status(200).json({ status: 'ok', data: { opponents } });
 };
