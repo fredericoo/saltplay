@@ -24,7 +24,7 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
           id: true,
           name: true,
           image: true,
-          season: { select: { name: true, game: { select: { icon: true, office: { select: { name: true } } } } } },
+          season: { select: { name: true, game: { select: { name: true, icon: true, office: { select: { name: true } } } } } },
         },
       },
     },
@@ -46,7 +46,7 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
           }`,
           isHolographic: !!medal.image && isValidMedal(medal.image) && !!medals[medal.image].holo,
           name: medal.name,
-          description: [medal.season?.game.office.name, medal.season?.name].join(' ⁄ '),
+          description: [medal.season?.game.office.name, medal.season?.game.name, medal.season?.name].join(' ⁄ '),
         },
       ];
     })
