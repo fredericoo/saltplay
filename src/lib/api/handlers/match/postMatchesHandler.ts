@@ -64,7 +64,10 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
 
       const playersWithScores = await prisma.user.findMany({
         where: { id: { in: [...ids.left, ...ids.right] } },
-        select: { id: true, scores: { where: { gameid: season.game.id }, select: { playerid: true, points: true } } },
+        select: {
+          id: true,
+          scores: { where: { gameid: season.game.id, seasonid: season.id }, select: { playerid: true, points: true } },
+        },
       });
 
       const sides = {
