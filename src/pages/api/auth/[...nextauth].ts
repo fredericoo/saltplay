@@ -4,6 +4,7 @@ import turnGuestToUser from '@/lib/api/turnGuestToUser';
 import prisma from '@/lib/prisma';
 import slack from '@/lib/slack/client';
 import { User } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
@@ -90,4 +91,10 @@ export const nextAuthOptions: NextAuthOptions = {
   },
 };
 
-export default NextAuth(nextAuthOptions);
+export default withSentry(NextAuth(nextAuthOptions));
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

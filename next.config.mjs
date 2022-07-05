@@ -1,4 +1,5 @@
 import nextBundleAnalyser from '@next/bundle-analyzer';
+import { withSentryConfig } from '@sentry/nextjs';
 
 // https://securityheaders.com
 const ContentSecurityPolicy = `
@@ -91,8 +92,20 @@ const nextConfig = {
   },
 };
 
+const sentryWebpackPluginOptions = {
+  // Additional config options for the Sentry Webpack plugin. Keep in mind that
+  // the following options are set automatically, and overriding them is not
+  // recommended:
+  //   release, url, org, project, authToken, configFile, stripPrefix,
+  //   urlPrefix, include, ignore
+
+  silent: true, // Suppresses all logs
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options.
+};
+
 const withBundleAnalyser = nextBundleAnalyser({
   enabled: process.env.ANALYSE === 'true',
 });
 
-export default withBundleAnalyser(nextConfig);
+export default withSentryConfig(withBundleAnalyser(nextConfig), sentryWebpackPluginOptions);

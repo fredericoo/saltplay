@@ -13,3 +13,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
   .patch(patchSeasonHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

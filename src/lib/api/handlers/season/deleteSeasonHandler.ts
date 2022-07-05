@@ -4,6 +4,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Season } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
@@ -53,4 +54,4 @@ const deleteSeasonHandler: NextApiHandler<SeasonDELETEAPIResponse> = async (req,
     });
 };
 
-export default deleteSeasonHandler;
+export default withSentry(deleteSeasonHandler);

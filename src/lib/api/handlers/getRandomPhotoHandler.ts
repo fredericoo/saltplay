@@ -1,4 +1,5 @@
 import { APIResponse } from '@/lib/types/api';
+import { withSentry } from '@sentry/nextjs';
 import axios from 'axios';
 import type { NextApiHandler } from 'next';
 import type { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types';
@@ -47,4 +48,4 @@ const getRandomPhotoHandler: NextApiHandler<RandomPhotoApiResponse> = async (req
     });
 };
 
-export default getRandomPhotoHandler;
+export default withSentry(getRandomPhotoHandler);

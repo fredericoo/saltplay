@@ -3,6 +3,7 @@ import medals from '@/lib/medals';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Medal } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 
 export type MedalURLs = Record<
@@ -24,7 +25,9 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
           id: true,
           name: true,
           image: true,
-          season: { select: { name: true, game: { select: { name: true, icon: true, office: { select: { name: true } } } } } },
+          season: {
+            select: { name: true, game: { select: { name: true, icon: true, office: { select: { name: true } } } } },
+          },
         },
       },
     },
@@ -57,4 +60,4 @@ const getSeasonMedalsHandler: NextApiHandler<SeasonMedalsGETAPIResponse> = async
   res.status(200).json({ status: 'ok', data: medalUrls });
 };
 
-export default getSeasonMedalsHandler;
+export default withSentry(getSeasonMedalsHandler);

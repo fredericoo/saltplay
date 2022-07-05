@@ -5,6 +5,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PrismaClientValidationError } from '@prisma/client/runtime';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -65,4 +66,4 @@ const postSeasonHandler: NextApiHandler<SeasonPOSTAPIResponse> = async (req, res
     });
 };
 
-export default postSeasonHandler;
+export default withSentry(postSeasonHandler);

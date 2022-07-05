@@ -20,3 +20,9 @@ const slackMembersHandler: NextApiHandler<SlackMembersAPIResponse> = async (req,
 };
 
 export default slackMembersHandler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

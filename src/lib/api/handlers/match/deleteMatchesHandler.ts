@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { notifyDeletedMatch } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { InferType, object, string } from 'yup';
@@ -132,4 +133,4 @@ const deleteMatchesHandler: NextApiHandler<MatchesDELETEAPIResponse> = async (re
     });
 };
 
-export default deleteMatchesHandler;
+export default withSentry(deleteMatchesHandler);

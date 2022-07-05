@@ -3,6 +3,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Session } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
@@ -31,4 +32,4 @@ const deleteSessionHandler: NextApiHandler<SessionDELETEAPIResponse> = async (re
     });
 };
 
-export default deleteSessionHandler;
+export default withSentry(deleteSessionHandler);

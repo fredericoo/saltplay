@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Game, Season } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../../auth/[...nextauth]';
@@ -40,4 +41,10 @@ const leaderboardHandler: NextApiHandler<OpponentsAPIResponse> = async (req, res
   res.status(200).json({ status: 'ok', data: { opponents } });
 };
 
-export default leaderboardHandler;
+export default withSentry(leaderboardHandler);
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

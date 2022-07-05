@@ -5,6 +5,7 @@ import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -50,4 +51,4 @@ const postGameHandler: NextApiHandler<GamePOSTAPIResponse> = async (req, res) =>
     });
 };
 
-export default postGameHandler;
+export default withSentry(postGameHandler);
