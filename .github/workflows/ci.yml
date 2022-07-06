@@ -22,3 +22,4 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
           NEXTAUTH_SECRET: secret
+          SENTRY_AUTH_TOKEN: disabled
