@@ -15,3 +15,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
   .delete(deleteMatchesHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

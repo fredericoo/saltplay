@@ -13,3 +13,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
   .delete(deleteGameHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

@@ -3,6 +3,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PlayerScore } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { deletePlayerScoreSchema } from '../../schemas';
@@ -27,4 +28,4 @@ const deletePlayerScoreHandler: NextApiHandler<PlayerScoreDELETEAPIResponse> = a
     });
 };
 
-export default deletePlayerScoreHandler;
+export default withSentry(deletePlayerScoreHandler);

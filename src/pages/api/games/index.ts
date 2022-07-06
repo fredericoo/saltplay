@@ -10,3 +10,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
 }).post(postGameHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

@@ -5,6 +5,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Prisma, User } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import userReturnData from './userReturnData';
@@ -47,4 +48,4 @@ const patchUserHandler: NextApiHandler<UserPATCHAPIResponse> = async (req, res) 
     });
 };
 
-export default patchUserHandler;
+export default withSentry(patchUserHandler);

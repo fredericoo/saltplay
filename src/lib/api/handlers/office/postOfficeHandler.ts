@@ -5,6 +5,7 @@ import { canViewDashboard } from '@/lib/roles';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -47,4 +48,4 @@ const postOfficeHandler: NextApiHandler<OfficePOSTAPIResponse> = async (req, res
     });
 };
 
-export default postOfficeHandler;
+export default withSentry(postOfficeHandler);

@@ -2,6 +2,7 @@ import { PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { Match } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
 
@@ -77,4 +78,4 @@ const getMatchesHandler: NextApiHandler<MatchesGETAPIResponse> = async (req, res
     });
 };
 
-export default getMatchesHandler;
+export default withSentry(getMatchesHandler);

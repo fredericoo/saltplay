@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import type { Prisma } from '@prisma/client';
 import { Match } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { InferType, number, object, string } from 'yup';
 
@@ -145,4 +146,4 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
     });
 };
 
-export default getLeaderboardHandler;
+export default withSentry(getLeaderboardHandler);

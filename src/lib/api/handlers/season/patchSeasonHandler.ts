@@ -6,6 +6,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Season } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { InferType, ValidationError } from 'yup';
@@ -69,4 +70,4 @@ const patchSeasonHandler: NextApiHandler<GamePATCHAPIResponse> = async (req, res
     });
 };
 
-export default patchSeasonHandler;
+export default withSentry(patchSeasonHandler);

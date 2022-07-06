@@ -10,3 +10,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
 }).get(getRandomPhotoHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { APIResponse } from '@/lib/types/api';
 import { User } from '@prisma/client';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { object, string } from 'yup';
 import userReturnData from './userReturnData';
@@ -34,4 +35,4 @@ const getUserHandler: NextApiHandler<UserGETAPIResponse> = async (req, res) => {
     });
 };
 
-export default getUserHandler;
+export default withSentry(getUserHandler);

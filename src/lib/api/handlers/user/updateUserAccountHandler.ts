@@ -4,6 +4,7 @@ import { canViewDashboard } from '@/lib/roles';
 import slack from '@/lib/slack/client';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 
@@ -54,4 +55,4 @@ const updateUserAccountHandler: NextApiHandler<UserAccountPATCHAPIResponse> = as
     });
 };
 
-export default updateUserAccountHandler;
+export default withSentry(updateUserAccountHandler);

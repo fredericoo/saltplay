@@ -5,6 +5,7 @@ import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { Office } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { patchOfficeSchema } from '../../schemas';
@@ -46,4 +47,4 @@ const patchOfficeHandler: NextApiHandler<OfficePATCHAPIResponse> = async (req, r
     });
 };
 
-export default patchOfficeHandler;
+export default withSentry(patchOfficeHandler);

@@ -10,3 +10,9 @@ const handler = nc<NextApiRequest, NextApiResponse>({
 }).delete(deleteSessionHandler);
 
 export default handler;
+
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};

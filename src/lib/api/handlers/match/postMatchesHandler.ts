@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { array, InferType, number, object, string } from 'yup';
@@ -135,4 +136,4 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
     });
 };
 
-export default postMatchesHandler;
+export default withSentry(postMatchesHandler);
