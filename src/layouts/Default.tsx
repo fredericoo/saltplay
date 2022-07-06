@@ -10,13 +10,15 @@ const Default: LayoutComponent = ({ children }) => {
   const themeColor = useColorModeValue(mauve.mauve2, mauveDark.mauve2);
 
   return (
-    <Box pb={{ base: '96px', md: '0' }}>
+    <Box pb={{ base: '96px', md: '0' }} css={{ label: 'layout' }}>
       <Head>
         <meta name="theme-color" content={themeColor} />
         <meta name="apple-mobile-web-app-status-bar-style" content={statusBarStyle} />
       </Head>
       <Navbar />
-      {children}
+      <Box as="main" css={{ label: 'main' }}>
+        {children}
+      </Box>
       <Footer />
     </Box>
   );
