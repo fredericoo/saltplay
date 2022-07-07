@@ -13,6 +13,14 @@ After cloning the repository:
 docker compose up -d
 ```
 
+#### 🌱 Seed database
+
+The following commanda will seed 100 random users to the table `users`:
+
+```bash
+yarn setup:db
+```
+
 This will spin up a local postgres database and required services.
 
 #### 🖥 Setup local environment variables
