@@ -24,5 +24,6 @@
   "jest.testExplorer": { "enabled": true, "showInlineError": true },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  }
+  },
+  "window.commandCenter": true
 }

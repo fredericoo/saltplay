@@ -5,5 +5,13 @@
     "plugin:testing-library/react",
     "plugin:jest-dom/recommended"
   ],
-  "rules": {}
+  "overrides": [
+    {
+      "files": ["/cypress/*.spec.ts"],
+      "rules": {
+        "testing-library/await-async-query": "off",
+        "testing-library/prefer-screen-queries": "off"
+      }
+    }
+  ]
 }

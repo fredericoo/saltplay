@@ -34,6 +34,7 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   return (
     <Menu>
       <MenuButton
+        data-testid="logged-in-user-menu"
         as={Button}
         variant="subtle"
         textAlign="left"
