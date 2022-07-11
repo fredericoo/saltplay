@@ -1,0 +1,45 @@
+
+version: 2 
+
+models:
+  - name: wins_losses 
+    description: "A table that contains all the wins and losses per player per game (per office) per season"
+    columns:
+      - name: player_id 
+        description: "The ID of each player/user linked to the User table in public.table"
+        tests:
+          - not_null
+      - name: gameid
+        description: "The ID of each game-office linked to the Game table in public.table"
+        tests:
+          - not_null
+      - name: seasonid 
+        description: "The ID of each season linked to the Season table in public.table" 
+        tests:
+          - not_null
+      - name: total_wins
+        description: "Count of number of wins for a player, in a game-office in a season" 
+        tests:
+          - positive_test
+      - name: total_losses
+        description: "Count of number of losses for a player, in a game-office in a season" 
+        tests:
+          - positive_test
+
+  - name: number_played_against  
+    description: "This table gets the number of unique players players have played against"
+    columns:
+      - name: player_id
+        description: "The ID of each player/user linked to the User table in public.table"
+        tests:
+          - not_null
+      - name: season_id
+        description: "The slug of a season linked to the Season table in public.table"
+        tests:
+          - not_null
+      - name: num_played_against
+        description: "The number of players each player has played against in a given season, i.e. season-1"
+        tests:
+          - not_null
+          - positive_test
+
