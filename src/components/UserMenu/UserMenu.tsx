@@ -12,17 +12,20 @@ type UserMenuProps = {
   showUserName?: boolean;
 };
 
+const isDevLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
+
 const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
-  const isDev = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
 
   useEffect(() => {
     session?.user && identifyAndSetUser(session.user);
   }, [session?.user]);
 
-  if (!isLoading && !session) {
-    return isDev ? (
+  if (isLoading) return <Button isLoading aria-label="loading user…" />;
+
+  if (!session) {
+    return isDevLoginEnabled ? (
       <DevUserMenu />
     ) : (
       <Button as="a" href="/api/auth/signin" size="sm" variant="subtle" colorScheme="grey">

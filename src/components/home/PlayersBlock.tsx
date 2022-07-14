@@ -1,14 +1,19 @@
 import { getPlayerSample } from '@/lib/home';
 import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import LatestMatches from '../LatestMatches';
-import PlayersDeco from './PlayersDeco';
+import { PlayersDecoProps } from './PlayersDeco';
 import Section from './Section';
 
 type PlayersBlockProps = {
   players: Awaited<ReturnType<typeof getPlayerSample>>;
 };
+
+const PlayersDeco = dynamic<PlayersDecoProps>(() => import('./PlayersDeco'), {
+  ssr: false,
+});
 
 const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
   const { status } = useSession();
@@ -29,9 +34,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
           sx={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 75%, rgba(0,0,0,1))' }}
           borderBottomRadius="xl"
         />
-        <Box position="absolute" zIndex={0} inset={0} transform="rotate(-15deg)">
-          <PlayersDeco players={players} />
-        </Box>
+        <PlayersDeco players={players} />
         <Box zIndex={1} position="relative">
           <Heading as="h2" mb={12} mt={4} textAlign="center" color="grey.10" size="lg">
             join{' '}
@@ -66,7 +69,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
         <VStack transform="translateY(-50%)" mt={-4} position="relative" zIndex="2" gridColumn="1/-1">
           <Link href="/api/auth/signin" passHref>
             <Button as="a" variant="primary" size="lg" m={3}>
-              {'Sign in with Slack'}
+              Sign in with Slack
             </Button>
           </Link>
         </VStack>
