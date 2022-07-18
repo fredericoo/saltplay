@@ -23,9 +23,7 @@ const Home: NextPage<HomeProps> = ({ offices, players, mostRecentGame }) => {
       <Hero offices={offices} />
       <Container bg="grey.2" position="relative" maxW="container.xl">
         <SimpleGrid columns={{ md: 2 }} gap={4}>
-          {mostRecentGame.gameId && mostRecentGame.seasonId && (
-            <LeaderboardBlock gameId={mostRecentGame.gameId} seasonId={mostRecentGame.seasonId} />
-          )}
+          {mostRecentGame.gameId && mostRecentGame.seasonId && <LeaderboardBlock gameId={mostRecentGame.gameId} />}
           <AddMatchBlock players={players} />
           <PlayersBlock players={players} />
         </SimpleGrid>

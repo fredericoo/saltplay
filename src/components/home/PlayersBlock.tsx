@@ -35,7 +35,7 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
           borderBottomRadius="xl"
         />
         <PlayersDeco players={players} />
-        <Box zIndex={1} position="relative">
+        <Box zIndex={1} position="relative" css={{ perspective: '1000px' }}>
           <Heading as="h2" mb={12} mt={4} textAlign="center" color="grey.10" size="lg">
             join{' '}
             <Text as="span" color="primary.9">
@@ -60,7 +60,17 @@ const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
             </Text>{' '}
             great players
           </Heading>
-          <Box h="400px" overflow="hidden" maxW="container.sm" mx="auto" pt={8}>
+          <Box
+            aria-hidden="true"
+            pointerEvents="none"
+            h="400px"
+            overflow="hidden"
+            maxW="container.sm"
+            mx="auto"
+            pt={8}
+            transform="rotateX(30deg)"
+            transformOrigin="bottom"
+          >
             <LatestMatches canLoadMore={false} canDelete={false} />
           </Box>
         </Box>
