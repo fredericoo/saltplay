@@ -1,7 +1,9 @@
 import { getPlayerSample } from '@/lib/home';
 import { Modal } from '@/theme/components/Modal';
 import { Badge, Box, Heading, HStack, Input, useColorMode } from '@chakra-ui/react';
+import { AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { MotionBox } from '../Motion';
 import Side from '../NewMatchButton/Side';
 import { Player } from '../PlayerPicker/types';
 import Section from './Section';
@@ -11,6 +13,7 @@ type AddMatchBlockProps = {
 };
 
 const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
+  const [iteration, setIteration] = useState(0);
   const [step, setStep] = useState(0);
   const { colorMode } = useColorMode();
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
@@ -27,6 +30,7 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
     if (players) {
       switch (step) {
         case 1:
+          setIteration(iteration + 1);
           setSelectedSide('left');
           setTeamsComp({ left: [], right: [] });
           setTeamsScores({ left: 0, right: 0 });
@@ -65,12 +69,13 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
 
   useEffect(() => {
     const skipStep = () => (step < 10 ? setStep(step => step + 1) : setStep(0));
-    const timeout = setTimeout(skipStep, 1000);
+    const timeout = setTimeout(skipStep, 500);
     return () => clearTimeout(timeout);
   }, [step]);
 
   return (
     <Section
+      pb={{ base: '80%', md: 'inherit' }}
       bg={
         teamsScores.left === teamsScores.right || !bgColor
           ? undefined
@@ -78,53 +83,74 @@ const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
           ? colors.success
           : colors.danger
       }
+      css={{ perspective: '1000px' }}
       transition="background-color .3s ease-in-out"
     >
       <Heading as="h2" color="grey.11" size="md" p={4}>
         Register any match in less than 30 seconds
       </Heading>
-      <Box
-        {...Modal.variants.custom.dialog}
-        transform={{ md: 'translate(25%, 25%)' }}
-        w="80%"
-        minW="400px"
-        mx="auto"
-        p={4}
-        pointerEvents="none"
-        aria-hidden
-      >
-        <HStack as="aside" spacing={-1} mb={4}>
-          <Side
-            label="Your team"
-            players={teamsComp.left}
-            emptySlots={1}
-            isReverse
-            isSelected={selectedSide === 'left'}
-          />
-          <Badge variant="solid" colorScheme="danger" zIndex="docked">
-            Vs
-          </Badge>
-          <Side label="Opposing team" players={teamsComp.right} emptySlots={1} isSelected={selectedSide === 'right'} />
-        </HStack>
-        <HStack spacing={8}>
-          <Box flex={1} position="relative">
-            <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
-              Score
+      <AnimatePresence initial={false}>
+        <MotionBox
+          position="absolute"
+          key={iteration}
+          initial={{ opacity: 0, translateY: 300, rotateY: -40 }}
+          animate={{
+            opacity: 1,
+            translateY: 0,
+            transition: { duration: 0.5 },
+          }}
+          exit={{
+            opacity: 0,
+            translateY: -300,
+            transition: { duration: 0.5 },
+          }}
+          {...Modal.variants.custom.dialog}
+          w="80%"
+          minW="300px"
+          left="10%"
+          top="25%"
+          p={4}
+          pointerEvents="none"
+          aria-hidden
+        >
+          <HStack as="aside" spacing={-1} mb={4}>
+            <Side
+              label="Your team"
+              players={teamsComp.left}
+              emptySlots={1}
+              isReverse
+              isSelected={selectedSide === 'left'}
+            />
+            <Badge variant="solid" colorScheme="danger" zIndex="docked">
+              Vs
             </Badge>
-            <Input as="div" py={4} h="auto" fontSize="xl" textAlign="center">
-              {teamsScores.left}
-            </Input>
-          </Box>
-          <Box flex={1} position="relative">
-            <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
-              Score
-            </Badge>
-            <Input as="div" py={4} h="auto" fontSize="xl" textAlign="center">
-              {teamsScores.right}
-            </Input>
-          </Box>
-        </HStack>
-      </Box>
+            <Side
+              label="Opposing team"
+              players={teamsComp.right}
+              emptySlots={1}
+              isSelected={selectedSide === 'right'}
+            />
+          </HStack>
+          <HStack spacing={8}>
+            <Box flex={1} position="relative">
+              <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
+                Score
+              </Badge>
+              <Input as="div" py={4} h="auto" fontSize="xl" textAlign="center">
+                {teamsScores.left}
+              </Input>
+            </Box>
+            <Box flex={1} position="relative">
+              <Badge position="absolute" left="50%" transform="translate(-50%, -50%)" zIndex={2}>
+                Score
+              </Badge>
+              <Input as="div" py={4} h="auto" fontSize="xl" textAlign="center">
+                {teamsScores.right}
+              </Input>
+            </Box>
+          </HStack>
+        </MotionBox>
+      </AnimatePresence>
     </Section>
   );
 };
