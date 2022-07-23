@@ -32,7 +32,7 @@ const gamesHandler: NextApiHandler<OfficeMatchesAPIResponse> = async (req, res) 
   if (typeof officeId !== 'string') return res.status(400).json({ status: 'error', message: 'Invalid game id' });
 
   const cursor = typeof req.query.cursor === 'string' ? { id: req.query.cursor } : undefined;
-  const take = Math.min(+req.query.count, 20) || 5;
+  const take = req.query.count ? Math.min(+req.query.count, 20) : 5;
   const matches = await getOfficeMatches(officeId, take, cursor);
   const nextCursor = matches.length >= take ? matches[matches.length - 1].id : undefined;
 
