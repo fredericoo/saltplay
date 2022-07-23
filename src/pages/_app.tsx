@@ -1,5 +1,5 @@
 import Default from '@/layouts/Default';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
 import { useMixpanel } from '@/lib/mixpanel';
 import Fonts from '@/theme/Fonts';

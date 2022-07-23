@@ -1,6 +1,7 @@
-import { Badge, Box, ChakraProps, HStack, Text, useColorMode } from '@chakra-ui/react';
+import type { ChakraProps} from '@chakra-ui/react';
+import { Badge, Box, HStack, Text, useColorMode } from '@chakra-ui/react';
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 type ListItemProps = {
   href: string;

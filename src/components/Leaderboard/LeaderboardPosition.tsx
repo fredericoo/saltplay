@@ -1,5 +1,6 @@
-import { LeaderboardGETAPIResponsePosition } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import { Badge, Box, HStack, StackProps, styled, Text } from '@chakra-ui/react';
+import type { LeaderboardGETAPIResponsePosition } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
+import type { StackProps} from '@chakra-ui/react';
+import { Badge, Box, HStack, styled, Text } from '@chakra-ui/react';
 import Medal from '../Medal';
 import { MotionHStack } from '../Motion';
 import PlayerAvatar from '../PlayerAvatar';

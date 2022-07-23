@@ -1,6 +1,7 @@
+import type {
+  ChakraProps} from '@chakra-ui/react';
 import {
   Center,
-  ChakraProps,
   HStack,
   Input,
   Popover,

@@ -1,7 +1,7 @@
 import { Badge, FormControl, HStack, Input } from '@chakra-ui/react';
 import { useFormContext, useFormState } from 'react-hook-form';
 import ErrorNotification from '../ErrorNotification';
-import { MatchFormInputs } from '../NewMatchButton';
+import type { MatchFormInputs } from '../NewMatchButton';
 
 const Scores: React.VFC = () => {
   const { register } = useFormContext<MatchFormInputs>();

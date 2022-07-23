@@ -1,4 +1,4 @@
-import { Account, User } from '@prisma/client';
+import type { Account, User } from '@prisma/client';
 import slack from './client';
 
 type NotifyNewcomer = (

@@ -1,9 +1,9 @@
 import Leaderboard from '@/components/Leaderboard';
 import TV from '@/layouts/TV';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import prisma from '@/lib/prisma';
 import { Box, SimpleGrid, Text } from '@chakra-ui/react';
-import { GetStaticPaths, GetStaticProps } from 'next';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 
 const getOfficeBySlug = async (slug: string) =>
   await prisma.office.findUnique({

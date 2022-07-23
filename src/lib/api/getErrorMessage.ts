@@ -1,4 +1,5 @@
-import { InferType, object, string } from 'yup';
+import type { InferType} from 'yup';
+import { object, string } from 'yup';
 import { hasProp } from '../types/utils';
 
 const errorSchema = object({

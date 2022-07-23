@@ -4,7 +4,7 @@ import EmojiField from './EmojiField';
 import InputField from './InputField';
 import NumberField from './NumberField';
 import SwitchField from './SwitchField';
-import { EditableField, FieldData, FieldValue } from './types';
+import type { EditableField, FieldData, FieldValue } from './types';
 
 type FieldProps = {
   field: EditableField<FieldData>;

@@ -1,14 +1,16 @@
 import Editable from '@/components/Editable';
 import Field from '@/components/Field';
 import type { EditableField } from '@/components/Field/types';
-import { FieldData } from '@/components/Field/types';
+import type { FieldData } from '@/components/Field/types';
 import Settings from '@/components/Settings';
-import { APIError, APIResponse, APISuccess } from '@/lib/types/api';
+import type { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
-import axios, { AxiosError } from 'axios';
-import { ReactNode, useState } from 'react';
-import { ValidationError } from 'yup';
-import { SchemaLike } from 'yup/lib/types';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
+import type { ReactNode} from 'react';
+import { useState } from 'react';
+import type { ValidationError } from 'yup';
+import type { SchemaLike } from 'yup/lib/types';
 import getDisplayValue from './getDisplayValue';
 
 const SettingsGroup = ({

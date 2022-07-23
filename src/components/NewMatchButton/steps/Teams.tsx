@@ -2,18 +2,18 @@ import ErrorBox from '@/components/ErrorBox';
 import useOpponents from '@/components/Leaderboard/useOpponents';
 import { MotionBox } from '@/components/Motion';
 import PlayerPicker from '@/components/PlayerPicker';
-import { Player } from '@/components/PlayerPicker/types';
+import type { Player } from '@/components/PlayerPicker/types';
 import { BANNED_ROLE_ID } from '@/constants';
 import { canViewDashboard } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { Game, Season } from '@prisma/client';
+import type { Game, Season } from '@prisma/client';
 import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import InvitePicker from '../InvitePicker';
-import { MatchFormInputs } from '../NewMatchButton';
+import type { MatchFormInputs } from '../NewMatchButton';
 import Side from '../Side';
 
 type TeamsProps = {

@@ -1,10 +1,10 @@
-import { getPlayerSample } from '@/lib/home';
+import type { getPlayerSample } from '@/lib/home';
 import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import LatestMatches from '../LatestMatches';
-import { PlayersDecoProps } from './PlayersDeco';
+import type { PlayersDecoProps } from './PlayersDeco';
 import Section from './Section';
 
 type PlayersBlockProps = {

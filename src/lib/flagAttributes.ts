@@ -1,5 +1,5 @@
 import { GAME_FLAGS } from '@/constants';
-import { Game } from '@prisma/client';
+import type { Game } from '@prisma/client';
 
 export const getFlagTogglesFromNumber = <T extends Record<string, number>>(
   flagKeys: T,

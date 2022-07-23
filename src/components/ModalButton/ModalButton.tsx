@@ -1,7 +1,6 @@
+import type { ButtonProps, ModalProps } from '@chakra-ui/react';
 import {
   Button,
-  ButtonProps,
-  ComponentWithAs,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -9,10 +8,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalProps,
   useDisclosure,
 } from '@chakra-ui/react';
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 import { useId } from 'react-id-generator';
 
 export type ModalFormProps = {
@@ -20,15 +18,12 @@ export type ModalFormProps = {
   formId: string;
 };
 
-type ModalButton = ComponentWithAs<
-  'button',
-  ButtonProps & { modalProps?: Omit<ModalProps, 'isOpen' | 'onClose' | 'children'> } & {
-    modalTitle?: string;
-    Form: ComponentType<ModalFormProps>;
-  }
->;
+type ModalButtonProps = ButtonProps & { modalProps?: Omit<ModalProps, 'isOpen' | 'onClose' | 'children'> } & {
+  modalTitle?: string;
+  Form: ComponentType<ModalFormProps>;
+};
 
-const ModalButton: ModalButton = ({ modalProps, modalTitle, Form, ...props }) => {
+const ModalButton: React.FC<ModalButtonProps> = ({ modalProps, modalTitle, Form, ...props }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [htmlId] = useId();
 

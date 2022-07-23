@@ -2,7 +2,7 @@ import { WEBSITE_URL } from '@/constants';
 import { Box } from '@chakra-ui/react';
 import QR from 'qrcode.react';
 import Logo from '../components/Logo';
-import { LayoutComponent } from './types';
+import type { LayoutComponent } from './types';
 
 const TV: LayoutComponent = ({ children }) => {
   return (

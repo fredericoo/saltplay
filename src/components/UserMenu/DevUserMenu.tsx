@@ -1,7 +1,7 @@
 import fetcher from '@/lib/fetcher';
-import { DevUsersAPIResponse } from '@/pages/api/dev/users';
+import type { DevUsersAPIResponse } from '@/pages/api/dev/users';
 import { Button, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import axios from 'axios';
 import useSWR from 'swr';
 

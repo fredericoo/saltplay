@@ -14,10 +14,10 @@ import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
 import hideScrollbar from '@/lib/styleUtils';
 import useMediaQuery from '@/lib/useMediaQuery';
+import { formatDateTime } from '@/lib/utils';
 import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
-import { Game, Office } from '@prisma/client';
-import { format } from 'date-fns';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import type { Game, Office } from '@prisma/client';
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
 import { IoRefreshSharp } from 'react-icons/io5';
@@ -144,8 +144,8 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                           <Text>{season.name}</Text>
                           <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="grey.11">
                             {[
-                              format(new Date(season.startDate), 'MMM d'),
-                              season.endDate && format(new Date(season.endDate), 'MMM d'),
+                              formatDateTime(new Date(season.startDate), { dateStyle: 'short' }),
+                              season.endDate && formatDateTime(new Date(season.endDate), { dateStyle: 'short' }),
                             ].join('—')}
                           </Box>
                         </Settings.Link>
@@ -273,8 +273,8 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
                               <Text fontWeight="bold">{season.name}</Text>
                               <Box fontSize="xs" textTransform="uppercase" letterSpacing="widest" color="grey.11">
                                 {[
-                                  format(new Date(season.startDate), 'MMM d'),
-                                  season.endDate && format(new Date(season.endDate), 'MMM d'),
+                                  formatDateTime(new Date(season.startDate), { dateStyle: 'short' }),
+                                  season.endDate && formatDateTime(new Date(season.endDate), { dateStyle: 'short' }),
                                 ].join('—')}
                               </Box>
                             </Settings.Link>

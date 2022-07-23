@@ -4,22 +4,25 @@ import type { EditableField } from '@/components/Field/types';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
-import { SeasonPOSTAPIResponse } from '@/lib/api/handlers/season/postSeasonHandler';
+import type { SeasonPOSTAPIResponse } from '@/lib/api/handlers/season/postSeasonHandler';
 import { patchSeasonSchema, postSeasonSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
 import { toSlug } from '@/lib/slug';
-import { APIError } from '@/lib/types/api';
-import { hasKey, WithDatesAsStrings } from '@/lib/types/utils';
+import type { APIError } from '@/lib/types/api';
+import type { WithDatesAsStrings } from '@/lib/types/utils';
+import { hasKey } from '@/lib/types/utils';
 import { Box, Button, Stack, Tooltip } from '@chakra-ui/react';
-import { Season } from '@prisma/client';
-import axios, { AxiosError } from 'axios';
+import type { Season } from '@prisma/client';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { groupBy } from 'ramda';
-import { FormEventHandler, useState } from 'react';
-import { InferType, ValidationError } from 'yup';
+import type { FormEventHandler} from 'react';
+import { useState } from 'react';
+import type { InferType, ValidationError } from 'yup';
 
 const getGamesWithOffices = () =>
   prisma.game.findMany({

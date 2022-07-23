@@ -1,6 +1,6 @@
 import deleteOfficeHandler from '@/lib/api/handlers/office/deleteOfficeHandler';
 import patchOfficeHandler from '@/lib/api/handlers/office/patchOfficeHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

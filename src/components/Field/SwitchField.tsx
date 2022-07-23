@@ -1,4 +1,5 @@
-import { ChakraProps, HStack, Input, Switch, Text } from '@chakra-ui/react';
+import type { ChakraProps} from '@chakra-ui/react';
+import { HStack, Input, Switch, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
 type SwitchFieldProps = ChakraProps & {

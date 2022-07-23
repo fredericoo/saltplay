@@ -1,9 +1,10 @@
 import getErrorMessage from '@/lib/api/getErrorMessage';
-import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
+import type { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
 import { trackEvent } from '@/lib/mixpanel';
+import type {
+  ButtonProps} from '@chakra-ui/react';
 import {
   Button,
-  ButtonProps,
   Center,
   Modal,
   ModalBody,
@@ -16,7 +17,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Game, Match, Season } from '@prisma/client';
+import type { Game, Match, Season } from '@prisma/client';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
@@ -27,7 +28,7 @@ import useLatestMatches from '../LatestMatches/useLatestMatches';
 import useLeaderboard from '../Leaderboard/useLeaderboard';
 import useOpponents from '../Leaderboard/useOpponents';
 import LoadingIcon from '../LoadingIcon';
-import { Player } from '../PlayerPicker/types';
+import type { Player } from '../PlayerPicker/types';
 import Toast from '../Toast';
 
 const Teams = dynamic(() => import('./steps/Teams'), {

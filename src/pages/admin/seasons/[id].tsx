@@ -7,7 +7,7 @@ import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import { patchSeasonSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';

@@ -8,7 +8,7 @@ import { useVirtual } from 'react-virtual';
 import LoadingIcon from '../LoadingIcon';
 import PlayerItem from './PlayerItem';
 import SearchField from './SearchField';
-import { Player } from './types';
+import type { Player } from './types';
 
 export type PlayerPickerProps = {
   players?: Player[];

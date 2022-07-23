@@ -1,6 +1,7 @@
-import { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
-import { Game, Season } from '@prisma/client';
-import useSWR, { SWRResponse } from 'swr';
+import type { OpponentsAPIResponse } from '@/pages/api/games/[id]/opponents';
+import type { Game, Season } from '@prisma/client';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 
 type UseOpponents = (options: { gameId?: Game['id']; seasonId?: Season['id'] }) => SWRResponse<OpponentsAPIResponse>;
 

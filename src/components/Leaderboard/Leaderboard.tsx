@@ -1,6 +1,6 @@
-import { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
+import type { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Season, User } from '@prisma/client';
+import type { Game, Season, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';

@@ -1,7 +1,8 @@
+import type {
+  ButtonProps,
+  ComponentWithAs} from '@chakra-ui/react';
 import {
   Button,
-  ButtonProps,
-  ComponentWithAs,
   Heading,
   HStack,
   Input,
@@ -13,7 +14,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { SyntheticEvent, useState } from 'react';
+import type { SyntheticEvent} from 'react';
+import { useState } from 'react';
 
 export type ConfirmButtonProps = {
   onConfirm: () => void;

@@ -1,4 +1,4 @@
-import { getOffices } from '@/lib/home';
+import type { getOffices } from '@/lib/home';
 import { gradientProps } from '@/lib/styleUtils';
 import { Box, Container, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import List from '../List';

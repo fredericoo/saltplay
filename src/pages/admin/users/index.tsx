@@ -3,7 +3,7 @@ import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
 import { BANNED_ROLE_ID } from '@/constants';
 import Admin from '@/layouts/Admin';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';

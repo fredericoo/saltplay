@@ -1,8 +1,8 @@
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { User } from '@prisma/client';
+import type { APIResponse } from '@/lib/types/api';
+import type { User } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { object, string } from 'yup';
 import userReturnData from './userReturnData';
 

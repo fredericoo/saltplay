@@ -1,4 +1,5 @@
-import { Box, Button, ChakraProps, HStack, Text } from '@chakra-ui/react';
+import type { ChakraProps} from '@chakra-ui/react';
+import { Box, Button, HStack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { IoChevronForwardSharp } from 'react-icons/io5';

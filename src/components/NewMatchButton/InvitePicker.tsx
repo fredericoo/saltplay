@@ -1,11 +1,12 @@
-import { SlackMembersAPIResponse } from '@/pages/api/slack';
-import { ExistingSlackUsersAPIResponse } from '@/pages/api/slack/existing';
+import type { SlackMembersAPIResponse } from '@/pages/api/slack';
+import type { ExistingSlackUsersAPIResponse } from '@/pages/api/slack/existing';
 import { Box, HStack, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import useSWR from 'swr';
 import ErrorBox from '../ErrorBox';
-import PlayerPicker, { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
+import type { PlayerPickerProps } from '../PlayerPicker/PlayerPicker';
+import PlayerPicker from '../PlayerPicker/PlayerPicker';
 
 type InvitePickerProps = Pick<PlayerPickerProps, 'selectedPlayers' | 'selectedColour' | 'onSelect'>;
 

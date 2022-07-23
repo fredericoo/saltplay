@@ -3,7 +3,7 @@ import { mauve, mauveDark } from '@radix-ui/colors';
 import Head from 'next/head';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import { LayoutComponent } from './types';
+import type { LayoutComponent } from './types';
 
 const Default: LayoutComponent = ({ children }) => {
   const statusBarStyle = useColorModeValue('default', 'black-translucent');

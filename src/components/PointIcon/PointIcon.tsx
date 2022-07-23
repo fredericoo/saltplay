@@ -1,5 +1,6 @@
 import { gradientProps } from '@/lib/styleUtils';
-import { Box, ChakraProps } from '@chakra-ui/react';
+import type { ChakraProps } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 const PointIcon: React.VFC<ChakraProps> = props => {
   return (

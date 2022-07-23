@@ -1,7 +1,7 @@
 import { isRemoved } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
 import { Box, Text } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 

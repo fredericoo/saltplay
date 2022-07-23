@@ -1,7 +1,8 @@
 import { gen } from '@/lib/testUtils';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ConfirmButton, { ConfirmButtonProps, DEFAULT_KEYWORD } from './ConfirmButton';
+import type { ConfirmButtonProps} from './ConfirmButton';
+import ConfirmButton, { DEFAULT_KEYWORD } from './ConfirmButton';
 
 const renderAndClickModal = async (props?: Partial<ConfirmButtonProps>) => {
   const label = gen.string();

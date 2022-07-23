@@ -1,5 +1,6 @@
 import { Box, HStack, IconButton, Text, Tooltip } from '@chakra-ui/react';
-import { FormEventHandler, useEffect, useRef } from 'react';
+import type { FormEventHandler} from 'react';
+import { useEffect, useRef } from 'react';
 import FocusLock from 'react-focus-lock';
 import { IoCheckmarkOutline, IoCloseOutline } from 'react-icons/io5';
 import { VscAdd, VscEdit } from 'react-icons/vsc';

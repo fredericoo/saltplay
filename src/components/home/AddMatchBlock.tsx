@@ -1,11 +1,11 @@
-import { getPlayerSample } from '@/lib/home';
+import type { getPlayerSample } from '@/lib/home';
 import { Modal } from '@/theme/components/Modal';
 import { Badge, Box, Heading, HStack, Input, useColorMode } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { MotionBox } from '../Motion';
 import Side from '../NewMatchButton/Side';
-import { Player } from '../PlayerPicker/types';
+import type { Player } from '../PlayerPicker/types';
 import Section from './Section';
 
 type AddMatchBlockProps = {

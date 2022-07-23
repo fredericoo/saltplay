@@ -1,12 +1,12 @@
-import { MedalSrc } from '@/lib/medals';
+import type { MedalSrc } from '@/lib/medals';
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
-import { Medal, User } from '@prisma/client';
+import type { Medal, User } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { leaderboardOrderBy } from '../leaderboard/getLeaderboardHandler';
 

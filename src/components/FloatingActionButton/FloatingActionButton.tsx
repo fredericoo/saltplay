@@ -1,7 +1,8 @@
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import { Box, ButtonProps, IconButton, Portal, Tooltip, VStack } from '@chakra-ui/react';
+import type { ButtonProps} from '@chakra-ui/react';
+import { Box, IconButton, Portal, Tooltip, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
-import { MouseEventHandler } from 'react';
+import type { MouseEventHandler } from 'react';
 
 type AdminMenuProps = {
   buttons: {

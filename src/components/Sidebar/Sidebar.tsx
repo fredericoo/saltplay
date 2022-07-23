@@ -3,7 +3,7 @@ import { Box, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import IconBlur from '../IconBlur/IconBlur';
-import { Sidebar as SidebarProps, SidebarItem } from './types';
+import type { Sidebar as SidebarProps, SidebarItem as SidebardItemType } from './types';
 
 const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ items }) => {
   );
 };
 
-type SidebarItemProps = SidebarItem & {
+type SidebarItemProps = SidebardItemType & {
   isActive: boolean;
 };
 

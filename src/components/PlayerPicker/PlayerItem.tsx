@@ -1,5 +1,6 @@
 import PlayerName from '@/components/PlayerName';
-import { Badge, ChakraProps, HStack } from '@chakra-ui/react';
+import type { ChakraProps} from '@chakra-ui/react';
+import { Badge, HStack } from '@chakra-ui/react';
 import React from 'react';
 import PlayerAvatar from '../PlayerAvatar';
 import type { Player } from './types';

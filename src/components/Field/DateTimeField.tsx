@@ -1,5 +1,6 @@
 import { formatDateTime } from '@/lib/utils';
-import { ChakraProps, HStack, Input, Popover, PopoverContent, PopoverTrigger, Text } from '@chakra-ui/react';
+import type { ChakraProps } from '@chakra-ui/react';
+import { HStack, Input, Popover, PopoverContent, PopoverTrigger, Text } from '@chakra-ui/react';
 import {
   Calendar,
   CalendarControls,
@@ -49,7 +50,7 @@ const DateTime: React.VFC<DateTimeProps> = ({ defaultValue, name, autoFocus, ali
         placement={align === 'right' ? 'bottom-end' : 'bottom-start'}
       >
         <PopoverTrigger>
-          <Text>{formatDateTime(value, 'Pp')}</Text>
+          <Text>{formatDateTime(value)}</Text>
         </PopoverTrigger>
         <PopoverContent zIndex="overlay">
           <Calendar

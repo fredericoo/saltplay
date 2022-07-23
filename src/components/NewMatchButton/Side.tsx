@@ -4,7 +4,7 @@ import { Badge, Box, HStack, Text } from '@chakra-ui/react';
 import { AnimatePresence } from 'framer-motion';
 import { MotionBox } from '../Motion';
 import PlayerAvatar from '../PlayerAvatar';
-import { Player } from '../PlayerPicker/types';
+import type { Player } from '../PlayerPicker/types';
 import PointIcon from '../PointIcon';
 
 type SideProps = {

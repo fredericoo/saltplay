@@ -1,4 +1,5 @@
-import { IconButton, IconButtonProps, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import type { IconButtonProps} from '@chakra-ui/react';
+import { IconButton, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import { MoonIcon } from './MoonIcon';

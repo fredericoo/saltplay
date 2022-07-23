@@ -1,4 +1,5 @@
-import { Box, ChakraComponent } from '@chakra-ui/react';
+import type { ChakraComponent } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 const Logo: ChakraComponent<'div'> = props => {
   return (

@@ -1,7 +1,7 @@
 import MatchSummary from '@/components/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Game, Office, Season, User } from '@prisma/client';
+import type { Game, Office, Season, User } from '@prisma/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import useLeaderboard from '../Leaderboard/useLeaderboard';

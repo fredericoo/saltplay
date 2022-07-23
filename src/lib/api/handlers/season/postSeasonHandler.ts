@@ -2,13 +2,13 @@ import { postSeasonSchema } from '@/lib/api/schemas';
 import prisma from '@/lib/prisma';
 import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { PrismaClientValidationError } from '@prisma/client/runtime';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
-import { InferType, ValidationError } from 'yup';
+import type { InferType, ValidationError } from 'yup';
 
 type PostSeasonBody = InferType<typeof postSeasonSchema>;
 export type ValidSeasonPostResponse = Awaited<ReturnType<typeof createSeason>>;

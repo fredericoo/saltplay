@@ -1,12 +1,12 @@
 import prisma from '@/lib/prisma';
 import { canViewDashboard } from '@/lib/roles';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
-import { PlayerScore } from '@prisma/client';
+import type { PlayerScore } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
-import { InferType, ValidationError } from 'yup';
+import type { InferType, ValidationError } from 'yup';
 import { patchPlayerScoreSchema } from '../../schemas';
 
 type PatchPlayerScoreSchema = InferType<typeof patchPlayerScoreSchema>;

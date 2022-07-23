@@ -1,5 +1,5 @@
 import postGameHandler from '@/lib/api/handlers/game/postGameHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

@@ -1,6 +1,7 @@
+import type {
+  ChakraProps} from '@chakra-ui/react';
 import {
   Button,
-  ChakraProps,
   CloseButton,
   HStack,
   Popover,
@@ -14,7 +15,7 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { Match, Season } from '@prisma/client';
+import type { Match, Season } from '@prisma/client';
 import axios from 'axios';
 import Toast from '../Toast';
 

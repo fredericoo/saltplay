@@ -1,5 +1,6 @@
-import { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import type { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
+import type { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite from 'swr/infinite';
 
 const getKey =
   (options: Partial<LeaderboardGETOptions>) => (pageIndex: number, previousPageData: LeaderboardGETAPIResponse) => {

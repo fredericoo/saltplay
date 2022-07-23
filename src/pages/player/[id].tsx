@@ -7,8 +7,8 @@ import PlayerAvatar from '@/components/PlayerAvatar';
 import PlayerName from '@/components/PlayerName';
 import SEO from '@/components/SEO';
 import Stat from '@/components/Stat';
-import { UserGETAPIResponse } from '@/lib/api/handlers/user/getUserHandler';
-import { UserPATCHAPIResponse } from '@/lib/api/handlers/user/patchUserHandler';
+import type { UserGETAPIResponse } from '@/lib/api/handlers/user/getUserHandler';
+import type { UserPATCHAPIResponse } from '@/lib/api/handlers/user/patchUserHandler';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import prisma from '@/lib/prisma';
@@ -30,10 +30,10 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { Game, User } from '@prisma/client';
+import type { Game, User } from '@prisma/client';
 import axios from 'axios';
 import { AnimatePresence, LayoutGroup } from 'framer-motion';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
@@ -239,10 +239,10 @@ export const getStaticProps: GetStaticProps<PlayerPageProps> = async ({ params }
   const played = leftmatches.length + rightmatches.length;
   const won =
     leftmatches.reduce((acc, match) => (match.leftscore > match.rightscore ? acc + 1 : acc), 0) +
-    rightmatches.reduce((acc, match) => (match.rightscore > match.rightscore ? acc + 1 : acc), 0);
+    rightmatches.reduce((acc, match) => (match.rightscore > match.leftscore ? acc + 1 : acc), 0);
   const lost =
     leftmatches.reduce((acc, match) => (match.leftscore < match.rightscore ? acc + 1 : acc), 0) +
-    rightmatches.reduce((acc, match) => (match.rightscore < match.rightscore ? acc + 1 : acc), 0);
+    rightmatches.reduce((acc, match) => (match.rightscore < match.leftscore ? acc + 1 : acc), 0);
 
   const games = scores.map(score => score.game);
 

@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { useMemo } from 'react';
 import { MotionBox } from '../Motion';
 import PlayerAvatar from '../PlayerAvatar';

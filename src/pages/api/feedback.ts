@@ -1,7 +1,7 @@
-import { FeedbackFormData } from '@/components/FeedbackForm/FeedbackForm';
+import type { FeedbackFormData } from '@/components/FeedbackForm/FeedbackForm';
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { User } from '@prisma/client';
+import type { APIResponse } from '@/lib/types/api';
+import type { User } from '@prisma/client';
 import type { NextApiHandler } from 'next';
 
 export type FeedbackAPIResponse = APIResponse;

@@ -1,5 +1,5 @@
 import { Box, Heading } from '@chakra-ui/react';
-import { Game, Season } from '@prisma/client';
+import type { Game, Season } from '@prisma/client';
 import Leaderboard from '../Leaderboard';
 import Section from './Section';
 

@@ -3,7 +3,7 @@
 
 import { render } from '@testing-library/react';
 import Field from './Field';
-import { FieldTypeSpecific } from './types';
+import type { FieldTypeSpecific } from './types';
 
 type FieldType = FieldTypeSpecific['type'];
 type FieldTypes = {

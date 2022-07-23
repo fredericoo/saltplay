@@ -1,4 +1,5 @@
-import { Box, ChakraProps } from '@chakra-ui/react';
+import type { ChakraProps } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 
 type IconBlurProps = {

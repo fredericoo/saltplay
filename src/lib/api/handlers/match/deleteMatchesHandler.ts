@@ -3,12 +3,13 @@ import canDeleteMatch from '@/lib/canDeleteMatch';
 import { getPlayerPointsToMove, getPointsToMove } from '@/lib/points';
 import prisma from '@/lib/prisma';
 import { notifyDeletedMatch } from '@/lib/slack/notifyMatch';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
-import { InferType, object, string } from 'yup';
+import type { InferType} from 'yup';
+import { object, string } from 'yup';
 
 export type DeleteMatchesOptions = InferType<typeof querySchema>;
 export type MatchesDELETEAPIResponse = APIResponse;

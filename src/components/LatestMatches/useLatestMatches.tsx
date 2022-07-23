@@ -1,5 +1,6 @@
-import { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/match/getMatchesHandler';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import type { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/match/getMatchesHandler';
+import type { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite from 'swr/infinite';
 
 const getKey =
   (options: Partial<GetMatchesOptions>) => (pageIndex: number, previousPageData: MatchesGETAPIResponse) => {

@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import LoadingIcon from '../LoadingIcon';
-import { ModalFormProps } from '../ModalButton/ModalButton';
+import type { ModalFormProps } from '../ModalButton/ModalButton';
 import Toast from '../Toast';
 
 export type FeedbackFormData = {

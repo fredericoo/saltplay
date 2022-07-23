@@ -1,6 +1,7 @@
-import { Box, ChakraProps, FormControl, Heading, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import type { ChakraProps} from '@chakra-ui/react';
+import { Box, FormControl, Heading, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { VscChevronRight } from 'react-icons/vsc';
 
 const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, label, htmlFor }) => {

@@ -1,7 +1,7 @@
 import IconBlur from '@/components/IconBlur';
 import { Box, Heading, HStack } from '@chakra-ui/react';
 import { forwardRef } from 'react';
-import { PageHeader as PageHeaderProps } from './types';
+import type { PageHeader as PageHeaderProps } from './types';
 
 const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(({ title, subtitle, icon }, ref) => {
   return (

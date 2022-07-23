@@ -12,10 +12,10 @@ const getDisplayValue = ({
       return options.find(option => option.value == value)?.label;
     case 'datetime':
       if (typeof value === 'string' || typeof value === 'number') {
-        return formatDateTime(new Date(value), 'Pp');
+        return formatDateTime(new Date(value));
       }
       if (value instanceof Date) {
-        return formatDateTime(value, 'Pp');
+        return formatDateTime(value);
       }
       return null;
     case 'switch':

@@ -1,6 +1,7 @@
 import { HStack, IconButton, Input, Text } from '@chakra-ui/react';
 import { clamp } from 'ramda';
-import { Reducer, useReducer } from 'react';
+import type { Reducer} from 'react';
+import { useReducer } from 'react';
 import { VscChevronDown, VscChevronUp } from 'react-icons/vsc';
 
 type NumberFieldProps = {

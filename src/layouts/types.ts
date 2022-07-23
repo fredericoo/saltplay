@@ -1,5 +1,5 @@
-import { NextPage } from 'next/types';
-import { Sidebar } from '../components/Sidebar/types';
+import type { NextPage } from 'next/types';
+import type { Sidebar } from '../components/Sidebar/types';
 
 export type LayoutProps = {
   sidebar?: Sidebar;

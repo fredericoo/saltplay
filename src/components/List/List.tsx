@@ -1,4 +1,5 @@
-import { SimpleGrid, SimpleGridProps, useColorMode } from '@chakra-ui/react';
+import type { SimpleGridProps} from '@chakra-ui/react';
+import { SimpleGrid, useColorMode } from '@chakra-ui/react';
 import ListItem from './ListItem';
 
 type ListComponent = React.FC<SimpleGridProps> & { Item: typeof ListItem };

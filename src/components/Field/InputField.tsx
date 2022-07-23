@@ -1,4 +1,5 @@
-import { HStack, Input, InputProps, Text } from '@chakra-ui/react';
+import type { InputProps} from '@chakra-ui/react';
+import { HStack, Input, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
 type InputFieldProps = Omit<InputProps, 'onChange' | 'value' | 'defaultValue' | 'prefix'> & {

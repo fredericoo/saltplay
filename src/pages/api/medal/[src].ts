@@ -1,5 +1,5 @@
 import medals from '@/lib/medals';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 
 const handler: NextApiHandler = (req, res) => {
   if (typeof req.query?.src !== 'string' || typeof req.query.bg !== 'string' || typeof req.query.icon !== 'string') {
