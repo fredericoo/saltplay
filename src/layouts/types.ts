@@ -7,4 +7,4 @@ export type LayoutProps = {
 
 export type LayoutComponent = React.FC<LayoutProps>;
 
-export type PageWithLayout<P = {}> = NextPage<P> & { Layout: LayoutComponent };
+export type PageWithLayout<P extends object = Record<string, never>> = NextPage<P> & { Layout: LayoutComponent };
