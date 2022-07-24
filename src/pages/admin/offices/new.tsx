@@ -1,6 +1,6 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import Field from '@/components/Field';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
@@ -14,7 +14,7 @@ import type { Office } from '@prisma/client';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import type { FormEventHandler} from 'react';
+import type { FormEventHandler } from 'react';
 import { useState } from 'react';
 import type { InferType, ValidationError } from 'yup';
 import { officeFields } from './[id]';

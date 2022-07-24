@@ -1,6 +1,6 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { BANNED_ROLE_ID } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';

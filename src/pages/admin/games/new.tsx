@@ -1,7 +1,7 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import Field from '@/components/Field';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { GAME_FLAGS } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
@@ -17,7 +17,7 @@ import type { Game } from '@prisma/client';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import type { FormEventHandler} from 'react';
+import type { FormEventHandler } from 'react';
 import { useState } from 'react';
 import type { InferType, ValidationError } from 'yup';
 import { getGameFields } from './[id]';

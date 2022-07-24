@@ -1,12 +1,7 @@
-import Leaderboard from '@/components/Leaderboard';
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import SEO from '@/components/SEO';
-import Stat from '@/components/Stat';
+import SeasonPage from '@/components/SeasonPage';
 import { PAGE_REVALIDATE_SECONDS } from '@/constants';
-import useNavigationState from '@/lib/navigationHistory/useNavigationState';
+import { leaderboardOrderBy } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import prisma from '@/lib/prisma';
-import { formatDateTime } from '@/lib/utils';
-import { Box, Container, Heading, HStack } from '@chakra-ui/react';
 import type { Game, Office, Season } from '@prisma/client';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import { object, string } from 'yup';
@@ -26,11 +21,28 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
               endDate: true,
               startDate: true,
               colour: true,
+              scores: {
+                take: 3,
+                orderBy: leaderboardOrderBy,
+                select: {
+                  player: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      medals: { where: { season: { slug: { equals: params.season } } } },
+                    },
+                  },
+                },
+              },
               game: {
                 select: {
                   name: true,
                   icon: true,
                   id: true,
+                  office: {
+                    select: { name: true },
+                  },
                 },
               },
             },
@@ -53,41 +65,14 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
   return seasonWithoutDates;
 };
 
-type SeasonPageProps = {
+export type SeasonPageProps = {
   season: NonNullable<Awaited<ReturnType<typeof getSeason>>>;
-};
-
-const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
-  useNavigationState(season.name);
-
-  return (
-    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <SEO title={season.name} />
-      <Box bg="grey.1" borderRadius="18" overflow="hidden">
-        <Box
-          bg={season.colour ? `#${season.colour}` : 'grey.10'}
-          pb={{ base: '50%', md: '25%' }}
-          position="relative"
-        ></Box>
-        <Box p={4}>
-          <Heading as="h1" size="lg" mt={2}>
-            {season.game.name}
-          </Heading>
-        </Box>
-        <HStack flexWrap={'wrap'} spacing={{ base: 1, md: 0.5 }} p={1}>
-          <Stat label="Started at" content={formatDateTime(new Date(season.startDate))} />
-          <Stat label="Matches" content={0} />
-        </HStack>
-      </Box>
-      {season.game && <Leaderboard gameId={season.game.id} seasonId={season.id} />}
-    </Container>
-  );
 };
 
 export default SeasonPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Deliberately not statically building users.
+  // Deliberately not statically building seasons.
   return { paths: [], fallback: 'blocking' };
 };
 

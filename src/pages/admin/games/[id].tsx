@@ -1,11 +1,11 @@
 import SettingsGroup from '@/components/admin/SettingsGroup';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfirmButton from '@/components/ConfirmButton';
 import type { EditableField } from '@/components/Field/types';
 import FlagsSwitch from '@/components/FlagsSwitch';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';

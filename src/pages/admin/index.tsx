@@ -1,7 +1,7 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfirmButton from '@/components/ConfirmButton';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';

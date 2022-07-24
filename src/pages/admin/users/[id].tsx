@@ -1,11 +1,11 @@
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import type { EditableField } from '@/components/Field/types';
 import FloatingActionButton from '@/components/FloatingActionButton';
 import PlayerAvatar from '@/components/PlayerAvatar';
 import SEO from '@/components/SEO';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { SESSION_MAX_AGE } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';

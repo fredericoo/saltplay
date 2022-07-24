@@ -1,7 +1,7 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
 import Field from '@/components/Field';
 import type { EditableField } from '@/components/Field/types';
 import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
 import { WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
@@ -20,7 +20,7 @@ import type { AxiosError } from 'axios';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { groupBy } from 'ramda';
-import type { FormEventHandler} from 'react';
+import type { FormEventHandler } from 'react';
 import { useState } from 'react';
 import type { InferType, ValidationError } from 'yup';
 
