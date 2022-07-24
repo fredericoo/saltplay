@@ -1,3 +1,4 @@
+import Logo from '@/components/shared/Logo';
 import { currentHistoryStateAtom } from '@/lib/navigationHistory/state';
 import useMediaQuery from '@/lib/useMediaQuery';
 import { Box, Center, HStack, Text, VStack } from '@chakra-ui/react';
@@ -7,14 +8,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IoChatbubble } from 'react-icons/io5';
-import ColorModeToggler from '../ColorModeToggler';
-import LoadingIcon from '../LoadingIcon';
-import Logo from '../Logo/Logo';
 import ModalButton from '../ModalButton';
-import NavigationBackButton from '../NavigationBackButton';
-import UserMenu from '../UserMenu/UserMenu';
+import LoadingIcon from '../shared/LoadingIcon';
+import ColorModeToggler from './ColorModeToggler';
+import NavigationBackButton from './NavigationBackButton';
+import UserMenu from './UserMenu/UserMenu';
 
-const FeedbackForm = dynamic(() => import('../FeedbackForm'), {
+const FeedbackForm = dynamic(() => import('./FeedbackForm'), {
   ssr: false,
   loading: () => (
     <Center minH="300px" p={8}>

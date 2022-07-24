@@ -1,13 +1,13 @@
-import Leaderboard from '@/components/Leaderboard';
-import Medal from '@/components/Medal';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import SEO from '@/components/SEO';
-import Stat from '@/components/Stat';
+import Leaderboard from '@/components/shared/Leaderboard';
+import Medal from '@/components/shared/Medal';
+import SEO from '@/components/shared/SEO';
+import Stat from '@/components/shared/Stat';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { formatDateTime } from '@/lib/utils';
 import type { SeasonPageProps } from '@/pages/[office]/[game]/[season]';
 import { Box, Container, Grid, Heading, HStack, Stack, VStack } from '@chakra-ui/react';
-import PlayerAvatar from '../PlayerAvatar';
+import PlayerAvatar from '../shared/PlayerAvatar';
 
 const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
   useNavigationState(season.name);

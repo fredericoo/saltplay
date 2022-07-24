@@ -31,7 +31,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
         <Fonts />
         <GlobalCSS />
         <SessionProvider session={session}>
-          <Layout sidebar={pageProps.sidebar}>
+          <Layout>
             <Component {...pageProps} />
           </Layout>
         </SessionProvider>

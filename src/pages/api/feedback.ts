@@ -1,4 +1,4 @@
-import type { FeedbackFormData } from '@/components/FeedbackForm/FeedbackForm';
+import type { FeedbackFormData } from '@/components/Navbar/FeedbackForm/FeedbackForm';
 import prisma from '@/lib/prisma';
 import type { APIResponse } from '@/lib/types/api';
 import type { User } from '@prisma/client';

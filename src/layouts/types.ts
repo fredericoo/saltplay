@@ -1,9 +1,6 @@
 import type { NextPage } from 'next/types';
-import type { Sidebar } from '../components/Sidebar/types';
 
-export type LayoutProps = {
-  sidebar?: Sidebar;
-};
+export type LayoutProps = {};
 
 export type LayoutComponent = React.FC<LayoutProps>;
 

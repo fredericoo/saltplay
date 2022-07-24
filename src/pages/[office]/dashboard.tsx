@@ -1,8 +1,6 @@
-import Leaderboard from '@/components/Leaderboard';
-import TV from '@/layouts/TV';
-import type { PageWithLayout } from '@/layouts/types';
+import OfficeDashboardPage from '@/components/OfficeDashboardPage';
+import { PAGE_REVALIDATE_SECONDS } from '@/constants';
 import prisma from '@/lib/prisma';
-import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
 const getOfficeBySlug = async (slug: string) =>
@@ -11,28 +9,9 @@ const getOfficeBySlug = async (slug: string) =>
     select: { games: { orderBy: { id: 'asc' }, select: { id: true, name: true } } },
   });
 
-type OfficePageProps = {
+export type OfficeDashboardPageProps = {
   office?: Awaited<ReturnType<typeof getOfficeBySlug>>;
 };
-
-const OfficePage: PageWithLayout<OfficePageProps> = ({ office }) => {
-  if (!office) return <Box>404</Box>;
-
-  return (
-    <SimpleGrid minChildWidth={'400px'} gap={4}>
-      {office.games.map(game => (
-        <Box bg="grey.1" key={game.id} p={4} borderRadius="xl">
-          <Text mb={4} fontSize="3xl">
-            {game.name}
-          </Text>
-          <Leaderboard gameId={game.id} hasIcons={false} />
-        </Box>
-      ))}
-    </SimpleGrid>
-  );
-};
-
-OfficePage.Layout = TV;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const offices = await prisma.office.findMany({
@@ -44,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps<OfficeDashboardPageProps> = async ({ params }) => {
   if (typeof params?.office !== 'string') {
     return { props: {} };
   }
@@ -61,8 +40,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       hasNavbar: false,
       containerWidth: 'full',
     },
-    revalidate: 60 * 60 * 24,
+    revalidate: PAGE_REVALIDATE_SECONDS,
   };
 };
 
-export default OfficePage;
+export default OfficeDashboardPage;

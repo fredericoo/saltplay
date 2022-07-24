@@ -1,13 +1,12 @@
-import Editable from '@/components/Editable';
-import Field from '@/components/Field';
-import type { EditableField } from '@/components/Field/types';
-import type { FieldData } from '@/components/Field/types';
-import Settings from '@/components/Settings';
+import Editable from '@/components/admin/Editable';
+import Field from '@/components/admin/Field';
+import type { EditableField, FieldData } from '@/components/admin/Field/types';
+import Settings from '@/components/shared/Settings';
 import type { APIError, APIResponse, APISuccess } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import type { ValidationError } from 'yup';
 import type { SchemaLike } from 'yup/lib/types';

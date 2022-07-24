@@ -1,7 +1,7 @@
-import ConfirmButton from '@/components/ConfirmButton';
-import SEO from '@/components/SEO';
-import Settings from '@/components/Settings';
+import ConfirmButton from '@/components/admin/ConfirmButton';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import SEO from '@/components/shared/SEO';
+import Settings from '@/components/shared/Settings';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';

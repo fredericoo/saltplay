@@ -1,11 +1,11 @@
+import type { EditableField } from '@/components/admin/Field/types';
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
-import type { EditableField } from '@/components/Field/types';
-import FloatingActionButton from '@/components/FloatingActionButton';
-import PlayerAvatar from '@/components/PlayerAvatar';
-import SEO from '@/components/SEO';
-import Settings from '@/components/Settings';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import PlayerAvatar from '@/components/shared/PlayerAvatar';
+import SEO from '@/components/shared/SEO';
+import Settings from '@/components/shared/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';

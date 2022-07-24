@@ -1,5 +1,5 @@
-import ConfirmButton from '@/components/ConfirmButton';
-import Settings from '@/components/Settings';
+import ConfirmButton from '@/components/admin/ConfirmButton';
+import Settings from '@/components/shared/Settings';
 import type { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
 import { patchPlayerScoreSchema } from '@/lib/api/schemas';
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';

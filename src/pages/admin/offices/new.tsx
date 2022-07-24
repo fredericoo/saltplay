@@ -1,6 +1,6 @@
-import Field from '@/components/Field';
-import Settings from '@/components/Settings';
+import Field from '@/components/admin/Field';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import Settings from '@/components/shared/Settings';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';

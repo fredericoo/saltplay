@@ -1,7 +1,7 @@
-import Field from '@/components/Field';
-import FlagsSwitch from '@/components/FlagsSwitch';
-import Settings from '@/components/Settings';
+import Field from '@/components/admin/Field';
+import FlagsSwitch from '@/components/admin/FlagsSwitch';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import Settings from '@/components/shared/Settings';
 import { GAME_FLAGS } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';

@@ -1,11 +1,11 @@
+import ConfirmButton from '@/components/admin/ConfirmButton';
+import type { EditableField } from '@/components/admin/Field/types';
+import FlagsSwitch from '@/components/admin/FlagsSwitch';
 import SettingsGroup from '@/components/admin/SettingsGroup';
-import ConfirmButton from '@/components/ConfirmButton';
-import type { EditableField } from '@/components/Field/types';
-import FlagsSwitch from '@/components/FlagsSwitch';
-import FloatingActionButton from '@/components/FloatingActionButton';
-import SEO from '@/components/SEO';
-import Settings from '@/components/Settings';
 import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import SEO from '@/components/shared/SEO';
+import Settings from '@/components/shared/Settings';
 import { GAME_FLAGS, WEBSITE_URL } from '@/constants';
 import Admin from '@/layouts/Admin';
 import type { PageWithLayout } from '@/layouts/types';
