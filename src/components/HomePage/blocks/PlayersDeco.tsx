@@ -44,7 +44,7 @@ const PlayerDeco: React.VFC<{ user: PlayersDecoProps['players'][number]; index: 
   return (
     <Box
       zIndex={0}
-      css={{ '--zPosition': `${height}px`, transformStyle: 'preserve-3d' }}
+      css={{ '--zPosition': `${height}px` }}
       animation={`${fly} ${duration}s linear ${delay}s infinite`}
       pointerEvents={'none'}
       position="absolute"

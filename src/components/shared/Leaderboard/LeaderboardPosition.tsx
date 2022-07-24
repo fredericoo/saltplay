@@ -24,7 +24,7 @@ const FirstPlaceFx = styled(Box, {
     filter: 'blur(12px)',
     opacity: 1,
     isolation: 'isolate',
-    transform: 'translateZ(0)',
+    transform: 'translateZ(-1)',
   },
 });
 

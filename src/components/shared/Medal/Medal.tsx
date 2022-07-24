@@ -5,7 +5,6 @@ import { Box, keyframes, styled, Text, Tooltip } from '@chakra-ui/react';
 import type { Medal as DBMedal, Season } from '@prisma/client';
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { MotionBox } from '../Motion';
 import { getRelativeCoordinates } from './utils';
 
 type MedalProps = { id: DBMedal['id']; seasonId: Season['id'] };
@@ -77,6 +76,7 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
       closeOnClick={false}
     >
       <MedalWrapper
+        css={{ transformStyle: 'preserve-3d' }}
         ref={boxRef}
         onMouseMove={handleMouseMove}
         initial={{ scale: 1 }}
@@ -105,7 +105,7 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
           alt={medal?.name || 'Badge'}
         />
         {medal?.isHolographic && medal.url && (
-          <MotionBox
+          <Box
             role="presentation"
             position="absolute"
             inset="0"
@@ -128,7 +128,6 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
               rgba(255, 0, 0, 1)
           )`}
             backgroundSize="200% 200%"
-            alt=""
             aria-hidden
             animation={`${shimmer} 2s linear infinite`}
           />
