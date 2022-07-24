@@ -14,11 +14,9 @@ export type OfficeDashboardPageProps = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const offices = await prisma.office.findMany({
-    select: { slug: true },
-  });
+  // Not building dashboard pages unless requested
   return {
-    paths: offices.map(office => ({ params: { office: office.slug } })),
+    paths: [],
     fallback: 'blocking',
   };
 };
