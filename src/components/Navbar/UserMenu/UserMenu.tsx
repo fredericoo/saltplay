@@ -22,13 +22,11 @@ const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
     session?.user && identifyAndSetUser(session.user);
   }, [session?.user]);
 
-  if (isLoading) return <Button isLoading aria-label="loading user…" />;
-
-  if (!session) {
+  if (!session || isLoading) {
     return isDevLoginEnabled ? (
       <DevUserMenu />
     ) : (
-      <Button as="a" href="/api/auth/signin" size="sm" variant="subtle" colorScheme="grey">
+      <Button isLoading={isLoading} as="a" href="/api/auth/signin" size="sm" variant="subtle" colorScheme="grey">
         Sign in
       </Button>
     );

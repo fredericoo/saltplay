@@ -1,6 +1,5 @@
-import { MotionBox } from '@/components/shared/Motion';
 import PlayerAvatar from '@/components/shared/PlayerAvatar';
-import { Box } from '@chakra-ui/react';
+import { Box, keyframes } from '@chakra-ui/react';
 import type { User } from '@prisma/client';
 import { useMemo } from 'react';
 
@@ -24,6 +23,16 @@ const PlayersDeco: React.VFC<PlayersDecoProps> = ({ players }) => {
   );
 };
 
+const fly = keyframes`
+	0% {
+		transform: translateY(0) translateZ(var(--zPosition));
+    opacity: 1;
+	}
+	100% {
+    transform: translateY(-2000%) translateZ(var(--zPosition));
+    opacity: 0;
+	}`;
+
 const PlayerDeco: React.VFC<{ user: PlayersDecoProps['players'][number]; index: number; length: number }> = ({
   user,
   index,
@@ -31,27 +40,21 @@ const PlayerDeco: React.VFC<{ user: PlayersDecoProps['players'][number]; index: 
 }) => {
   const height = useMemo(() => -512 + Math.random() * 1024, []);
   const duration = length / 4;
+  const delay = (index * duration) / length;
   return (
-    <MotionBox
+    <Box
       zIndex={0}
-      initial={{ translateY: 0, translateZ: height, opacity: 1 }}
-      animate={{ translateY: -2000, opacity: 0 }}
-      transition={{
-        repeat: Infinity,
-        ease: 'linear',
-        delay: (index * duration) / length,
-        duration,
-      }}
+      css={{ '--zPosition': `${height}px`, transformStyle: 'preserve-3d' }}
+      animation={`${fly} ${duration}s linear ${delay}s infinite`}
       pointerEvents={'none'}
       position="absolute"
       left={`${index ** (index + 1) % 100}%`}
       bottom="-50%"
       opacity={1}
-      css={{ transformStyle: 'preserve-3d' }}
       filter={`blur(${Math.abs(height) / 128}px)`}
     >
       <PlayerAvatar size={16} user={user} />
-    </MotionBox>
+    </Box>
   );
 };
 

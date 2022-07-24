@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useSeasonMedals from '@/lib/useSeasonMedals';
+import type { CSSObject } from '@chakra-ui/react';
 import { Box, keyframes, styled, Text, Tooltip } from '@chakra-ui/react';
 import type { Medal as DBMedal, Season } from '@prisma/client';
 import { motion } from 'framer-motion';
@@ -23,14 +24,16 @@ const shimmer = keyframes`
     opacity: 0
 	}`;
 
+const wrapperStyle: CSSObject = {
+  w: '2em',
+  h: '2em',
+  display: 'inline-block',
+  position: 'relative',
+};
+
 const MedalWrapper = motion(
   styled(Box, {
-    baseStyle: {
-      w: '2em',
-      h: '2em',
-      display: 'inline-block',
-      position: 'relative',
-    },
+    baseStyle: wrapperStyle,
   })
 );
 
@@ -39,7 +42,19 @@ const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
   const [mousePosition, setMousePosition] = useState<ReturnType<typeof getRelativeCoordinates>>(null);
   const boxRef = useRef<HTMLDivElement>(null);
 
-  if (error || res?.status !== 'ok') return null;
+  if (error || res?.status !== 'ok')
+    return (
+      <span tabIndex={0}>
+        <Box sx={wrapperStyle} color="grey.6">
+          <svg viewBox="0 0 308 308" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M140 8.0829C148.663 3.08118 159.337 3.08119 168 8.0829L273.368 68.9171C282.031 73.9188 287.368 83.1624 287.368 93.1658V214.834C287.368 224.838 282.031 234.081 273.368 239.083L168 299.917C159.337 304.919 148.663 304.919 140 299.917L34.6321 239.083C25.9688 234.081 20.6321 224.838 20.6321 214.834V93.1658C20.6321 83.1624 25.9689 73.9188 34.6321 68.9171L140 8.0829Z"
+              fill="currentColor"
+            />
+          </svg>
+        </Box>
+      </span>
+    );
 
   const medal = res.data?.[id];
 
