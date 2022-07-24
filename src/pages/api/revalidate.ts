@@ -5,14 +5,16 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
+  const path = req.query.path;
+  if (!path) return res.status(400).json({ message: 'Missing path' });
+
   try {
-    const path = req.query.path;
     if (typeof path === 'string') {
-      await res.unstable_revalidate(path);
+      await res.revalidate(path);
     } else {
       await Promise.all(
         path.map(async path => {
-          await res.unstable_revalidate(path);
+          await res.revalidate(path);
         })
       );
     }
