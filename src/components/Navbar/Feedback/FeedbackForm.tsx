@@ -2,8 +2,8 @@ import { Button, Center, FormControl, FormHelperText, FormLabel, HStack, Textare
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { ModalFormProps } from '../../ModalButton/ModalButton';
 import LoadingIcon from '../../shared/LoadingIcon';
+import type { ModalFormProps } from '../../shared/ModalButton/ModalButton';
 import Toast from '../../shared/Toast';
 
 export type FeedbackFormData = {

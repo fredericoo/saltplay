@@ -1,8 +1,8 @@
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 import { Box, useColorModeValue } from '@chakra-ui/react';
 import { mauve, mauveDark } from '@radix-ui/colors';
 import Head from 'next/head';
-import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
 import type { LayoutComponent } from './types';
 
 const Default: LayoutComponent = ({ children }) => {
