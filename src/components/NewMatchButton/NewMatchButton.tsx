@@ -1,5 +1,5 @@
 import getErrorMessage from '@/lib/api/getErrorMessage';
-import { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/postMatchesHandler';
+import type { MatchesPOSTAPIResponse } from '@/lib/api/handlers/match/POST/postMatchHandler';
 import { trackEvent } from '@/lib/mixpanel';
 import {
   Button,

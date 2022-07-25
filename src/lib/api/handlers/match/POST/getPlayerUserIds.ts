@@ -1,7 +1,7 @@
 import createPlayerFromSlackId from './createPlayerFromSlackId';
 
 /**
- * Given a list of players with id and source, returns User ids, creating new Users when necessary..
+ * Given a list of players with id and source, returns User ids, creating new Users when necessary.
  * @param players An array of objects containing `id`, `source`.
  * @returns Promise that resolves to array of User.id.
  */

@@ -3,13 +3,15 @@ import { calculateMatchPoints } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slack/notifyMatch';
 import { APIResponse } from '@/lib/types/api';
-import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
+import { promiseProps } from '@/lib/utils';
 import { withSentry } from '@sentry/nextjs';
 import { NextApiHandler } from 'next';
-import { unstable_getServerSession } from 'next-auth';
 import { array, InferType, number, object, string } from 'yup';
-import getPlayerUserIds from '../../getPlayerUserIds';
-import moveMatchPoints from '../../moveMatchPoints';
+import moveMatchPoints from '../../../moveMatchPoints';
+import authorise from './authorise';
+import getPlayerUserIds from './getPlayerUserIds';
+import getSeason from './getSeason';
+import validateTeamLength from './validateTeamLength';
 
 const sideSchema = object().shape({
   score: number().required(),
@@ -32,36 +34,37 @@ const requestSchema = object().shape({
 export type MatchesPOSTAPIRequest = InferType<typeof requestSchema>;
 export type MatchesPOSTAPIResponse = APIResponse;
 
-const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
+const postMatchHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, res) => {
   await requestSchema
     .validate(req.body, { abortEarly: false, stripUnknown: true })
     .then(async body => {
-      const session = await unstable_getServerSession(req, res, nextAuthOptions);
+      // Authorise the user to create a match
+      const isAuthorised = await authorise({ req, res, players: body.left.players });
+      if (!isAuthorised) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
 
-      if (!session) return res.status(401).json({ status: 'error', message: 'Unauthorised' });
-
-      if (session.user.roleId !== 0 && !body.left.players.find(p => p.id === session.user.id))
-        return res.status(401).json({ status: 'error', message: 'Unauthorised' });
-
-      const season = await prisma.season.findUnique({
-        where: { id: body.seasonId },
-        select: { id: true, endDate: true, game: { select: { id: true, maxPlayersPerTeam: true } } },
-      });
-
+      // Make sure season exists and can have matches added to it
+      const season = await getSeason(body.seasonId);
       if (!season) return res.status(404).json({ status: 'error', message: 'Season not found' });
       if (season.endDate) return res.status(403).json({ status: 'error', message: 'Season already finished' });
 
+      // Ensure team lengths are compatible
       const maxPlayersPerTeam = season.game.maxPlayersPerTeam || 1;
+      const isValidTeamLength = validateTeamLength({
+        maxPlayersPerTeam,
+        leftLength: body.left.players.length,
+        rightLength: body.right.players.length,
+      });
 
-      if (body.left.players.length > maxPlayersPerTeam || body.right.players.length > maxPlayersPerTeam)
+      if (!isValidTeamLength)
         return res
           .status(400)
           .json({ status: 'error', message: `Invalid team length. Allowed per team: ${maxPlayersPerTeam}` });
 
-      const ids = {
-        left: await getPlayerUserIds(body.left.players),
-        right: await getPlayerUserIds(body.right.players),
-      };
+      // gets user ids or create users when necessary.
+      const ids = await promiseProps({
+        left: getPlayerUserIds(body.left.players),
+        right: getPlayerUserIds(body.right.players),
+      });
 
       const playersWithScores = await prisma.user.findMany({
         where: { id: { in: [...ids.left, ...ids.right] } },
@@ -75,9 +78,6 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         left: playersWithScores.filter(p => ids.left.includes(p.id)),
         right: playersWithScores.filter(p => ids.right.includes(p.id)),
       };
-
-      if (body.left.players.length !== sides.left.length || body.right.players.length !== sides.right.length)
-        return res.status(400).json({ status: 'error', message: 'Invalid player ids' });
 
       const pointsAvg = {
         left: Math.ceil(
@@ -105,6 +105,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         },
       });
 
+      // Move points; if fails, deletes match and returns 500.
       try {
         await moveMatchPoints({
           gameid: season.game.id,
@@ -119,6 +120,7 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
         return res.status(500).json({ status: 'error', message: 'Error moving player points' });
       }
 
+      // Post on slack channel. Gracefully fails as it is not essential.
       await notifyMatchOnSlack({
         matchId: createdMatch.id,
         gameId: season.game.id,
@@ -136,4 +138,4 @@ const postMatchesHandler: NextApiHandler<MatchesPOSTAPIResponse> = async (req, r
     });
 };
 
-export default withSentry(postMatchesHandler);
+export default withSentry(postMatchHandler);

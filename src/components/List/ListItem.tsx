@@ -1,6 +1,7 @@
 import { Badge, Box, ChakraProps, HStack, Text, useColorMode } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ReactElement } from 'react';
+import IconBlur from '../IconBlur';
 
 type ListItemProps = {
   href: string;
@@ -16,6 +17,7 @@ const ListItem: React.FC<ListItemProps & ChakraProps> = ({ href, badge, icon, ch
     <li>
       <Link href={href} passHref>
         <HStack
+          role="group"
           p={4}
           as="a"
           bg={isDarkmode ? 'grey.3' : 'grey.1'}
@@ -34,6 +36,19 @@ const ListItem: React.FC<ListItemProps & ChakraProps> = ({ href, badge, icon, ch
             <Badge letterSpacing="wide" color="grey.11" bg="grey.1">
               {badge}
             </Badge>
+          )}
+          {typeof icon === 'string' && (
+            <IconBlur
+              icon={icon}
+              width={{ base: '300%', md: '100%' }}
+              height={{ base: '100%', md: '300%' }}
+              top="-100%"
+              transition={'1.5s cubic-bezier(0.16, 1, 0.3, 1)'}
+              transform={{ base: 'translate(-33.33%, -100%)', md: 'translateX(-100%)' }}
+              _groupActive={{ base: 'translate(-33.33%, 66.6%)', md: 'translateX(-50%)' }}
+              zIndex={1}
+              opacity={0.2}
+            />
           )}
         </HStack>
       </Link>
