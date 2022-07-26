@@ -1,6 +1,6 @@
 import { STARTING_POINTS } from '@/constants';
 import prisma from '@/lib/prisma';
-import { Match, Season, User } from '@prisma/client';
+import type { Match, Season, User } from '@prisma/client';
 import { getPlayerPointsToMove, getPointsToMove } from '../points';
 
 /**

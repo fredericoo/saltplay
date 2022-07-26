@@ -1,4 +1,4 @@
-import { NextApiResponse } from 'next';
+import type { NextApiResponse } from 'next';
 
 const revalidateStaticPages = async (paths: string[] = ['/'], res: NextApiResponse) => {
   await Promise.all(

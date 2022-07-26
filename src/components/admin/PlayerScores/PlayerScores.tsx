@@ -1,9 +1,9 @@
-import ConfirmButton from '@/components/ConfirmButton';
-import Settings from '@/components/Settings';
-import { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
+import ConfirmButton from '@/components/admin/ConfirmButton';
+import Settings from '@/components/shared/Settings';
+import type { PlayerScoreDELETEAPIResponse } from '@/lib/api/handlers/playerScore/deletePlayerScoreHandler';
 import { patchPlayerScoreSchema } from '@/lib/api/schemas';
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';
-import { Game, Office, PlayerScore } from '@prisma/client';
+import type { Game, Office, PlayerScore } from '@prisma/client';
 import axios from 'axios';
 import { useState } from 'react';
 import { IoTrashOutline } from 'react-icons/io5';

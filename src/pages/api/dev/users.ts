@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { NextApiHandler } from 'next';
+import type { APIResponse } from '@/lib/types/api';
+import type { NextApiHandler } from 'next';
 
 const getUsers = () =>
   prisma.user.findMany({

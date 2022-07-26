@@ -1,4 +1,4 @@
-import { SystemStyleFunction } from '@chakra-ui/theme-tools';
+import type { SystemStyleFunction } from '@chakra-ui/theme-tools';
 import { Button } from './Button';
 
 const variantSolid: SystemStyleFunction = props => ({

@@ -1,5 +1,5 @@
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { canViewDashboard } from './roles';
 

@@ -1,24 +1,23 @@
+import type { EditableField } from '@/components/admin/Field/types';
 import PlayerScores from '@/components/admin/PlayerScores/PlayerScores';
 import SettingsGroup from '@/components/admin/SettingsGroup';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import type { EditableField } from '@/components/Field/types';
-import FloatingActionButton from '@/components/FloatingActionButton';
-import PlayerAvatar from '@/components/PlayerAvatar';
-import SEO from '@/components/SEO';
-import Settings from '@/components/Settings';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import FloatingActionButton from '@/components/shared/FloatingActionButton';
+import PlayerAvatar from '@/components/shared/PlayerAvatar';
+import SEO from '@/components/shared/SEO';
+import Settings from '@/components/shared/Settings';
 import { SESSION_MAX_AGE } from '@/constants';
 import Admin from '@/layouts/Admin';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
-import { SessionDELETEAPIResponse } from '@/lib/api/handlers/session/deleteSessionHandler';
+import type { SessionDELETEAPIResponse } from '@/lib/api/handlers/session/deleteSessionHandler';
 import { patchUserSchemaAdmin } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
+import { formatDateTime } from '@/lib/utils';
 import { Badge, Button, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Tooltip } from '@chakra-ui/react';
-import { Session, User } from '@prisma/client';
+import type { Session, User } from '@prisma/client';
 import axios from 'axios';
-import { formatRelative, subSeconds } from 'date-fns';
-import { enGB } from 'date-fns/locale';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -144,6 +143,9 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
                 ?.filter(session => !deletedSessions.includes(session.id))
                 .map(session => {
                   const isThisSession = user.id === userSession?.user.id && session.expires === userSession?.expires;
+                  const sessionStartDate = new Date(session.expires);
+                  sessionStartDate.setSeconds(sessionStartDate.getSeconds() - SESSION_MAX_AGE);
+
                   return (
                     <Settings.Item
                       key={session.id}
@@ -158,10 +160,7 @@ const AdminPage: PageWithLayout<AdminPageProps> = ({ user, roles }) => {
                             )}
                           </Text>
                           <Text fontSize="xs">
-                            last used{' '}
-                            {formatRelative(subSeconds(new Date(session.expires), SESSION_MAX_AGE), new Date(), {
-                              locale: enGB,
-                            })}
+                            last used {formatDateTime(sessionStartDate, { dateStyle: 'short' })}
                           </Text>
                         </Stack>
                       }

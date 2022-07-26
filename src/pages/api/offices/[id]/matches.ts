@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { Match } from '@prisma/client';
-import { NextApiHandler } from 'next';
+import type { APIResponse } from '@/lib/types/api';
+import type { Match } from '@prisma/client';
+import type { NextApiHandler } from 'next';
 
 const getOfficeMatches = (officeid: string, take: number, cursor?: Pick<Match, 'id'>) =>
   prisma.match.findMany({

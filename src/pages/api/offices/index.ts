@@ -1,5 +1,5 @@
 import postOfficeHandler from '@/lib/api/handlers/office/postOfficeHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

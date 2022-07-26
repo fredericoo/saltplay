@@ -1,6 +1,6 @@
 import { BANNED_ROLE_ID, DASHBOARD_ROLES } from '@/constants';
-import { TextProps } from '@chakra-ui/react';
-import { Role } from '@prisma/client';
+import type { TextProps } from '@chakra-ui/react';
+import type { Role } from '@prisma/client';
 
 const roleStyles: Record<Role['id'], TextProps | undefined> = {
   1: undefined,

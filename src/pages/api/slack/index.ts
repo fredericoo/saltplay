@@ -1,6 +1,6 @@
 import getAllSlackMembers from '@/lib/slack/getAllSlackMembers';
-import { APIResponse } from '@/lib/types/api';
-import { NextApiHandler } from 'next';
+import type { APIResponse } from '@/lib/types/api';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { nextAuthOptions } from '../auth/[...nextauth]';
 
