@@ -95,11 +95,9 @@ const matchBlockMachine =
     },
     {
       actions: {
-        clearSelectedSide: () => {
-          assign({
-            selectedSide: undefined,
-          });
-        },
+        clearSelectedSide: assign({
+          selectedSide: _ => undefined,
+        }),
         selectFirstEmptySide: assign({
           selectedSide: context => (['left', 'right'] as const).find(side => !context.teams[side].length),
         }),
@@ -113,29 +111,27 @@ const matchBlockMachine =
           },
           players: context => context.players.slice(0, -1),
         }),
-        randomiseScore: () =>
-          assign<Context>({
-            scores: (context, _, meta) => {
-              const side = Object.values(meta.state?.meta)[0] as 'left' | 'right';
-              return {
-                ...context.scores,
-                [side]: Math.floor(Math.random() * 10),
-              };
-            },
+        randomiseScore: assign({
+          scores: (context, _, meta) => {
+            const side = Object.values(meta.state?.meta)[0] as 'left' | 'right';
+            return {
+              ...context.scores,
+              [side]: Math.floor(Math.random() * 10),
+            };
+          },
+        }),
+        resetAndIncreaseIteration: assign({
+          iteration: context => context.iteration + 1,
+          teams: _ => ({
+            left: [],
+            right: [],
           }),
-        resetAndIncreaseIteration: () =>
-          assign<Context>({
-            iteration: context => context.iteration + 1,
-            teams: {
-              left: [],
-              right: [],
-            },
-            scores: {
-              left: 0,
-              right: 0,
-            },
-            selectedSide: undefined,
+          scores: _ => ({
+            left: 0,
+            right: 0,
           }),
+          selectedSide: _ => undefined,
+        }),
       },
       guards: {
         hasEmptySide: context => {
