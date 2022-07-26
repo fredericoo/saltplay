@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+    "dbt_version": "1.1.1",
+    "generated_at": "2022-07-11T08:45:26.769481Z",
+    "invocation_id": "e1ecc8fe-243e-49e3-94e1-29d46bb8d9c3",
+    "env": {}
+  },
+  "nodes": {
+    "model.wrkplay_dbt.number_played_against": {
+      "metadata": {
+        "type": "VIEW",
+        "schema": "public",
+        "name": "number_played_against",
+        "database": "postgres",
+        "comment": null,
+        "owner": "postgres"
+      },
+      "columns": {
+        "player_id": { "type": "text", "index": 1, "name": "player_id", "comment": null },
+        "season_id": { "type": "text", "index": 2, "name": "season_id", "comment": null },
+        "num_played_against": { "type": "bigint", "index": 3, "name": "num_played_against", "comment": null }
+      },
+      "stats": {
+        "has_stats": {
+          "id": "has_stats",
+          "label": "Has Stats?",
+          "value": false,
+          "include": false,
+          "description": "Indicates whether there are statistics for this table"
+        }
+      },
+      "unique_id": "model.wrkplay_dbt.number_played_against"
+    },
+    "model.wrkplay_dbt.wins_losses": {
+      "metadata": {
+        "type": "VIEW",
+        "schema": "public",
+        "name": "wins_losses",
+        "database": "postgres",
+        "comment": null,
+        "owner": "postgres"
+      },
+      "columns": {
+        "player_id": { "type": "text", "index": 1, "name": "player_id", "comment": null },
+        "gameid": { "type": "text", "index": 2, "name": "gameid", "comment": null },
+        "seasonid": { "type": "text", "index": 3, "name": "seasonid", "comment": null },
+        "total_wins": { "type": "numeric", "index": 4, "name": "total_wins", "comment": null },
+        "total_losses": { "type": "numeric", "index": 5, "name": "total_losses", "comment": null }
+      },
+      "stats": {
+        "has_stats": {
+          "id": "has_stats",
+          "label": "Has Stats?",
+          "value": false,
+          "include": false,
+          "description": "Indicates whether there are statistics for this table"
+        }
+      },
+      "unique_id": "model.wrkplay_dbt.wins_losses"
+    }
+  },
+  "sources": {},
+  "errors": null
+}
