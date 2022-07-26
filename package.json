@@ -36,6 +36,7 @@
     "@sentry/nextjs": "^7.7.0",
     "@slack/web-api": "^6.5.1",
     "@uselessdev/datepicker": "^2.4.1",
+    "@xstate/react": "^3.0.0",
     "axios": "^0.25.0",
     "cookie": "^0.4.1",
     "date-fns": "^2.27.0",
@@ -95,7 +96,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "yarn run eslint --max-warnings 0 --fix"
+      "yarn eslint --max-warnings 0 --fix"
     ],
     "*.{md,json}": [
       "prettier --write"

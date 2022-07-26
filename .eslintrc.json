@@ -5,5 +5,28 @@
     "plugin:testing-library/react",
     "plugin:jest-dom/recommended"
   ],
-  "rules": {}
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "all", "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.typegen.ts"],
+      "rules": {
+        "@typescript-eslint/ban-types": [
+          "error",
+          {
+            "types": {
+              // un-ban a type that's banned by default
+              "{}": false
+            },
+            "extendDefaults": true
+          }
+        ]
+      }
+    }
+  ]
 }
