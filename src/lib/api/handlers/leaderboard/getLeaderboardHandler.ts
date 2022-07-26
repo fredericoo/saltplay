@@ -1,11 +1,12 @@
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import type { Prisma } from '@prisma/client';
-import { Match } from '@prisma/client';
+import type { Match } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
-import { InferType, number, object, string } from 'yup';
+import type { NextApiHandler } from 'next';
+import type { InferType} from 'yup';
+import { number, object, string } from 'yup';
 
 const isProd = process.env.NODE_ENV === 'production';
 

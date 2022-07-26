@@ -2,12 +2,13 @@ import { STARTING_POINTS } from '@/constants';
 import { calculateMatchPoints } from '@/lib/leaderboard';
 import prisma from '@/lib/prisma';
 import { notifyMatchOnSlack } from '@/lib/slack/notifyMatch';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
-import { array, InferType, number, object, string } from 'yup';
+import type { InferType} from 'yup';
+import { array, number, object, string } from 'yup';
 import getPlayerUserIds from '../../getPlayerUserIds';
 import moveMatchPoints from '../../moveMatchPoints';
 

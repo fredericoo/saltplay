@@ -1,14 +1,9 @@
-import Leaderboard from '@/components/Leaderboard';
-import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import PageHeader from '@/components/PageHeader';
-import SEO from '@/components/SEO';
+import SeasonPage from '@/components/SeasonPage';
 import { PAGE_REVALIDATE_SECONDS } from '@/constants';
-import useNavigationState from '@/lib/navigationHistory/useNavigationState';
+import { leaderboardOrderBy } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
 import prisma from '@/lib/prisma';
-import { formatDateTime } from '@/lib/utils';
-import { Container } from '@chakra-ui/react';
-import { Game, Office, Season } from '@prisma/client';
-import { GetStaticPaths, GetStaticProps } from 'next';
+import type { Game, Office, Season } from '@prisma/client';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import { object, string } from 'yup';
 
 const getSeason = async (params: { office: Office['slug']; season: Season['slug']; game: Game['id'] }) => {
@@ -24,10 +19,30 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
               id: true,
               name: true,
               endDate: true,
+              startDate: true,
+              colour: true,
+              scores: {
+                take: 3,
+                orderBy: leaderboardOrderBy,
+                select: {
+                  player: {
+                    select: {
+                      id: true,
+                      image: true,
+                      name: true,
+                      medals: { where: { season: { slug: { equals: params.season } } } },
+                    },
+                  },
+                },
+              },
               game: {
                 select: {
+                  name: true,
                   icon: true,
                   id: true,
+                  office: {
+                    select: { name: true },
+                  },
                 },
               },
             },
@@ -43,38 +58,21 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
 
   const seasonWithoutDates = {
     ...season,
+    startDate: season?.startDate.toISOString(),
     endDate: season?.endDate?.toISOString() || null,
   };
 
   return seasonWithoutDates;
 };
 
-type SeasonPageProps = {
+export type SeasonPageProps = {
   season: NonNullable<Awaited<ReturnType<typeof getSeason>>>;
-};
-
-const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
-  useNavigationState(season.name);
-
-  return (
-    <Container maxW="container.lg" pt={NAVBAR_HEIGHT}>
-      <SEO title={season.name} />
-      <PageHeader
-        title={season.name}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore it is actually a string
-        subtitle={season.endDate && `finished at ${formatDateTime(new Date(season.endDate), 'Pp')}`}
-        icon={season.game?.icon}
-      />
-      {season.game && <Leaderboard gameId={season.game.id} seasonId={season.id} />}
-    </Container>
-  );
 };
 
 export default SeasonPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Deliberately not statically building users.
+  // Deliberately not statically building seasons.
   return { paths: [], fallback: 'blocking' };
 };
 

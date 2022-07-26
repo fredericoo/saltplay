@@ -1,5 +1,5 @@
 import getRandomPhotoHandler from '@/lib/api/handlers/getRandomPhotoHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

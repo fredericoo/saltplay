@@ -1,5 +1,5 @@
 import slack from '@/lib/slack/client';
-import { Member } from '@slack/web-api/dist/response/UsersListResponse';
+import type { Member } from '@slack/web-api/dist/response/UsersListResponse';
 
 const getAllSlackMembers = async () => {
   const getSlackMembers = async (members: Member[], cursor?: string): Promise<Member[]> => {

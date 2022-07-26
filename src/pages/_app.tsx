@@ -1,5 +1,5 @@
 import Default from '@/layouts/Default';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import fetcher from '@/lib/fetcher';
 import { useMixpanel } from '@/lib/mixpanel';
 import Fonts from '@/theme/Fonts';
@@ -31,7 +31,7 @@ const App: AppComponent = ({ Component, pageProps: { session, ...pageProps } }) 
         <Fonts />
         <GlobalCSS />
         <SessionProvider session={session}>
-          <Layout sidebar={pageProps.sidebar}>
+          <Layout>
             <Component {...pageProps} />
           </Layout>
         </SessionProvider>

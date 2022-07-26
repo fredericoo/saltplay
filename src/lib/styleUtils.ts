@@ -1,4 +1,4 @@
-import { CSSObject } from '@emotion/react';
+import type { CSSObject } from '@emotion/react';
 
 const hideScrollbar: CSSObject = {
   msOverflowStyle: '-ms-autohiding-scrollbar',

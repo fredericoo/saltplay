@@ -1,6 +1,6 @@
 import { USER_ROLE_ID } from '@/constants';
-import { PrismaClient } from '@prisma/client';
-import { Adapter } from 'next-auth/adapters';
+import type { PrismaClient } from '@prisma/client';
+import type { Adapter } from 'next-auth/adapters';
 import notifyNewcomer from './slack/notifyNewcomer';
 import { hasProp } from './types/utils';
 
