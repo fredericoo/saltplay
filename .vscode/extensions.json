@@ -1,3 +1,8 @@
 {
-  "recommendations": ["Orta.vscode-jest", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+  "recommendations": [
+    "Orta.vscode-jest",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "statelyai.stately-vscode"
+  ]
 }
