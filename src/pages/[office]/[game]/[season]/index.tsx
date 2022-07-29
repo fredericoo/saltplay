@@ -30,7 +30,7 @@ const getSeason = async (params: { office: Office['slug']; season: Season['slug'
                       id: true,
                       image: true,
                       name: true,
-                      medals: { where: { season: { slug: { equals: params.season } } } },
+                      medals: { take: 1, where: { season: { slug: params.season, gameid: params.game } } },
                     },
                   },
                 },
