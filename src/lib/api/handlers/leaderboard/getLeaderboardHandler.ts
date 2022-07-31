@@ -1,11 +1,12 @@
 import { BANNED_ROLE_ID, PAGE_SIZE } from '@/constants';
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import type { Prisma } from '@prisma/client';
-import { Match } from '@prisma/client';
+import type { Match } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
-import { InferType, number, object, string } from 'yup';
+import type { NextApiHandler } from 'next';
+import type { InferType} from 'yup';
+import { number, object, string } from 'yup';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -76,8 +77,6 @@ export const leaderboardOrderBy: Prisma.PlayerScoreFindManyArgs['orderBy'] = [
 
 type GetLeaderboardPositionsResponse = Awaited<ReturnType<typeof getLeaderboardPositions>>;
 const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page }: LeaderboardGETOptions) => {
-  const totalCount = await prisma.playerScore.count({ where: { game: { id: gameId }, season: { id: seasonId } } });
-
   const playerScores = await prisma.game.findUnique({ where: { id: gameId } }).scores({
     where: { season: { id: seasonId } },
     cursor:
@@ -86,7 +85,7 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
         : undefined,
     orderBy: leaderboardOrderBy,
     skip: perPage * (page - 1),
-    take: perPage,
+    take: perPage + 1,
     select: {
       id: true,
       points: true,
@@ -112,7 +111,7 @@ const getLeaderboardPositions = async ({ gameId, seasonId, userId, perPage, page
     },
   });
 
-  return { totalCount, playerScores };
+  return { playerScores };
 };
 
 const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (req, res) => {
@@ -137,7 +136,10 @@ const getLeaderboardHandler: NextApiHandler<LeaderboardGETAPIResponse> = async (
             points: playerScore.points,
           };
         });
-      const nextPage = leaderboard.totalCount > options.perPage * options.page ? options.page + 1 : undefined;
+
+      const hasNextPage = positions.length > options.perPage;
+      const nextPage = hasNextPage ? options.page + 1 : undefined;
+      if (hasNextPage) positions.pop();
 
       res.status(200).json({ status: 'ok', data: { positions }, pageInfo: { nextPage } });
     })

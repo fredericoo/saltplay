@@ -1,4 +1,5 @@
-import getErrorMessage, { AxiosAPIError } from './getErrorMessage';
+import type { AxiosAPIError } from './getErrorMessage';
+import getErrorMessage from './getErrorMessage';
 
 describe('getErrorMessage', () => {
   test("if error doesn't have message, returns null", async () => {

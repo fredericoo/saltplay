@@ -1,26 +1,18 @@
+import Logo from '@/components/shared/Logo';
 import { currentHistoryStateAtom } from '@/lib/navigationHistory/state';
 import useMediaQuery from '@/lib/useMediaQuery';
-import { Box, Center, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IoChatbubble } from 'react-icons/io5';
-import ColorModeToggler from '../ColorModeToggler';
-import LoadingIcon from '../LoadingIcon';
-import Logo from '../Logo/Logo';
-import ModalButton from '../ModalButton';
-import NavigationBackButton from '../NavigationBackButton';
-import UserMenu from '../UserMenu/UserMenu';
+import ColorModeToggler from './ColorModeToggler';
+import NavigationBackButton from './NavigationBackButton';
+import UserMenu from './UserMenu/UserMenu';
 
-const FeedbackForm = dynamic(() => import('../FeedbackForm'), {
+const FeedbackButton = dynamic(() => import('./Feedback'), {
   ssr: false,
-  loading: () => (
-    <Center minH="300px" p={8}>
-      <LoadingIcon color="grey.4" size={8} />
-    </Center>
-  ),
 });
 
 export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
@@ -90,26 +82,7 @@ const Navbar: React.VFC = () => {
 
       <HStack justify="flex-end" flex={1}>
         <ColorModeToggler />
-        {isDesktop && (
-          <ModalButton
-            data-testid="feedback-button"
-            bg="transparent"
-            modalTitle="How are you enjoying SaltPlay?"
-            Form={FeedbackForm}
-            sx={{ aspectRatio: { base: '1', md: 'initial' } }}
-          >
-            <Box fontSize={{ base: 'xl', md: 'md' }} color="grey.10">
-              <IoChatbubble />
-            </Box>
-            {isDesktop ? (
-              <Text ml={2} color="grey.9">
-                Feedback
-              </Text>
-            ) : (
-              ''
-            )}
-          </ModalButton>
-        )}
+        {isDesktop && <FeedbackButton />}
         <UserMenu showUserName={isDesktop} />
       </HStack>
     </HStack>

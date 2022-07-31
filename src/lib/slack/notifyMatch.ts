@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { Game, Match, User } from '@prisma/client';
+import type { Game, Match, User } from '@prisma/client';
 import { getGameFlags } from '../flagAttributes';
 import slack from './client';
 

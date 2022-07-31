@@ -1,6 +1,6 @@
 import getUserHandler from '@/lib/api/handlers/user/getUserHandler';
 import patchUserHandler from '@/lib/api/handlers/user/patchUserHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

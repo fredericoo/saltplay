@@ -1,5 +1,5 @@
 import deleteSessionHandler from '@/lib/api/handlers/session/deleteSessionHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

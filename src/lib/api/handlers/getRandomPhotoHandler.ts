@@ -1,4 +1,4 @@
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { withSentry } from '@sentry/nextjs';
 import axios from 'axios';
 import type { NextApiHandler } from 'next';

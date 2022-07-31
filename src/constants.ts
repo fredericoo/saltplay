@@ -1,4 +1,4 @@
-import { Season } from '@prisma/client';
+import type { Season } from '@prisma/client';
 
 export const WEBSITE_URL = 'https://saltplay.app';
 export const SESSION_MAX_AGE = 30 * 24 * 60 * 60; // 30 days

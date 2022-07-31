@@ -1,11 +1,11 @@
 import prisma from '@/lib/prisma';
 import revalidateStaticPages from '@/lib/revalidateStaticPages';
 import { canViewDashboard } from '@/lib/roles';
-import { APIResponse } from '@/lib/types/api';
+import type { APIResponse } from '@/lib/types/api';
 import { nextAuthOptions } from '@/pages/api/auth/[...nextauth]';
-import { Office } from '@prisma/client';
+import type { Office } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 

@@ -1,5 +1,5 @@
 import { getExactTypeFor } from '@/lib/types/utils';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 type UserSelect = Prisma.UserUpdateArgs['select'];
 

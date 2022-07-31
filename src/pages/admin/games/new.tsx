@@ -1,23 +1,25 @@
-import Breadcrumbs from '@/components/Breadcrumbs';
-import Field from '@/components/Field';
-import FlagsSwitch from '@/components/FlagsSwitch';
-import Settings from '@/components/Settings';
+import Field from '@/components/admin/Field';
+import FlagsSwitch from '@/components/admin/FlagsSwitch';
+import Breadcrumbs from '@/components/shared/Breadcrumbs';
+import Settings from '@/components/shared/Settings';
 import { GAME_FLAGS } from '@/constants';
 import Admin from '@/layouts/Admin';
-import { PageWithLayout } from '@/layouts/types';
+import type { PageWithLayout } from '@/layouts/types';
 import { withDashboardAuth } from '@/lib/admin';
-import { GamePOSTAPIResponse } from '@/lib/api/handlers/game/postGameHandler';
+import type { GamePOSTAPIResponse } from '@/lib/api/handlers/game/postGameHandler';
 import { patchGameSchema, postGameSchema } from '@/lib/api/schemas';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import prisma from '@/lib/prisma';
-import { APIError } from '@/lib/types/api';
+import type { APIError } from '@/lib/types/api';
 import { hasKey } from '@/lib/types/utils';
 import { Box, Button, Stack, Tooltip } from '@chakra-ui/react';
-import { Game } from '@prisma/client';
-import axios, { AxiosError } from 'axios';
+import type { Game } from '@prisma/client';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 import { useRouter } from 'next/router';
-import { FormEventHandler, useState } from 'react';
-import { InferType, ValidationError } from 'yup';
+import type { FormEventHandler } from 'react';
+import { useState } from 'react';
+import type { InferType, ValidationError } from 'yup';
 import { getGameFields } from './[id]';
 
 const getOffices = () =>

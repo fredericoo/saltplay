@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 export const getOffices = () =>
   prisma.office.findMany({
