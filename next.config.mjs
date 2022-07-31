@@ -65,17 +65,13 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    images: {
-      deviceSizes: [768, 1920],
-      imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    },
-    domains: ['avatars.slack-edge.com', 'secure.gravatar.com'],
+    deviceSizes: [768, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    domains: ['avatars.slack-edge.com', 'secure.gravatar.com', 'cloudflare-ipfs.com'],
     formats: ['image/avif', 'image/webp'],
   },
   compiler: {
     reactRemoveProperties: process.env.REMOVE_PROPERTIES === 'true',
-  },
-  experimental: {
     emotion: {
       // default is true. It will be disabled when build type is production.
       sourceMap: true,
@@ -90,6 +86,7 @@ const nextConfig = {
       labelFormat: '[local]',
     },
   },
+  experimental: {},
 };
 
 const sentryWebpackPluginOptions = {

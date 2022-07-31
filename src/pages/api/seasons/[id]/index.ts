@@ -1,6 +1,6 @@
 import deleteSeasonHandler from '@/lib/api/handlers/season/deleteSeasonHandler';
 import patchSeasonHandler from '@/lib/api/handlers/season/patchSeasonHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

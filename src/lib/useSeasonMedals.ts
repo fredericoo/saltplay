@@ -1,6 +1,6 @@
-import { Season } from '@prisma/client';
+import type { Season } from '@prisma/client';
 import useSWR from 'swr';
-import { SeasonMedalsGETAPIResponse } from './api/handlers/season/getSeasonMedalsHandler';
+import type { SeasonMedalsGETAPIResponse } from './api/handlers/season/getSeasonMedalsHandler';
 
 const useSeasonMedals = (seasonId: Season['id']) => {
   return useSWR<SeasonMedalsGETAPIResponse>(`/api/seasons/${seasonId}/medals`, {

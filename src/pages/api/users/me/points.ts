@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { Game, Season, User } from '@prisma/client';
-import { NextApiHandler } from 'next';
+import type { APIResponse } from '@/lib/types/api';
+import type { Game, Season, User } from '@prisma/client';
+import type { NextApiHandler } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { object, string } from 'yup';
 import { nextAuthOptions } from '../../auth/[...nextauth]';

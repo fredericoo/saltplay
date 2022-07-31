@@ -1,5 +1,5 @@
 import getSeasonMedalsHandler from '@/lib/api/handlers/season/getSeasonMedalsHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

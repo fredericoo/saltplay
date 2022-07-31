@@ -1,7 +1,7 @@
 import deleteMatchesHandler from '@/lib/api/handlers/match/deleteMatchesHandler';
 import getMatchesHandler from '@/lib/api/handlers/match/getMatchesHandler';
 import postMatchesHandler from '@/lib/api/handlers/match/postMatchesHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

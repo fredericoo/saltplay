@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 const colourPalettes = [
   ['#9682D9', '#CA8CEA', '#AFADF8'],

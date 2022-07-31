@@ -1,5 +1,5 @@
 import getLeaderboardHandler from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({

@@ -1,10 +1,10 @@
 import { DEFAULT_MEDAL_BG } from '@/constants';
 import medals from '@/lib/medals';
 import prisma from '@/lib/prisma';
-import { APIResponse } from '@/lib/types/api';
-import { Medal } from '@prisma/client';
+import type { APIResponse } from '@/lib/types/api';
+import type { Medal } from '@prisma/client';
 import { withSentry } from '@sentry/nextjs';
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 
 export type MedalURLs = Record<
   Medal['id'],

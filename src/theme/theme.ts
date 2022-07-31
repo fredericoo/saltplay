@@ -1,4 +1,5 @@
-import { ConfigColorMode, extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import type { ConfigColorMode} from '@chakra-ui/react';
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import {
   amber,
   amberDark,

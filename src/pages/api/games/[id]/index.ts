@@ -1,6 +1,6 @@
 import deleteGameHandler from '@/lib/api/handlers/game/deleteGameHandler';
 import patchGameHandler from '@/lib/api/handlers/game/patchGameHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import nc from 'next-connect';
 
 const handler = nc<NextApiRequest, NextApiResponse>({
