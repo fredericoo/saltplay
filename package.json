@@ -1,18 +1,19 @@
 {
-  "name": "saltplay",
+  "name": "wrkplay",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "analyse": "ANALYSE=true yarn build",
     "test": "jest --testPathPattern=/src/",
     "test:coverage": "jest --testPathPattern=/src/ --collect-coverage",
-    "ts-check": "tsc --noEmit",
+    "ts-check": "tsc --project tsconfig.lint.json",
+    "ts-check:cypress": "tsc --project cypress/tsconfig.json",
     "chakra-ts": "chakra-cli tokens --strict-component-types ./src/theme/theme.ts",
     "setup:env": "cp .env.development .env.local",
+    "setup:db": "yarn db:migrate:local && prisma db seed",
     "db:generate": "prisma generate",
     "db:migrate:forcepush": "prisma db push --accept-data-loss",
     "db:migrate:local": "dotenv -e .env.local prisma migrate dev --",
@@ -66,7 +67,9 @@
     "@chakra-ui/cli": "^2.1.2",
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
+    "@faker-js/faker": "^7.3.0",
     "@remix-run/eslint-config": "^1.6.5",
+    "@testing-library/cypress": "^8.0.3",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -77,6 +80,7 @@
     "@types/qrcode.react": "^1.0.2",
     "@types/ramda": "^0.27.62",
     "@types/react": "17.0.37",
+    "@types/testing-library__cypress": "^5.0.9",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "babel-jest": "^27.4.5",
     "caniuse-lite": "^1.0.30001343",
@@ -91,6 +95,7 @@
     "jest-environment-jsdom": "^28.1.1",
     "lint-staged": "^12.3.1",
     "start-server-and-test": "1.13.1",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.7.2",
     "unsplash-js": "^7.0.15"
   },
@@ -134,5 +139,8 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "prisma": {
+    "seed": "dotenv -e .env.local node --require tsconfig-paths/register prisma/seed.mjs"
   }
 }

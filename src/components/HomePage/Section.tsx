@@ -1,6 +1,9 @@
 import { Box, styled } from '@chakra-ui/react';
 
 const Section = styled(Box, {
+  defaultProps: {
+    as: 'section',
+  },
   baseStyle: {
     py: 4,
     bg: 'grey.4',
@@ -10,6 +13,5 @@ const Section = styled(Box, {
     overflow: 'hidden',
   },
 });
-Section.defaultProps = { as: 'section' };
 
 export default Section;
