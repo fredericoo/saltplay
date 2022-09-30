@@ -17,13 +17,13 @@ const notifyNewcomer: NotifyNewcomer = async ({ providerAccountId, name, image }
   try {
     await slack.chat.postMessage({
       channel,
-      text: `:alert: *A new challenger has appeared!*\n${mention} has joined SaltPlay.`,
+      text: `:alert: *A new challenger has appeared!*\n${mention} has joined wrkplay.`,
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `:alert: *A new challenger has appeared!*\n${mention} has joined SaltPlay.`,
+            text: `:alert: *A new challenger has appeared!*\n${mention} has joined wrkplay.`,
           },
           accessory: {
             type: 'image',

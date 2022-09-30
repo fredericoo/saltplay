@@ -36,7 +36,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Heads up!\nYou've been invited to SaltPlay.\nGo to ${WEBSITE_URL} to view the latest matches or join #saltplay-matches to keep track of who’s taking ownership of the games room.`,
+          text: `Heads up!\nYou've been invited to wrkplay.\nGo to ${WEBSITE_URL} to view the latest matches or join #saltplay-matches to keep track of who’s taking ownership of the games room.`,
         },
       },
       {

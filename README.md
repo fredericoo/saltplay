@@ -1,6 +1,6 @@
-# SaltPlay
+# wrkplay
 
-Get your personal OKRs ready: SaltPlay (pun very intended) enables you to brag over your office games performance.
+Get your personal OKRs ready: wrkplay (pun very intended) enables you to brag over your office games performance.
 A way more interesting way to 1-on-1.
 
 ## Getting Started

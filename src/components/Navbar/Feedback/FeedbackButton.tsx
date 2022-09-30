@@ -10,7 +10,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = () => {
     <ModalButton
       data-testid="feedback-button"
       bg="transparent"
-      modalTitle="How are you enjoying SaltPlay?"
+      modalTitle="How are you enjoying wrkplay?"
       Form={FeedbackForm}
       sx={{ aspectRatio: { base: '1', md: 'initial' } }}
     >
