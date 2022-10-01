@@ -42,7 +42,7 @@ const getResults: GetResults = ({ search, list, getterFn }) => {
 
 const groupByFirstLetter = groupBy<Player>(element => element.name?.charAt(0).toUpperCase() || '?');
 
-const PlayerPicker: React.VFC<PlayerPickerProps> = ({
+const PlayerPicker: React.FC<PlayerPickerProps> = ({
   players,
   isAlphabetical,
   onSelect,
@@ -77,7 +77,7 @@ const PlayerPicker: React.VFC<PlayerPickerProps> = ({
   const rowVirtualiser = useVirtual({
     size: list?.length || 0,
     parentRef: virtualiserRef,
-    estimateSize: useCallback(index => (typeof list[index] === 'string' ? 33 : 66), [list]),
+    estimateSize: useCallback((index: number) => (typeof list[index] === 'string' ? 33 : 66), [list]),
     overscan: 5,
   });
 

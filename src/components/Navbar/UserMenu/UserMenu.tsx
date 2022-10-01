@@ -14,7 +14,7 @@ type UserMenuProps = {
 
 const isDevLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === 'true';
 
-const UserMenu: React.VFC<UserMenuProps> = ({ showUserName }) => {
+const UserMenu: React.FC<UserMenuProps> = ({ showUserName }) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
 

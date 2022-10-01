@@ -1,4 +1,5 @@
-import type { ChakraProps} from '@chakra-ui/react';
+import type { FCC } from '@/types';
+import type { ChakraProps } from '@chakra-ui/react';
 import { Box, Button, HStack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Fragment } from 'react';
@@ -13,7 +14,7 @@ type BreadcrumbsProps = {
   levels: Breadcrumb[];
 } & ChakraProps;
 
-const Level: React.FC<Breadcrumb & { isCurrent?: boolean }> = ({ label, href, isCurrent }) => {
+const Level: FCC<Breadcrumb & { isCurrent?: boolean }> = ({ label, href, isCurrent }) => {
   return (
     <Box as="li" data-testid="breadcrumb" aria-current={isCurrent ? 'page' : undefined}>
       <Link href={href} passHref={!isCurrent}>
@@ -34,7 +35,7 @@ const Level: React.FC<Breadcrumb & { isCurrent?: boolean }> = ({ label, href, is
   );
 };
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ levels, ...chakraProps }) => (
+const Breadcrumbs: FCC<BreadcrumbsProps> = ({ levels, ...chakraProps }) => (
   <Box as="nav" aria-label="Breadcrumb" {...chakraProps}>
     <HStack as="ol" listStyleType="none" color="grey.10" spacing={0}>
       {levels.map((level, i) => {

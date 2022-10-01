@@ -1,3 +1,4 @@
+import type { FCC } from '@/types';
 import type { ButtonProps, ModalProps } from '@chakra-ui/react';
 import {
   Button,
@@ -20,10 +21,10 @@ export type ModalFormProps = {
 
 type ModalButtonProps = ButtonProps & { modalProps?: Omit<ModalProps, 'isOpen' | 'onClose' | 'children'> } & {
   modalTitle?: string;
-  Form: ComponentType<ModalFormProps>;
+  Form: ComponentType<React.PropsWithChildren<ModalFormProps>>;
 };
 
-const ModalButton: React.FC<ModalButtonProps> = ({ modalProps, modalTitle, Form, ...props }) => {
+const ModalButton: FCC<ModalButtonProps> = ({ modalProps, modalTitle, Form, ...props }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [htmlId] = useId();
 

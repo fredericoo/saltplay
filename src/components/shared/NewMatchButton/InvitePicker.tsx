@@ -1,10 +1,9 @@
 import type { SlackMembersAPIResponse } from '@/pages/api/slack';
 import type { ExistingSlackUsersAPIResponse } from '@/pages/api/slack/existing';
 import { Box, HStack, Text } from '@chakra-ui/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import useSWR from 'swr';
-import ErrorBox from '../ErrorBox';
 import PlayerPicker from './PlayerPicker';
 import type { PlayerPickerProps } from './PlayerPicker/PlayerPicker';
 
@@ -25,15 +24,11 @@ const fetchUnregisteredSlackMembers = async () => {
   };
 };
 
-const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPlayers, onSelect }) => {
-  const {
-    data: invite,
-    error,
-    mutate,
-  } = useSWR<SlackMembersAPIResponse>(`invite`, fetchUnregisteredSlackMembers, {
-    revalidateOnFocus: false,
+const InvitePicker: React.FC<InvitePickerProps> = ({ selectedColour, selectedPlayers, onSelect }) => {
+  const { data: invite, isError } = useQuery(['invite'], fetchUnregisteredSlackMembers, {
+    refetchOnWindowFocus: false,
   });
-  if (error) return <ErrorBox heading={["Couldn't load opponents", invite?.message].join(': ')} />;
+  const queryClient = useQueryClient();
 
   return (
     <Box>
@@ -48,9 +43,9 @@ const InvitePicker: React.VFC<InvitePickerProps> = ({ selectedColour, selectedPl
         players={invite?.data?.members}
         isAlphabetical
         selectedPlayers={selectedPlayers}
-        refetch={mutate}
+        refetch={() => queryClient.invalidateQueries(['invite'])}
         isLoading={!invite?.data}
-        isError={error}
+        isError={isError}
         onSelect={onSelect}
         selectedColour={selectedColour}
       />

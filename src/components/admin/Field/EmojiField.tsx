@@ -31,7 +31,7 @@ type EmojiFieldProps = ChakraProps & {
   label?: string;
 };
 
-const EmojiField: React.VFC<EmojiFieldProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
+const EmojiField: React.FC<EmojiFieldProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
   const [value, setValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(autoFocus === true);
 

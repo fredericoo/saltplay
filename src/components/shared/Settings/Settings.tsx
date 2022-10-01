@@ -1,10 +1,11 @@
-import type { ChakraProps} from '@chakra-ui/react';
+import type { FCC } from '@/types';
+import type { ChakraProps } from '@chakra-ui/react';
 import { Box, FormControl, Heading, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { VscChevronRight } from 'react-icons/vsc';
 
-const Item: React.FC<{ label?: ReactNode; htmlFor?: string }> = ({ children, label, htmlFor }) => {
+const Item: FCC<{ label?: ReactNode; htmlFor?: string }> = ({ children, label, htmlFor }) => {
   return (
     <FormControl
       fontSize="sm"
@@ -34,7 +35,7 @@ type ActionProps = {
   highlight?: boolean;
   showChevron?: boolean;
 } & ChakraProps;
-const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevron = true, highlight, ...props }) => {
+const Action: FCC<ActionProps> = ({ children, href, icon, helper, showChevron = true, highlight, ...props }) => {
   const mode = useColorModeValue('', 'Dark');
 
   return (
@@ -86,7 +87,7 @@ const Action: React.FC<ActionProps> = ({ children, href, icon, helper, showChevr
   );
 };
 
-const List: React.FC<{ label?: ReactNode } & ChakraProps> = ({ children, label, ...props }) => {
+const List: FCC<{ label?: ReactNode } & ChakraProps> = ({ children, label, ...props }) => {
   return (
     <Box {...props}>
       {label && (

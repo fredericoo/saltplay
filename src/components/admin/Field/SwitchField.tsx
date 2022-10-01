@@ -1,4 +1,4 @@
-import type { ChakraProps} from '@chakra-ui/react';
+import type { ChakraProps } from '@chakra-ui/react';
 import { HStack, Input, Switch, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -9,7 +9,7 @@ type SwitchFieldProps = ChakraProps & {
   label?: string;
 };
 
-const SwitchField: React.VFC<SwitchFieldProps> = ({ defaultValue, name, autoFocus, label, ...props }) => {
+const SwitchField: React.FC<SwitchFieldProps> = ({ defaultValue, name, autoFocus, label, ...props }) => {
   const [value, setValue] = useState(defaultValue);
 
   return (

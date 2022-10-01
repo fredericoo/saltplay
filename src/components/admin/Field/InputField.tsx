@@ -1,4 +1,4 @@
-import type { InputProps} from '@chakra-ui/react';
+import type { InputProps } from '@chakra-ui/react';
 import { HStack, Input, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ type InputFieldProps = Omit<InputProps, 'onChange' | 'value' | 'defaultValue' | 
   suffix?: string;
   format?: (value: string) => string;
 };
-const InputField: React.VFC<InputFieldProps> = ({ format, defaultValue, prefix, suffix, textAlign, ...props }) => {
+const InputField: React.FC<InputFieldProps> = ({ format, defaultValue, prefix, suffix, textAlign, ...props }) => {
   const [value, setValue] = useState<string>(defaultValue || '');
 
   return (

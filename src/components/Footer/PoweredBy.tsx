@@ -1,7 +1,7 @@
 import type { ChakraProps } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
 
-const PoweredBy: React.VFC<ChakraProps> = props => {
+const PoweredBy: React.FC<ChakraProps> = props => {
   return (
     <Box color="grey.10" {...props}>
       <svg viewBox="0 0 543 220" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

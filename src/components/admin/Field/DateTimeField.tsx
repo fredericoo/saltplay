@@ -22,7 +22,7 @@ type DateTimeProps = ChakraProps & {
   label?: string;
 };
 
-const DateTime: React.VFC<DateTimeProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
+const DateTime: React.FC<DateTimeProps> = ({ defaultValue, name, autoFocus, align, label, ...props }) => {
   const [value, setValue] = useState<Date>(() => (defaultValue ? new Date(defaultValue) : new Date()));
   const [isOpen, setIsOpen] = useState(autoFocus === true);
 

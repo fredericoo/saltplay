@@ -17,7 +17,7 @@ const FeedbackButton = dynamic(() => import('./Feedback'), {
 
 export const NAVBAR_HEIGHT = 'calc(64px + env(safe-area-inset-top))';
 
-const Navbar: React.VFC = () => {
+const Navbar: React.FC = () => {
   const isDesktop = useMediaQuery('md');
   const [hasScrolled, setHasScrolled] = useState(false);
   const [currentNavigaton] = useAtom(currentHistoryStateAtom);

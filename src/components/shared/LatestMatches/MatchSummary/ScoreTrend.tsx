@@ -6,7 +6,7 @@ type ScoreTrendProps = {
   isPositive: boolean;
 };
 
-const ScoreTrend: React.VFC<ScoreTrendProps> = ({ score, isPositive }) => {
+const ScoreTrend: React.FC<ScoreTrendProps> = ({ score, isPositive }) => {
   if (!score) return null;
   const color = isPositive ? 'success.9' : 'danger.9';
   return (

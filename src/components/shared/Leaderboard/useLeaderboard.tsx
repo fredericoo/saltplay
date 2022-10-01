@@ -1,31 +1,44 @@
-import type { LeaderboardGETAPIResponse, LeaderboardGETOptions } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import type { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRInfinite from 'swr/infinite';
+import type {
+  LeaderboardGETAPIResponse,
+  LeaderboardGETOptions,
+} from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
-const getKey =
-  (options: Partial<LeaderboardGETOptions>) => (pageIndex: number, previousPageData: LeaderboardGETAPIResponse) => {
-    if (options.userId) return null;
-    if (!options.gameId && !options.userId) return null;
-    if (previousPageData && !previousPageData.pageInfo?.nextPage) return null; // reached the end
-    const queryParams = Object.entries({
-      page: pageIndex > 0 ? previousPageData?.pageInfo?.nextPage : undefined,
-      ...options,
-    })
-      .filter(([, value]) => value)
-      .map(entry => entry.join('='))
-      .join('&');
-    return [`/api/leaderboard`, queryParams].join('?');
-  };
+type UseLeaderboardParams = Partial<Pick<LeaderboardGETOptions, 'gameId' | 'userId' | 'seasonId'>>;
 
-type UseLeaderboard = (
-  options: Partial<Pick<LeaderboardGETOptions, 'gameId' | 'userId' | 'seasonId'>>
-) => SWRInfiniteResponse<LeaderboardGETAPIResponse>;
+const useLeaderboard = (options: UseLeaderboardParams) => {
+  const queryClient = useQueryClient();
+  const queryKey = useMemo(() => {
+    return ['leaderboard', options];
+  }, [options]);
 
-const useLeaderboard: UseLeaderboard = options => {
-  return useSWRInfinite<LeaderboardGETAPIResponse>(getKey({ ...options, perPage: 20 }), {
-    refreshInterval: 1000 * 60,
-    revalidateAll: true,
-  });
+  const invalidate = () => queryClient.invalidateQueries(queryKey);
+
+  const query = useInfiniteQuery(
+    queryKey,
+    async ({ pageParam = 1 }) => {
+      const searchParams = new URLSearchParams(JSON.parse(JSON.stringify(options)));
+      searchParams.set('perPage', '20');
+      pageParam && searchParams.set('after', pageParam);
+
+      const res: LeaderboardGETAPIResponse = await fetch([`/api/leaderboard`, searchParams.toString()].join('?')).then(
+        res => res.json()
+      );
+      return res;
+    },
+    {
+      refetchInterval: 1000 * 60,
+      getNextPageParam: lastPage => {
+        if (options.userId) return undefined;
+        if (!options.gameId && !options.userId) return undefined;
+        if (lastPage && !lastPage.pageInfo?.nextPage) return undefined; // reached the end
+        return lastPage?.pageInfo?.nextPage;
+      },
+    }
+  );
+
+  return { ...query, invalidate };
 };
 
 export default useLeaderboard;

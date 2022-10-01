@@ -2,9 +2,9 @@ import MatchSummary from '@/components/shared/LatestMatches/MatchSummary/MatchSu
 import { PAGE_SIZE } from '@/constants';
 import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
 import type { Game, Office, Season, User } from '@prisma/client';
+import { useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import useLeaderboard from '../Leaderboard/useLeaderboard';
 import useLatestMatches from './useLatestMatches';
 
 const MotionBox = motion(Box);
@@ -18,7 +18,7 @@ type LatestMatchesProps = {
   canDelete?: boolean;
 };
 
-const LatestMatches: React.VFC<LatestMatchesProps> = ({
+const LatestMatches: React.FC<LatestMatchesProps> = ({
   gameId,
   seasonId,
   userId,
@@ -26,20 +26,19 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
   canLoadMore = true,
   canDelete = true,
 }) => {
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, seasonId, userId });
-  const {
-    data: pages,
-    setSize,
-    error,
-    mutate,
-    isValidating,
-  } = useLatestMatches({ gameId, seasonId, userId, officeId });
+  const { data, fetchNextPage, hasNextPage, isError, isLoading } = useLatestMatches({
+    gameId,
+    seasonId,
+    userId,
+    officeId,
+  });
+
   const loadMoreRef = useRef<HTMLButtonElement>(null);
-  const hasNextPage = !!pages?.[pages.length - 1].pageInfo?.nextCursor;
+  const queryClient = useQueryClient();
 
   const refetch = () => {
-    mutate();
-    mutateLeaderboard();
+    queryClient.invalidateQueries(['matches', { gameId, seasonId, userId, officeId }]);
+    queryClient.invalidateQueries(['leaderboard', { gameId, seasonId }]);
   };
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
     const handleObserver: IntersectionObserverCallback = entities => {
       const target = entities[0];
       if (target.isIntersecting) {
-        setSize(size => size + 1);
+        fetchNextPage();
       }
     };
     const observer = new IntersectionObserver(handleObserver, options);
@@ -59,20 +58,20 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
       observer.observe(loadMoreRef.current);
     }
     return () => observer.disconnect();
-  }, [canLoadMore, hasNextPage, setSize, pages]);
+  }, [canLoadMore, hasNextPage, fetchNextPage]);
 
-  if (error || pages?.some(page => page.status === 'error')) {
+  if (isError || data?.pages?.some(page => page.status === 'error')) {
     return (
       <Box p={4} textAlign="center" bg="red.100" borderRadius="xl" color="red.600">
         <Text mb={2}>Error loading matches :(</Text>
-        <Button isLoading={isValidating} onClick={refetch}>
+        <Button isLoading={isLoading} onClick={refetch}>
           Retry
         </Button>
       </Box>
     );
   }
 
-  if (!pages || pages.some(page => page.status !== 'ok'))
+  if (isLoading)
     return (
       <Stack>
         {new Array(PAGE_SIZE).fill(0).map((_, i) => (
@@ -81,7 +80,7 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
       </Stack>
     );
 
-  const allMatches = pages.flatMap(page => page.data?.matches);
+  const allMatches = data.pages.flatMap(page => page.data?.matches);
 
   if (allMatches.length === 0)
     return (
@@ -125,10 +124,10 @@ const LatestMatches: React.VFC<LatestMatchesProps> = ({
           <Button
             ref={loadMoreRef}
             key="loadMore"
-            isLoading={isValidating}
+            isLoading={isLoading}
             variant="subtle"
             colorScheme="grey"
-            onClick={() => setSize(size => size + 1)}
+            onClick={() => fetchNextPage()}
           >
             Load more
           </Button>

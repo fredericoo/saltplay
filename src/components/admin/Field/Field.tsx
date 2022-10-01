@@ -16,7 +16,7 @@ type FieldProps = {
   align: 'left' | 'right';
   value?: FieldValue;
 };
-const Field: React.VFC<FieldProps> = ({ field, autoFocus, placeholder, align, value, prefix, suffix, isInvalid }) => {
+const Field: React.FC<FieldProps> = ({ field, autoFocus, placeholder, align, value, prefix, suffix, isInvalid }) => {
   switch (field.type) {
     case 'text':
       return (

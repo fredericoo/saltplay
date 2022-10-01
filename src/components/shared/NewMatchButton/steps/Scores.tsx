@@ -3,7 +3,7 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import ErrorNotification from '../ErrorNotification';
 import type { MatchFormInputs } from '../NewMatchButton';
 
-const Scores: React.VFC = () => {
+const Scores: React.FC = () => {
   const { register } = useFormContext<MatchFormInputs>();
   const { errors } = useFormState<MatchFormInputs>();
 

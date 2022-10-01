@@ -15,7 +15,7 @@ type PlayerScoresProps = {
   })[];
 };
 
-const PlayerScores: React.VFC<PlayerScoresProps> = ({ scores }) => {
+const PlayerScores: React.FC<PlayerScoresProps> = ({ scores }) => {
   const [deletedScores, setDeletedScores] = useState<PlayerScore['id'][]>([]);
 
   const handleDeleteSession = async (id: PlayerScore['id']) => {

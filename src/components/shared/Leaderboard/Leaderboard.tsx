@@ -1,9 +1,8 @@
-import type { LeaderboardGETAPIResponse } from '@/lib/api/handlers/leaderboard/getLeaderboardHandler';
-import { Box, Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
 import type { Game, Season, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
-import useSWR from 'swr';
+import ErrorBox from '../ErrorBox';
 import LeaderboardPosition from './LeaderboardPosition';
 import PositionNumber from './PositionNumber';
 import useLeaderboard from './useLeaderboard';
@@ -17,11 +16,11 @@ type LeaderboardProps = {
   offsetPlayerBottom?: string;
 };
 
-const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, bg, offsetPlayerBottom }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
-  const { data: pages, setSize, error, isValidating } = useLeaderboard({ gameId, seasonId });
+  const { data, hasNextPage, fetchNextPage, isError, isLoading, invalidate } = useLeaderboard({ gameId, seasonId });
+
   const loadMoreRef = useRef<HTMLButtonElement>(null);
-  const hasNextPage = pages?.[pages.length - 1]?.pageInfo?.nextPage;
 
   useEffect(() => {
     const options = {
@@ -32,7 +31,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, 
     const handleObserver: IntersectionObserverCallback = entities => {
       const target = entities[0];
       if (target.isIntersecting) {
-        setSize(size => size + 1);
+        fetchNextPage();
       }
     };
     const observer = new IntersectionObserver(handleObserver, options);
@@ -40,10 +39,11 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, 
       observer.observe(loadMoreRef.current);
     }
     return () => observer.disconnect();
-  }, [hasNextPage, setSize, pages]);
+  }, [hasNextPage, fetchNextPage]);
 
-  if (error) return <Box>Error</Box>;
-  if (!pages)
+  if (isError) return <ErrorBox heading="Error loading leaderboard" onRetry={invalidate} />;
+
+  if (isLoading)
     return (
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
@@ -55,7 +55,7 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, 
       </Stack>
     );
 
-  const allPositions = pages.flatMap(page => page?.data?.positions);
+  const allPositions = data.pages.flatMap(page => page?.data?.positions);
 
   if (allPositions && allPositions.length === 0)
     return (
@@ -82,10 +82,10 @@ const Leaderboard: React.VFC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, 
       {hasNextPage && (
         <Button
           ref={loadMoreRef}
-          isLoading={isValidating}
+          isLoading={isLoading}
           variant="subtle"
           colorScheme="grey"
-          onClick={() => setSize(size => size + 1)}
+          onClick={() => fetchNextPage()}
         >
           Load more
         </Button>
@@ -112,14 +112,10 @@ type PlayerPositionProps = {
   userId: User['id'];
 };
 
-const PlayerPosition: React.VFC<PlayerPositionProps> = ({ bottom, bg, ...ids }) => {
-  const { data: playerPositions } = useSWR<LeaderboardGETAPIResponse>(
-    `/api/leaderboard?${Object.entries(ids)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('&')}`
-  );
+const PlayerPosition: React.FC<PlayerPositionProps> = ({ bottom, bg, ...ids }) => {
+  const { data: playerPositions } = useLeaderboard(ids);
 
-  const player = playerPositions?.data?.positions?.[0];
+  const player = playerPositions?.pages?.[0].data?.positions?.[0];
   if (!player) return null;
 
   return <LeaderboardPosition key={player.id} user={player} bottom={bottom} isMe bg={bg} />;

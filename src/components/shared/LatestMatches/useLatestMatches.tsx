@@ -1,26 +1,32 @@
 import type { GetMatchesOptions, MatchesGETAPIResponse } from '@/lib/api/handlers/match/getMatchesHandler';
-import type { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRInfinite from 'swr/infinite';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
-const getKey =
-  (options: Partial<GetMatchesOptions>) => (pageIndex: number, previousPageData: MatchesGETAPIResponse) => {
-    if (previousPageData && !previousPageData?.pageInfo?.nextCursor) return null; // reached the end
-    const queryParams = Object.entries({
-      after: pageIndex > 0 ? previousPageData?.pageInfo?.nextCursor : undefined,
-      ...options,
-    })
-      .filter(([, value]) => value)
-      .map(entry => entry.join('='))
-      .join('&');
-    return ['/api/matches', queryParams].join('?');
-  };
+type UseLatestMatchesParams = Partial<Pick<GetMatchesOptions, 'gameId' | 'officeId' | 'seasonId' | 'userId'>>;
 
-type UseLatestMatches = (
-  options: Partial<Pick<GetMatchesOptions, 'gameId' | 'officeId' | 'seasonId' | 'userId'>>
-) => SWRInfiniteResponse<MatchesGETAPIResponse>;
+const useLatestMatches = (options: UseLatestMatchesParams) => {
+  const queryKey = useMemo(() => {
+    return ['matches', options];
+  }, [options]);
 
-const useLatestMatches: UseLatestMatches = options => {
-  return useSWRInfinite<MatchesGETAPIResponse>(getKey(options));
+  return useInfiniteQuery(
+    queryKey,
+    async ({ pageParam }) => {
+      const searchParams = new URLSearchParams(JSON.parse(JSON.stringify(options)));
+      pageParam && searchParams.set('after', pageParam);
+
+      const res: MatchesGETAPIResponse = await fetch([`/api/matches`, searchParams.toString()].join('?')).then(res =>
+        res.json()
+      );
+      return res;
+    },
+    {
+      getNextPageParam: lastPage => {
+        if (lastPage && !lastPage?.pageInfo?.nextCursor) return undefined;
+        return lastPage?.pageInfo?.nextCursor;
+      },
+    }
+  );
 };
 
 export default useLatestMatches;

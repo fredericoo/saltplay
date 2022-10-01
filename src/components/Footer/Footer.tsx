@@ -1,7 +1,7 @@
 import { Container } from '@chakra-ui/react';
 import PoweredBy from './PoweredBy';
 
-const Footer: React.VFC = () => {
+const Footer: React.FC = () => {
   return (
     <Container maxW="container.lg" py={8} fontSize="xs" color="grey.10" textAlign="center">
       <PoweredBy w="80px" mx="auto" mb={4} />

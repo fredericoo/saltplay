@@ -6,10 +6,11 @@ import Stat from '@/components/shared/Stat';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { formatDateTime } from '@/lib/utils';
 import type { SeasonPageProps } from '@/pages/[office]/[game]/[season]';
+import type { FCC } from '@/types';
 import { Box, Container, Grid, Heading, HStack, Stack, VStack } from '@chakra-ui/react';
 import PlayerAvatar from '../shared/PlayerAvatar';
 
-const SeasonPage: React.FC<SeasonPageProps> = ({ season }) => {
+const SeasonPage: FCC<SeasonPageProps> = ({ season }) => {
   useNavigationState(season.name);
   const prizes = season.scores.flatMap(score => score.player.medals.map(medal => ({ medal, player: score.player })));
 

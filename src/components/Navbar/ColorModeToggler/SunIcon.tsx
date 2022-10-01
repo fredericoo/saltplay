@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { transition } from './constants';
 
-export const SunIcon: React.VFC = () => {
+export const SunIcon: React.FC = () => {
   const wrapperVariants = { whileTap: { scale: 0.95, rotate: 15 } };
 
   const raysVariants = {

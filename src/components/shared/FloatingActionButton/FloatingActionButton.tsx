@@ -1,5 +1,5 @@
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
-import type { ButtonProps} from '@chakra-ui/react';
+import type { ButtonProps } from '@chakra-ui/react';
 import { Box, IconButton, Portal, Tooltip, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
 import type { MouseEventHandler } from 'react';
@@ -16,7 +16,7 @@ type AdminMenuProps = {
   }[];
 };
 
-const FloatingActionButton: React.VFC<AdminMenuProps> = ({ buttons }) => {
+const FloatingActionButton: React.FC<AdminMenuProps> = ({ buttons }) => {
   return (
     <Portal>
       <VStack

@@ -1,6 +1,6 @@
 import { HStack, IconButton, Input, Text } from '@chakra-ui/react';
 import { clamp } from 'ramda';
-import type { Reducer} from 'react';
+import type { Reducer } from 'react';
 import { useReducer } from 'react';
 import { VscChevronDown, VscChevronUp } from 'react-icons/vsc';
 
@@ -31,7 +31,7 @@ const createReducer = ({ min, max }: { min?: number; max?: number }) => {
   return reducer;
 };
 
-const NumberField: React.VFC<NumberFieldProps> = ({ defaultValue, min, max, name, label }) => {
+const NumberField: React.FC<NumberFieldProps> = ({ defaultValue, min, max, name, label }) => {
   const [value, dispatch] = useReducer(createReducer({ min, max }), defaultValue || min || 0);
 
   return (

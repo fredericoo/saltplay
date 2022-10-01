@@ -12,7 +12,7 @@ type PlayerItemProps = {
   onSelect?: (player: Player) => void;
 };
 
-const PlayerItem: React.VFC<PlayerItemProps & ChakraProps> = ({
+const PlayerItem: React.FC<PlayerItemProps & ChakraProps> = ({
   player,
   isSelected,
   onSelect,

@@ -20,13 +20,13 @@ type MatchSummaryProps = Pick<Match, 'createdAt' | 'rightscore' | 'leftscore' | 
   onDelete?: () => void;
 };
 
-const WinnerIcon: React.VFC = () => (
+const WinnerIcon: React.FC = () => (
   <Box fontSize="md" as="span">
     🏆
   </Box>
 );
 
-const MatchSummary: React.VFC<MatchSummaryProps> = ({
+const MatchSummary: React.FC<MatchSummaryProps> = ({
   id,
   seasonId,
   createdAt,

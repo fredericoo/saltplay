@@ -1,6 +1,3 @@
-import useLatestMatches from '@/components/shared/LatestMatches/useLatestMatches';
-import useLeaderboard from '@/components/shared/Leaderboard/useLeaderboard';
-import useOpponents from '@/components/shared/Leaderboard/useOpponents';
 import LoadingIcon from '@/components/shared/LoadingIcon';
 import Toast from '@/components/shared/Toast';
 import getErrorMessage from '@/lib/api/getErrorMessage';
@@ -22,6 +19,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import type { Game, Match, Season } from '@prisma/client';
+import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
@@ -48,16 +46,15 @@ export type MatchFormInputs = Pick<Match, 'leftscore' | 'rightscore'> & {
   left: Player[];
 };
 
-const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
+const NewMatchButton: React.FC<NewMatchButtonProps & ButtonProps> = ({
   gameId,
   season,
   maxPlayersPerTeam,
   ...chakraProps
 }) => {
   const { status } = useSession();
-  const { mutate: mutateLatestMatches } = useLatestMatches({ gameId });
-  const { mutate: mutateLeaderboard } = useLeaderboard({ gameId, seasonId: season.id });
-  const { mutate: mutateOpponents } = useOpponents({ gameId });
+  const queryClient = useQueryClient();
+
   const isLoggedIn = status === 'authenticated';
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -101,9 +98,10 @@ const NewMatchButton: React.VFC<NewMatchButtonProps & ButtonProps> = ({
       });
       form.resetField('leftscore');
       form.resetField('rightscore');
-      mutateLatestMatches();
-      mutateLeaderboard();
-      mutateOpponents();
+
+      queryClient.invalidateQueries(['matches', { gameId }]);
+      queryClient.invalidateQueries(['leaderboard', { gameId, seasonId: season.id }]);
+      queryClient.invalidateQueries(['opponents', { gameId }]);
     } catch (error) {
       const errorMessage = (await getErrorMessage(error)) || 'An error occurred when adding your match.';
 

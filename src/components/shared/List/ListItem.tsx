@@ -1,4 +1,5 @@
-import type { ChakraProps} from '@chakra-ui/react';
+import type { FCC } from '@/types';
+import type { ChakraProps } from '@chakra-ui/react';
 import { Badge, Box, HStack, Text, useColorMode } from '@chakra-ui/react';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
@@ -9,7 +10,7 @@ type ListItemProps = {
   icon?: ReactElement | string | number;
 };
 
-const ListItem: React.FC<ListItemProps & ChakraProps> = ({ href, badge, icon, children, ...chakraProps }) => {
+const ListItem: FCC<ListItemProps & ChakraProps> = ({ href, badge, icon, children, ...chakraProps }) => {
   const { colorMode } = useColorMode();
   const isDarkmode = colorMode === 'dark';
 

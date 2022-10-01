@@ -2,9 +2,7 @@ import PageHeader from '@/components/GamePage/PageHeader';
 import { NAVBAR_HEIGHT } from '@/components/Navbar/Navbar';
 import FloatingActionButton from '@/components/shared/FloatingActionButton';
 import LatestMatches from '@/components/shared/LatestMatches';
-import useLatestMatches from '@/components/shared/LatestMatches/useLatestMatches';
 import Leaderboard from '@/components/shared/Leaderboard';
-import useLeaderboard from '@/components/shared/Leaderboard/useLeaderboard';
 import NewMatchButton from '@/components/shared/NewMatchButton';
 import SEO from '@/components/shared/SEO';
 import Settings from '@/components/shared/Settings';
@@ -15,6 +13,7 @@ import useMediaQuery from '@/lib/useMediaQuery';
 import { formatDateTime } from '@/lib/utils';
 import type { GamePageProps } from '@/pages/[office]/[game]';
 import { Box, Container, Grid, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRef } from 'react';
@@ -24,8 +23,7 @@ import { VscEdit } from 'react-icons/vsc';
 const GamePage: NextPage<GamePageProps> = ({ game }) => {
   useNavigationState(game?.name);
   const isDesktop = useMediaQuery('xl');
-  const { mutate, isValidating } = useLeaderboard({ gameId: game?.id });
-  const { mutate: mutateLatestMatches } = useLatestMatches({ gameId: game?.id });
+  const queryClient = useQueryClient();
   const headerRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const activeSeasons = game.seasons
@@ -54,10 +52,10 @@ const GamePage: NextPage<GamePageProps> = ({ game }) => {
             icon: <IoRefreshSharp />,
             colorScheme: 'grey',
             onClick: () => {
-              mutate();
-              mutateLatestMatches();
+              queryClient.invalidateQueries(['matches', { gameId: game.id }]);
+              queryClient.invalidateQueries(['leaderboard', { gameId: game.id }]);
             },
-            isLoading: isValidating,
+            isLoading: false,
           },
         ]}
       />

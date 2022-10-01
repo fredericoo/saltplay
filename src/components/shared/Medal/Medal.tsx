@@ -36,7 +36,7 @@ const MedalWrapper = motion(
   })
 );
 
-const Medal: React.VFC<MedalProps> = ({ id, seasonId }) => {
+const Medal: React.FC<MedalProps> = ({ id, seasonId }) => {
   const { data: res, error } = useSeasonMedals(seasonId);
   const [mousePosition, setMousePosition] = useState<ReturnType<typeof getRelativeCoordinates>>(null);
   const boxRef = useRef<HTMLDivElement>(null);

@@ -15,7 +15,7 @@ const PlayersDeco = dynamic<PlayersDecoProps>(() => import('./PlayersDeco'), {
   ssr: false,
 });
 
-const PlayersBlock: React.VFC<PlayersBlockProps> = ({ players }) => {
+const PlayersBlock: React.FC<PlayersBlockProps> = ({ players }) => {
   const { status } = useSession();
   const isLoggedIn = status === 'authenticated';
 

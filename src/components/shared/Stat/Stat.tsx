@@ -6,7 +6,7 @@ type StatProps = {
   isLoading?: boolean;
 };
 
-const Stat: React.VFC<StatProps> = ({ label, isLoading, content }) => {
+const Stat: React.FC<StatProps> = ({ label, isLoading, content }) => {
   const bg = useColorModeValue('grey.3', 'grey.2');
 
   return (

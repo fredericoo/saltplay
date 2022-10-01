@@ -1,7 +1,7 @@
 import { useColorMode } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 
-const ColorMode: React.VFC = () => {
+const ColorMode: React.FC = () => {
   const { colorMode } = useColorMode();
 
   return (
