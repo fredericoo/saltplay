@@ -146,5 +146,10 @@
   },
   "prisma": {
     "seed": "dotenv -e .env.local node --require tsconfig-paths/register prisma/seed.mjs"
+  },
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "showDetails": true
   }
 }
