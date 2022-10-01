@@ -1,6 +1,6 @@
 {
-  "name": "SaltPlay",
-  "short_name": "SaltPlay",
+  "name": "wrkplay",
+  "short_name": "wrkplay",
   "icons": [
     {
       "src": "/pwa.png",
