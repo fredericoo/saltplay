@@ -1,10 +1,11 @@
 import MatchSummary from '@/components/shared/LatestMatches/MatchSummary/MatchSummary';
 import { PAGE_SIZE } from '@/constants';
-import { Box, Button, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import type { Game, Office, Season, User } from '@prisma/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
+import Skeleton from '../Skeleton';
 import useLatestMatches from './useLatestMatches';
 
 const MotionBox = motion(Box);

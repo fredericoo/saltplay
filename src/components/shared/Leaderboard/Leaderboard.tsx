@@ -1,8 +1,9 @@
-import { Button, HStack, Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Button, HStack, Stack, Text } from '@chakra-ui/react';
 import type { Game, Season, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import ErrorBox from '../ErrorBox';
+import Skeleton from '../Skeleton';
 import LeaderboardPosition from './LeaderboardPosition';
 import PositionNumber from './PositionNumber';
 import useLeaderboard from './useLeaderboard';
@@ -18,7 +19,7 @@ type LeaderboardProps = {
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, bg, offsetPlayerBottom }) => {
   const { data: session } = useSession();
-  const { data, hasNextPage, fetchNextPage, isError, isLoading, invalidate } = useLeaderboard({ gameId, seasonId });
+  const { data, hasNextPage, fetchNextPage, status, invalidate, fetchStatus } = useLeaderboard({ gameId, seasonId });
 
   const loadMoreRef = useRef<HTMLButtonElement>(null);
 
@@ -41,15 +42,15 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, b
     return () => observer.disconnect();
   }, [hasNextPage, fetchNextPage]);
 
-  if (isError) return <ErrorBox heading="Error loading leaderboard" onRetry={invalidate} />;
+  if (status === 'error') return <ErrorBox heading="Error loading leaderboard" onRetry={invalidate} />;
 
-  if (isLoading)
+  if (status === 'loading')
     return (
       <Stack>
         {new Array(10).fill(0).map((_, i) => (
           <HStack key={i}>
             <PositionNumber position={i + 1} />
-            <Skeleton w="100%" h={i === 0 ? '7rem' : '5rem'} borderRadius="xl" />
+            <Skeleton w="100%" h={i === 0 ? '6.1rem' : '5rem'} borderRadius="xl" />
           </HStack>
         ))}
       </Stack>
@@ -82,7 +83,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, b
       {hasNextPage && (
         <Button
           ref={loadMoreRef}
-          isLoading={isLoading}
+          isLoading={fetchStatus === 'fetching'}
           variant="subtle"
           colorScheme="grey"
           onClick={() => fetchNextPage()}

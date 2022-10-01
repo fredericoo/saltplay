@@ -1,4 +1,5 @@
-import { Box, Skeleton, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Text, useColorModeValue } from '@chakra-ui/react';
+import Skeleton from '../Skeleton';
 
 type StatProps = {
   label: string;
@@ -15,7 +16,7 @@ const Stat: React.FC<StatProps> = ({ label, isLoading, content }) => {
         {label}
       </Text>
       <Text as="div" fontSize="2xl" fontWeight="normal" lineHeight={1}>
-        <Skeleton isLoaded={!isLoading}>{!isLoading ? content : '…'}</Skeleton>
+        {isLoading ? <Skeleton w="80%" h="1em" /> : content}
       </Text>
     </Box>
   );
