@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
         >
           <Link href="/" passHref>
             <HStack h="50%" as="a" align="center" spacing="0" p={2}>
-              <Logo h="2rem" w="2rem" mr={3} />
+              <Logo h="2.5rem" w="2.5rem" mr={1} my={-4} />
               <Box
                 overflow="hidden"
                 whiteSpace="nowrap"
@@ -70,7 +70,7 @@ const Navbar: React.FC = () => {
                 letterSpacing="tight"
                 color="grey.12"
               >
-                saltplay
+                wrkplay
               </Box>
             </HStack>
           </Link>

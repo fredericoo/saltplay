@@ -10,14 +10,14 @@ interface SEOProps {
 }
 
 const TERMS = {
-  title: 'SaltPlay',
+  title: 'wrkplay',
   baseURL: process.env.VERCEL_URL,
 };
 
 const SEO: FCC<SEOProps> = ({ title, desc, type, imageUrl }) => {
   const { asPath } = useRouter();
   const tabInfo = {
-    title: title ? `${TERMS.title} ⁄ ${title}` : TERMS.title,
+    title: title ? `${title} ⁄ ${TERMS.title}` : TERMS.title,
     desc: desc ? desc : TERMS.title,
   };
 

@@ -29,7 +29,7 @@ const Hero: React.FC<HeroProps> = ({ offices }) => {
             </Text>
           </Heading>
           <Text color="grey.11" maxW="44ch" mb={4} mx={{ base: 'auto', lg: 0 }}>
-            Get your personal OKRs ready: SaltPlay (pun very intended) enables you to brag over your office games
+            Get your personal OKRs ready: wrkplay (pun very intended) enables you to brag over your office games
             performance. <br />A way more interesting way to{' '}
             <Text as="span" whiteSpace="nowrap">
               1-on-1
