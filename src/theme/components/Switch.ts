@@ -52,7 +52,7 @@ const baseStyleThumb: SystemStyleObject = {
   boxShadow: 'md',
 };
 
-const baseStyle: PartsStyleFunction<typeof parts> = props => ({
+const baseStyle: PartsStyleFunction = props => ({
   container: {
     [$diff.variable]: diffValue,
     [$translateX.variable]: $diff.reference,
@@ -64,7 +64,7 @@ const baseStyle: PartsStyleFunction<typeof parts> = props => ({
   thumb: baseStyleThumb,
 });
 
-const sizes: Record<string, PartsStyleObject<typeof parts>> = {
+const sizes: Record<string, PartsStyleObject> = {
   sm: {
     container: {
       [$width.variable]: '1.375rem',
