@@ -20,7 +20,7 @@ const useLeaderboard = (options: UseLeaderboardParams) => {
     async ({ pageParam = 1 }) => {
       const searchParams = new URLSearchParams(JSON.parse(JSON.stringify(options)));
       searchParams.set('perPage', '20');
-      pageParam && searchParams.set('after', pageParam);
+      pageParam && searchParams.set('page', pageParam);
 
       const res: LeaderboardGETAPIResponse = await fetch([`/api/leaderboard`, searchParams.toString()].join('?')).then(
         res => res.json()
