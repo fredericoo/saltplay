@@ -31,7 +31,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ gameId, seasonId, stickyMe, b
     };
     const handleObserver: IntersectionObserverCallback = entities => {
       const target = entities[0];
-      if (target.isIntersecting) {
+      if (target.isIntersecting && hasNextPage) {
         fetchNextPage();
       }
     };

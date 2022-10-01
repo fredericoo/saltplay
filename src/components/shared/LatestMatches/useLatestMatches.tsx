@@ -22,7 +22,6 @@ const useLatestMatches = (options: UseLatestMatchesParams) => {
     },
     {
       getNextPageParam: lastPage => {
-        if (lastPage && !lastPage?.pageInfo?.nextCursor) return undefined;
         return lastPage?.pageInfo?.nextCursor;
       },
     }

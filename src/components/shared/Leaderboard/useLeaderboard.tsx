@@ -30,9 +30,6 @@ const useLeaderboard = (options: UseLeaderboardParams) => {
     {
       refetchInterval: 1000 * 60,
       getNextPageParam: lastPage => {
-        if (options.userId) return undefined;
-        if (!options.gameId && !options.userId) return undefined;
-        if (lastPage && !lastPage.pageInfo?.nextPage) return undefined; // reached the end
         return lastPage?.pageInfo?.nextPage;
       },
     }
