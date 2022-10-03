@@ -12,7 +12,7 @@ type AddMatchBlockProps = {
   players: Awaited<ReturnType<typeof getPlayerSample>>;
 };
 
-const AddMatchBlock: React.VFC<AddMatchBlockProps> = ({ players }) => {
+const AddMatchBlock: React.FC<AddMatchBlockProps> = ({ players }) => {
   const [iteration, setIteration] = useState(0);
   const [step, setStep] = useState(0);
   const { colorMode } = useColorMode();

@@ -4,7 +4,7 @@ type PositionNumberProps = {
   position: number;
 };
 
-const PositionNumber: React.VFC<PositionNumberProps> = ({ position }) => {
+const PositionNumber: React.FC<PositionNumberProps> = ({ position }) => {
   const digits = Math.max(position.toString().length, 2);
   return (
     <Box

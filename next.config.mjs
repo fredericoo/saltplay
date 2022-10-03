@@ -77,7 +77,10 @@ const nextConfig = {
       autoLabel: 'always',
     },
   },
-  experimental: {},
+  experimental: {
+    legacyBrowsers: false,
+    browsersListForSwc: true,
+  },
 };
 
 const sentryWebpackPluginOptions = {

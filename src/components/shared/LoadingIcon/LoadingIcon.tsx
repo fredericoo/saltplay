@@ -8,7 +8,7 @@ type LoadingIconProps = {
   color: string;
 };
 
-const LoadingIcon: React.VFC<LoadingIconProps> = ({ color, size = 8 }) => {
+const LoadingIcon: React.FC<LoadingIconProps> = ({ color, size = 8 }) => {
   return (
     <Wrapper animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2 }} color={color} h={size} w={size}>
       <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">

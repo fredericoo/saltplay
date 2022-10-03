@@ -22,7 +22,7 @@ const drawBlur = (canvas: HTMLCanvasElement, icon: IconBlurProps['icon']) => {
   context.putImageData(imageData, 0, 0);
 };
 
-const IconBlur: React.VFC<IconBlurProps & Omit<ChakraProps, keyof IconBlurProps>> = ({ icon, ...boxProps }) => {
+const IconBlur: React.FC<IconBlurProps & Omit<ChakraProps, keyof IconBlurProps>> = ({ icon, ...boxProps }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     canvasRef.current && drawBlur(canvasRef.current, icon || '');

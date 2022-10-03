@@ -55,7 +55,7 @@ export const patchGameSchema = object({
   icon: iconSchema,
   slug: slugSchema,
   flags: gameFlagsSchema,
-  maxPlayersPerTeam: number().max(10),
+  maxPlayersPerTeam: number().max(100),
   officeid: string(),
 });
 

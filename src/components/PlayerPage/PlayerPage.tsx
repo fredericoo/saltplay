@@ -8,7 +8,7 @@ import PlayerName from '@/components/shared/PlayerName';
 import SEO from '@/components/shared/SEO';
 import Stat from '@/components/shared/Stat';
 import type { UserGETAPIResponse } from '@/lib/api/handlers/user/getUserHandler';
-import type { UserPATCHAPIResponse } from '@/lib/api/handlers/user/patchUserHandler';
+import { createFetcher } from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { getPlayerName } from '@/lib/players';
 import { canViewDashboard, getRoleStyles } from '@/lib/roles';
@@ -30,53 +30,33 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, LayoutGroup } from 'framer-motion';
 import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { VscEdit } from 'react-icons/vsc';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSetBoast } from './hooks';
 
 const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
   useNavigationState(getPlayerName(player?.name, 'initial') || 'Profile');
-  const { mutate } = useSWRConfig();
-  const { data: userQuery } = useSWR<UserGETAPIResponse>(`/api/users/${player.id}`);
+  const { data: session } = useSession();
+  const { data: userQuery } = useQuery(
+    ['users', player.id],
+    createFetcher<UserGETAPIResponse>(`/api/users/${player.id}`)
+  );
+
+  const { setBoast, isLoading } = useSetBoast({ userId: player.id });
+
   const boastId = userQuery?.data?.boastId;
   const medals = userQuery?.data?.medals || [];
 
-  const { data: session } = useSession();
-
   const isMe = player.id === session?.user.id;
-
-  if (!player) return null;
-
-  const handleBoast = async (boastId: string | null) => {
-    try {
-      const body = { boastId };
-      if (!userQuery) throw new Error("Can't boast: no medals loaded.");
-      const optimisticData = { ...userQuery, data: { ...userQuery.data, boastId } };
-      await mutate(
-        `/api/users/${player.id}`,
-        async () => {
-          return await axios.patch<UserPATCHAPIResponse>(`/api/users/${player.id}`, body).then(res => res.data);
-        },
-        {
-          optimisticData,
-          revalidate: false,
-          rollbackOnError: true,
-          populateCache: true,
-        }
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const playerName = player.name || `Anonymous`;
   const hasMultipleGames = stats.games.length > 1;
 
-  const boastMedal = medals?.find(medal => medal.id === boastId);
+  const boastedMedal = medals?.find(medal => medal.id === boastId);
   const otherMedals = medals?.filter(medal => medal.id !== boastId);
 
   return (
@@ -98,19 +78,20 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                 <Heading as="h1" sx={getRoleStyles(player.roleId)} mt={2} size="lg">
                   <PlayerName user={player} />
                 </Heading>
-                {boastMedal?.id && boastMedal.seasonid && (
-                  <MotionBox layoutId={boastMedal.id} key={boastMedal.id}>
-                    <Medal id={boastMedal.id} seasonId={boastMedal.seasonid} />
+                {boastedMedal?.id && boastedMedal.seasonid && (
+                  <MotionBox layoutId={boastedMedal.id} key={boastedMedal.id}>
+                    <Medal id={boastedMedal.id} seasonId={boastedMedal.seasonid} />
                   </MotionBox>
                 )}
-                {isMe && boastMedal && (
+                {isMe && boastedMedal && (
                   <AnimatePresence>
                     <MotionBox initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
                       <IconButton
                         css={{ aspectRatio: '1' }}
                         size="sm"
+                        isLoading={isLoading}
                         aria-label="Clear pin"
-                        onClick={() => handleBoast(null)}
+                        onClick={() => setBoast(null)}
                       >
                         <IoCloseOutline />
                       </IconButton>
@@ -137,7 +118,11 @@ const PlayerPage: NextPage<PlayerPageProps> = ({ player, stats }) => {
                               <Medal id={medal.id} seasonId={medal.seasonid} />
                             </MotionBox>
 
-                            {isMe && <Button onClick={() => isMe && handleBoast(medal.id)}>Pin</Button>}
+                            {isMe && (
+                              <Button isLoading={isLoading} onClick={() => setBoast(medal.id)}>
+                                Pin
+                              </Button>
+                            )}
                           </Stack>
                         )
                     )}

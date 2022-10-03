@@ -11,7 +11,7 @@ export type FeedbackFormData = {
   text?: string;
 };
 
-const FeedbackForm: React.VFC<ModalFormProps> = ({ closeModal, formId }) => {
+const FeedbackForm: React.FC<ModalFormProps> = ({ closeModal, formId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
   const {

@@ -28,7 +28,7 @@ const FirstPlaceFx = styled(Box, {
   },
 });
 
-const LeaderboardPosition: React.VFC<LeaderboardPositionProps & Omit<StackProps, keyof LeaderboardPositionProps>> = ({
+const LeaderboardPosition: React.FC<LeaderboardPositionProps & Omit<StackProps, keyof LeaderboardPositionProps>> = ({
   user,
   isMe = false,
   bottom,

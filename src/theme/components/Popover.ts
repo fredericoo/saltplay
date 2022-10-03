@@ -59,7 +59,7 @@ const baseStyleCloseButton: SystemStyleObject = {
   padding: 2,
 };
 
-const baseStyle: PartsStyleFunction<typeof parts> = props => ({
+const baseStyle: PartsStyleFunction = props => ({
   popper: baseStylePopper,
   content: baseStyleContent(props),
   header: baseStyleHeader,

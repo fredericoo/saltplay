@@ -25,5 +25,6 @@
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
-  "window.commandCenter": true
+  "window.commandCenter": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -8,7 +8,7 @@ type LeaderboardBlockProps = {
   seasonId?: Season['id'];
 };
 
-const LeaderboardBlock: React.VFC<LeaderboardBlockProps> = ({ gameId, seasonId }) => {
+const LeaderboardBlock: React.FC<LeaderboardBlockProps> = ({ gameId, seasonId }) => {
   return (
     <Section p={0} pb="100%" w="100%" h="500px" bg="grey.4" display="flex" flexDirection="column">
       <Heading as="h2" color="grey.11" size="md" p={8} zIndex="1" position="relative">

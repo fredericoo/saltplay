@@ -11,7 +11,7 @@ type FlagsSwitchProps = {
   onChange?: (flags: number) => void | Promise<void>;
 };
 
-const FlagsSwitch: React.VFC<FlagsSwitchProps> = ({ flags, label, defaultValue, onChange, isDisabled }) => {
+const FlagsSwitch: React.FC<FlagsSwitchProps> = ({ flags, label, defaultValue, onChange, isDisabled }) => {
   const [value, setValue] = useState(defaultValue ?? 0);
   const [isLoading, setIsLoading] = useState(false);
   const toggles = Object.entries(getFlagTogglesFromNumber(flags, value));

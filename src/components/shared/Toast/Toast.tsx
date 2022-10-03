@@ -37,7 +37,7 @@ const toastStyles = {
   },
 };
 
-const Toast: React.VFC<ToastProps> = ({ status, content, heading }) => {
+const Toast: React.FC<ToastProps> = ({ status, content, heading }) => {
   const mode = useColorModePreference() || 'dark';
 
   return (

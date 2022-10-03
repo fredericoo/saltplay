@@ -1,3 +1,4 @@
+import type { FCC } from '@/types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -13,7 +14,7 @@ const TERMS = {
   baseURL: process.env.VERCEL_URL,
 };
 
-const SEO: React.FC<SEOProps> = ({ title, desc, type, imageUrl }) => {
+const SEO: FCC<SEOProps> = ({ title, desc, type, imageUrl }) => {
   const { asPath } = useRouter();
   const tabInfo = {
     title: title ? `${title} ⁄ ${TERMS.title}` : TERMS.title,

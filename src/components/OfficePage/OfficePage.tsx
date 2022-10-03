@@ -5,27 +5,24 @@ import List from '@/components/shared/List';
 import SEO from '@/components/shared/SEO';
 import Stat from '@/components/shared/Stat';
 import type { RandomPhotoApiResponse } from '@/lib/api/handlers/getRandomPhotoHandler';
-import fetcher from '@/lib/fetcher';
+import { createFetcher } from '@/lib/fetcher';
 import useNavigationState from '@/lib/navigationHistory/useNavigationState';
 import { canViewDashboard } from '@/lib/roles';
 import useMediaQuery from '@/lib/useMediaQuery';
 import type { OfficePageProps } from '@/pages/[office]';
 import getUserGradient from '@/theme/palettes';
 import { Box, Container, Heading, HStack, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { VscEdit } from 'react-icons/vsc';
-import useSWR from 'swr';
 
 const OfficePage: NextPage<OfficePageProps> = ({ office }) => {
   const isDesktop = useMediaQuery('md');
-  const { data: randomPhoto } = useSWR<RandomPhotoApiResponse>(
-    office ? `/api/photo/random?q=${office.name}` : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-    }
+  const { data: randomPhoto } = useQuery(
+    ['random-photo', office.name],
+    createFetcher<RandomPhotoApiResponse>(`/api/photo/random?q=${office.name}`)
   );
   const { data: session } = useSession();
 

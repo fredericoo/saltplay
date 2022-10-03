@@ -10,6 +10,7 @@ const getGame = async (gameSlug: Game['slug'], officeId: Office['id']) => {
     select: {
       office: {
         select: {
+          id: true,
           name: true,
           slug: true,
         },

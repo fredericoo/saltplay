@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 export type PlayersDecoProps = { players: Pick<User, 'id' | 'image' | 'name' | 'roleId'>[] };
 
-const PlayersDeco: React.VFC<PlayersDecoProps> = ({ players }) => {
+const PlayersDeco: React.FC<PlayersDecoProps> = ({ players }) => {
   return (
     <Box position="absolute" zIndex={0} inset={0} css={{ perspective: '100vw' }}>
       <Box
@@ -33,7 +33,7 @@ const fly = keyframes`
     opacity: 0;
 	}`;
 
-const PlayerDeco: React.VFC<{ user: PlayersDecoProps['players'][number]; index: number; length: number }> = ({
+const PlayerDeco: React.FC<{ user: PlayersDecoProps['players'][number]; index: number; length: number }> = ({
   user,
   index,
   length,

@@ -7,7 +7,7 @@ type HeroProps = {
   offices: Awaited<ReturnType<typeof getOffices>>;
 };
 
-const Hero: React.VFC<HeroProps> = ({ offices }) => {
+const Hero: React.FC<HeroProps> = ({ offices }) => {
   const officesWithGames = offices?.filter(office => office.games.length) || [];
 
   return (

@@ -1,4 +1,4 @@
-import type { ChakraProps} from '@chakra-ui/react';
+import type { ChakraProps } from '@chakra-ui/react';
 import { Box, HStack, Input } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IoCloseCircleOutline, IoSearchCircle } from 'react-icons/io5';
@@ -11,7 +11,7 @@ type SearchFieldProps = {
   focusOnMount: boolean;
 };
 
-const SearchField: React.VFC<SearchFieldProps & ChakraProps> = ({ search, setSearch, focusOnMount, ...props }) => {
+const SearchField: React.FC<SearchFieldProps & ChakraProps> = ({ search, setSearch, focusOnMount, ...props }) => {
   return (
     <HStack
       mx={1}

@@ -26,7 +26,7 @@ type DeleteMatchButtonProps = {
   onDeleteError?: () => void;
 } & ChakraProps;
 
-const DeleteMatchButton: React.VFC<DeleteMatchButtonProps> = ({
+const DeleteMatchButton: React.FC<DeleteMatchButtonProps> = ({
   id,
   seasonId,
   onDeleteStart,

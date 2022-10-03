@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { transition, whileTap } from './constants';
 
-export const MoonIcon: React.VFC = () => {
+export const MoonIcon: React.FC = () => {
   const variants = {
     initial: { scale: 0.6, rotate: 90 },
     animate: { scale: 1, rotate: 0, transition },

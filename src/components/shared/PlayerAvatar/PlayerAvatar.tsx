@@ -1,5 +1,6 @@
 import { isRemoved } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
+import type { FCC } from '@/types';
 import { Box, Text } from '@chakra-ui/react';
 import type { User } from '@prisma/client';
 import Image from 'next/image';
@@ -13,7 +14,7 @@ type PlayerAvatarProps = {
 
 const getSize = (size: number | string) => (typeof size === 'number' ? size : 8);
 
-const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
+const PlayerAvatar: React.FC<PlayerAvatarProps> = ({ user, size = 8, isLink }) => {
   const fontSize = (scale: number) => `max(calc(${typeof size === 'number' ? size * scale + 'rem' : size}), 1rem)`;
   const isUserRemoved = !user || isRemoved(user?.roleId);
 
@@ -68,7 +69,7 @@ const PlayerAvatar: React.VFC<PlayerAvatarProps> = ({ user, size = 8, isLink }) 
   );
 };
 
-const LinkWrapper: React.FC<{ href?: string }> = ({ href, children }) => {
+const LinkWrapper: FCC<{ href?: string }> = ({ href, children }) => {
   if (href)
     return (
       <Link href={href} passHref>

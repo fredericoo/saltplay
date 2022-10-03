@@ -7,7 +7,7 @@ const useMediaQuery = (size: 'xs' | 'sm' | 'md' | 'lg' | 'xl') => {
   const theme = useTheme();
   const [targetReached, setTargetReached] = useState(false);
 
-  const updateTarget = useCallback(e => {
+  const updateTarget = useCallback((e: MediaQueryListEvent) => {
     if (e.matches) {
       setTargetReached(true);
     } else {

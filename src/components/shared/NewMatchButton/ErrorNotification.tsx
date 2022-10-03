@@ -7,7 +7,7 @@ type ErrorNotificationProps = {
 
 const MotionBox = motion(Box);
 
-const ErrorNotification: React.VFC<ErrorNotificationProps> = ({ message }) => {
+const ErrorNotification: React.FC<ErrorNotificationProps> = ({ message }) => {
   return (
     <AnimatePresence>
       {message && (

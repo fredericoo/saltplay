@@ -3,10 +3,11 @@ import useOpponents from '@/components/shared/Leaderboard/useOpponents';
 import { MotionBox } from '@/components/shared/Motion';
 import PlayerPicker from '@/components/shared/NewMatchButton/PlayerPicker';
 import type { Player } from '@/components/shared/NewMatchButton/PlayerPicker/types';
+import Skeleton from '@/components/shared/Skeleton';
 import { BANNED_ROLE_ID } from '@/constants';
 import { canViewDashboard } from '@/lib/roles';
 import getGradientFromId from '@/theme/palettes';
-import { Badge, Box, HStack, Skeleton, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
+import { Badge, Box, HStack, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react';
 import type { Game, Season } from '@prisma/client';
 import { AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
@@ -23,9 +24,9 @@ type TeamsProps = {
   onFinish?: () => void;
 };
 
-const Teams: React.VFC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onFinish }) => {
+const Teams: React.FC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onFinish }) => {
   const { data: session } = useSession();
-  const { data: opponentsQuery, error: opponentsError, mutate } = useOpponents({ gameId, seasonId });
+  const { data: opponentsQuery, isError, invalidate } = useOpponents({ gameId, seasonId });
 
   const [selectedSide, setSelectedSide] = useState<'left' | 'right' | undefined>(undefined);
 
@@ -83,7 +84,7 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onF
     setSelectedSide(side);
   };
 
-  if (opponentsError || opponentsQuery?.status === 'error')
+  if (isError || opponentsQuery?.status === 'error')
     return <ErrorBox heading={["Couldn't load opponents", opponentsQuery?.message].join(': ')} />;
 
   if (!opponentsQuery)
@@ -139,9 +140,9 @@ const Teams: React.VFC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onF
                     )}
                     isAlphabetical
                     selectedPlayers={sides[selectedSide]}
-                    refetch={mutate}
+                    refetch={invalidate}
                     isLoading={!opponentsQuery}
-                    isError={opponentsError}
+                    isError={isError}
                     onSelect={handleSelect}
                     selectedColour={selectedSide === 'left' ? getGradientFromId('1') : getGradientFromId('4')}
                   />

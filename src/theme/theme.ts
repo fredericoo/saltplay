@@ -1,4 +1,4 @@
-import type { ConfigColorMode} from '@chakra-ui/react';
+import type { ConfigColorMode } from '@chakra-ui/react';
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import {
   amber,
@@ -22,7 +22,6 @@ import { Menu } from './components/Menu';
 import { Modal } from './components/Modal';
 import Popover from './components/Popover';
 import { Select } from './components/Select';
-import Skeleton from './components/Skeleton';
 import { Switch } from './components/Switch';
 import { Tabs } from './components/Tabs';
 import { Tooltip } from './components/Tooltip';
@@ -103,7 +102,6 @@ const theme = extendTheme({
         color: 'grey.12',
       },
     },
-    Skeleton,
     Heading,
     Tooltip,
     Badge,

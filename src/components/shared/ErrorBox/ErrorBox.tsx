@@ -1,11 +1,11 @@
-import { Box, Text, Button } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 
 type ErrorBoxProps = {
   heading: string;
   isLoading?: boolean;
   onRetry?: () => void;
 };
-const ErrorBox: React.VFC<ErrorBoxProps> = ({ isLoading, onRetry, heading }) => {
+const ErrorBox: React.FC<ErrorBoxProps> = ({ isLoading, onRetry, heading }) => {
   return (
     <Box p={4} textAlign="center" bg="red.100" borderRadius="xl" color="red.600">
       <Text mb={2}>{heading}</Text>

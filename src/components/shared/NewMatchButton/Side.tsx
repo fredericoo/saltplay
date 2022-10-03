@@ -16,7 +16,7 @@ type SideProps = {
   emptySlots?: number;
 };
 
-const Side: React.VFC<SideProps> = ({ label, players, isReverse, isSelected, onClick, emptySlots = 0 }) => {
+const Side: React.FC<SideProps> = ({ label, players, isReverse, isSelected, onClick, emptySlots = 0 }) => {
   const paddingAvatars = emptySlots > 0 ? new Array(emptySlots).fill({ id: '0', name: '+' }) : [];
   const teamAveragePoints = players
     ? Math.ceil(
