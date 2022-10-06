@@ -48,7 +48,7 @@ const handler = (req: NextRequest) => {
   const medalSvg = medalFn({ bgColor: query.bg, icon: query.icon });
 
   return new Response(medalSvg, {
-    status: 401,
+    status: 200,
     headers: {
       'content-type': 'image/svg+xml',
       'cache-control': 'public, immutable, no-transform, s-maxage=31536000, max-age=31536000',

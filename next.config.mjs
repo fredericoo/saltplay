@@ -63,7 +63,7 @@ const nextConfig = {
     },
   ],
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: false,
   images: {
     deviceSizes: [768, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
