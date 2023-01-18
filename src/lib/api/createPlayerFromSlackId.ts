@@ -20,7 +20,7 @@ const createPlayerFromSlackId = async (slackId: string) => {
     .create({
       data: {
         name: slackPlayerInfo.profile?.real_name,
-        email: slackPlayerInfo.profile?.email,
+        email: slackPlayerInfo.profile?.email || Math.random().toString(36).substring(2) + '@wrkplay.com',
         image: slackPlayerInfo.profile?.image_192,
         roleId: GUEST_ROLE_ID,
         accounts: { create: [{ type: 'guest', provider: 'slack', providerAccountId: slackId }] },

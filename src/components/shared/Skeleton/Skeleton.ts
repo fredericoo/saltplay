@@ -1,5 +1,4 @@
-import { Box, keyframes } from '@chakra-ui/react';
-import { styled } from '@chakra-ui/system';
+import { Box, keyframes, styled } from '@chakra-ui/react';
 
 const fade = keyframes({
   from: { opacity: 1 },

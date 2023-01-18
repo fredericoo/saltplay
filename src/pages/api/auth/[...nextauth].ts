@@ -65,15 +65,15 @@ export const nextAuthOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: user.id,
-          roleId: user.roleId as User['roleId'],
+          roleId: (user as User).roleId,
         },
       };
     },
     async signIn({ user, account }) {
-      if (user.roleId === BANNED_ROLE_ID) return false;
-      if (user.roleId === GUEST_ROLE_ID) await turnGuestToUser(user, account);
+      if ((user as User).roleId === BANNED_ROLE_ID) return false;
+      if ((user as User).roleId === GUEST_ROLE_ID && account) await turnGuestToUser(user, account);
 
-      if (account.provider === 'slack') {
+      if (account?.provider === 'slack') {
         try {
           const userInfo = await slack.users.info({ user: account.providerAccountId });
           if (userInfo.user?.profile) {
