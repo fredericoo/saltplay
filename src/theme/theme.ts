@@ -1,4 +1,3 @@
-import type { ConfigColorMode } from '@chakra-ui/react';
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import {
   amber,
@@ -42,7 +41,7 @@ const radixToSemantic = <T extends string>(
     ])
   );
 
-export const initialColorMode: ConfigColorMode = 'system';
+export const initialColorMode = 'system';
 
 export const config: ThemeConfig = {
   cssVarPrefix: 'wrkplay',

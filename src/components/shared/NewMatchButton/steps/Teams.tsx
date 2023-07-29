@@ -42,8 +42,10 @@ const Teams: React.FC<TeamsProps> = ({ gameId, seasonId, maxPlayersPerTeam, onFi
   }, [opponentsQuery?.data?.opponents, session?.user.id, session?.user.roleId]);
 
   const thisPlayer = opponentsQuery?.data?.opponents?.find(({ id }) => id === session?.user.id);
-  register('right', { required: true, value: [] });
-  register('left', { required: true, value: [] });
+  useMemo(() => {
+    register('right', { required: true, value: [] });
+    register('left', { required: true, value: [] });
+  }, [register]);
 
   useEffect(() => {
     !canViewDashboard(session?.user.roleId) &&
